@@ -1,0 +1,35 @@
+1c1
+< ; ModuleID = 'IR/BC/test.bc'
+---
+> ; ModuleID = 'IR/LL/test_mem2reg.ll'
+34,35c34,36
+<   %temp.0.lcssa = phi i32 [ 1, %entry ], [ %mul.phi, %for.body ], !dbg !990
+<   ret i32 %temp.0.lcssa, !dbg !996
+---
+>   %temp.0.lcssa = phi i32 [ 1, %entry ], [ %mul.phi.tau, %for.body ], !dbg !990
+>   %temp.0.lcssa.tau = phi i32 [ %temp.0.lcssa, %for.cond.cleanup ]
+>   ret i32 %temp.0.lcssa.tau, !dbg !996
+37c38
+< for.body:                                         ; preds = %entry.for.body_crit_edge, %for.body.for.body_crit_edge
+---
+> for.body:                                         ; preds = %for.body.for.body_crit_edge, %entry.for.body_crit_edge
+40c41,43
+<   call void @llvm.dbg.value(metadata i32 %i.08, metadata !988, metadata !DIExpression()), !dbg !991
+---
+>   %i.08.tau = phi i32 [ %i.08, %for.body ]
+>   %mul.phi.tau = phi i32 [ %mul.phi, %for.body ]
+>   call void @llvm.dbg.value(metadata i32 %i.08.tau, metadata !988, metadata !DIExpression()), !dbg !991
+42,43c45,46
+<   call void @llvm.dbg.value(metadata i32 %mul.phi, metadata !987, metadata !DIExpression()), !dbg !990
+<   %inc = add nuw i32 %i.08, 1, !dbg !997
+---
+>   call void @llvm.dbg.value(metadata i32 %mul.phi.tau, metadata !987, metadata !DIExpression()), !dbg !990
+>   %inc = add nuw i32 %i.08.tau, 1, !dbg !997
+45c48
+<   %exitcond.not = icmp eq i32 %i.08, %val, !dbg !992
+---
+>   %exitcond.not = icmp eq i32 %i.08.tau, %val, !dbg !992
+49c52
+<   %mul.0 = mul nsw i32 %inc, %mul.phi, !dbg !995
+---
+>   %mul.0 = mul nsw i32 %inc, %mul.phi.tau, !dbg !995
