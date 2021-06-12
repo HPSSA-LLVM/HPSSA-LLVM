@@ -9,6 +9,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/Analysis/CFG.h"
+#include "llvm/ADT/PostOrderIterator.h"
 
 namespace llvm {
 
