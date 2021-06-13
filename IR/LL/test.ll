@@ -18,43 +18,37 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
 
 ; Function Attrs: nofree norecurse nosync nounwind readnone uwtable willreturn mustprogress
-define i32 @_Z9factoriali(i32 %val) local_unnamed_addr #3 !dbg !984 {
+define float @_Z9factoriali(i32 %val) local_unnamed_addr #3 !dbg !984 {
 entry:
-  call void @llvm.dbg.value(metadata i32 %val, metadata !986, metadata !DIExpression()), !dbg !990
-  call void @llvm.dbg.value(metadata i32 1, metadata !987, metadata !DIExpression()), !dbg !990
-  call void @llvm.dbg.value(metadata i32 2, metadata !988, metadata !DIExpression()), !dbg !991
-  %cmp.not6 = icmp slt i32 %val, 2, !dbg !992
-  br i1 %cmp.not6, label %for.cond.cleanup, label %entry.for.body_crit_edge, !dbg !994
-
-entry.for.body_crit_edge:                         ; preds = %entry
-  %mul.1 = mul nsw i32 2, 1, !dbg !995
-  br label %for.body, !dbg !994
+  call void @llvm.dbg.value(metadata i32 %val, metadata !988, metadata !DIExpression()), !dbg !992
+  call void @llvm.dbg.value(metadata float 1.000000e+00, metadata !989, metadata !DIExpression()), !dbg !992
+  call void @llvm.dbg.value(metadata i32 2, metadata !990, metadata !DIExpression()), !dbg !993
+  %cmp.not6 = icmp slt i32 %val, 2, !dbg !994
+  br i1 %cmp.not6, label %for.cond.cleanup, label %for.body, !dbg !996
 
 for.cond.cleanup:                                 ; preds = %for.body, %entry
-  %temp.0.lcssa = phi i32 [ 1, %entry ], [ %mul.phi, %for.body ], !dbg !990
-  ret i32 %temp.0.lcssa, !dbg !996
+  %temp.0.lcssa = phi float [ 1.000000e+00, %entry ], [ %mul, %for.body ], !dbg !992
+  ret float %temp.0.lcssa, !dbg !997
 
-for.body:                                         ; preds = %entry.for.body_crit_edge, %for.body.for.body_crit_edge
-  %i.08 = phi i32 [ %inc, %for.body.for.body_crit_edge ], [ 2, %entry.for.body_crit_edge ]
-  %mul.phi = phi i32 [ %mul.0, %for.body.for.body_crit_edge ], [ %mul.1, %entry.for.body_crit_edge ]
-  call void @llvm.dbg.value(metadata i32 %i.08, metadata !988, metadata !DIExpression()), !dbg !991
-  call void @llvm.dbg.value(metadata i32 undef, metadata !987, metadata !DIExpression()), !dbg !990
-  call void @llvm.dbg.value(metadata i32 %mul.phi, metadata !987, metadata !DIExpression()), !dbg !990
-  %inc = add nuw i32 %i.08, 1, !dbg !997
-  call void @llvm.dbg.value(metadata i32 %inc, metadata !988, metadata !DIExpression()), !dbg !991
-  %exitcond.not = icmp eq i32 %i.08, %val, !dbg !992
-  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body.for.body_crit_edge, !dbg !994, !llvm.loop !998
-
-for.body.for.body_crit_edge:                      ; preds = %for.body
-  %mul.0 = mul nsw i32 %inc, %mul.phi, !dbg !995
-  br label %for.body, !dbg !994
+for.body:                                         ; preds = %entry, %for.body
+  %i.08 = phi i32 [ %inc, %for.body ], [ 2, %entry ]
+  %temp.07 = phi float [ %mul, %for.body ], [ 1.000000e+00, %entry ]
+  call void @llvm.dbg.value(metadata i32 %i.08, metadata !990, metadata !DIExpression()), !dbg !993
+  call void @llvm.dbg.value(metadata float %temp.07, metadata !989, metadata !DIExpression()), !dbg !992
+  %conv = sitofp i32 %i.08 to float, !dbg !998
+  %mul = fmul float %temp.07, %conv, !dbg !999
+  call void @llvm.dbg.value(metadata float %mul, metadata !989, metadata !DIExpression()), !dbg !992
+  %inc = add nuw i32 %i.08, 1, !dbg !1000
+  call void @llvm.dbg.value(metadata i32 %inc, metadata !990, metadata !DIExpression()), !dbg !993
+  %exitcond.not = icmp eq i32 %i.08, %val, !dbg !994
+  br i1 %exitcond.not, label %for.cond.cleanup, label %for.body, !dbg !996, !llvm.loop !1001
 }
 
 ; Function Attrs: uwtable
-define internal void @_GLOBAL__sub_I_test.cpp() #4 section ".text.startup" !dbg !1002 {
+define internal void @_GLOBAL__sub_I_test.cpp() #4 section ".text.startup" !dbg !1005 {
 entry:
-  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit), !dbg !1004
-  %0 = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6, !dbg !1008
+  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit), !dbg !1007
+  %0 = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6, !dbg !1011
   ret void
 }
 
@@ -1057,28 +1051,31 @@ attributes #6 = { nounwind }
 !981 = !{i32 7, !"PIC Level", i32 2}
 !982 = !{i32 7, !"uwtable", i32 1}
 !983 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
-!984 = distinct !DISubprogram(name: "factorial", linkageName: "_Z9factoriali", scope: !29, file: !29, line: 3, type: !532, scopeLine: 3, flags: DIFlagPrototyped | DIFlagAllCallsDescribed, spFlags: DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !985)
-!985 = !{!986, !987, !988}
-!986 = !DILocalVariable(name: "val", arg: 1, scope: !984, file: !29, line: 3, type: !11)
-!987 = !DILocalVariable(name: "temp", scope: !984, file: !29, line: 4, type: !11)
-!988 = !DILocalVariable(name: "i", scope: !989, file: !29, line: 5, type: !11)
-!989 = distinct !DILexicalBlock(scope: !984, file: !29, line: 5, column: 3)
-!990 = !DILocation(line: 0, scope: !984)
-!991 = !DILocation(line: 0, scope: !989)
-!992 = !DILocation(line: 5, column: 21, scope: !993)
-!993 = distinct !DILexicalBlock(scope: !989, file: !29, line: 5, column: 3)
-!994 = !DILocation(line: 5, column: 3, scope: !989)
-!995 = !DILocation(line: 6, column: 10, scope: !993)
-!996 = !DILocation(line: 7, column: 3, scope: !984)
-!997 = !DILocation(line: 5, column: 29, scope: !993)
-!998 = distinct !{!998, !994, !999, !1000, !1001}
-!999 = !DILocation(line: 6, column: 13, scope: !989)
-!1000 = !{!"llvm.loop.mustprogress"}
-!1001 = !{!"llvm.loop.unroll.disable"}
-!1002 = distinct !DISubprogram(linkageName: "_GLOBAL__sub_I_test.cpp", scope: !29, file: !29, type: !1003, flags: DIFlagArtificial | DIFlagAllCallsDescribed, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !30)
-!1003 = !DISubroutineType(types: !30)
-!1004 = !DILocation(line: 74, column: 25, scope: !1005, inlinedAt: !1007)
-!1005 = !DILexicalBlockFile(scope: !1006, file: !3, discriminator: 0)
-!1006 = distinct !DISubprogram(name: "__cxx_global_var_init", scope: !29, file: !29, type: !582, flags: DIFlagArtificial | DIFlagAllCallsDescribed, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !30)
-!1007 = distinct !DILocation(line: 0, scope: !1002)
-!1008 = !DILocation(line: 0, scope: !1006, inlinedAt: !1007)
+!984 = distinct !DISubprogram(name: "factorial", linkageName: "_Z9factoriali", scope: !29, file: !29, line: 3, type: !985, scopeLine: 3, flags: DIFlagPrototyped | DIFlagAllCallsDescribed, spFlags: DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !987)
+!985 = !DISubroutineType(types: !986)
+!986 = !{!292, !11}
+!987 = !{!988, !989, !990}
+!988 = !DILocalVariable(name: "val", arg: 1, scope: !984, file: !29, line: 3, type: !11)
+!989 = !DILocalVariable(name: "temp", scope: !984, file: !29, line: 4, type: !292)
+!990 = !DILocalVariable(name: "i", scope: !991, file: !29, line: 5, type: !11)
+!991 = distinct !DILexicalBlock(scope: !984, file: !29, line: 5, column: 3)
+!992 = !DILocation(line: 0, scope: !984)
+!993 = !DILocation(line: 0, scope: !991)
+!994 = !DILocation(line: 5, column: 21, scope: !995)
+!995 = distinct !DILexicalBlock(scope: !991, file: !29, line: 5, column: 3)
+!996 = !DILocation(line: 5, column: 3, scope: !991)
+!997 = !DILocation(line: 7, column: 3, scope: !984)
+!998 = !DILocation(line: 6, column: 13, scope: !995)
+!999 = !DILocation(line: 6, column: 10, scope: !995)
+!1000 = !DILocation(line: 5, column: 29, scope: !995)
+!1001 = distinct !{!1001, !996, !1002, !1003, !1004}
+!1002 = !DILocation(line: 6, column: 13, scope: !991)
+!1003 = !{!"llvm.loop.mustprogress"}
+!1004 = !{!"llvm.loop.unroll.disable"}
+!1005 = distinct !DISubprogram(linkageName: "_GLOBAL__sub_I_test.cpp", scope: !29, file: !29, type: !1006, flags: DIFlagArtificial | DIFlagAllCallsDescribed, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !30)
+!1006 = !DISubroutineType(types: !30)
+!1007 = !DILocation(line: 74, column: 25, scope: !1008, inlinedAt: !1010)
+!1008 = !DILexicalBlockFile(scope: !1009, file: !3, discriminator: 0)
+!1009 = distinct !DISubprogram(name: "__cxx_global_var_init", scope: !29, file: !29, type: !582, flags: DIFlagArtificial | DIFlagAllCallsDescribed, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !30)
+!1010 = distinct !DILocation(line: 0, scope: !1005)
+!1011 = !DILocation(line: 0, scope: !1009, inlinedAt: !1010)
