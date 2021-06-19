@@ -1,0 +1,18 @@
+diff --git a/llvm/include/llvm/IR/Intrinsics.td b/llvm/include/llvm/IR/Intrinsics.td
+index f7c0bb0b88a9..2041110f7b89 100644
+--- a/llvm/include/llvm/IR/Intrinsics.td
++++ b/llvm/include/llvm/IR/Intrinsics.td
+@@ -1702,6 +1702,12 @@ def int_experimental_vector_splice : DefaultAttrsIntrinsic<[llvm_anyvector_ty],
+                                                             llvm_i32_ty],
+                                                            [IntrNoMem, ImmArg<ArgIndex<2>>]>;
+ 
++
++//===---------- intrinsic for tau ---------------=====//
++def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
++                                    [llvm_vararg_ty],
++                                    []>;
++
+ //===----------------------------------------------------------------------===//
+ 
+ //===----------------------------------------------------------------------===//
+

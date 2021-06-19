@@ -1,38 +1,41 @@
 #include "headers/HPSSA.h"
 #include <stack>
-
 using namespace llvm;
+
+
+// ? How to Get hot path information from Profiler
 
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create
-  DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
+  // DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
   for (BasicBlock *BB : RPOT) {
-
-    // Every New Tau Instruction will be inserted before this Instruction.
     Instruction *TopInstruction = BB->getFirstNonPHI();
-    // // Store the phi Encountered.
     for (auto &phi : BB->phis()) {
-      // TODO: Get hot path information from Profiler
       // DenseMap<BasicBlock*,bool> vis;
-      // TODO: Do not use ID directly
-
-      // Get type of phi
       std::vector<Type *> Tys;
       Tys.push_back(phi.getType());
 
-      // create tau
-      Function *tau = Intrinsic::getDeclaration(F.getParent(), 276, Tys);
+      // create tau function
+      Function *tau = Intrinsic::getDeclaration(
+          F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
       std::vector<Value *> Args;
       Args.push_back(dyn_cast<Value>(&phi));
       Args.push_back(dyn_cast<Value>(&phi));
-      // Args.push_back(dyn_cast<Value>(&phi));
-      // errs()<<tau->isVarArg()<<"\n";
-      // CallInst *TAUNode;
-      // Insert tau
-      CallInst* TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
-      // phi.replaceAllUsesWith(TAUNode);
+
+      // Create Tau Call instance
+      CallInst *TAUNode;
+      TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
+
+      // Insert Tau
+      for (auto phi_user : phi.users()) {
+        // errs() << *phi_user << "\n";
+        if (phi_user != TAUNode) {
+          phi_user->replaceUsesOfWith(&phi, TAUNode);
+        }
+      }
     }
   }
+
   return PreservedAnalyses::none();
 }
 
