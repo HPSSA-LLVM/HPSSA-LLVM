@@ -11,10 +11,12 @@
 #include "llvm/Analysis/CFG.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/IR/Intrinsics.h"
-
+#include<bits/stdc++.h>
+using namespace std;
 namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
+  pair<vector<vector<string>>, map<string, vector<pair<int,int>>>> getProfileInfo();
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 };
