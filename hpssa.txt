@@ -3,22 +3,21 @@ using namespace llvm;
 using namespace std;
 
 // ? How to Get hot path information from Profiler
-pair<vector<vector<string>>, map<string, vector<pair<int, int>>>>
-HPSSAPass::getProfileInfo() {
+pair<vector<vector<string>>, map<string, vector<pair<int,int>>>> HPSSAPass::getProfileInfo(){
   freopen("path.txt", "r", stdin);
-  map<string, vector<pair<int, int>>> BBHotPaths;
+  map<string, vector<pair<int,int>>> BBHotPaths;
   vector<vector<string>> PathList;
   int n;
-  cin >> n;
-  for (int i = 0; i < n; i++) {
+  cin>>n;
+  for(int i = 0; i < n; i++) {
     vector<string> path;
     int numNodes;
-    cin >> numNodes;
+    cin>>numNodes;
     string node;
-    for (int j = 0; j < numNodes; j++) {
-      cin >> node;
+    for(int j = 0; j < numNodes; j++){
+      cin>>node;
       path.push_back(node);
-      BBHotPaths[node].push_back({i, j});
+      BBHotPaths[node].push_back({i,j});
     }
     PathList.push_back(path);
   }
@@ -27,63 +26,62 @@ HPSSAPass::getProfileInfo() {
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
   auto out = getProfileInfo();
-  auto PathList = out.first;
+  auto PathList = out.first; 
   auto BBHotPaths = out.second;
-  map<BasicBlock *, vector<vector<int>>> BuddySet;
-  //map<BasicBlock *, bool> isCaloricConnector;
-  vector<BasicBlock*> CaloricConnectors;
+  map <BasicBlock*, vector<vector<int>>> BuddySet;
+  map<BasicBlock*, bool> isCaloricConnector;
 
-  for (BasicBlock &BB : F) { // ? Is it Pre-order?
-    if (BB.isEntryBlock()) { // * BB is a caloric connector, but it cannot have
-                             // a phi node
-      vector<int> B;         // buddies
-      for (int i = 0; i < PathList.size(); i++)
+  for(BasicBlock &BB : F) { // ? Is it Pre-order?
+    if(BB.isEntryBlock()) { // * BB is a caloric connector, but it cannot have a phi node
+      vector<int> B; // buddies
+      for(int i = 0; i < PathList.size(); i++)
         B.push_back(i);
       BuddySet[&BB].push_back(B);
       continue;
     }
 
     // Creating BuddySet
-    map<int, bool> isTupled; // already added to any buddyset tuple
-    for (auto P1 : BBHotPaths[(string)BB.getName()]) {
-      if (isTupled[P1.first]) {
+    map<int, bool> isTupled; //already added to any buddyset tuple
+    for(auto P1: BBHotPaths[(string)BB.getName()]) {
+      if(isTupled[P1.first]) {
         continue;
       }
       vector<int> B;
       B.push_back(P1.first);
       isTupled[P1.first] = true;
-      for (auto P2 : BBHotPaths[(string)BB.getName()]) {
-        if (isTupled[P2.first] || P1.second != P2.second) {
+      for(auto P2: BBHotPaths[(string)BB.getName()]) {
+        if(isTupled[P2.first] || P1.second != P2.second) {
           continue;
         }
         bool isBuddy = true;
-        for (int i = 0; i < P1.second; i++) {
-          if (PathList[P1.first][i] != PathList[P2.first][i]) {
+        for(int i = 0; i < P1.second; i++) {
+          if(PathList[P1.first][i] != PathList[P2.first][i]) {
             isBuddy = false;
             break;
           }
         }
-        if (isBuddy) {
+        if(isBuddy) {
           B.push_back(P2.first);
           isTupled[P2.first] = true;
         }
       }
-      BuddySet[&BB].push_back(B);
+      BuddySet[&BB].push_back(BB);
     }
 
-    bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
-    bool hasColdPath = false;
-    if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) != BBHotPaths[(string)BB.getName()].size()) {
-          hasColdPath = true;
+    for(auto i : BuddySet[&BB]) {
+      errs()<<"(";
+      for(auto j : i) {
+        errs()<<j<<" ";
+      }
+      errs()<<").";
     }
-    if(!hasColdPath) {
-      //BuddySet Logix
-      
-    }
-    
-    if(hasColdPath && hasHotPath) {
-      CaloricConnectors.push_back(&BB);
-    }
+
+    // bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
+    // bool hasColdPath = false;
+    //if(BB.getNum)
+    // if(hasHotPath && hasColdPath) {
+    //   isCaloricConnector[&BB] = true;
+    // }
     
   }
   // ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create

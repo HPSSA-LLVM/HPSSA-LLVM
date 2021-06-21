@@ -40,9 +40,9 @@ entry:
   %a = alloca i32, align 4
   %b = alloca i32, align 4
   %i = bitcast i32* %a to i8*, !dbg !995
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #8, !dbg !995
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #7, !dbg !995
   %i1 = bitcast i32* %b to i8*, !dbg !995
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #8, !dbg !995
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7, !dbg !995
   call void @llvm.dbg.value(metadata i32* %a, metadata !987, metadata !DIExpression(DW_OP_deref)), !dbg !996
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a), !dbg !997
   call void @llvm.dbg.value(metadata i32* %b, metadata !988, metadata !DIExpression(DW_OP_deref)), !dbg !996
@@ -76,7 +76,6 @@ if.else:                                          ; preds = %entry
 
 if.end:                                           ; preds = %if.else, %if.then
   %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ], !dbg !1020
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %storemerge)
   store i32 %storemerge, i32* %b, align 4, !dbg !1020, !tbaa !1001
   %i5 = load i32, i32* %a, align 4, !dbg !1021, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %i5, metadata !987, metadata !DIExpression()), !dbg !996
@@ -133,7 +132,6 @@ if.else22:                                        ; preds = %if.end17
 
 if.end27:                                         ; preds = %if.else22, %if.then19
   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ], !dbg !1052
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %storemerge48)
   store i32 %storemerge48, i32* %b, align 4, !dbg !1052, !tbaa !1001
   %i6 = load i32, i32* %a, align 4, !dbg !1053, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %i6, metadata !987, metadata !DIExpression()), !dbg !996
@@ -142,7 +140,7 @@ if.end27:                                         ; preds = %if.else22, %if.then
   call void @llvm.dbg.value(metadata i32 %add28, metadata !987, metadata !DIExpression()), !dbg !996
   store i32 %add28, i32* %a, align 4, !dbg !1055, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %storemerge48, metadata !988, metadata !DIExpression()), !dbg !996
-  %mul29 = mul nsw i32 %add28, %tau1, !dbg !1056
+  %mul29 = mul nsw i32 %add28, %storemerge48, !dbg !1056
   call void @llvm.dbg.value(metadata i32 %mul29, metadata !988, metadata !DIExpression()), !dbg !996
   store i32 %mul29, i32* %b, align 4, !dbg !1057, !tbaa !1001
   br label %end_label, !dbg !1058
@@ -175,7 +173,7 @@ if.else37:                                        ; preds = %if.else30
   call void @llvm.dbg.value(metadata i32 %mul38, metadata !987, metadata !DIExpression()), !dbg !996
   store i32 %mul38, i32* %a, align 4, !dbg !1074, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %mul32, metadata !988, metadata !DIExpression()), !dbg !996
-  %mul39 = mul i32 %tau, 216, !dbg !1075
+  %mul39 = mul i32 %storemerge, 216, !dbg !1075
   call void @llvm.dbg.value(metadata i32 %mul39, metadata !988, metadata !DIExpression()), !dbg !996
   store i32 %mul39, i32* %b, align 4, !dbg !1076, !tbaa !1001
   br label %new_label
@@ -196,8 +194,8 @@ new_label:                                        ; preds = %if.else37, %if.then
 
 end_label:                                        ; preds = %new_label, %if.end27, %if.end
   call void @llvm.dbg.label(metadata !994), !dbg !1084
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #8, !dbg !1085
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #8, !dbg !1085
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7, !dbg !1085
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7, !dbg !1085
   ret i32 0, !dbg !1086
 }
 
@@ -216,15 +214,12 @@ declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
 define internal void @_GLOBAL__sub_I_test.cpp() #6 section ".text.startup" !dbg !1087 {
 entry:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit), !dbg !1089
-  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #8, !dbg !1093
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #7, !dbg !1093
   ret void
 }
 
 ; Function Attrs: nofree nosync nounwind readnone speculatable willreturn
 declare void @llvm.dbg.value(metadata, metadata, metadata) #5
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #7
 
 attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
@@ -233,8 +228,7 @@ attributes #3 = { norecurse uwtable mustprogress "frame-pointer"="none" "min-leg
 attributes #4 = { argmemonly nofree nosync nounwind willreturn }
 attributes #5 = { nofree nosync nounwind readnone speculatable willreturn }
 attributes #6 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #7 = { nofree nosync nounwind willreturn }
-attributes #8 = { nounwind }
+attributes #7 = { nounwind }
 
 !llvm.dbg.cu = !{!28}
 !llvm.module.flags = !{!979, !980, !981, !982, !983}
