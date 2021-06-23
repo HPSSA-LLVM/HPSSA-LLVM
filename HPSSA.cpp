@@ -29,30 +29,46 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   auto out = getProfileInfo();
   auto PathList = out.first;
   auto BBHotPaths = out.second;
-  map<BasicBlock *, vector<vector<int>>> BuddySet;
-  //map<BasicBlock *, bool> isCaloricConnector;
-  vector<BasicBlock*> CaloricConnectors;
+
+  // ! Always using name of Block to get information : See if it works
+  map<string, vector<vector<int>>> BuddySet;
+  // map<BasicBlock *, bool> isCaloricConnector;
+  vector<BasicBlock *> CaloricConnectors;
 
   for (BasicBlock &BB : F) { // ? Is it Pre-order?
-    if (BB.isEntryBlock()) { // * BB is a caloric connector, but it cannot have
-                             // a phi node
-      vector<int> B;         // buddies
-      for (int i = 0; i < PathList.size(); i++)
-        B.push_back(i);
-      BuddySet[&BB].push_back(B);
-      continue;
-    }
+
+    // * No special Case for Entry Block while creating Buddy Set
+    // * Skip Later.
+
+    // if (BB.isEntryBlock()) { // * BB is a caloric connector, but it cannot
+    // have
+    //                          // a phi node
+    //   vector<int> B;         // buddies
+    //   // ? What if path list contains paths which start at loop header.
+    //   Better
+    //   // ? Use BBHotPaths[BB]'s first value.
+    //   // for (int i = 0; i < PathList.size(); i++)
+    //   //   B.push_back(i);
+    //   // ? Should only contain hot paths.
+    //   for(auto BlockPosition: BBHotPaths[(string)BB.getName()])
+    //   BuddySet[(string)BB.getName()].push_back(B);
+    //   continue;
+    // }
 
     // Creating BuddySet
-    map<int, bool> isTupled; // already added to any buddyset tuple
+    map<int, bool> isTupled;
     for (auto P1 : BBHotPaths[(string)BB.getName()]) {
+      // already added to any buddyset tuple
       if (isTupled[P1.first]) {
         continue;
       }
+      // tuple containing paths
       vector<int> B;
       B.push_back(P1.first);
       isTupled[P1.first] = true;
       for (auto P2 : BBHotPaths[(string)BB.getName()]) {
+        // if index of current block is not same then the paths cannot be same
+        // for sure.
         if (isTupled[P2.first] || P1.second != P2.second) {
           continue;
         }
@@ -68,23 +84,74 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           isTupled[P2.first] = true;
         }
       }
-      BuddySet[&BB].push_back(B);
+      // For Entry Block All hot paths will be equal by default
+      // As there is only one block to compare.
+      BuddySet[(string)BB.getName()].push_back(B);
     }
+
+    // Entry Block cannot be a Caloric connector
+    // Even if it has both hot and cold paths
+    // Because No PHI Node above/in it.
+    if (BB.isEntryBlock())
+      continue;
 
     bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
     bool hasColdPath = false;
-    if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) != BBHotPaths[(string)BB.getName()].size()) {
-          hasColdPath = true;
+
+    // If all paths are not hot then some are cold.
+    // // FIXME : 1 predecessor might give more than 1 path.
+    if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) !=
+        BBHotPaths[(string)BB.getName()].size()) {
+      hasColdPath = true;
     }
-    if(!hasColdPath) {
-      //BuddySet Logix
-      
+
+    // Even if all paths are hot some definitions may reach cold.
+    if (!hasColdPath) {
+      // BuddySet Logix
+      // store all hot paths separately
+      vector<int> pathIndexBB; // TODO : Avoid Doing this : DRY
+      for (auto p : BBHotPaths[(string)BB.getName()]) {
+        pathIndexBB.push_back(p.first);
+      }
+
+      // Iterate over all hot paths
+      for (auto BlockPosition : BBHotPaths[(string)BB.getName()]) {
+        // Parent block from where the hot definition came
+        string HotDefCarrier =
+            PathList[BlockPosition.first]
+                    [BlockPosition.second -
+                     1]; // Safe because it is not entry block.
+
+        // Iterating over set of paths having same hot definition
+        for (auto SameDef : BuddySet[HotDefCarrier]) {
+
+          // Index of first Common element between the two vectors.
+          auto matchPosition =
+              find_first_of(pathIndexBB.begin(), pathIndexBB.end(),
+                            SameDef.begin(), SameDef.end());
+
+          // If none hot definition missing
+          if (matchPosition == pathIndexBB.end()) {
+            hasColdPath = true;
+            break;
+          }
+        }
+        if (hasColdPath)
+          break;
+      }
     }
-    
-    if(hasColdPath && hasHotPath) {
+    // Cannot be caloric connector.
+    if (BB.isEntryBlock())
+      continue;
+
+    // Temperature difference.
+    if (hasColdPath && hasHotPath) {
       CaloricConnectors.push_back(&BB);
     }
-    
+  }
+
+  for (auto &BB : CaloricConnectors) {
+    errs() << BB->getName() << "\n";
   }
   // ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create
   // DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
