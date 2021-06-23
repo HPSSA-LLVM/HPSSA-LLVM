@@ -17,6 +17,7 @@ namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
   pair<vector<vector<string>>, map<string, vector<pair<int,int>>>> getProfileInfo();
+  void traverseAllPaths(vector<vector<BasicBlock*>> &allPaths, vector<BasicBlock*> &currPath, BasicBlock* BB);
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 };

@@ -24,11 +24,37 @@ HPSSAPass::getProfileInfo() {
   }
   return {PathList, BBHotPaths};
 }
+void HPSSAPass::traverseAllPaths(vector<vector<BasicBlock*>> &allPaths, vector<BasicBlock*> &currPath, BasicBlock* BB) {
+  currPath.push_back(BB);
+  if(BB->isSentinel()) {
+    allPaths.push_back(currPath);
+    currPath.pop_back();
+    return;
+  }
+  for(auto SB : successors(BB)) {
+    traverseAllPaths(allPaths, currPath, SB);
+  }
+  currPath.pop_back();
+}
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
+  if(F.getName() != "main") {
+    return PreservedAnalyses::all();
+  }
+  
   auto out = getProfileInfo();
   auto PathList = out.first;
   auto BBHotPaths = out.second;
+
+  vector<vector<BasicBlock*>> allPaths; //both hot and cold
+  vector<BasicBlock*> currPath; //current path being visited
+  map<string, int> numPaths; //total number of paths passing through a Basic Block
+  traverseAllPaths(allPaths, currPath, &F.getEntryBlock());
+  for(auto v : allPaths) {
+    for(auto i : v) {
+      numPaths[(string)i->getName()]++;
+    }
+  }
 
   // ! Always using name of Block to get information : See if it works
   map<string, vector<vector<int>>> BuddySet;
@@ -100,11 +126,12 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
     // If all paths are not hot then some are cold.
     // // FIXME : 1 predecessor might give more than 1 path.
-    if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) !=
-        BBHotPaths[(string)BB.getName()].size()) {
-      hasColdPath = true;
-    }
-
+    // if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) !=
+    //     BBHotPaths[(string)BB.getName()].size()) {
+    //   hasColdPath = true;
+    // }
+    predecessors(&BB).begin();
+    predecessors(&BB).end();
     // Even if all paths are hot some definitions may reach cold.
     if (!hasColdPath) {
       // BuddySet Logix
