@@ -24,35 +24,38 @@ HPSSAPass::getProfileInfo() {
   }
   return {PathList, BBHotPaths};
 }
-void HPSSAPass::traverseAllPaths(vector<vector<BasicBlock*>> &allPaths, vector<BasicBlock*> &currPath, BasicBlock* BB) {
+void HPSSAPass::traverseAllPaths(vector<vector<BasicBlock *>> &allPaths,
+                                 vector<BasicBlock *> &currPath,
+                                 BasicBlock *BB) {
   currPath.push_back(BB);
-  if(BB->isSentinel()) {
+  if (successors(BB).empty()) {
     allPaths.push_back(currPath);
     currPath.pop_back();
     return;
   }
-  for(auto SB : successors(BB)) {
+  for (auto SB : successors(BB)) {
     traverseAllPaths(allPaths, currPath, SB);
   }
   currPath.pop_back();
 }
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
-  if(F.getName() != "main") {
+  if (F.getName() != "main") {
     return PreservedAnalyses::all();
   }
-  
+
   auto out = getProfileInfo();
   auto PathList = out.first;
   auto BBHotPaths = out.second;
 
-  vector<vector<BasicBlock*>> allPaths; //both hot and cold
-  vector<BasicBlock*> currPath; //current path being visited
-  map<string, int> numPaths; //total number of paths passing through a Basic Block
+  vector<vector<BasicBlock *>> allPaths; // both hot and cold
+  vector<BasicBlock *> currPath;         // current path being visited
+  map<string, int>
+      numPaths; // total number of paths passing through a Basic Block
   traverseAllPaths(allPaths, currPath, &F.getEntryBlock());
-  for(auto v : allPaths) {
-    for(auto i : v) {
-      numPaths[(string)i->getName()]++;
+  for (auto Path : allPaths) {
+    for (auto BB : Path) {
+      numPaths[(string)BB->getName()]++;
     }
   }
 
@@ -61,25 +64,9 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   // map<BasicBlock *, bool> isCaloricConnector;
   vector<BasicBlock *> CaloricConnectors;
 
-  for (BasicBlock &BB : F) { // ? Is it Pre-order?
+  for (BasicBlock &BB : F) { // CFG + Topologically sorted.
 
-    // * No special Case for Entry Block while creating Buddy Set
-    // * Skip Later.
-
-    // if (BB.isEntryBlock()) { // * BB is a caloric connector, but it cannot
-    // have
-    //                          // a phi node
-    //   vector<int> B;         // buddies
-    //   // ? What if path list contains paths which start at loop header.
-    //   Better
-    //   // ? Use BBHotPaths[BB]'s first value.
-    //   // for (int i = 0; i < PathList.size(); i++)
-    //   //   B.push_back(i);
-    //   // ? Should only contain hot paths.
-    //   for(auto BlockPosition: BBHotPaths[(string)BB.getName()])
-    //   BuddySet[(string)BB.getName()].push_back(B);
-    //   continue;
-    // }
+    // errs()<< BB.getName()<<" "<< numPaths[(string)BB.getName()] <<"\n";
 
     // Creating BuddySet
     map<int, bool> isTupled;
@@ -126,12 +113,26 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
     // If all paths are not hot then some are cold.
     // // FIXME : 1 predecessor might give more than 1 path.
-    // if (distance(predecessors(&BB).begin(), predecessors(&BB).end()) !=
+    // if (numPaths[(string)BB.getName()] !=
     //     BBHotPaths[(string)BB.getName()].size()) {
     //   hasColdPath = true;
     // }
-    predecessors(&BB).begin();
-    predecessors(&BB).end();
+
+    for (auto Pred : predecessors(&BB)) {
+      bool isPresent = false;
+      for (auto HotPaths : BBHotPaths[(string)Pred->getName()]) {
+        if (HotPaths.second + 1 < PathList[HotPaths.first].size()) {
+          if (PathList[HotPaths.first][HotPaths.second + 1] == BB.getName()) {
+            isPresent = true;
+          }
+        }
+      }
+      // The edge does not lie on a hot path
+      if (!isPresent) {
+        hasColdPath = true;
+        break;
+      }
+    }
     // Even if all paths are hot some definitions may reach cold.
     if (!hasColdPath) {
       // BuddySet Logix

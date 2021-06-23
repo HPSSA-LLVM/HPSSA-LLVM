@@ -1,4 +1,4 @@
-; ModuleID = 'IR/BC/test.bc'
+; ModuleID = 'IR/LL/test_mem2reg.ll'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -178,7 +178,7 @@ if.else37:                                        ; preds = %if.else30
   store i32 %mul39, i32* %b, align 4, !dbg !1076, !tbaa !1001
   br label %new_label
 
-new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
+new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
   call void @llvm.dbg.label(metadata !989), !dbg !1077
   %i7 = load i32, i32* %a, align 4, !dbg !1078, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %i7, metadata !987, metadata !DIExpression()), !dbg !996
