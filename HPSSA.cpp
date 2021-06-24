@@ -3,11 +3,13 @@ using namespace llvm;
 using namespace std;
 
 // ? How to Get hot path information from Profiler
+
+// * Hot Path Information
 pair<vector<vector<string>>, map<string, vector<pair<int, int>>>>
 HPSSAPass::getProfileInfo() {
   freopen("path.txt", "r", stdin);
   map<string, vector<pair<int, int>>> BBHotPaths;
-  vector<vector<string>> PathList;
+  vector<vector<string>> HotPathList;
   int n;
   cin >> n;
   for (int i = 0; i < n; i++) {
@@ -20,10 +22,12 @@ HPSSAPass::getProfileInfo() {
       path.push_back(node);
       BBHotPaths[node].push_back({i, j});
     }
-    PathList.push_back(path);
+    HotPathList.push_back(path);
   }
-  return {PathList, BBHotPaths};
+  return {HotPathList, BBHotPaths};
 }
+
+//* Complete Path Information
 void HPSSAPass::traverseAllPaths(vector<vector<BasicBlock *>> &allPaths,
                                  vector<BasicBlock *> &currPath,
                                  BasicBlock *BB) {
@@ -38,14 +42,18 @@ void HPSSAPass::traverseAllPaths(vector<vector<BasicBlock *>> &allPaths,
   }
   currPath.pop_back();
 }
+
+//* Pass
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
+  // Only Hotpath information of "main" function is available.
   if (F.getName() != "main") {
     return PreservedAnalyses::all();
   }
 
+  // Hot path information
   auto out = getProfileInfo();
-  auto PathList = out.first;
+  auto HotPathList = out.first;
   auto BBHotPaths = out.second;
 
   vector<vector<BasicBlock *>> allPaths; // both hot and cold
@@ -59,35 +67,42 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     }
   }
 
-  // ! Always using name of Block to get information : See if it works
+  // Always using name of Block to get information
   map<string, vector<vector<int>>> BuddySet;
   // map<BasicBlock *, bool> isCaloricConnector;
   vector<BasicBlock *> CaloricConnectors;
 
-  for (BasicBlock &BB : F) { // CFG + Topologically sorted.
+  // TODO : Use Pointers instead of name in all data structures.
+  // Irrevelant after some time because we will use profiler data.
 
+  // ! Really Ugly thing to do
+  map<string, BasicBlock *> nameToBlock;
+  for (BasicBlock &BB : F) { // CFG + Topologically sorted.
+    // temporary solution for getting Basic block from name.
+    nameToBlock[(string)BB.getName()] = &BB;
     // errs()<< BB.getName()<<" "<< numPaths[(string)BB.getName()] <<"\n";
 
-    // Creating BuddySet
     map<int, bool> isTupled;
+    // Populate BuddySet
     for (auto P1 : BBHotPaths[(string)BB.getName()]) {
       // already added to any buddyset tuple
       if (isTupled[P1.first]) {
         continue;
       }
-      // tuple containing paths
+      // tuple containing hot paths carrying same definition as P1.
       vector<int> B;
       B.push_back(P1.first);
       isTupled[P1.first] = true;
       for (auto P2 : BBHotPaths[(string)BB.getName()]) {
-        // if index of current block is not same then the paths cannot be same
-        // for sure.
+        // if index of current block is not same then
+        // the paths cannot be same for sure.
         if (isTupled[P2.first] || P1.second != P2.second) {
           continue;
         }
         bool isBuddy = true;
         for (int i = 0; i < P1.second; i++) {
-          if (PathList[P1.first][i] != PathList[P2.first][i]) {
+          // Every node must be same.
+          if (HotPathList[P1.first][i] != HotPathList[P2.first][i]) {
             isBuddy = false;
             break;
           }
@@ -97,7 +112,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           isTupled[P2.first] = true;
         }
       }
-      // For Entry Block All hot paths will be equal by default
+      // For Entry Block All hot paths will be equal
       // As there is only one block to compare.
       BuddySet[(string)BB.getName()].push_back(B);
     }
@@ -111,29 +126,26 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
     bool hasColdPath = false;
 
-    // If all paths are not hot then some are cold.
-    // // FIXME : 1 predecessor might give more than 1 path.
-    // if (numPaths[(string)BB.getName()] !=
-    //     BBHotPaths[(string)BB.getName()].size()) {
-    //   hasColdPath = true;
-    // }
-
+    // Checking if every edge coming to BB lie on a Hot Path.
     for (auto Pred : predecessors(&BB)) {
-      bool isPresent = false;
-      for (auto HotPaths : BBHotPaths[(string)Pred->getName()]) {
-        if (HotPaths.second + 1 < PathList[HotPaths.first].size()) {
-          if (PathList[HotPaths.first][HotPaths.second + 1] == BB.getName()) {
-            isPresent = true;
+      bool isPresent = false; // All cold paths
+      for (auto HotPaths :
+           BBHotPaths[(string)Pred->getName()]) { // iterate over all hot path
+        if (HotPaths.second + 1 < HotPathList[HotPaths.first].size()) {
+          if (HotPathList[HotPaths.first][HotPaths.second + 1] ==
+              BB.getName()) {
+            isPresent = true; // lie on a hot path.
+            break;
           }
         }
       }
-      // The edge does not lie on a hot path
+      // No hot path contain this edge.
       if (!isPresent) {
         hasColdPath = true;
         break;
       }
     }
-    // Even if all paths are hot some definitions may reach cold.
+    // Even if all edges are hot some definitions may reach cold through them.
     if (!hasColdPath) {
       // BuddySet Logix
       // store all hot paths separately
@@ -146,14 +158,16 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
       for (auto BlockPosition : BBHotPaths[(string)BB.getName()]) {
         // Parent block from where the hot definition came
         string HotDefCarrier =
-            PathList[BlockPosition.first]
-                    [BlockPosition.second -
-                     1]; // Safe because it is not entry block.
+            HotPathList[BlockPosition.first]
+                       [BlockPosition.second -
+                        1]; // Safe because it is not entry block.
 
         // Iterating over set of paths having same hot definition
         for (auto SameDef : BuddySet[HotDefCarrier]) {
 
-          // Index of first Common element between the two vectors.
+          // Index of first Common element between the Vector
+          // Containing Path passing through this block and
+          // The Vector Carrying a particular hot definition.
           auto matchPosition =
               find_first_of(pathIndexBB.begin(), pathIndexBB.end(),
                             SameDef.begin(), SameDef.end());
@@ -181,9 +195,67 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   for (auto &BB : CaloricConnectors) {
     errs() << BB->getName() << "\n";
   }
+  map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
+  // Basic block traversal in Topological order.
+  for (auto &BB : F) {
+    // Iterate over Only phi instructions
+    for (auto &phi : BB.phis()) {
+      // Go along Each hot path.
+      for (auto HotPathInfo : BBHotPaths[(string)BB.getName()]) {
+        auto PathIndex = HotPathInfo.first;
+        auto BlockPosition = HotPathInfo.second;
+        // Traverse the blocks on these paths till dom-frontier.
+        for (int i = BlockPosition; i < HotPathList[PathIndex].size(); i++) {
+          // Get block name;
+          auto SuccessorName = HotPathList[PathIndex][i];
+          auto Successor = nameToBlock[SuccessorName];
+          // TODO : Check if dom-frontier : Break.
+
+          if (isInserted[{&phi, Successor}])
+            continue;
+
+
+          // ? Use Unordered Set in place of Vector.
+          // If not a caloric connector continue.
+          if (find(CaloricConnectors.begin(), CaloricConnectors.end(),
+                   Successor) == CaloricConnectors.end())
+            continue;
+
+          // Need to insert tau function.
+
+          // First Non-Phi instruction.
+          auto TopInstruction = Successor->getFirstNonPHI();
+
+          // create tau function
+
+
+          // Type of Arguments in Intrinsic : Remember overloaded.
+          std::vector<Type *> Tys;
+          Tys.push_back(phi.getType());
+
+          // declare and define tau.
+          Function *tau = Intrinsic::getDeclaration(
+              F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
+
+          // Argument is phi.
+          std::vector<Value *> Args;
+          Args.push_back(dyn_cast<Value>(&phi));
+
+          
+          // Create Tau Call instance and insert it.
+          CallInst *TAUNode;
+          TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
+
+          // Done
+          isInserted[{&phi, Successor}] = true;
+        }
+      }
+    }
+  }
+
   // ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create
   // DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
-  // for (BasicBlock *BB : RPOT) {
+  // for (BasicBlock *BB : CaloricConnectors) {
   //   Instruction *TopInstruction = BB->getFirstNonPHI();
   //   for (auto &phi : BB->phis()) {
   //     // DenseMap<BasicBlock*,bool> vis;
