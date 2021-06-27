@@ -40,9 +40,9 @@ entry:
   %a = alloca i32, align 4
   %b = alloca i32, align 4
   %i = bitcast i32* %a to i8*, !dbg !995
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #8, !dbg !995
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #7, !dbg !995
   %i1 = bitcast i32* %b to i8*, !dbg !995
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #8, !dbg !995
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7, !dbg !995
   call void @llvm.dbg.value(metadata i32* %a, metadata !987, metadata !DIExpression(DW_OP_deref)), !dbg !996
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a), !dbg !997
   call void @llvm.dbg.value(metadata i32* %b, metadata !988, metadata !DIExpression(DW_OP_deref)), !dbg !996
@@ -76,7 +76,6 @@ if.else:                                          ; preds = %entry
 
 if.end:                                           ; preds = %if.else, %if.then
   %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ], !dbg !1020
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge)
   store i32 %storemerge, i32* %b, align 4, !dbg !1020, !tbaa !1001
   %i5 = load i32, i32* %a, align 4, !dbg !1021, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %i5, metadata !987, metadata !DIExpression()), !dbg !996
@@ -180,7 +179,6 @@ if.else37:                                        ; preds = %if.else30
   br label %new_label
 
 new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge)
   call void @llvm.dbg.label(metadata !989), !dbg !1077
   %i7 = load i32, i32* %a, align 4, !dbg !1078, !tbaa !1001
   call void @llvm.dbg.value(metadata i32 %i7, metadata !987, metadata !DIExpression()), !dbg !996
@@ -195,10 +193,9 @@ new_label:                                        ; preds = %if.else37, %if.then
   br label %end_label
 
 end_label:                                        ; preds = %new_label, %if.end27, %if.end
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge)
   call void @llvm.dbg.label(metadata !994), !dbg !1084
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #8, !dbg !1085
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #8, !dbg !1085
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7, !dbg !1085
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7, !dbg !1085
   ret i32 0, !dbg !1086
 }
 
@@ -217,15 +214,12 @@ declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
 define internal void @_GLOBAL__sub_I_test.cpp() #6 section ".text.startup" !dbg !1087 {
 entry:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit), !dbg !1089
-  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #8, !dbg !1093
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #7, !dbg !1093
   ret void
 }
 
 ; Function Attrs: nofree nosync nounwind readnone speculatable willreturn
 declare void @llvm.dbg.value(metadata, metadata, metadata) #5
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #7
 
 attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
@@ -234,8 +228,7 @@ attributes #3 = { norecurse uwtable mustprogress "frame-pointer"="none" "min-leg
 attributes #4 = { argmemonly nofree nosync nounwind willreturn }
 attributes #5 = { nofree nosync nounwind readnone speculatable willreturn }
 attributes #6 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #7 = { nofree nosync nounwind willreturn }
-attributes #8 = { nounwind }
+attributes #7 = { nounwind }
 
 !llvm.dbg.cu = !{!28}
 !llvm.module.flags = !{!979, !980, !981, !982, !983}
@@ -269,8 +262,8 @@ attributes #8 = { nounwind }
 !25 = !DISubroutineType(types: !26)
 !26 = !{!27, !17, !22}
 !27 = !DIDerivedType(tag: DW_TAG_reference_type, baseType: !4, size: 64)
-!28 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !29, producer: "clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, enums: !30, globals: !31, imports: !32, splitDebugInlining: false, nameTableKind: None)
-!29 = !DIFile(filename: "tests/test.cpp", directory: "/home/mabhay/projects/HPSSA")
+!28 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !29, producer: "clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, enums: !30, globals: !31, imports: !32, splitDebugInlining: false, nameTableKind: None)
+!29 = !DIFile(filename: "tests/test.cpp", directory: "/home/muzzammil/HPSSA/HPSSA-LLVM")
 !30 = !{}
 !31 = !{!0}
 !32 = !{!33, !52, !55, !60, !125, !133, !137, !144, !148, !152, !154, !156, !160, !169, !173, !179, !185, !187, !191, !195, !199, !203, !214, !216, !220, !224, !228, !230, !235, !239, !243, !245, !247, !251, !259, !263, !267, !271, !273, !279, !281, !288, !293, !297, !301, !305, !309, !313, !315, !317, !321, !325, !329, !331, !335, !339, !341, !343, !347, !353, !358, !363, !364, !365, !366, !367, !368, !369, !370, !371, !372, !373, !428, !432, !436, !441, !445, !448, !451, !454, !456, !458, !460, !463, !466, !469, !472, !475, !477, !482, !485, !488, !491, !493, !495, !497, !499, !502, !505, !508, !511, !514, !516, !520, !524, !529, !535, !537, !539, !541, !543, !545, !547, !549, !551, !553, !555, !557, !559, !561, !564, !566, !570, !574, !580, !584, !588, !593, !595, !600, !604, !608, !619, !621, !625, !629, !633, !637, !641, !645, !649, !653, !657, !661, !665, !667, !671, !675, !679, !685, !689, !693, !695, !699, !703, !709, !711, !715, !719, !723, !727, !731, !735, !739, !740, !741, !742, !744, !745, !746, !747, !748, !749, !750, !754, !760, !765, !769, !771, !773, !775, !777, !784, !788, !792, !796, !800, !804, !809, !813, !815, !819, !825, !829, !834, !836, !839, !843, !847, !849, !851, !853, !855, !859, !861, !863, !867, !871, !875, !879, !883, !887, !889, !893, !897, !901, !905, !907, !909, !913, !917, !918, !919, !920, !921, !922, !928, !931, !932, !934, !936, !938, !940, !944, !946, !948, !950, !952, !954, !956, !958, !960, !964, !968, !970, !974, !978}
@@ -359,7 +352,7 @@ attributes #8 = { nounwind }
 !115 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: null, size: 64)
 !116 = !DIDerivedType(tag: DW_TAG_member, name: "__pad5", scope: !67, file: !68, line: 95, baseType: !117, size: 64, offset: 1472)
 !117 = !DIDerivedType(tag: DW_TAG_typedef, name: "size_t", file: !118, line: 46, baseType: !119)
-!118 = !DIFile(filename: "llvm-project/build/lib/clang/13.0.0/include/stddef.h", directory: "/home/mabhay/projects")
+!118 = !DIFile(filename: "llvm-project/build/lib/clang/13.0.0/include/stddef.h", directory: "/home/muzzammil/HPSSA")
 !119 = !DIBasicType(name: "long unsigned int", size: 64, encoding: DW_ATE_unsigned)
 !120 = !DIDerivedType(tag: DW_TAG_member, name: "_mode", scope: !67, file: !68, line: 96, baseType: !11, size: 32, offset: 1536)
 !121 = !DIDerivedType(tag: DW_TAG_member, name: "_unused2", scope: !67, file: !68, line: 98, baseType: !122, size: 160, offset: 1568)
@@ -1225,7 +1218,7 @@ attributes #8 = { nounwind }
 !981 = !{i32 1, !"wchar_size", i32 4}
 !982 = !{i32 7, !"PIC Level", i32 2}
 !983 = !{i32 7, !"uwtable", i32 1}
-!984 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
+!984 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
 !985 = distinct !DISubprogram(name: "main", scope: !29, file: !29, line: 5, type: !669, scopeLine: 5, flags: DIFlagPrototyped | DIFlagAllCallsDescribed, spFlags: DISPFlagDefinition | DISPFlagOptimized, unit: !28, retainedNodes: !986)
 !986 = !{!987, !988, !989, !994}
 !987 = !DILocalVariable(name: "a", scope: !985, file: !29, line: 6, type: !11)
