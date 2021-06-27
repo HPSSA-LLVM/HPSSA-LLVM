@@ -5,16 +5,15 @@ using namespace std;
 // ? How to Get hot path information from Profiler
 
 // * Hot Path Information
-map<BasicBlock*, BitVector>
-HPSSAPass::getProfileInfo(Function &F) {
-  map<StringRef, BasicBlock*> getPointer;
-  for(auto &BB : F) {
+map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
+  map<StringRef, BasicBlock *> getPointer;
+  for (auto &BB : F) {
     getPointer[BB.getName()] = &BB;
   }
   // freopen("path.txt", "r", stdin);
   ifstream reader;
   reader.open("path.txt");
-  map<BasicBlock*, BitVector> HotPaths;
+  map<BasicBlock *, BitVector> HotPaths;
   int n;
   reader >> n;
   for (int i = 0; i < n; i++) {
@@ -24,7 +23,7 @@ HPSSAPass::getProfileInfo(Function &F) {
     string node;
     for (int j = 0; j < numNodes; j++) {
       reader >> node;
-      if(HotPaths[getPointer[node]].size() == 0) {
+      if (HotPaths[getPointer[node]].size() == 0) {
         HotPaths[getPointer[node]].resize(n);
       }
       HotPaths[getPointer[node]].set(i);
@@ -37,6 +36,122 @@ HPSSAPass::getProfileInfo(Function &F) {
   return HotPaths;
 }
 
+map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
+  auto HotPathSet = getProfileInfo(F);
+
+  map<BasicBlock *, vector<BitVector>> BuddySet;
+  map<BasicBlock *, bool> isCaloric;
+  int n; // no of hot paths.
+  for (auto &BB : F) {
+    // if entry block
+    if (BB.isEntryBlock()) {
+      BuddySet[&BB].push_back(
+          HotPathSet[&BB]); // All hot paths in a signle buddy set;
+      n = HotPathSet[&BB].size();
+      continue;
+    }
+
+    // Keep information about which sets has been inserted in a set.
+    BitVector alreadyInSets(n);
+
+    // Hot paths present in the basic block
+    auto currHotPaths = HotPathSet[&BB];
+
+    bool hasHotPath = currHotPaths.any();
+    bool hasColdPath = currHotPaths.none();
+
+    for (auto pred : predecessors(&BB)) {
+      for (auto predBitVector : BuddySet[pred]) {
+        // traversing through the buddy sets of one predecessor
+
+        // check if nothing to insert
+        predBitVector &= currHotPaths;
+
+        // Intersect with hot paths of basic block
+        // if none set cold path true and continue;
+        if (predBitVector.none()) {
+          hasColdPath = true;
+          continue;
+        }
+
+        // Given predBitVector and alreadyInset we have to separate the paths
+        // which has been inserted in the buddy set and the path which are new.
+
+        auto oldPaths = alreadyInSets;
+        oldPaths &= predBitVector;
+
+        auto newPaths = predBitVector;
+        newPaths ^= oldPaths;
+        // If there are some new paths then simply insert.
+        BuddySet[&BB].push_back(newPaths);
+
+        // update alreadyInset
+        alreadyInSets |= newPaths;
+
+        // Now consider old paths.
+
+        vector<BitVector> toPush;
+
+        for (auto &Buddy : BuddySet[&BB]) {
+          auto temp = oldPaths;
+          temp &= Buddy;
+          if (temp.none()) {
+            // nothing to do
+            continue;
+          }
+          // current buddy is a subset of old path
+          // a&b == b
+          if (temp == Buddy) {
+            // push the extra thing
+            temp ^= oldPaths;
+            if (temp.none()) {
+              // Buddy set and old path are exactly same
+              continue;
+            }
+
+            // otherwise push.
+            toPush.push_back(temp);
+          } else if (temp == oldPaths) {
+            // they cannot be equal : handled before.
+            Buddy = oldPaths;
+            toPush.push_back(temp);
+          } else {
+            // xor with int
+            Buddy ^= temp;
+
+            toPush.push_back(temp);
+
+            oldPaths ^= temp;
+          }
+          // case 1 : old path is a subset of current buddy.
+        }
+        for (auto extraBitVectors : toPush) {
+          BuddySet[&BB].push_back(extraBitVectors);
+        }
+        // Invariant : disjoint bitvectors.
+
+        // we have to iterate through the buddy sets of current basic blocks
+        // if old path and the current buddy set share no comman element then
+        // continue; if there are some commman elements :
+        // 1. Old path is a subset of current buddy : remove current buddy and
+        // push (old path) and (old path xor current buddy) : continue
+        // 2. current buddy is a subset of old path : push the (old path xor
+        // current)
+        // 3. overlapping : current : 1 1 1 0 1    old : 0 1 0 1 0   int : 0 1 0
+        // 0 0
+
+        // diff : 0 0 0 1 0
+      }
+    }
+
+    if (hasHotPath && hasColdPath) {
+      isCaloric[&BB] = true;
+    }
+  }
+
+  return isCaloric;
+}
+
 //* Pass
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
@@ -46,234 +161,239 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   }
 
   // Hot path information
-  auto HotPathSet = getProfileInfo(F);
+  // auto HotPathSet = getProfileInfo(F);
+  auto isCaloric = getCaloricConnector(F);
 
-//   vector<vector<BasicBlock *>> allPaths; // both hot and cold
-//   vector<BasicBlock *> currPath;         // current path being visited
-//   map<string, int>
-//       numPaths; // total number of paths passing through a Basic Block
-//   traverseAllPaths(allPaths, currPath, &F.getEntryBlock());
-//   for (auto Path : allPaths) {
-//     for (auto BB : Path) {
-//       numPaths[(string)BB->getName()]++;
-//     }
-//   }
+  for (auto &BB : F) {
+    // Buddy Set
+    errs()<<BB.getName()<<" "<< isCaloric[&BB]<<"\n";
+  }
 
-//   // Always using name of Block to get information
-//   map<string, vector<vector<int>>> BuddySet;
-//   // map<BasicBlock *, bool> isCaloricConnector;
-//   vector<BasicBlock *> CaloricConnectors;
+  //   vector<vector<BasicBlock *>> allPaths; // both hot and cold
+  //   vector<BasicBlock *> currPath;         // current path being visited
+  //   map<string, int>
+  //       numPaths; // total number of paths passing through a Basic Block
+  //   traverseAllPaths(allPaths, currPath, &F.getEntryBlock());
+  //   for (auto Path : allPaths) {
+  //     for (auto BB : Path) {
+  //       numPaths[(string)BB->getName()]++;
+  //     }
+  //   }
 
-//   // TODO : Use Pointers instead of name in all data structures.
-//   // Irrevelant after some time because we will use profiler data.
+  //   // Always using name of Block to get information
+  //   map<string, vector<vector<int>>> BuddySet;
+  //   // map<BasicBlock *, bool> isCaloricConnector;
+  //   vector<BasicBlock *> CaloricConnectors;
 
-//   // ! Really Ugly thing to do
-//   map<string, BasicBlock *> nameToBlock;
-//   for (BasicBlock &BB : F) { // CFG + Topologically sorted.
-//     // temporary solution for getting Basic block from name.
-//     nameToBlock[(string)BB.getName()] = &BB;
-//     // errs()<< BB.getName()<<" "<< numPaths[(string)BB.getName()] <<"\n";
+  //   // TODO : Use Pointers instead of name in all data structures.
+  //   // Irrevelant after some time because we will use profiler data.
 
-//     map<int, bool> isTupled;
-//     // Populate BuddySet
-//     for (auto P1 : BBHotPaths[(string)BB.getName()]) {
-//       // already added to any buddyset tuple
-//       if (isTupled[P1.first]) {
-//         continue;
-//       }
-//       // tuple containing hot paths carrying same definition as P1.
-//       vector<int> B;
-//       B.push_back(P1.first);
-//       isTupled[P1.first] = true;
-//       for (auto P2 : BBHotPaths[(string)BB.getName()]) {
-//         // if index of current block is not same then
-//         // the paths cannot be same for sure.
-//         if (isTupled[P2.first] || P1.second != P2.second) {
-//           continue;
-//         }
-//         bool isBuddy = true;
-//         for (int i = 0; i < P1.second; i++) {
-//           // Every node must be same.
-//           if (HotPathList[P1.first][i] != HotPathList[P2.first][i]) {
-//             isBuddy = false;
-//             break;
-//           }
-//         }
-//         if (isBuddy) {
-//           B.push_back(P2.first);
-//           isTupled[P2.first] = true;
-//         }
-//       }
-//       // For Entry Block All hot paths will be equal
-//       // As there is only one block to compare.
-//       BuddySet[(string)BB.getName()].push_back(B);
-//     }
+  //   // ! Really Ugly thing to do
+  //   map<string, BasicBlock *> nameToBlock;
+  //   for (BasicBlock &BB : F) { // CFG + Topologically sorted.
+  //     // temporary solution for getting Basic block from name.
+  //     nameToBlock[(string)BB.getName()] = &BB;
+  //     // errs()<< BB.getName()<<" "<< numPaths[(string)BB.getName()] <<"\n";
 
-//     // Entry Block cannot be a Caloric connector
-//     // Even if it has both hot and cold paths
-//     // Because No PHI Node above/in it.
-//     if (BB.isEntryBlock())
-//       continue;
+  //     map<int, bool> isTupled;
+  //     // Populate BuddySet
+  //     for (auto P1 : BBHotPaths[(string)BB.getName()]) {
+  //       // already added to any buddyset tuple
+  //       if (isTupled[P1.first]) {
+  //         continue;
+  //       }
+  //       // tuple containing hot paths carrying same definition as P1.
+  //       vector<int> B;
+  //       B.push_back(P1.first);
+  //       isTupled[P1.first] = true;
+  //       for (auto P2 : BBHotPaths[(string)BB.getName()]) {
+  //         // if index of current block is not same then
+  //         // the paths cannot be same for sure.
+  //         if (isTupled[P2.first] || P1.second != P2.second) {
+  //           continue;
+  //         }
+  //         bool isBuddy = true;
+  //         for (int i = 0; i < P1.second; i++) {
+  //           // Every node must be same.
+  //           if (HotPathList[P1.first][i] != HotPathList[P2.first][i]) {
+  //             isBuddy = false;
+  //             break;
+  //           }
+  //         }
+  //         if (isBuddy) {
+  //           B.push_back(P2.first);
+  //           isTupled[P2.first] = true;
+  //         }
+  //       }
+  //       // For Entry Block All hot paths will be equal
+  //       // As there is only one block to compare.
+  //       BuddySet[(string)BB.getName()].push_back(B);
+  //     }
 
-//     bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
-//     bool hasColdPath = false;
+  //     // Entry Block cannot be a Caloric connector
+  //     // Even if it has both hot and cold paths
+  //     // Because No PHI Node above/in it.
+  //     if (BB.isEntryBlock())
+  //       continue;
 
-//     // Checking if every edge coming to BB lie on a Hot Path.
-//     for (auto Pred : predecessors(&BB)) {
-//       bool isPresent = false; // All cold paths
-//       for (auto HotPaths :
-//            BBHotPaths[(string)Pred->getName()]) { // iterate over all hot path
-//         if (HotPaths.second + 1 < HotPathList[HotPaths.first].size()) {
-//           if (HotPathList[HotPaths.first][HotPaths.second + 1] ==
-//               BB.getName()) {
-//             isPresent = true; // lie on a hot path.
-//             break;
-//           }
-//         }
-//       }
-//       // No hot path contain this edge.
-//       if (!isPresent) {
-//         hasColdPath = true;
-//         break;
-//       }
-//     }
-//     // Even if all edges are hot some definitions may reach cold through them.
-//     if (!hasColdPath) {
-//       // BuddySet Logix
-//       // store all hot paths separately
-//       vector<int> pathIndexBB; // TODO : Avoid Doing this : DRY
-//       for (auto p : BBHotPaths[(string)BB.getName()]) {
-//         pathIndexBB.push_back(p.first);
-//       }
+  //     bool hasHotPath = !(BBHotPaths[(string)BB.getName()]).empty();
+  //     bool hasColdPath = false;
 
-//       // Iterate over all hot paths
-//       for (auto BlockPosition : BBHotPaths[(string)BB.getName()]) {
-//         // Parent block from where the hot definition came
-//         string HotDefCarrier =
-//             HotPathList[BlockPosition.first]
-//                        [BlockPosition.second -
-//                         1]; // Safe because it is not entry block.
+  //     // Checking if every edge coming to BB lie on a Hot Path.
+  //     for (auto Pred : predecessors(&BB)) {
+  //       bool isPresent = false; // All cold paths
+  //       for (auto HotPaths :
+  //            BBHotPaths[(string)Pred->getName()]) { // iterate over all hot
+  //            path
+  //         if (HotPaths.second + 1 < HotPathList[HotPaths.first].size()) {
+  //           if (HotPathList[HotPaths.first][HotPaths.second + 1] ==
+  //               BB.getName()) {
+  //             isPresent = true; // lie on a hot path.
+  //             break;
+  //           }
+  //         }
+  //       }
+  //       // No hot path contain this edge.
+  //       if (!isPresent) {
+  //         hasColdPath = true;
+  //         break;
+  //       }
+  //     }
+  //     // Even if all edges are hot some definitions may reach cold through
+  //     them. if (!hasColdPath) {
+  //       // BuddySet Logix
+  //       // store all hot paths separately
+  //       vector<int> pathIndexBB; // TODO : Avoid Doing this : DRY
+  //       for (auto p : BBHotPaths[(string)BB.getName()]) {
+  //         pathIndexBB.push_back(p.first);
+  //       }
 
-//         // Iterating over set of paths having same hot definition
-//         for (auto SameDef : BuddySet[HotDefCarrier]) {
+  //       // Iterate over all hot paths
+  //       for (auto BlockPosition : BBHotPaths[(string)BB.getName()]) {
+  //         // Parent block from where the hot definition came
+  //         string HotDefCarrier =
+  //             HotPathList[BlockPosition.first]
+  //                        [BlockPosition.second -
+  //                         1]; // Safe because it is not entry block.
 
-//           // Index of first Common element between the Vector
-//           // Containing Path passing through this block and
-//           // The Vector Carrying a particular hot definition.
-//           auto matchPosition =
-//               find_first_of(pathIndexBB.begin(), pathIndexBB.end(),
-//                             SameDef.begin(), SameDef.end());
+  //         // Iterating over set of paths having same hot definition
+  //         for (auto SameDef : BuddySet[HotDefCarrier]) {
 
-//           // If none hot definition missing
-//           if (matchPosition == pathIndexBB.end()) {
-//             hasColdPath = true;
-//             break;
-//           }
-//         }
-//         if (hasColdPath)
-//           break;
-//       }
-//     }
-//     // Cannot be caloric connector.
-//     if (BB.isEntryBlock())
-//       continue;
+  //           // Index of first Common element between the Vector
+  //           // Containing Path passing through this block and
+  //           // The Vector Carrying a particular hot definition.
+  //           auto matchPosition =
+  //               find_first_of(pathIndexBB.begin(), pathIndexBB.end(),
+  //                             SameDef.begin(), SameDef.end());
 
-//     // Temperature difference.
-//     if (hasColdPath && hasHotPath) {
-//       CaloricConnectors.push_back(&BB);
-//     }
-//   }
+  //           // If none hot definition missing
+  //           if (matchPosition == pathIndexBB.end()) {
+  //             hasColdPath = true;
+  //             break;
+  //           }
+  //         }
+  //         if (hasColdPath)
+  //           break;
+  //       }
+  //     }
+  //     // Cannot be caloric connector.
+  //     if (BB.isEntryBlock())
+  //       continue;
 
-//   for (auto &BB : CaloricConnectors) {
-//     errs() << BB->getName() << "\n";
-//   }
-//   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
-//   // Basic block traversal in Topological order.
-//   for (auto &BB : F) {
-//     // Iterate over Only phi instructions
-//     for (auto &phi : BB.phis()) {
-//       // Go along Each hot path.
-//       for (auto HotPathInfo : BBHotPaths[(string)BB.getName()]) {
-//         auto PathIndex = HotPathInfo.first;
-//         auto BlockPosition = HotPathInfo.second;
-//         // Traverse the blocks on these paths till dom-frontier.
-//         for (int i = BlockPosition; i < HotPathList[PathIndex].size(); i++) {
-//           // Get block name;
-//           auto SuccessorName = HotPathList[PathIndex][i];
-//           auto Successor = nameToBlock[SuccessorName];
-//           // TODO : Check if dom-frontier : Break.
+  //     // Temperature difference.
+  //     if (hasColdPath && hasHotPath) {
+  //       CaloricConnectors.push_back(&BB);
+  //     }
+  //   }
 
-//           if (isInserted[{&phi, Successor}])
-//             continue;
+  //   for (auto &BB : CaloricConnectors) {
+  //     errs() << BB->getName() << "\n";
+  //   }
+  //   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
+  //   // Basic block traversal in Topological order.
+  //   for (auto &BB : F) {
+  //     // Iterate over Only phi instructions
+  //     for (auto &phi : BB.phis()) {
+  //       // Go along Each hot path.
+  //       for (auto HotPathInfo : BBHotPaths[(string)BB.getName()]) {
+  //         auto PathIndex = HotPathInfo.first;
+  //         auto BlockPosition = HotPathInfo.second;
+  //         // Traverse the blocks on these paths till dom-frontier.
+  //         for (int i = BlockPosition; i < HotPathList[PathIndex].size(); i++)
+  //         {
+  //           // Get block name;
+  //           auto SuccessorName = HotPathList[PathIndex][i];
+  //           auto Successor = nameToBlock[SuccessorName];
+  //           // TODO : Check if dom-frontier : Break.
 
+  //           if (isInserted[{&phi, Successor}])
+  //             continue;
 
-//           // ? Use Unordered Set in place of Vector.
-//           // If not a caloric connector continue.
-//           if (find(CaloricConnectors.begin(), CaloricConnectors.end(),
-//                    Successor) == CaloricConnectors.end())
-//             continue;
+  //           // ? Use Unordered Set in place of Vector.
+  //           // If not a caloric connector continue.
+  //           if (find(CaloricConnectors.begin(), CaloricConnectors.end(),
+  //                    Successor) == CaloricConnectors.end())
+  //             continue;
 
-//           // Need to insert tau function.
+  //           // Need to insert tau function.
 
-//           // First Non-Phi instruction.
-//           auto TopInstruction = Successor->getFirstNonPHI();
+  //           // First Non-Phi instruction.
+  //           auto TopInstruction = Successor->getFirstNonPHI();
 
-//           // create tau function
+  //           // create tau function
 
+  //           // Type of Arguments in Intrinsic : Remember overloaded.
+  //           std::vector<Type *> Tys;
+  //           Tys.push_back(phi.getType());
 
-//           // Type of Arguments in Intrinsic : Remember overloaded.
-//           std::vector<Type *> Tys;
-//           Tys.push_back(phi.getType());
+  //           // declare and define tau.
+  //           Function *tau = Intrinsic::getDeclaration(
+  //               F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
 
-//           // declare and define tau.
-//           Function *tau = Intrinsic::getDeclaration(
-//               F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
+  //           // Argument is phi.
+  //           std::vector<Value *> Args;
+  //           Args.push_back(dyn_cast<Value>(&phi));
 
-//           // Argument is phi.
-//           std::vector<Value *> Args;
-//           Args.push_back(dyn_cast<Value>(&phi));
+  //           // Create Tau Call instance and insert it.
+  //           CallInst *TAUNode;
+  //           TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
 
-          
-//           // Create Tau Call instance and insert it.
-//           CallInst *TAUNode;
-//           TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
+  //           // Done
+  //           isInserted[{&phi, Successor}] = true;
+  //         }
+  //       }
+  //     }
+  //   }
 
-//           // Done
-//           isInserted[{&phi, Successor}] = true;
-//         }
-//       }
-//     }
-//   }
+  //   // ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create
+  //   // DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
+  //   // for (BasicBlock *BB : CaloricConnectors) {
+  //   //   Instruction *TopInstruction = BB->getFirstNonPHI();
+  //   //   for (auto &phi : BB->phis()) {
+  //   //     // DenseMap<BasicBlock*,bool> vis;
+  //   //     std::vector<Type *> Tys;
+  //   //     Tys.push_back(phi.getType());
 
-//   // ReversePostOrderTraversal<Function *> RPOT(&F); // Expensive to create
-//   // DenseMap<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
-//   // for (BasicBlock *BB : CaloricConnectors) {
-//   //   Instruction *TopInstruction = BB->getFirstNonPHI();
-//   //   for (auto &phi : BB->phis()) {
-//   //     // DenseMap<BasicBlock*,bool> vis;
-//   //     std::vector<Type *> Tys;
-//   //     Tys.push_back(phi.getType());
+  //   //     // create tau function
+  //   //     Function *tau = Intrinsic::getDeclaration(
+  //   //         F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
+  //   //     std::vector<Value *> Args;
+  //   //     Args.push_back(dyn_cast<Value>(&phi));
+  //   //     Args.push_back(dyn_cast<Value>(&phi));
 
-//   //     // create tau function
-//   //     Function *tau = Intrinsic::getDeclaration(
-//   //         F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
-//   //     std::vector<Value *> Args;
-//   //     Args.push_back(dyn_cast<Value>(&phi));
-//   //     Args.push_back(dyn_cast<Value>(&phi));
+  //   //     // Create Tau Call instance
+  //   //     CallInst *TAUNode;
+  //   //     TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
 
-//   //     // Create Tau Call instance
-//   //     CallInst *TAUNode;
-//   //     TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
-
-//   //     // Insert Tau
-//   //     for (auto phi_user : phi.users()) {
-//   //       // errs() << *phi_user << "\n";
-//   //       if (phi_user != TAUNode) {
-//   //         phi_user->replaceUsesOfWith(&phi, TAUNode);
-//   //       }
-//   //     }
-//   //   }
-//   // }
+  //   //     // Insert Tau
+  //   //     for (auto phi_user : phi.users()) {
+  //   //       // errs() << *phi_user << "\n";
+  //   //       if (phi_user != TAUNode) {
+  //   //         phi_user->replaceUsesOfWith(&phi, TAUNode);
+  //   //       }
+  //   //     }
+  //   //   }
+  //   // }
 
   return PreservedAnalyses::none();
 }
