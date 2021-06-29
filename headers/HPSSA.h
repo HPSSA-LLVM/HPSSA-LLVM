@@ -3,6 +3,7 @@
 
 #include "llvm/Analysis/CFG.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/Module.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Intrinsics.h"
@@ -21,9 +22,9 @@ class HPSSAPass : public PassInfoMixin<HPSSAPass> {
   map<BasicBlock *, bool> getCaloricConnector(Function &F);
 
   // Dominator tree.Probably virtual so that it gets overriden
-  virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
+  // virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 };
 
 } // namespace llvm

@@ -190,32 +190,131 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
   return isCaloric;
 }
-// * Dominator tree pass
-void HPSSAPass::getAnalysisUsage(AnalysisUsage &AU) const {
-  AU.addRequired<DominatorTreeWrapperPass>();
-  AU.setPreservesAll();
-}
-
 //* Pass
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
-  DominatorTree &DT = getAnalysis<DominatorTreeWrapperPass>();
 
   // Only Hotpath information of "main" function is available.
   if (F.getName() != "main") {
     return PreservedAnalyses::all();
   }
+  DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
 
   // Hot path information
+  // ? Avoid doing this thing twice
+  auto HotPathSet = getProfileInfo(F);
   auto isCaloric = getCaloricConnector(F);
+  map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
 
   for (auto &BB : F) {
-    errs() << BB.getName() << " " << isCaloric[&BB] << "\n";
+    // errs() << BB.getName() << " " << isCaloric[&BB] << "\n";
+    for (auto &phi : BB.phis()) {
+
+      // Hot Paths such that if we follow
+      // them from parent block we will reach
+      // this block in a particular order.
+      map<BasicBlock *, BitVector> currPaths;
+      currPaths[&BB] = HotPathSet[&BB];
+      map<BasicBlock *, bool> isVisited;
+      // traverse along hot paths.
+
+      stack<BasicBlock *> toVisit;
+      toVisit.push(&BB);
+
+      // DFS
+      while (!toVisit.empty()) {
+        auto &curr = toVisit.top();
+        errs() << "Visiting " << curr->getName() << "\n";
+        // Dominator frontier of a basic block N is the
+        // basic block which is not "strictly" dominated
+        // by N and is the "First Reached" on paths from N.
+        // If the block itself lies in its dominance frontier
+        // then it is possibly a loop header.
+        // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
+
+        if (isVisited[curr]) {
+          // ! Some problem with this dominator use.
+          // ! Not sure if it is correct or not.
+          errs() << curr->getName() << " Already Visited "
+                 << "\n";
+          toVisit.pop();
+          continue;
+        }
+        if ((curr != &BB) && !DT.dominates(&phi, curr)) {
+          errs() << curr->getName() << " Dominator is Problematic"
+                 << "\n";
+          toVisit.pop();
+          continue;
+        }
+        // Required condition for tau insertion
+        if (isCaloric[curr] && !isInserted[{&phi, curr}]) {
+          // Insert tau.
+          auto TopInstruction = curr->getFirstNonPHI();
+
+          // Type of Arguments in Intrinsic : Remember overloaded.
+          std::vector<Type *> Tys;
+          Tys.push_back(phi.getType());
+
+          // Actual Argument
+          std::vector<Value *> Args;
+          Args.push_back(dyn_cast<Value>(&phi));
+
+          // declare and define tau.
+          Function *tau = Intrinsic::getDeclaration(
+              F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
+
+          CallInst *TAUNode;
+          TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
+
+          // Done
+          isInserted[{&phi, curr}] = true;
+        }
+
+        // Update stack
+        toVisit.pop();
+        isVisited[curr] = true;
+
+        // Succesors to be visited.
+        // ! Weird visiting order observed
+        for (auto succ : successors(curr)) {
+          errs() << curr->getName() << " : " << succ->getName() << "\n";
+          if (isVisited[succ]) {
+            errs() << succ->getName() << " is already visited \n";
+            continue;
+          }
+
+          // check whether we are following some hot path
+          // or not.
+          auto temp = HotPathSet[succ];
+          temp &= currPaths[curr];
+
+          if (temp.any()) {
+            errs() << "New insertion to the stack: " << succ->getName() << "\n";
+            currPaths[succ] = temp;
+            toVisit.push(succ);
+          } else {
+
+            errs() << "insertion to the stack failed " << succ->getName()
+                   << "\n";
+            /* Printing stuff */
+            errs() << "Parent " << curr->getName() << " : { ";
+            for (int i = 0; i < currPaths[curr].size(); i++) {
+              errs() << currPaths[curr][i] << " ";
+            }
+            errs() << "} \n Succesor: " << succ->getName() << " { ";
+            for (int i = 0; i < HotPathSet[succ].size(); i++) {
+              errs() << HotPathSet[succ][i] << " ";
+            }
+            errs() << "} \n";
+            /* Printing stuff */
+          }
+        }
+      }
+    }
   }
 
   //   for (auto &BB : CaloricConnectors) {
   //     errs() << BB->getName() << "\n";
   //   }
-  // map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
   //   // Basic block traversal in Topological order.
   //   for (auto &BB : F) {
   //     // Iterate over Only phi instructions
@@ -232,12 +331,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   //           auto SuccessorName = HotPathList[PathIndex][i];
   //           auto Successor = nameToBlock[SuccessorName];
   //           // TODO : Check if dom-frontier : Break.
-  // Dominator frontier of a basic block N is the
-  // basic block which is not "strictly" dominated
-  // by N and is the "First Reached" on paths from N.
-  // If the block itself lies in its dominance frontier
-  // then it is possibly a loop header.
-  // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
   //           if (isInserted[{&phi, Successor}])
   //             continue;
 
@@ -249,30 +342,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
   //           // Need to insert tau function.
 
-  //           // First Non-Phi instruction.
-  //           auto TopInstruction = Successor->getFirstNonPHI();
-
-  //           // create tau function
-
-  //           // Type of Arguments in Intrinsic : Remember overloaded.
-  //           std::vector<Type *> Tys;
-  //           Tys.push_back(phi.getType());
-
-  //           // declare and define tau.
-  //           Function *tau = Intrinsic::getDeclaration(
-  //               F.getParent(), Function::lookupIntrinsicID("llvm.tau"),
-  //               Tys);
-
-  //           // Argument is phi.
-  //           std::vector<Value *> Args;
-  //           Args.push_back(dyn_cast<Value>(&phi));
-
-  //           // Create Tau Call instance and insert it.
-  //           CallInst *TAUNode;
-  //           TAUNode = CallInst::Create(tau, Args, "tau", TopInstruction);
-
-  //           // Done
-  //           isInserted[{&phi, Successor}] = true;
   //         }
   //       }
   //     }
