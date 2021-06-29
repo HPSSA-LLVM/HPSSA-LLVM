@@ -82,9 +82,10 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     // coldness should be defined for "definitions".
     // So if all definitions are cold then child gets a cold
     // definition. For unique hot definitions ( Each buddy
-    // in buddy set has a unique hot definition ) if you miss
+    // in buddy set has a unique hot definition and they
+    // all are same because the paths are exactly same.) if you miss
     // even one, what you get is not perfectly hot.
-    // In other words the hot definitions from this parent
+    // In other words the (set of) hot definitions from this parent
     // block are somewhat colder.(Not exactly cold).
     bool hasColdPath = false;
 
@@ -189,9 +190,15 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
   return isCaloric;
 }
+// * Dominator tree pass
+void HPSSAPass::getAnalysisUsage(AnalysisUsage &AU) const {
+  AU.addRequired<DominatorTreeWrapperPass>();
+  AU.setPreservesAll();
+}
 
 //* Pass
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
+  DominatorTree &DT = getAnalysis<DominatorTreeWrapperPass>();
 
   // Only Hotpath information of "main" function is available.
   if (F.getName() != "main") {
@@ -208,7 +215,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   //   for (auto &BB : CaloricConnectors) {
   //     errs() << BB->getName() << "\n";
   //   }
-  //   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
+  // map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
   //   // Basic block traversal in Topological order.
   //   for (auto &BB : F) {
   //     // Iterate over Only phi instructions
@@ -225,7 +232,12 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   //           auto SuccessorName = HotPathList[PathIndex][i];
   //           auto Successor = nameToBlock[SuccessorName];
   //           // TODO : Check if dom-frontier : Break.
-
+  // Dominator frontier of a basic block N is the
+  // basic block which is not "strictly" dominated
+  // by N and is the "First Reached" on paths from N.
+  // If the block itself lies in its dominance frontier
+  // then it is possibly a loop header.
+  // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
   //           if (isInserted[{&phi, Successor}])
   //             continue;
 
