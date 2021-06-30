@@ -43,6 +43,10 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     if (BB.isEntryBlock()) {
 
       /* Printing stuff */
+      errs() << "===-----------------------------------------------------------"
+                "--------------===\nCaloric Connector and BuddySet "
+                "Information:\n===---------------------------------------------"
+                "----------------------------===\n";
       errs() << BB.getName() << ": ";
       BuddySet[&BB].push_back(
           HotPathSet[&BB]); // All hot paths in a signle buddy set;
@@ -173,6 +177,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
     if (hasHotPath && hasColdPath) {
       isCaloric[&BB] = true;
+      errs() << BB.getName() << " is a Caloric Connector\n";
     }
 
     /* Printing stuff */
@@ -205,6 +210,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   auto isCaloric = getCaloricConnector(F);
   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
 
+  errs() << "===---------------------------------------------------------------"
+            "----------===\nInitiating Tau Insertion "
+            "Algroithm\n===----------------------------------------------------"
+            "---------------------===\n";
   for (auto &BB : F) {
     // errs() << BB.getName() << " " << isCaloric[&BB] << "\n";
     for (auto &phi : BB.phis()) {
@@ -222,8 +231,15 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
       // DFS
       while (!toVisit.empty()) {
-        auto &curr = toVisit.top();
-        errs() << "Visiting " << curr->getName() << "\n";
+        auto curr = toVisit.top();
+        // errs() << "Visiting " << curr->getName() << "\n";
+
+        if (isVisited[curr]) {
+          // errs() << curr->getName() << " Already Visited "
+          //  << "\n";
+          toVisit.pop();
+          continue;
+        }
         // Dominator frontier of a basic block N is the
         // basic block which is not "strictly" dominated
         // by N and is the "First Reached" on paths from N.
@@ -231,15 +247,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // then it is possibly a loop header.
         // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
 
-        if (isVisited[curr]) {
+        //! Possibly use df iterators.
+        if ((curr != &BB) && !DT.dominates(&phi, curr)) {
           // ! Some problem with this dominator use.
           // ! Not sure if it is correct or not.
-          errs() << curr->getName() << " Already Visited "
-                 << "\n";
-          toVisit.pop();
-          continue;
-        }
-        if ((curr != &BB) && !DT.dominates(&phi, curr)) {
           errs() << curr->getName() << " Dominator is Problematic"
                  << "\n";
           toVisit.pop();
@@ -248,6 +259,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // Required condition for tau insertion
         if (isCaloric[curr] && !isInserted[{&phi, curr}]) {
           // Insert tau.
+          errs() << "Inserted Tau at : " << curr->getName() << "\n";
           auto TopInstruction = curr->getFirstNonPHI();
 
           // Type of Arguments in Intrinsic : Remember overloaded.
@@ -276,9 +288,9 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // Succesors to be visited.
         // ! Weird visiting order observed
         for (auto succ : successors(curr)) {
-          errs() << curr->getName() << " : " << succ->getName() << "\n";
+          // errs() << curr->getName() << " : " << succ->getName() << "\n";
           if (isVisited[succ]) {
-            errs() << succ->getName() << " is already visited \n";
+            // errs() << succ->getName() << " is already visited \n";
             continue;
           }
 
@@ -288,23 +300,24 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           temp &= currPaths[curr];
 
           if (temp.any()) {
-            errs() << "New insertion to the stack: " << succ->getName() << "\n";
+            // errs() << "New insertion to the stack: " << succ->getName() <<
+            // "\n";
             currPaths[succ] = temp;
             toVisit.push(succ);
           } else {
 
-            errs() << "insertion to the stack failed " << succ->getName()
-                   << "\n";
+            // errs() << "insertion to the stack failed " << succ->getName()
+            //  << "\n";
             /* Printing stuff */
-            errs() << "Parent " << curr->getName() << " : { ";
-            for (int i = 0; i < currPaths[curr].size(); i++) {
-              errs() << currPaths[curr][i] << " ";
-            }
-            errs() << "} \n Succesor: " << succ->getName() << " { ";
-            for (int i = 0; i < HotPathSet[succ].size(); i++) {
-              errs() << HotPathSet[succ][i] << " ";
-            }
-            errs() << "} \n";
+            // errs() << "Parent " << curr->getName() << " : { ";
+            // for (int i = 0; i < currPaths[curr].size(); i++) {
+            //   errs() << currPaths[curr][i] << " ";
+            // }
+            // errs() << "} \n Succesor: " << succ->getName() << " { ";
+            // for (int i = 0; i < HotPathSet[succ].size(); i++) {
+            //   errs() << HotPathSet[succ][i] << " ";
+            // }
+            // errs() << "} \n";
             /* Printing stuff */
           }
         }
@@ -312,40 +325,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     }
   }
 
-  //   for (auto &BB : CaloricConnectors) {
-  //     errs() << BB->getName() << "\n";
-  //   }
-  //   // Basic block traversal in Topological order.
-  //   for (auto &BB : F) {
-  //     // Iterate over Only phi instructions
-  //     for (auto &phi : BB.phis()) {
-  //       // Go along Each hot path.
-  //       for (auto HotPathInfo : BBHotPaths[(string)BB.getName()]) {
-  //         auto PathIndex = HotPathInfo.first;
-  //         auto BlockPosition = HotPathInfo.second;
-  //         // Traverse the blocks on these paths till dom-frontier.
-  //         for (int i = BlockPosition; i < HotPathList[PathIndex].size();
-  //         i++)
-  //         {
-  //           // Get block name;
-  //           auto SuccessorName = HotPathList[PathIndex][i];
-  //           auto Successor = nameToBlock[SuccessorName];
-  //           // TODO : Check if dom-frontier : Break.
-  //           if (isInserted[{&phi, Successor}])
-  //             continue;
-
-  //           // ? Use Unordered Set in place of Vector.
-  //           // If not a caloric connector continue.
-  //           if (find(CaloricConnectors.begin(), CaloricConnectors.end(),
-  //                    Successor) == CaloricConnectors.end())
-  //             continue;
-
-  //           // Need to insert tau function.
-
-  //         }
-  //       }
-  //     }
-  //   }
   return PreservedAnalyses::none();
 }
 
