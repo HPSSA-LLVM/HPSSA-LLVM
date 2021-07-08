@@ -2,6 +2,28 @@
 using namespace llvm;
 using namespace std;
 
+class frame {
+  map<Value, BitVector> frameVector; // ? Will pair<> be better?
+  void add(Value v, BitVector e) {
+    if(frameVector[v].empty()) {
+      frameVector[v] = e;
+    }
+    else {
+      frameVector[v] |= e;
+    }
+  }
+};
+/// map<value, phistack>
+class phiStack {
+  map<BasicBlock*, vector<frame>> phiFrame;
+  void push(frame f, BasicBlock* BB) {
+    phiFrame[BB].push_back(f);
+  }
+  void pop(BasicBlock* BB) {
+    phiFrame[BB].clear();
+  }
+};
+
 // ? How to Get hot path information from Profiler
 
 // * Hot Path Information
@@ -322,6 +344,18 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           }
         }
       }
+    }
+  }
+
+
+  //================= Argument Allocation ====================//
+
+  map<pair<Value, BasicBlock*>, frame> defAccumulator;
+  map<Value,phiStack> phiSta
+
+  for(auto &BB: F) {
+    for(auto &phi: BB.phis()) {
+
     }
   }
 
