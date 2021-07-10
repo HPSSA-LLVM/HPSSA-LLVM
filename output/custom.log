@@ -22,29 +22,84 @@ end_label: { 1 0 } { 0 1 }
 ===-------------------------------------------------------------------------===
 Initiating Tau Insertion Algroithm
 ===-------------------------------------------------------------------------===
+entry 0
+if.else 0
+if.then 0
+if.end 1
+Visiting if.end
+add3 {1 1 }
 Inserted Tau at : if.end
+if.end : end_label
+if.end : if.else10
+Visiting if.else10
+add3 {1 1 }
+if.else10 : if.then12
+if.else10 : if.else30
+Visiting if.else30
+add3 {1 0 }
+if.else30 : if.then34
+if.else30 : if.else37
+Visiting if.else37
+if.else37 : new_label
+Visiting if.then34
+add3 {1 0 }
+if.then34 : new_label
+Visiting if.then12
+add3 {0 1 }
+if.then12 : new_label
+if.then12 : if.end17
+Visiting if.end17
+if.end17 : if.then19
+if.end17 : if.else22
+Visiting if.else22
+if.else22 : if.end27
+Visiting if.then19
+if.then19 : if.end27
+Visiting if.end27
+if.end27 : end_label
+Visiting new_label
+add3 {1 1 }
 Inserted Tau at : new_label
+new_label : end_label
+Visiting end_label
+add3 {1 1 }
 Inserted Tau at : end_label
-===-------------------------------------------------------------------------===
-                      ... Pass execution timing report ...
-===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0084 seconds (0.0370 wall clock)
-
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0004 ( 10.4%)   0.0023 ( 48.8%)   0.0027 ( 32.1%)   0.0312 ( 84.4%)  HPSSAPass
-   0.0025 ( 67.2%)   0.0000 (  0.0%)   0.0025 ( 29.2%)   0.0025 (  6.7%)  PrintModulePass
-   0.0004 ( 11.2%)   0.0012 ( 25.2%)   0.0016 ( 19.1%)   0.0016 (  4.4%)  VerifierPass
-   0.0004 ( 11.1%)   0.0012 ( 24.8%)   0.0016 ( 18.8%)   0.0016 (  4.3%)  VerifierAnalysis
-   0.0000 (  0.0%)   0.0000 (  0.9%)   0.0000 (  0.5%)   0.0000 (  0.1%)  DominatorTreeAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.4%)   0.0000 (  0.2%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
-   0.0037 (100.0%)   0.0048 (100.0%)   0.0084 (100.0%)   0.0370 (100.0%)  Total
-
-===-------------------------------------------------------------------------===
-                                LLVM IR Parsing
-===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0085 seconds (0.0312 wall clock)
-
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0066 (100.0%)   0.0019 (100.0%)   0.0085 (100.0%)   0.0312 (100.0%)  Parse IR
-   0.0066 (100.0%)   0.0019 (100.0%)   0.0085 (100.0%)   0.0312 (100.0%)  Total
-
+if.else10 0
+if.else30 0
+if.else37 0
+if.then34 0
+if.then12 0
+if.end17 0
+if.else22 0
+if.then19 0
+if.end27 0
+new_label 1
+end_label 1
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+LLVM ERROR: Broken module found, compilation aborted!
+PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /home/mabhay/projects/llvm-project/build/bin/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f
+ #0 0x0000555e12b4a914 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
+ #1 0x0000555e12b47c5e SignalHandler(int) Signals.cpp:0:0
+ #2 0x00007f3a52f883c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
+ #3 0x00007f3a52a5818b raise /build/glibc-eX1tMB/glibc-2.31/signal/../sysdeps/unix/sysv/linux/raise.c:51:1
+ #4 0x00007f3a52a37859 abort /build/glibc-eX1tMB/glibc-2.31/stdlib/abort.c:81:7
+ #5 0x0000555e12a86d1a llvm::report_fatal_error(llvm::Twine const&, bool) (/home/mabhay/projects/llvm-project/build/bin/opt+0x29b7d1a)
+ #6 0x0000555e12a86ece (/home/mabhay/projects/llvm-project/build/bin/opt+0x29b7ece)
+ #7 0x0000555e1223c903 (/home/mabhay/projects/llvm-project/build/bin/opt+0x216d903)
+ #8 0x0000555e1139f786 llvm::detail::PassModel<llvm::Module, llvm::VerifierPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) NewPMDriver.cpp:0:0
+ #9 0x0000555e12205e9f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/mabhay/projects/llvm-project/build/bin/opt+0x2136e9f)
+#10 0x0000555e113ac7f0 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/mabhay/projects/llvm-project/build/bin/opt+0x12dd7f0)
+#11 0x0000555e113befc7 main (/home/mabhay/projects/llvm-project/build/bin/opt+0x12effc7)
+#12 0x00007f3a52a390b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
+#13 0x0000555e1139d2de _start (/home/mabhay/projects/llvm-project/build/bin/opt+0x12ce2de)
+Aborted (core dumped)

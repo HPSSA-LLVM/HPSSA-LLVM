@@ -1,7 +1,7 @@
 # FIX: Results not properly updating
 # ! UPDATE ACCORDING TO YOUR LLVM PATH
 
-BUILD_PATH=~/HPSSA/llvm-project/build/bin
+BUILD_PATH=~/projects/llvm-project/build/bin
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti

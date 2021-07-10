@@ -2,28 +2,6 @@
 using namespace llvm;
 using namespace std;
 
-class frame {
-  map<Value, BitVector> frameVector; // ? Will pair<> be better?
-  void add(Value v, BitVector e) {
-    if(frameVector[v].empty()) {
-      frameVector[v] = e;
-    }
-    else {
-      frameVector[v] |= e;
-    }
-  }
-};
-/// map<value, phistack>
-class phiStack {
-  map<BasicBlock*, vector<frame>> phiFrame;
-  void push(frame f, BasicBlock* BB) {
-    phiFrame[BB].push_back(f);
-  }
-  void pop(BasicBlock* BB) {
-    phiFrame[BB].clear();
-  }
-};
-
 // ? How to Get hot path information from Profiler
 
 // * Hot Path Information
@@ -217,6 +195,31 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
   return isCaloric;
 }
+class frame {
+public:
+  map<Value *, BitVector> frameVector; // ? Will pair<> be better?
+  void add(Value *v, BitVector e) {
+    if (frameVector[v].empty()) {
+      frameVector[v] = e;
+    } else {
+      frameVector[v] |= e;
+    }
+  }
+  int size() { return frameVector.size(); }
+};
+/// map<value, phistack>
+class phiStack {
+  map<BasicBlock *, vector<frame>> phiFrame;
+
+public:
+  void push(frame f, BasicBlock *BB) { phiFrame[BB].push_back(f); }
+  void pop(BasicBlock *BB) { phiFrame[BB].clear(); }
+};
+
+//================= Argument Allocation ====================//
+
+map<pair<PHINode *, BasicBlock *>, frame> defAccumulator;
+map<PHINode *, phiStack> val_to_phi;
 //* Pass
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
@@ -236,32 +239,79 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
             "----------===\nInitiating Tau Insertion "
             "Algroithm\n===----------------------------------------------------"
             "---------------------===\n";
-  for (auto &BB : F) {
-    // errs() << BB.getName() << " " << isCaloric[&BB] << "\n";
-    for (auto &phi : BB.phis()) {
 
-      // Hot Paths such that if we follow
-      // them from parent block we will reach
-      // this block in a particular order.
+  /// RPOT provides access to the reverse iterators of vector containining
+  /// basic blocks in Post order ( Assume DAG )
+  ReversePostOrderTraversal<Function *> RPOT(&F);
+
+  for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
+    auto BB = *I; // Pointer to the current basic block being visited
+    errs() << BB->getName() << " " << isCaloric[BB] << "\n";
+
+    // current phi whose definitions will be filtered by taus
+    for (auto &phi : BB->phis()) {
+
+      // Hot Paths such that if we follow them from parent block we will reach
+      // this block in a particular order
       map<BasicBlock *, BitVector> currPaths;
-      currPaths[&BB] = HotPathSet[&BB];
+      currPaths[BB] = HotPathSet[BB];
+
+      // no hot path originates from here
+      if (currPaths[BB].none())
+        continue;
+
+      //======================================================================//
+      // we need to create a defAccumulator for
+      // basic block containing phi function
+      // errs()<<"Creating frame for "<<BB->getName()<<"\n";
+      for (auto block : predecessors(BB)) {
+        auto temp = HotPathSet[BB];
+        temp &= HotPathSet[block];
+        // the definition does not reach through a hot path
+        if (temp.none())
+          continue;
+
+        // this definition reach through a hot path
+        auto arg = phi.getIncomingValueForBlock(block);
+        // errs()<<*arg<<" ";
+
+        // store a pair in pathset
+        defAccumulator[{&phi, BB}].add(arg, temp);
+      }
+      // errs()<<"\n";
+
+      //=====================================================================//
       map<BasicBlock *, bool> isVisited;
       // traverse along hot paths.
 
-      stack<BasicBlock *> toVisit;
-      toVisit.push(&BB);
+      // stack<BasicBlock *> toVisit;
+      // toVisit.push(BB);
 
-      // DFS
-      while (!toVisit.empty()) {
-        auto curr = toVisit.top();
-        // errs() << "Visiting " << curr->getName() << "\n";
+      // * Need to Do this whole thing in topological
+      // * Order. Probably should move this to the top
+      // * Because the top loop ensures that we are
+      // * doing the DFS + topological traversal.
 
-        if (isVisited[curr]) {
-          // errs() << curr->getName() << " Already Visited "
-          //  << "\n";
-          toVisit.pop();
-          continue;
+      // Use RPOT
+      for (auto J = I; J != RPOT.end(); ++J) {
+        auto curr = *J;
+        errs() << "Visiting " << curr->getName() << "\n";
+
+        for (auto defInfo : defAccumulator[{&phi, curr}].frameVector) {
+          errs() << defInfo.first->getName() << " ";
+          errs() << "{";
+          for (int i = 0; i < defInfo.second.size(); i++) {
+            errs() << defInfo.second[i] << " ";
+          }
+          errs() << "}\n";
         }
+
+        // This won't happend
+        // if (isVisited[curr]) {
+        // errs() << curr->getName() << " Already Visited "
+        //  << "\n";
+        // continue;
+        // }
         // Dominator frontier of a basic block N is the
         // basic block which is not "strictly" dominated
         // by N and is the "First Reached" on paths from N.
@@ -269,28 +319,54 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // then it is possibly a loop header.
         // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
 
-        //! Possibly use df iterators.
-        if ((curr != &BB) && !DT.dominates(&phi, curr)) {
+        // ! Possibly use df iterators.
+        // ! We do not completely understand this dominates function.
+        if (curr != BB && !DT.dominates(&phi, curr)) {
           // ! Some problem with this dominator use.
           // ! Not sure if it is correct or not.
           errs() << curr->getName() << " Dominator is Problematic"
                  << "\n";
-          toVisit.pop();
-          continue;
+          break;
         }
         // Required condition for tau insertion
-        if (isCaloric[curr] && !isInserted[{&phi, curr}]) {
-          // Insert tau.
+        //=========================================================//
+
+        //============Initiate Tau insertion ======================//
+        // We should have stored all reaching definitions in defAccumulator
+        // because we are traversing in Reverse Post order
+        // So if it is a caloric connector we should insert a tau function
+        // with arguments stored in defAccumulator
+
+        // if defAccumulator is empty that means tau insertion is not
+        // needed (Spurious Tau functions)
+
+        // Why we do need is Inserted.
+        if (isCaloric[curr] && !isInserted[{&phi, curr}] &&
+            defAccumulator[{&phi, curr}].size() != 0) {
+
           errs() << "Inserted Tau at : " << curr->getName() << "\n";
           auto TopInstruction = curr->getFirstNonPHI();
 
-          // Type of Arguments in Intrinsic : Remember overloaded.
-          std::vector<Type *> Tys;
-          Tys.push_back(phi.getType());
+          //==========================================================//
+          // We can allocate arguments while inserting a tau
+          // no need to first insert and then allocate
 
+          // Type of Arguments in Intrinsic : Remember overloaded.
           // Actual Argument
+          std::vector<Type *> Tys;
           std::vector<Value *> Args;
+
+          // Safe part of HPSSA
+          Tys.push_back(phi.getType());
           Args.push_back(dyn_cast<Value>(&phi));
+
+          // Speculative arguments.
+          auto Frame = defAccumulator[{&phi, curr}].frameVector;
+
+          for (auto it = Frame.begin(); it != Frame.end(); it++) {
+            // Tys.push_back(it->first->getType());
+            Args.push_back(dyn_cast<Value>(it->first));
+          }
 
           // declare and define tau.
           Function *tau = Intrinsic::getDeclaration(
@@ -304,17 +380,18 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         }
 
         // Update stack
-        toVisit.pop();
         isVisited[curr] = true;
 
         // Succesors to be visited.
         // ! Weird visiting order observed
+
+        // No fixed order of traversal guaranteed, Probably
+        // A better method possible
         for (auto succ : successors(curr)) {
-          // errs() << curr->getName() << " : " << succ->getName() << "\n";
-          if (isVisited[succ]) {
-            // errs() << succ->getName() << " is already visited \n";
+          // Why unnecessarily store things.
+          if (!DT.dominates(&phi, succ))
             continue;
-          }
+          errs() << curr->getName() << " : " << succ->getName() << "\n";
 
           // check whether we are following some hot path
           // or not.
@@ -324,9 +401,47 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           if (temp.any()) {
             // errs() << "New insertion to the stack: " << succ->getName() <<
             // "\n";
-            currPaths[succ] = temp;
-            toVisit.push(succ);
-          } else {
+
+            //=================================================================//
+            // for each value update the definition that are being passed
+            // to this Succesor
+
+            auto currFrame = defAccumulator[{&phi, curr}].frameVector;
+
+            for (auto it = currFrame.begin(); it != currFrame.end(); it++) {
+              // for each value update the succesor values
+              // that flow through a comman path
+
+              auto comman = it->second;
+              comman &= temp;
+
+              // the definition flows along one of the paths
+              if (comman.any()) {
+                defAccumulator[{&phi, succ}].add(it->first, comman);
+              }
+            }
+            //================================================================//
+
+            // Even if visited might get some definitions through
+            // hot paths of parents.
+            // if (isVisited[succ]) {
+            //   // errs() << succ->getName() << " is already visited \n";
+
+            //   // Needed to assign arguments that's
+            //   // why waited till now
+            //   continue;
+            // }
+
+            // Paths that this succesor will pass
+            // now. Note that when succesor time comes
+            // we will have most updated current paths
+            // i.e. All the paths from all the predecessors
+            // of this block.
+            currPaths[succ] |= temp;
+
+            // Not visited so push in the waiting list
+            // toVisit.push(succ);
+            // } else {
 
             // errs() << "insertion to the stack failed " << succ->getName()
             //  << "\n";
@@ -346,19 +461,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
       }
     }
   }
-
-
-  //================= Argument Allocation ====================//
-
-  map<pair<Value, BasicBlock*>, frame> defAccumulator;
-  map<Value,phiStack> phiSta
-
-  for(auto &BB: F) {
-    for(auto &phi: BB.phis()) {
-
-    }
-  }
-
   return PreservedAnalyses::none();
 }
 
