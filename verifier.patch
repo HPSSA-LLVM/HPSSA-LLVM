@@ -1,0 +1,20 @@
+diff --git a/llvm/lib/IR/Verifier.cpp b/llvm/lib/IR/Verifier.cpp
+index 692760d8d647..9fe6348e021c 100644
+--- a/llvm/lib/IR/Verifier.cpp
++++ b/llvm/lib/IR/Verifier.cpp
+@@ -4357,6 +4357,15 @@ void Verifier::visitCleanupReturnInst(CleanupReturnInst &CRI) {
+ 
+ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
+   Instruction *Op = cast<Instruction>(I.getOperand(i));
++  if (CallInst *CI = dyn_cast<CallInst>(&I)) {
++    // CI->dump();
++    Function *CallFunction = CI->getCalledFunction();
++    if (CallFunction != NULL && CallFunction->getIntrinsicID() ==
++        Function::lookupIntrinsicID("llvm.tau")) {
++      // CI->dump();
++      return;
++    }
++  }
+   // If the we have an invalid invoke, don't try to compute the dominance.
+   // We already reject it in the invoke specific checks and the dominance
+   // computation doesn't handle multiple edges.

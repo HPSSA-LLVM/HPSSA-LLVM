@@ -75,31 +75,26 @@ if.then19 0
 if.end27 0
 new_label 1
 end_label 1
-Instruction does not dominate all uses!
-  %add3 = add nsw i32 %mul2, 1, !dbg !1013
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
-Instruction does not dominate all uses!
-  %add3 = add nsw i32 %mul2, 1, !dbg !1013
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
-Instruction does not dominate all uses!
-  %add3 = add nsw i32 %mul2, 1, !dbg !1013
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
-LLVM ERROR: Broken module found, compilation aborted!
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
-Stack dump:
-0.	Program arguments: /home/mabhay/projects/llvm-project/build/bin/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f
- #0 0x0000555e12b4a914 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
- #1 0x0000555e12b47c5e SignalHandler(int) Signals.cpp:0:0
- #2 0x00007f3a52f883c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
- #3 0x00007f3a52a5818b raise /build/glibc-eX1tMB/glibc-2.31/signal/../sysdeps/unix/sysv/linux/raise.c:51:1
- #4 0x00007f3a52a37859 abort /build/glibc-eX1tMB/glibc-2.31/stdlib/abort.c:81:7
- #5 0x0000555e12a86d1a llvm::report_fatal_error(llvm::Twine const&, bool) (/home/mabhay/projects/llvm-project/build/bin/opt+0x29b7d1a)
- #6 0x0000555e12a86ece (/home/mabhay/projects/llvm-project/build/bin/opt+0x29b7ece)
- #7 0x0000555e1223c903 (/home/mabhay/projects/llvm-project/build/bin/opt+0x216d903)
- #8 0x0000555e1139f786 llvm::detail::PassModel<llvm::Module, llvm::VerifierPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) NewPMDriver.cpp:0:0
- #9 0x0000555e12205e9f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/mabhay/projects/llvm-project/build/bin/opt+0x2136e9f)
-#10 0x0000555e113ac7f0 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/mabhay/projects/llvm-project/build/bin/opt+0x12dd7f0)
-#11 0x0000555e113befc7 main (/home/mabhay/projects/llvm-project/build/bin/opt+0x12effc7)
-#12 0x00007f3a52a390b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
-#13 0x0000555e1139d2de _start (/home/mabhay/projects/llvm-project/build/bin/opt+0x12ce2de)
-Aborted (core dumped)
+===-------------------------------------------------------------------------===
+                      ... Pass execution timing report ...
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0034 seconds (0.0040 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0016 ( 45.7%)   0.0016 ( 45.7%)   0.0017 ( 41.1%)  PrintModulePass
+   0.0009 ( 25.0%)   0.0009 ( 25.0%)   0.0014 ( 34.0%)  HPSSAPass
+   0.0005 ( 14.5%)   0.0005 ( 14.5%)   0.0005 ( 12.4%)  VerifierPass
+   0.0005 ( 14.3%)   0.0005 ( 14.3%)   0.0005 ( 12.1%)  VerifierAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.3%)   0.0000 (  0.2%)  DominatorTreeAnalysis
+   0.0000 (  0.2%)   0.0000 (  0.2%)   0.0000 (  0.2%)  PreservedCFGCheckerAnalysis
+   0.0034 (100.0%)   0.0034 (100.0%)   0.0040 (100.0%)  Total
+
+===-------------------------------------------------------------------------===
+                                LLVM IR Parsing
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0043 seconds (0.0043 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0043 (100.0%)   0.0043 (100.0%)   0.0043 (100.0%)  Parse IR
+   0.0043 (100.0%)   0.0043 (100.0%)   0.0043 (100.0%)  Total
+
