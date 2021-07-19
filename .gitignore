@@ -3,5 +3,7 @@
 *.bc
 *.o
 *.so
+*.log
+
 build/
 IR/

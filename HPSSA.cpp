@@ -119,7 +119,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
           // Breakup needed
           if (temp != Buddy) {
             // 1st part
-            Buddy ^= temp; 
+            Buddy ^= temp;
             // 2nd part
             toPush.push_back(temp);
           }
@@ -269,7 +269,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           // Speculative arguments
           auto Frame = defAccumulator[{&phi, curr}].frameVector;
 
-          for(auto Info: Frame){
+          for (auto Info : Frame) {
             Args.push_back(Info.first);
           }
 
@@ -281,7 +281,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
           // Done
           isInserted[{&phi, curr}] = true;
-
         }
 
         // Update stack
