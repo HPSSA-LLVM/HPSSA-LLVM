@@ -1,0 +1,18 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x564d6b056880 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{entry|{<s0>T|<s1>F}}"];
+	Node0x564d6b056880:s0 -> Node0x564d6b05a6e0;
+	Node0x564d6b056880:s1 -> Node0x564d6b05a7e0;
+	Node0x564d6b05a6e0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{while_start_label|{<s0>T|<s1>F}}"];
+	Node0x564d6b05a6e0:s0 -> Node0x564d6b05c480;
+	Node0x564d6b05a6e0:s1 -> Node0x564d6b05a7e0;
+	Node0x564d6b05c480 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ef886b70",label="{while_if_label}"];
+	Node0x564d6b05c480 -> Node0x564d6b05dfb0;
+	Node0x564d6b05a7e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ed836670",label="{while_else_label}"];
+	Node0x564d6b05a7e0 -> Node0x564d6b05dfb0;
+	Node0x564d6b05dfb0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{while_end_label|{<s0>T|<s1>F}}"];
+	Node0x564d6b05dfb0:s0 -> Node0x564d6b05a6e0;
+	Node0x564d6b05dfb0:s1 -> Node0x564d6b062c00;
+	Node0x564d6b062c00 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{if.end}"];
+}
