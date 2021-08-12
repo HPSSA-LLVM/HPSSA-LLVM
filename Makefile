@@ -11,7 +11,7 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-all: allpasses
+all: cfg
 
 pass.so: pass.o
 	$(CXX) $(CXXFLAGS) -shared build/Backedge.cpp.o -o build/Backedge.cpp.so $(LDFLAGS)
@@ -31,5 +31,14 @@ allpasses: mem2reg pass.so
 	# Handle exit code of diff(1 if changes found).
 	diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
+cfg: allpasses
+	${LLVM_BIN_PATH}/opt --dot-cfg-only --disable-output IR/LL/test_modified.ll
+	# dot_to_png
+	ls .*.dot | xargs -I name dot -Tpng name -o cfg/name.png
+	rm -f .*.dot
+
 clean:
-	rm -rf output/* build/*  IR/* && cd IR && mkdir BC && mkdir LL
+	rm -rf output/* build/*  IR/* cfg
+	mkdir cfg
+	mkdir IR/BC
+	mkdir IR/LL

@@ -2,23 +2,48 @@
 using namespace std;
 int main() {
 
-// LEVEL 1
+// LEVEL 0
 entry:
   int a, b;
   cin >> a >> b;
-  if (a < 5) {
-    goto while_start_label;
-  } else {
-    goto while_else_label;
+  if (a>2) {
+    goto entry_1;
   }
+  if (a< -1) {
+    goto entry_2;
+  }
+  goto entry_3;
+
+entry_1:
+  a *= 5;
+  goto while_start_label;
+
+entry_2:
+  a /= 4;
+  goto while_start_label;
+
+entry_3:
+  a -= 7;
+  goto while_start_label;
+
+// LEVEL 1
+// merge_block:
+//   a -= 2;
+//   // if (a < 5) {
+//   //   goto while_start_label;
+//   // } else {
+//   //   goto while_else_label;
+//   // }
+//   goto
 
 // LEVEL 2
 while_start_label:
+  a -= 4;
   int c;
   cin >> c;
   int d;
   cin >> d;
-  if (d < 5) {
+  if (a < 5) {
     // LEVEL 3
   while_if_label:
     d *= 5;
@@ -40,6 +65,6 @@ while_end_label:
   if (c>0)
     goto while_start_label;
 
-// LEVEL 5
+  // LEVEL 5
   return 0;
 }

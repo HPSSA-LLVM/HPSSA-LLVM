@@ -179,6 +179,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   }
   DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
 
+  // Get Backedge list
+  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+  FindFunctionBackedges(F, result);
+
   // Hot path information
   // ? Avoid doing this thing twice
   auto HotPathSet = getProfileInfo(F);
@@ -217,7 +221,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
         // Update temp to store new paths originating from BB itself;
         // temp |= IncubationPathSet ^ ( IncubationPathSet& HotPathSet );
-        // IncubationPathSet |= HotPathSet 
+        // IncubationPathSet |= HotPathSet
 
         // the definition does not reach through a hot path
         if (temp.none())
@@ -228,6 +232,8 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // errs()<<*arg<<" ";
 
         // store a pair in pathset
+        // * Add incubation nodes too
+        // ? Remove hot backedge or not ?
         defAccumulator[{&phi, BB}].add(arg, temp);
       }
       // errs()<<"\n";
