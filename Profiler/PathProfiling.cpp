@@ -43,7 +43,7 @@
 //  ACM Transactions on Programmmg Languages and Systems, Vol 16, No 5,
 //  September 1994, Pages 1399-1410.
 //===----------------------------------------------------------------------===//
-#define //LLVM_DEBUG_TYPE "insert-path-profiling"
+// #define //LLVM_DEBUG_TYPE "insert-path-profiling"
 
 #include "llvm/IR/DerivedTypes.h"
 // #include "llvm/ProfilingUtils.h" //removed
@@ -61,7 +61,7 @@
 // #include "llvm/Support/CFG.h"
 #include "llvm/IR/CFG.h"
 #include "llvm/Support/CommandLine.h"
-#include "llvm/Support///LLVM_DEBUG.h"
+// #include "llvm/Support ///LLVM_DEBUG.h"
 //#include "llvm/Support/TypeBuilder.h" //removed
 #include "TypeBuilder.h"
 #include "llvm/Support/raw_ostream.h"
@@ -266,7 +266,7 @@ private:
 // ---------------------------------------------------------------------------
 // PathProfiler is a module pass which instruments path profiling instructions
 // ---------------------------------------------------------------------------
-class PathProfiler : public PassInfoMixin<PathProfilerPass> {
+class PathProfiler : public PassInfoMixin<PathProfiler> {
 private:
   // Current context for multi threading support.
   LLVMContext* Context;
@@ -276,8 +276,8 @@ private:
 
   // The function prototype in the profiling runtime for incrementing a
   // single path counter in a hash table.
-  Constant* llvmIncrementHashFunction;
-  Constant* llvmDecrementHashFunction;
+  FunctionCallee llvmIncrementHashFunction;
+  FunctionCallee llvmDecrementHashFunction;
 
   // Instruments each function with path profiling.  'main' is instrumented
   // with code to save the profile to disk.
@@ -516,7 +516,7 @@ unsigned BLInstrumentationEdge::getSuccessorNumber() {
   if(source == NULL || target == NULL)
     return(0);
 
-  TerminatorInst* terminator = source->getTerminator();
+  Instruction* terminator = source->getTerminator();
 
         unsigned i;
   for(i=0; i < terminator->getNumSuccessors(); i++) {
@@ -583,7 +583,7 @@ void BLInstrumentationDag::splitUpdate(BLInstrumentationEdge* formerEdge,
   formerEdge->setTarget(newNode);
   newNode->addPredEdge(formerEdge);
 
-  LLVM_//LLVM_DEBUG(dbgs() << "  Edge split: " << *formerEdge << "\n");
+  // LLVM_//LLVM_DEBUG(dbgs() << "  Edge split: " << *formerEdge << "\n");
 
   oldTarget->removePredEdge(formerEdge);
   BallLarusEdge* newEdge = addEdge(newNode, oldTarget,0);
@@ -691,12 +691,14 @@ void BLInstrumentationDag::unlinkPhony() {
 
 // Generate a .dot graph to represent the DAG and pathNumbers
 void BLInstrumentationDag::generateDotGraph() {
+  // std::string errorInfo;
   std::string errorInfo;
   std::string functionName = getFunction().getName().str();
   std::string filename = "pathdag." + functionName + ".dot";
 
   //LLVM_DEBUG (dbgs() << "Writing '" << filename << "'...\n");
-  raw_fd_ostream dotFile((StringRef)filename, (StringRef)errorInfo);
+  // ! ERROR CODE NEEDED HERE
+  raw_fd_ostream dotFile((StringRef)filename,errorInfo);
 
   if (!errorInfo.empty()) {
     errs() << "Error opening '" << filename.c_str() <<"' for writing!";
@@ -777,8 +779,8 @@ Value* BLInstrumentationNode::getStartingPathNumber(){
 // Sets the Value of the pathNumber.  Used by the instrumentation code.
 void BLInstrumentationNode::setStartingPathNumber(Value* pathNumber) {
   //LLVM_DEBUG(dbgs() << "  SPN-" << getName() << " <-- " << (pathNumber ?
-                                                       pathNumber->getName() :
-                                                       "unused") << "\n");
+                                                      //  pathNumber->getName() :
+                                                      //  "unused") << "\n");
   _startingPathNumber = pathNumber;
 }
 
@@ -788,7 +790,7 @@ Value* BLInstrumentationNode::getEndingPathNumber(){
 
 void BLInstrumentationNode::setEndingPathNumber(Value* pathNumber) {
   //LLVM_DEBUG(dbgs() << "  EPN-" << getName() << " <-- "
-               << (pathNumber ? pathNumber->getName() : "unused") << "\n");
+              //  << (pathNumber ? pathNumber->getName() : "unused") << "\n");
   _endingPathNumber = pathNumber;
 }
 
@@ -961,8 +963,8 @@ void PathProfiler::preparePHI(BLInstrumentationNode* node) {
   BasicBlock::iterator insertPoint = block->getFirstInsertionPt();
   pred_iterator PB = pred_begin(node->getBlock()),
           PE = pred_end(node->getBlock());
-  PHINode* phi = PHINode::Create(Type::getInt32Ty(*Context),
-                                 std::distance(PB, PE), "pathNumber",
+  PHINode* phi = PHINode::Create( Type::getInt32Ty(Context),
+                                 (unsigned)std::distance(PB, PE),"pathNumber",
                                  insertPoint );
   node->setPathPHI(phi);
   node->setStartingPathNumber(phi);
@@ -991,17 +993,17 @@ void PathProfiler::pushValueIntoNode(BLInstrumentationNode* source,
     target->setStartingPathNumber(source->getEndingPathNumber());
     target->setEndingPathNumber(source->getEndingPathNumber());
     //LLVM_DEBUG(dbgs() << "  Passing path number"
-          << (source->getEndingPathNumber() ? "" : " (null)")
-          << " value through.\n");
+          // << (source->getEndingPathNumber() ? "" : " (null)")
+          // << " value through.\n");
   } else {
     if(target->getPathPHI() == NULL) {
       //LLVM_DEBUG(dbgs() << "  Initializing PHI node for block '"
-            << target->getName() << "'\n");
+            // << target->getName() << "'\n");
       preparePHI(target);
     }
     pushValueIntoPHI(target, source);
     //LLVM_DEBUG(dbgs() << "  Passing number value into PHI for block '"
-          << target->getName() << "'\n");
+          // << target->getName() << "'\n");
   }
 }
 
@@ -1029,7 +1031,7 @@ void PathProfiler::insertNumberIncrement(BLInstrumentationNode* node,
   if( atBeginning )
     insertPoint = block->getFirstInsertionPt();
   else
-    insertPoint = block->getTerminator();
+    insertPoint = BasicBlock::iterator(block->getTerminator());
 
   //LLVM_DEBUG(errs() << "  Creating addition instruction.\n");
   Value* newpn = BinaryOperator::Create(Instruction::Add,
@@ -1046,7 +1048,7 @@ void PathProfiler::insertNumberIncrement(BLInstrumentationNode* node,
 // taken as the index into an array or hash table.  The hash table access
 // is a call to the runtime.
 void PathProfiler::insertCounterIncrement(Value* incValue,
-                                          BasicBlock::iterator insertPoint,
+                                          Instruction* insertPoint,
                                           BLInstrumentationDag* dag,
                                           bool increment) {
   // Counter increment for array
@@ -1123,7 +1125,7 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge* edge,
   // inserted in to it without splitting
   if( sourceNode->getBlock() && sourceNode->getNumberSuccEdges() <= 1) {
     //LLVM_DEBUG(dbgs() << "  Potential instructions to be placed in: "
-          << sourceNode->getName() << " (at end)\n");
+          // << sourceNode->getName() << " (at end)\n");
     instrumentNode = sourceNode;
     nextSourceNode = targetNode; // ... since we never made any new nodes
   }
@@ -1133,8 +1135,8 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge* edge,
   // successful.
   else if( targetNode->getNumberPredEdges() == 1 ) {
     //LLVM_DEBUG(dbgs() << "  Potential instructions to be placed in: "
-          << targetNode->getName() << " (at beginning)\n");
-    pushValueIntoNode(sourceNode, targetNode);
+          // << targetNode->getName() << " (at beginning)\n");
+    // pushValueIntoNode(sourceNode, targetNode);
     instrumentNode = targetNode;
     nextSourceNode = NULL; // ... otherwise we'll just keep splitting
     atBeginning = true;
@@ -1234,9 +1236,9 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge* edge,
     // So long as it is un-instrumented, add it to the list
     if( !((BLInstrumentationEdge*)(*next))->hasInstrumentation() )
       insertInstrumentationStartingAt((BLInstrumentationEdge*)*next,dag);
-    else
+    // else
       //LLVM_DEBUG(dbgs() << "  Edge " << *(BLInstrumentationEdge*)(*next)
-            << " already instrumented.\n");
+            // << " already instrumented.\n");
   }
 }
 
@@ -1267,9 +1269,9 @@ void PathProfiler::insertInstrumentation(
       insertPoint++;
 
     //LLVM_DEBUG(dbgs() << "\nInstrumenting method call block '"
-                 << node->getBlock()->getName() << "'\n");
+                //  << node->getBlock()->getName() << "'\n");
     //LLVM_DEBUG(dbgs() << "   Path number initialized: "
-                 << ((node->getStartingPathNumber()) ? "yes" : "no") << "\n");
+                //  << ((node->getStartingPathNumber()) ? "yes" : "no") << "\n");
 
     Value* newpn;
     if( node->getStartingPathNumber() ) {
@@ -1287,7 +1289,7 @@ void PathProfiler::insertInstrumentation(
     }
 
     insertCounterIncrement(newpn, insertPoint, &dag);
-    insertCounterIncrement(newpn, node->getBlock()->getTerminator(),
+    insertCounterIncrement(newpn,node->getBlock()->getTerminator(),
                            &dag, false);
   }
 }
@@ -1356,14 +1358,14 @@ void PathProfiler::runOnFunction(std::vector<Constant*> &ftInit,
 bool PathProfiler::runOnModule(Module &M) {
   Context = &M.getContext();
 
-  //LLVM_DEBUG(dbgs()
-        << "****************************************\n"
-        << "****************************************\n"
-        << "**                                    **\n"
-        << "**   PATH PROFILING INSTRUMENTATION   **\n"
-        << "**                                    **\n"
-        << "****************************************\n"
-        << "****************************************\n");
+  // //LLVM_DEBUG(dbgs()
+  //       << "****************************************\n"
+  //       << "****************************************\n"
+  //       << "**                                    **\n"
+  //       << "**   PATH PROFILING INSTRUMENTATION   **\n"
+  //       << "**                                    **\n"
+  //       << "****************************************\n"
+  //       << "****************************************\n");
 
   // No main, no instrumentation!
   Function *Main = M.getFunction("main");
@@ -1441,7 +1443,7 @@ bool PathProfiler::splitCritical(BLInstrumentationEdge* edge,
     return(false);
   }
 
-  TerminatorInst* terminator = sourceBlock->getTerminator();
+  Instruction* terminator = sourceBlock->getTerminator();
 
   if( SplitCriticalEdge(terminator, succNum, this, false)) {
     BasicBlock* newBlock = terminator->getSuccessor(succNum);

@@ -2,7 +2,11 @@
 < ; ModuleID = 'IR/BC/test.bc'
 ---
 > ; ModuleID = 'IR/LL/test_mem2reg.ll'
-181c181
-< bb55:                                             ; preds = %bb49, %bb52, %bb26
+83c83
+< while_start_label.preheader:                      ; preds = %entry_1, %entry_2, %entry_3
 ---
-> bb55:                                             ; preds = %bb52, %bb49, %bb26
+> while_start_label.preheader:                      ; preds = %entry_3, %entry_2, %entry_1
+88c88
+< while_start_label:                                ; preds = %while_start_label.preheader, %while_end_label
+---
+> while_start_label:                                ; preds = %while_end_label, %while_start_label.preheader

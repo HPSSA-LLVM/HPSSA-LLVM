@@ -2,9 +2,7 @@
 using namespace llvm;
 using namespace std;
 
-// ? How to Get hot path information from Profiler
-
-// * Hot Path Information
+// Hot Path Information
 map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
   map<StringRef, BasicBlock *> getPointer;
   for (auto &BB : F) {
@@ -31,6 +29,10 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
   reader.close();
   return HotPaths;
 }
+// After Buddy set creation check if it is a loop header
+// if yes :
+//            Union the incubating hot paths with every buddy set
+//                      |-> taking xor with hot paths of entry block
 
 map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
   auto HotPathSet = getProfileInfo(F);
@@ -79,7 +81,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
         // hot paths from this parent to current block.
         predBitVector &= currHotPaths;
 
-        // parent does have a hot definition but
+        // parent has a hot definition but
         // does not pass it to the child.
         if (predBitVector.none()) {
           hasColdPath = true;
@@ -177,6 +179,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   }
   DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
 
+  // Get Backedge list
+  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+  FindFunctionBackedges(F, result);
+
   // Hot path information
   // ? Avoid doing this thing twice
   auto HotPathSet = getProfileInfo(F);
@@ -212,6 +218,11 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
       for (auto block : predecessors(BB)) {
         auto temp = HotPathSet[BB];
         temp &= HotPathSet[block];
+
+        // Update temp to store new paths originating from BB itself;
+        // temp |= IncubationPathSet ^ ( IncubationPathSet& HotPathSet );
+        // IncubationPathSet |= HotPathSet
+
         // the definition does not reach through a hot path
         if (temp.none())
           continue;
@@ -221,14 +232,14 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // errs()<<*arg<<" ";
 
         // store a pair in pathset
+        // * Add incubation nodes too
+        // ? Remove hot backedge or not ?
         defAccumulator[{&phi, BB}].add(arg, temp);
       }
       // errs()<<"\n";
 
       //=====================================================================//
-      map<BasicBlock *, bool> isVisited;
       // traverse along hot paths.
-
       // Use RPOT
       for (auto J = I; J != RPOT.end(); ++J) {
         auto curr = *J;
@@ -283,9 +294,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
           isInserted[{&phi, curr}] = true;
         }
 
-        // Update stack
-        isVisited[curr] = true;
-
         for (auto succ : successors(curr)) {
           if (!DT.dominates(&phi, succ))
             continue;
@@ -332,7 +340,7 @@ llvm::PassPluginLibraryInfo getHPSSAPluginInfo() {
 }
 
 // This is the core interface for pass plugins. It guarantees that 'opt' will
-// be able to recognize HelloWorld when added to the pass pipeline on the
+// be able to recognize HPSSA Pass when added to the pass pipeline on the
 // command line, i.e. via '-passes=hpssa'
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
