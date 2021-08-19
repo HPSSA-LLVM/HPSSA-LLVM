@@ -1,0 +1,35 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x5f67a10 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb:\l  %i = alloca i32, align 4\l  %i1 = alloca i32, align 4\l  %i2 = alloca i32, align 4\l  %i3 = alloca i32, align 4\l  store i32 0, i32* %i, align 4\l  store i32 0, i32* %i1, align 4\l  %0 = call i32 @tau()\l  store i32 0, i32* %i2, align 4\l  store i32 0, i32* %i3, align 4\l  %i4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x\l... i8], [3 x i8]* @.str, i64 0, i64 0), i32* %i2)\l  store i32 2, i32* %i1, align 4\l  %i5 = load i32, i32* %i2, align 4\l  %i6 = icmp sgt i32 %i5, 0\l  br i1 %i6, label %bb7, label %bb8\l|{<s0>T|<s1>F}}"];
+	Node0x5f67a10:s0 -> Node0x5f68530;
+	Node0x5f67a10:s1 -> Node0x5f68600;
+	Node0x5f68530 [shape=record,color="#b70d28ff", style=filled, fillcolor="#dc5d4a70",label="{bb7:                                              \l  store i32 5, i32* %i1, align 4\l  %1 = call i32 @tau()\l  br label %bb9\l}"];
+	Node0x5f68530 -> Node0x5f68930;
+	Node0x5f68600 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f4987a70",label="{bb8:                                              \l  store i32 1, i32* %i1, align 4\l  br label %bb9\l}"];
+	Node0x5f68600 -> Node0x5f68930;
+	Node0x5f68930 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb9:                                              \l  %2 = call i32 @tau()\l  %i10 = load i32, i32* %i1, align 4\l  store i32 %i10, i32* %i2, align 4\l  %i11 = load i32, i32* %i2, align 4\l  %i12 = icmp sgt i32 %i11, 5000\l  br i1 %i12, label %bb13, label %bb23\l|{<s0>T|<s1>F}}"];
+	Node0x5f68930:s0 -> Node0x5f69000;
+	Node0x5f68930:s1 -> Node0x5f69070;
+	Node0x5f69000 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb13:                                             \l  %i14 = load i32, i32* %i1, align 4\l  store i32 %i14, i32* %i2, align 4\l  %i15 = load i32, i32* %i2, align 4\l  %i16 = icmp sgt i32 %i15, 6500\l  br i1 %i16, label %bb17, label %bb18\l|{<s0>T|<s1>F}}"];
+	Node0x5f69000:s0 -> Node0x5f69420;
+	Node0x5f69000:s1 -> Node0x5f69490;
+	Node0x5f69420 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb17:                                             \l  br label %bb24\l}"];
+	Node0x5f69420 -> Node0x5f69610;
+	Node0x5f69490 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb18:                                             \l  %3 = call i32 @tau()\l  %i19 = load i32, i32* %i2, align 4\l  %i20 = icmp sgt i32 %i19, 5500\l  br i1 %i20, label %bb21, label %bb22\l|{<s0>T|<s1>F}}"];
+	Node0x5f69490:s0 -> Node0x5f69930;
+	Node0x5f69490:s1 -> Node0x5f69cc0;
+	Node0x5f69930 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb21:                                             \l  br label %bb26\l}"];
+	Node0x5f69930 -> Node0x5f69e40;
+	Node0x5f69cc0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb22:                                             \l  br label %bb27\l}"];
+	Node0x5f69cc0 -> Node0x5f69f20;
+	Node0x5f69070 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb23:                                             \l  br label %bb24\l}"];
+	Node0x5f69070 -> Node0x5f69610;
+	Node0x5f69610 [shape=record,color="#b70d28ff", style=filled, fillcolor="#d0473d70",label="{bb24:                                             \l  %4 = call i32 @tau()\l  %i25 = load i32, i32* %i1, align 4\l  store i32 %i25, i32* %i3, align 4\l  br label %bb28\l}"];
+	Node0x5f69610 -> Node0x5f6a2b0;
+	Node0x5f69e40 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb26:                                             \l  store i32 50, i32* %i3, align 4\l  br label %bb28\l}"];
+	Node0x5f69e40 -> Node0x5f6a2b0;
+	Node0x5f69f20 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb27:                                             \l  store i32 70, i32* %i3, align 4\l  br label %bb28\l}"];
+	Node0x5f69f20 -> Node0x5f6a2b0;
+	Node0x5f6a2b0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb28:                                             \l  %i29 = load i32, i32* %i1, align 4\l  store i32 %i29, i32* %i3, align 4\l  ret i32 0\l}"];
+}

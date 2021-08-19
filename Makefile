@@ -1,8 +1,9 @@
 # FIX: Results not properly updating
 # ! UPDATE ACCORDING TO YOUR LLVM PATH
 
-BUILD_PATH=${LLVM_BIN_PATH}
-LLVM_CONFIG=llvm-config
+# HOME points to main Dir where LLVM is cloned.
+BUILD_PATH=${HOME}/llvm-project/build/bin
+LLVM_CONFIG=${BUILD_PATH}/llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
 CXXFLAGS=`$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
