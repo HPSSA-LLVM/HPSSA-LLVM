@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int tau(void) { return 0; }
+
 int main(void) {
   int x = 0;
   int y = 0;
@@ -17,6 +19,7 @@ int main(void) {
   }
 
   if (x + y > 15) {
+    tau();
     x = 90;
   }
 
@@ -25,6 +28,7 @@ int main(void) {
   if (y > 5000) {
   // tau insertion
   label_start:
+    tau();
     y = x;
     if (y > 6500) {
       goto label_g;
@@ -38,6 +42,7 @@ int main(void) {
   }
 label_g:
   // tau insertion
+  tau();
   z = x;
   goto label_j;
 

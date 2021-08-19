@@ -1,0 +1,42 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x6bccd70 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb:\l  %i = alloca i32, align 4\l  %i1 = alloca i32, align 4\l  %i2 = alloca i32, align 4\l  %i3 = alloca i32, align 4\l  store i32 0, i32* %i, align 4\l  store i32 0, i32* %i1, align 4\l  store i32 0, i32* %i2, align 4\l  store i32 0, i32* %i3, align 4\l  %i4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x\l... i8], [3 x i8]* @.str, i64 0, i64 0), i32* %i2)\l  store i32 2, i32* %i1, align 4\l  %i5 = load i32, i32* %i2, align 4\l  %i6 = icmp sgt i32 %i5, 0\l  br i1 %i6, label %bb7, label %bb8\l|{<s0>T|<s1>F}}"];
+	Node0x6bccd70:s0 -> Node0x6bcd740;
+	Node0x6bccd70:s1 -> Node0x6bcd810;
+	Node0x6bcd740 [shape=record,color="#b70d28ff", style=filled, fillcolor="#dc5d4a70",label="{bb7:                                              \l  store i32 5, i32* %i1, align 4\l  br label %bb9\l}"];
+	Node0x6bcd740 -> Node0x6bcda50;
+	Node0x6bcd810 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f4987a70",label="{bb8:                                              \l  store i32 1, i32* %i1, align 4\l  br label %bb9\l}"];
+	Node0x6bcd810 -> Node0x6bcda50;
+	Node0x6bcda50 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb9:                                              \l  %i10 = load i32, i32* %i1, align 4\l  %i11 = load i32, i32* %i2, align 4\l  %i12 = add nsw i32 %i10, %i11\l  %i13 = icmp sgt i32 %i12, 15\l  br i1 %i13, label %bb14, label %bb16\l|{<s0>T|<s1>F}}"];
+	Node0x6bcda50:s0 -> Node0x6bce080;
+	Node0x6bcda50:s1 -> Node0x6bce0f0;
+	Node0x6bce080 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb14:                                             \l  %i15 = call i32 @tau()\l  store i32 90, i32* %i1, align 4\l  br label %bb16\l}"];
+	Node0x6bce080 -> Node0x6bce0f0;
+	Node0x6bce0f0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb16:                                             \l  %i17 = load i32, i32* %i1, align 4\l  store i32 %i17, i32* %i2, align 4\l  %i18 = load i32, i32* %i2, align 4\l  %i19 = icmp sgt i32 %i18, 5000\l  br i1 %i19, label %bb20, label %bb32\l|{<s0>T|<s1>F}}"];
+	Node0x6bce0f0:s0 -> Node0x6bce6c0;
+	Node0x6bce0f0:s1 -> Node0x6bce730;
+	Node0x6bce6c0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb20:                                             \l  br label %bb21\l}"];
+	Node0x6bce6c0 -> Node0x6bce850;
+	Node0x6bce850 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb21:                                             \l  %i22 = call i32 @tau()\l  %i23 = load i32, i32* %i1, align 4\l  store i32 %i23, i32* %i2, align 4\l  %i24 = load i32, i32* %i2, align 4\l  %i25 = icmp sgt i32 %i24, 6500\l  br i1 %i25, label %bb26, label %bb27\l|{<s0>T|<s1>F}}"];
+	Node0x6bce850:s0 -> Node0x6bcefd0;
+	Node0x6bce850:s1 -> Node0x6bcf040;
+	Node0x6bcefd0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb26:                                             \l  br label %bb33\l}"];
+	Node0x6bcefd0 -> Node0x6bcf1c0;
+	Node0x6bcf040 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb27:                                             \l  %i28 = load i32, i32* %i2, align 4\l  %i29 = icmp sgt i32 %i28, 5500\l  br i1 %i29, label %bb30, label %bb31\l|{<s0>T|<s1>F}}"];
+	Node0x6bcf040:s0 -> Node0x6bcf410;
+	Node0x6bcf040:s1 -> Node0x6bcf480;
+	Node0x6bcf410 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb30:                                             \l  br label %bb36\l}"];
+	Node0x6bcf410 -> Node0x6bcf600;
+	Node0x6bcf480 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb31:                                             \l  br label %bb37\l}"];
+	Node0x6bcf480 -> Node0x6bcf6e0;
+	Node0x6bce730 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb32:                                             \l  br label %bb33\l}"];
+	Node0x6bce730 -> Node0x6bcf1c0;
+	Node0x6bcf1c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#d0473d70",label="{bb33:                                             \l  %i34 = call i32 @tau()\l  %i35 = load i32, i32* %i1, align 4\l  store i32 %i35, i32* %i3, align 4\l  br label %bb38\l}"];
+	Node0x6bcf1c0 -> Node0x6bcfa40;
+	Node0x6bcf600 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb36:                                             \l  store i32 50, i32* %i3, align 4\l  br label %bb38\l}"];
+	Node0x6bcf600 -> Node0x6bcfa40;
+	Node0x6bcf6e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb37:                                             \l  store i32 70, i32* %i3, align 4\l  br label %bb38\l}"];
+	Node0x6bcf6e0 -> Node0x6bcfa40;
+	Node0x6bcfa40 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb38:                                             \l  %i39 = load i32, i32* %i1, align 4\l  store i32 %i39, i32* %i3, align 4\l  ret i32 0\l}"];
+}

@@ -1,0 +1,117 @@
+; ModuleID = 'test2/program2.bc'
+source_filename = "test2/program2.c"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+@.str = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @tau() #0 {
+bb:
+  ret i32 0
+}
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @main() #0 {
+bb:
+  %i = alloca i32, align 4
+  %i1 = alloca i32, align 4
+  %i2 = alloca i32, align 4
+  %i3 = alloca i32, align 4
+  store i32 0, i32* %i, align 4
+  store i32 0, i32* %i1, align 4
+  store i32 0, i32* %i2, align 4
+  store i32 0, i32* %i3, align 4
+  %i4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str, i64 0, i64 0), i32* %i2)
+  store i32 2, i32* %i1, align 4
+  %i5 = load i32, i32* %i2, align 4
+  %i6 = icmp sgt i32 %i5, 0
+  br i1 %i6, label %bb7, label %bb8
+
+bb7:                                              ; preds = %bb
+  store i32 5, i32* %i1, align 4
+  br label %bb9
+
+bb8:                                              ; preds = %bb
+  store i32 1, i32* %i1, align 4
+  br label %bb9
+
+bb9:                                              ; preds = %bb8, %bb7
+  %i10 = load i32, i32* %i1, align 4
+  %i11 = load i32, i32* %i2, align 4
+  %i12 = add nsw i32 %i10, %i11
+  %i13 = icmp sgt i32 %i12, 15
+  br i1 %i13, label %bb14, label %bb16
+
+bb14:                                             ; preds = %bb9
+  %i15 = call i32 @tau()
+  store i32 90, i32* %i1, align 4
+  br label %bb16
+
+bb16:                                             ; preds = %bb14, %bb9
+  %i17 = load i32, i32* %i1, align 4
+  store i32 %i17, i32* %i2, align 4
+  %i18 = load i32, i32* %i2, align 4
+  %i19 = icmp sgt i32 %i18, 5000
+  br i1 %i19, label %bb20, label %bb32
+
+bb20:                                             ; preds = %bb16
+  br label %bb21
+
+bb21:                                             ; preds = %bb20
+  %i22 = call i32 @tau()
+  %i23 = load i32, i32* %i1, align 4
+  store i32 %i23, i32* %i2, align 4
+  %i24 = load i32, i32* %i2, align 4
+  %i25 = icmp sgt i32 %i24, 6500
+  br i1 %i25, label %bb26, label %bb27
+
+bb26:                                             ; preds = %bb21
+  br label %bb33
+
+bb27:                                             ; preds = %bb21
+  %i28 = load i32, i32* %i2, align 4
+  %i29 = icmp sgt i32 %i28, 5500
+  br i1 %i29, label %bb30, label %bb31
+
+bb30:                                             ; preds = %bb27
+  br label %bb36
+
+bb31:                                             ; preds = %bb27
+  br label %bb37
+
+bb32:                                             ; preds = %bb16
+  br label %bb33
+
+bb33:                                             ; preds = %bb32, %bb26
+  %i34 = call i32 @tau()
+  %i35 = load i32, i32* %i1, align 4
+  store i32 %i35, i32* %i3, align 4
+  br label %bb38
+
+bb36:                                             ; preds = %bb30
+  store i32 50, i32* %i3, align 4
+  br label %bb38
+
+bb37:                                             ; preds = %bb31
+  store i32 70, i32* %i3, align 4
+  br label %bb38
+
+bb38:                                             ; preds = %bb37, %bb36, %bb33
+  %i39 = load i32, i32* %i1, align 4
+  store i32 %i39, i32* %i3, align 4
+  ret i32 0
+}
+
+declare dso_local i32 @__isoc99_scanf(i8*, ...) #1
+
+attributes #0 = { noinline nounwind optnone uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+
+!llvm.module.flags = !{!0, !1, !2}
+!llvm.ident = !{!3}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 7, !"uwtable", i32 1}
+!2 = !{i32 7, !"frame-pointer", i32 2}
+!3 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git 419deccfd19ee6468fd020451fe17ee29db044b9)"}
