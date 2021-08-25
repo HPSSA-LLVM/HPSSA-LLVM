@@ -34,26 +34,38 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
 // if yes :
 //            Union the incubating hot paths with every buddy set
 //                      |-> taking xor with hot paths of entry block
-
 map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
   auto HotPathSet = getProfileInfo(F);
 
   map<BasicBlock *, vector<BitVector>> BuddySet;
   map<BasicBlock *, bool> isCaloric;
   int n; // no of hot paths.
-  for (auto &BB : F) {
+
+  BitVector allPaths;
+  ReversePostOrderTraversal<Function *> RPOT(&F);
+  for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
+    auto BB = *I;
+    // Paths incubating from this basic block
+    auto IncubationPath = allPaths;
+    IncubationPath &= HotPathSet[BB];
+    IncubationPath ^= HotPathSet[BB];
+
+
+    // update allPaths
+    allPaths |= IncubationPath;
+
     // if entry block
-    if (BB.isEntryBlock()) {
+    if (BB->isEntryBlock()) {
 
       /* Printing stuff */
       errs() << "===-----------------------------------------------------------"
                 "--------------===\nCaloric Connector and BuddySet "
                 "Information:\n===---------------------------------------------"
                 "----------------------------===\n";
-      errs() << BB.getName() << ": ";
-      BuddySet[&BB].push_back(
-          HotPathSet[&BB]); // All hot paths in a signle buddy set;
-      for (auto buddy : BuddySet[&BB]) {
+      errs() << BB->getName() << ": ";
+      BuddySet[BB].push_back(
+          HotPathSet[BB]); // All hot paths in a single buddy set;
+      for (auto buddy : BuddySet[BB]) {
         errs() << "{";
         for (int i = 0; i < buddy.size(); i++) {
           errs() << buddy[i] << " ";
@@ -62,17 +74,17 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
       }
       errs() << "\n";
       /* Printing stuff */
-      n = HotPathSet[&BB].size();
+      n = HotPathSet[BB].size();
       continue;
     }
 
     BitVector alreadyInSets(n);
-    auto currHotPaths = HotPathSet[&BB];
+    auto currHotPaths = HotPathSet[BB];
 
     bool hasHotPath = currHotPaths.any();
     bool hasColdPath = false;
 
-    for (auto pred : predecessors(&BB)) {
+    for (auto pred : predecessors(BB)) {
 
       // All definition reaching to parent are cold.
       if (HotPathSet[pred].none())
@@ -97,7 +109,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
         // New paths form a different set
         if (newPaths.any())
-          BuddySet[&BB].push_back(newPaths);
+          BuddySet[BB].push_back(newPaths);
 
         // New paths added
         alreadyInSets |= newPaths;
@@ -107,7 +119,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
         // *Invariant : All buddy sets in the child block are disjoint.
 
-        for (auto &Buddy : BuddySet[&BB]) {
+        for (auto &Buddy : BuddySet[BB]) {
 
           auto temp = oldPaths;
           temp &= Buddy;
@@ -131,19 +143,28 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
         }
 
         for (auto rem : toPush) {
-          BuddySet[&BB].push_back(rem);
+          BuddySet[BB].push_back(rem);
         }
       }
     }
 
+
+    // * All the definitions reaching to this block are also
+    // * avilable along the incubation nodes. Buddy set contains
+    // * the set of paths carrying same definition
+    // * The buddy sets are no more disjoint.
+    for(auto &buddyDefs: BuddySet[BB]){
+      buddyDefs |= IncubationPath;
+    }
+
     if (hasHotPath && hasColdPath) {
-      isCaloric[&BB] = true;
-      errs() << BB.getName() << " is a Caloric Connector\n";
+      isCaloric[BB] = true;
+      errs() << BB->getName() << " is a Caloric Connector\n";
     }
 
     /* Printing stuff */
-    errs() << BB.getName() << ": ";
-    for (auto buddy : BuddySet[&BB]) {
+    errs() << BB->getName() << ": ";
+    for (auto buddy : BuddySet[BB]) {
       errs() << "{ ";
       for (int i = 0; i < buddy.size(); i++) {
         errs() << buddy[i] << " ";
@@ -195,7 +216,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   ReversePostOrderTraversal<Function *> RPOT(&F);
 
   /// Store all paths that have been visited till now
-  BitVector allPaths;
+  // BitVector allPaths;
 
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I; // Pointer to the current basic block being visited
@@ -203,13 +224,13 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
 
     // Paths incubating from this basic block
-    auto IncubationPath = allPaths;
-    IncubationPath &= HotPathSet[BB];
-    IncubationPath ^= allPaths;
+    // auto IncubationPath = allPaths;
+    // IncubationPath &= HotPathSet[BB];
+    // IncubationPath ^= HotPathSet[BB];
 
 
     // update allPaths
-    allPaths |= IncubationPath;
+    // allPaths |= IncubationPath;
 
     // current phi whose definitions will be filtered by taus
     for (auto &phi : BB->phis()) {
@@ -249,7 +270,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // add paths originating from here 
         // this argument is available on these paths too
         // but for that should come from parent.
-        defAccumulator[{&phi,BB}].add(arg,IncubationPath);
+        // defAccumulator[{&phi,BB}].add(arg,IncubationPath);
 
       }
 

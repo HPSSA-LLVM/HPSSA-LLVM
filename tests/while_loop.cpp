@@ -12,7 +12,7 @@ entry:
   if (a< -1) {
     goto entry_2;
   }
-  goto entry_3;
+  // goto entry_3;
 
 entry_1:
   a *= 5;
@@ -22,9 +22,9 @@ entry_2:
   a /= 4;
   goto while_start_label;
 
-entry_3:
-  a -= 7;
-  goto while_start_label;
+// entry_3:
+//   a -= 7;
+//   goto while_start_label;
 
 // LEVEL 1
 // merge_block:

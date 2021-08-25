@@ -1,7 +1,7 @@
 # FIX: Results not properly updating
 # ! UPDATE ACCORDING TO YOUR LLVM PATH
 
-BUILD_PATH=~/HPSSA/llvm-project/build/bin/
+BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
@@ -28,7 +28,7 @@ mem2reg: ir
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 allpasses: mem2reg pass.so
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
 	# Handle exit code of diff(1 if changes found).
 	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
