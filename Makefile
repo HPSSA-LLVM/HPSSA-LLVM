@@ -1,24 +1,26 @@
+# FIX: Results not properly updating
 # ! UPDATE ACCORDING TO YOUR LLVM PATH
 
-BUILD_PATH=${LLVM_BIN_PATH}
+BUILD_PATH=~/HPSSA/llvm-project/build/bin/
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
-CXXFLAGS=`$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
+CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
-ifndef VERBOSE
+ifndef VERBROSE
 .SILENT:
 endif
 
-all: cfg
+all: allpasses
 
-pass.so: pass.o
-	$(CXX) $(CXXFLAGS) -shared build/Backedge.cpp.o -o build/Backedge.cpp.so $(LDFLAGS)
+pass.so: pass.o 
+	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
 
-pass.o: Backedge.cpp headers/Backedge.h
-	$(CXX) -c Backedge.cpp -o build/Backedge.cpp.o $(CXXFLAGS)
+pass.o: HPSSA.cpp headers/HPSSA.h
+	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 
 ir: tests/test.cpp
+	# echo ${LLVM_BIN_PATH}
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
 
@@ -26,18 +28,9 @@ mem2reg: ir
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 allpasses: mem2reg pass.so
-	$(BUILD_PATH)/opt -load-pass-plugin=build/Backedge.cpp.so -passes=backedgeChecker -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
 	# Handle exit code of diff(1 if changes found).
-	diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
+	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
-cfg: allpasses
-	${LLVM_BIN_PATH}/opt --dot-cfg-only --disable-output IR/LL/test_modified.ll
-	# dot_to_png
-	ls .*.dot | xargs -I name dot -Tpng name -o cfg/name.png
-	rm -f .*.dot
-
-clean:
-	rm -rf output/* build/*  IR/* cfg
-	mkdir cfg
-	mkdir IR/BC
-	mkdir IR/LLmkdir cfg
+clean: 
+	rm -rf output/* build/*  IR/* && cd IR && mkdir BC && mkdir LL

@@ -1,23 +1,105 @@
-while.body -> while.body
 ===-------------------------------------------------------------------------===
-                      ... Pass execution timing report ...
+Caloric Connector and BuddySet Information:
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0049 seconds (0.0053 wall clock)
-
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0032 ( 69.1%)   0.0000 (  0.0%)   0.0032 ( 64.2%)   0.0033 ( 61.7%)  PrintModulePass
-   0.0007 ( 14.9%)   0.0002 ( 48.2%)   0.0009 ( 17.2%)   0.0010 ( 18.5%)  VerifierPass
-   0.0007 ( 14.7%)   0.0002 ( 47.6%)   0.0008 ( 17.0%)   0.0010 ( 18.3%)  VerifierAnalysis
-   0.0001 (  1.1%)   0.0000 (  3.7%)   0.0001 (  1.3%)   0.0001 (  1.2%)  BackedgePass
-   0.0000 (  0.2%)   0.0000 (  0.6%)   0.0000 (  0.2%)   0.0000 (  0.2%)  PreservedCFGCheckerAnalysis
-   0.0046 (100.0%)   0.0004 (100.0%)   0.0049 (100.0%)   0.0053 (100.0%)  Total
-
+entry: {1 1 } 
+if.then: { 1 1 } 
+if.else: 
+if.end is a Caloric Connector
+if.end: { 1 1 } 
+if.else10: { 1 1 } 
+if.then12: { 0 1 } 
+if.end17: 
+if.then19: 
+if.else22: 
+if.end27: 
+if.else30: { 1 0 } 
+if.then34: { 1 0 } 
+if.else37: 
+new_label is a Caloric Connector
+new_label: { 1 0 } { 0 1 } 
+end_label is a Caloric Connector
+end_label: { 1 0 } { 0 1 } 
 ===-------------------------------------------------------------------------===
-                                LLVM IR Parsing
+Initiating Tau Insertion Algroithm
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0088 seconds (0.0090 wall clock)
-
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0084 (100.0%)   0.0004 (100.0%)   0.0088 (100.0%)   0.0090 (100.0%)  Parse IR
-   0.0084 (100.0%)   0.0004 (100.0%)   0.0088 (100.0%)   0.0090 (100.0%)  Total
-
+entry 0
+if.else 0
+if.then 0
+if.end 1
+Visiting if.end
+add3 {1 1 }
+Inserted Tau at : if.end
+if.end : end_label
+if.end : if.else10
+Visiting if.else10
+add3 {1 1 }
+if.else10 : if.then12
+if.else10 : if.else30
+Visiting if.else30
+add3 {1 0 }
+if.else30 : if.then34
+if.else30 : if.else37
+Visiting if.else37
+if.else37 : new_label
+Visiting if.then34
+add3 {1 0 }
+if.then34 : new_label
+Visiting if.then12
+add3 {0 1 }
+if.then12 : new_label
+if.then12 : if.end17
+Visiting if.end17
+if.end17 : if.then19
+if.end17 : if.else22
+Visiting if.else22
+if.else22 : if.end27
+Visiting if.then19
+if.then19 : if.end27
+Visiting if.end27
+if.end27 : end_label
+Visiting new_label
+add3 {1 1 }
+Inserted Tau at : new_label
+new_label : end_label
+Visiting end_label
+add3 {1 1 }
+Inserted Tau at : end_label
+if.else10 0
+if.else30 0
+if.else37 0
+if.then34 0
+if.then12 0
+if.end17 0
+if.else22 0
+if.then19 0
+if.end27 0
+new_label 1
+end_label 1
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+Instruction does not dominate all uses!
+  %add3 = add nsw i32 %mul2, 1, !dbg !1013
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3)
+LLVM ERROR: Broken module found, compilation aborted!
+PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /home/muzzammil/HPSSA/llvm-project/build/bin//opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f
+ #0 0x000056154bdeffd4 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
+ #1 0x000056154bded78e SignalHandler(int) Signals.cpp:0:0
+ #2 0x00007f31e7e883c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
+ #3 0x00007f31e797518b raise /build/glibc-eX1tMB/glibc-2.31/signal/../sysdeps/unix/sysv/linux/raise.c:51:1
+ #4 0x00007f31e7954859 abort /build/glibc-eX1tMB/glibc-2.31/stdlib/abort.c:81:7
+ #5 0x000056154bd3bf8a llvm::report_fatal_error(llvm::Twine const&, bool) (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x1b81f8a)
+ #6 0x000056154bd3c13e (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x1b8213e)
+ #7 0x000056154b528f03 (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x136ef03)
+ #8 0x000056154a6c6e46 llvm::detail::PassModel<llvm::Module, llvm::VerifierPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x50ce46)
+ #9 0x000056154b4f346f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x133946f)
+#10 0x000056154a6d2ea0 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x518ea0)
+#11 0x000056154a652af7 main (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x498af7)
+#12 0x00007f31e79560b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
+#13 0x000056154a6c4afe _start (/home/muzzammil/HPSSA/llvm-project/build/bin//opt+0x50aafe)
+Aborted (core dumped)
