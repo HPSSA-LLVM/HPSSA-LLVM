@@ -14,7 +14,8 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
   int n;
   reader >> n;
   for (int i = 0; i < n; i++) {
-    vector<string> path;
+    // vector<string> path;
+    // getline()
     int numNodes;
     reader >> numNodes;
     string node;
@@ -178,11 +179,6 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     return PreservedAnalyses::all();
   }
   DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
-
-  // Get Backedge list
-  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
-  FindFunctionBackedges(F, result);
-
   // Hot path information
   // ? Avoid doing this thing twice
   auto HotPathSet = getProfileInfo(F);
@@ -198,9 +194,22 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   /// basic blocks in Post order ( Assume DAG )
   ReversePostOrderTraversal<Function *> RPOT(&F);
 
+  /// Store all paths that have been visited till now
+  BitVector allPaths;
+
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I; // Pointer to the current basic block being visited
     errs() << BB->getName() << " " << isCaloric[BB] << "\n";
+
+
+    // Paths incubating from this basic block
+    auto IncubationPath = allPaths;
+    IncubationPath &= HotPathSet[BB];
+    IncubationPath ^= allPaths;
+
+
+    // update allPaths
+    allPaths |= IncubationPath;
 
     // current phi whose definitions will be filtered by taus
     for (auto &phi : BB->phis()) {
@@ -235,7 +244,15 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // * Add incubation nodes too
         // ? Remove hot backedge or not ?
         defAccumulator[{&phi, BB}].add(arg, temp);
+
+
+        // add paths originating from here 
+        // this argument is available on these paths too
+        // but for that should come from parent.
+        defAccumulator[{&phi,BB}].add(arg,IncubationPath);
+
       }
+
       // errs()<<"\n";
 
       //=====================================================================//
