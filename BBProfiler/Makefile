@@ -14,10 +14,10 @@ endif
 all: allpasses
 
 pass.so: pass.o 
-	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -shared build/BBProfiler.cpp.o -o build/BBProfiler.cpp.so $(LDFLAGS)
 
-pass.o: HPSSA.cpp headers/HPSSA.h
-	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
+pass.o: BBProfiler.cpp headers/BBProfiler.h
+	$(CXX) -c BBProfiler.cpp -o build/BBProfiler.cpp.o $(CXXFLAGS)
 
 ir: tests/test.cpp
 	# echo ${LLVM_BIN_PATH}
@@ -28,9 +28,9 @@ mem2reg: ir
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 allpasses: mem2reg pass.so
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/BBProfiler.cpp.so -passes=bbprofiler -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
 	# Handle exit code of diff(1 if changes found).
 	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
 clean: 
-	rm -rf .*.dot output/* build/*  IR/* && cd IR && mkdir BC && mkdir LL
+	rm -rf .*.dot output build  IR && mkdir output && mkdir build  && mkdir IR && cd IR && mkdir BC && mkdir LL

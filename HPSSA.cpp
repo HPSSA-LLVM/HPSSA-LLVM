@@ -326,7 +326,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
               F.getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
 
           CallInst *TAUNode;
-          TAUNode = CallInst::Create(tau, Args, "tau", curr->getTerminator());
+          TAUNode = CallInst::Create(tau, Args, "tau", curr->getFirstNonPHI());
 
           // Done
           isInserted[{&phi, curr}] = true;
