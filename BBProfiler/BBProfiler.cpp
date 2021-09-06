@@ -1,38 +1,41 @@
 #include "headers/BBProfiler.h"
 using namespace llvm;
 using namespace std;
-static LLVMContext myContext;
+// static LLVMContext myContext;
 
 void writeSomething() {
-    std::cout << "Awesome" << std::endl;
-} 
+  errs() << "Awesome"
+         << "\n";
+}
 
-PreservedAnalyses  BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
-    // Void type
-    llvm::FunctionType* fccType = llvm::FunctionType::get(llvm::Type::getVoidTy(myContext), false);
+PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
 
-    // External - c++
-    auto fcc = M.getOrInsertFunction("writeSomething", fccType);
+  // void function
+  vector<Type *> Params { Type::getInt32Ty(M.getContext()) };
+  FunctionType *fccType =
+      FunctionType::get(Type::getVoidTy(M.getContext()),Params,false);
+  Function *sampleFun = Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7counteri", &M);
 
-  for(auto &F: M) {
-    for(auto &BB: F) {
-        std::vector<Value *> Args;
-        // llvm::dyn_cast
-        // StringRef BBName = BB.getName();
-        // char* str = (char*)malloc((BBName.size()+1)*sizeof(char));
-        // const char* data = BBName.data();
-        // for(int i = 0; i < BBName.size(); i++) {
-        //   str[i] = data[i];
-        // }
-        // str[BBName.size()] = '\0';
-        
-        // Args.push_back(dyn_cast<Value>(str));
-        // Call
-        std::vector<Value*> emptyArgs;
-        CallInst::Create(fcc, makeArrayRef(emptyArgs));
+// create a function type taking a string as an argument
+
+  // Function pointer
+  // auto sampleFun = M.getOrInsertFunction("writeSomething", Function::ExternalLinkage, fccType);
+
+  int count = 0;
+  for (auto &F : M) {
+    count +=1;
+    for (auto &BB : F) {
+      std::vector<Value *> Args;
+      Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()),count));
+      // Args.push_back(dyn_cast<Value*>(StringRef("Hello World")));
+      // Args.push_back(IRBuilderBase::CreateGlobalString(BB.getName(),M));
+      // inserting in the end of the basic block
+    
+      CallInst::Create(sampleFun, Args, "", BB.getTerminator());
+      count++;
     }
   }
-    return PreservedAnalyses::none();
+  return PreservedAnalyses::none();
 }
 
 llvm::PassPluginLibraryInfo getBBProfilerPluginInfo() {
@@ -41,7 +44,7 @@ llvm::PassPluginLibraryInfo getBBProfilerPluginInfo() {
                 [](StringRef Name, ModulePassManager &MPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "bbprofiler") {
-                    MPM.addPass( BBProfilerPass());
+                    MPM.addPass(BBProfilerPass());
                     return true;
                   }
                   return false;
