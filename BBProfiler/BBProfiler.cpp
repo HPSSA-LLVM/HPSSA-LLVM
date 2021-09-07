@@ -11,30 +11,37 @@ void writeSomething() {
 PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
 
   // void function
-  vector<Type *> Params { Type::getInt32Ty(M.getContext()) };
+  vector<Type *> Params{Type::getInt32Ty(M.getContext())};
   FunctionType *fccType =
-      FunctionType::get(Type::getVoidTy(M.getContext()),Params,false);
-  Function *sampleFun = Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7counteri", &M);
+      FunctionType::get(Type::getVoidTy(M.getContext()), Params, false);
+  Function *sampleFun = Function::Create(fccType, GlobalValue::ExternalLinkage,
+                                         "_Z7counteri", &M);
 
-// create a function type taking a string as an argument
+  // create a function type taking a string as an argument
 
   // Function pointer
-  // auto sampleFun = M.getOrInsertFunction("writeSomething", Function::ExternalLinkage, fccType);
+  // auto sampleFun = M.getOrInsertFunction("writeSomething",
+  // Function::ExternalLinkage, fccType);
 
   int count = 0;
+      FILE* bbMap = fopen("bbMap.txt","w");
   for (auto &F : M) {
-    count +=1;
+    // Assuming one function only
+    if(F.getName() != "main") continue;
     for (auto &BB : F) {
+      count += 1;
+
+      fprintf(bbMap,"%d %s %s\n",count,F.getName().str().c_str(),BB.getName().str().c_str());
+
       std::vector<Value *> Args;
-      Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()),count));
+      Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()), count));
       // Args.push_back(dyn_cast<Value*>(StringRef("Hello World")));
       // Args.push_back(IRBuilderBase::CreateGlobalString(BB.getName(),M));
       // inserting in the end of the basic block
-    
       CallInst::Create(sampleFun, Args, "", BB.getTerminator());
-      count++;
     }
   }
+  fclose(bbMap);
   return PreservedAnalyses::none();
 }
 
