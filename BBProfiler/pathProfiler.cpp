@@ -2,7 +2,6 @@
 using namespace std;
 
 bool flag = 1;
-vector<bool> visited;
 void counter(int n) {
   FILE *pathData = fopen("pathData.txt", "a");
   if(flag){
@@ -13,16 +12,6 @@ void counter(int n) {
   fclose(pathData);
 }
 
-bool flag2 = 1;
-void BBname(s,){
-  FILE* bbMap = fopen("bbMap.txt","a");
-  if(flag2){
-	  fprintf(bbMap,"\n");
-	  flag2 = 0;
-  }
-
-
-}
 
 
 /**
@@ -33,4 +22,4 @@ void BBname(s,){
  * Use both maps
  * Optionally read bbMap.txt : output name directly
  *        HPSSA.cpp -> directly 
- * /
+ */
