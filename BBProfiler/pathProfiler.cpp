@@ -3,6 +3,9 @@ using namespace std;
 
 bool flag = 1;
 void counter(int n) {
+  if(n == -1) {
+    exit(0);
+  }
   FILE *pathData = fopen("pathData.txt", "a");
   if(flag){
 	  fprintf(pathData,"\n");

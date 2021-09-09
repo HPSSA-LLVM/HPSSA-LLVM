@@ -25,7 +25,10 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
 
   int count = 0;
       FILE* bbMap = fopen("bbMap.txt","w");
-  for (auto &F : M) {
+  for (Function &F : M) {
+    if(F.isDeclaration())continue;
+    SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+    FindFunctionBackedges(F, result); // backedges in this function
     // Assuming one function only
     if(F.getName() != "main") continue;
     for (auto &BB : F) {
@@ -39,6 +42,14 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
       // Args.push_back(IRBuilderBase::CreateGlobalString(BB.getName(),M));
       // inserting in the end of the basic block
       CallInst::Create(sampleFun, Args, "", BB.getTerminator());
+    }
+    for(auto Backedges: result) {
+      BasicBlock* from = const_cast<BasicBlock*>(Backedges.first);
+      BasicBlock* to = const_cast<BasicBlock*>(Backedges.second);
+      BasicBlock* blocker = SplitEdge(from, to);
+      std::vector<Value *> Args;
+      Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()), -1)); //terminate
+      CallInst::Create(sampleFun, Args, "", blocker->getTerminator());
     }
   }
   fclose(bbMap);

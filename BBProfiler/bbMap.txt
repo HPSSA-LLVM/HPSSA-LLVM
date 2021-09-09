@@ -1,15 +1,3 @@
 1 main entry
-2 main if.then
-3 main if.else
-4 main if.end
-5 main if.else10
-6 main if.then12
-7 main if.end17
-8 main if.then19
-9 main if.else22
-10 main if.end27
-11 main if.else30
-12 main if.then34
-13 main if.else37
-14 main new_label
-15 main end_label
+2 main for.cond.cleanup
+3 main for.body
