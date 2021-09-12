@@ -1,79 +1,46 @@
 ===-------------------------------------------------------------------------===
 Caloric Connector and BuddySet Information:
 ===-------------------------------------------------------------------------===
-entry: {1 1 0 } 
-entry_1: { 1 0 0 } 
-entry_2: { 0 1 0 } 
-while_start_label.preheader: { 0 1 0 } { 1 0 0 } 
-while_start_label: { 0 1 1 } { 1 0 1 } 
-while_else_label is a Caloric Connector
-while_else_label: { 0 1 0 } 
-while_if_label: { 0 0 1 } { 1 0 0 } 
-while_end_label: { 0 1 0 } { 0 0 1 } { 1 0 0 } 
-cleanup19: { 0 1 0 } { 0 0 1 } { 1 0 0 } 
+bb: {} 
+bb10: 
+bb12: 
+bb14: 
+bb18: 
+bb29: 
+bb26: 
+bb32: 
+bb39: 
 ===-------------------------------------------------------------------------===
 Initiating Tau Insertion Algroithm
 ===-------------------------------------------------------------------------===
-entry 0
-entry_1 0
-entry_2 0
-while_start_label.preheader 0
-Visiting while_start_label.preheader
-mul {1 0 0 }
-div {0 1 0 }
-while_start_label.preheader : while_start_label
-Visiting while_start_label
-mul {1 0 0 }
-div {0 1 0 }
-while_start_label : while_if_label
-while_start_label : while_else_label
-Visiting while_else_label
-div {0 1 0 }
-Inserted Tau at : while_else_label
-while_else_label : while_end_label
-Visiting while_if_label
-mul {1 0 0 }
-while_if_label : while_end_label
-Visiting while_end_label
-mul {1 0 0 }
-div {0 1 0 }
-while_end_label : while_start_label
-while_end_label : cleanup19
-Visiting cleanup19
-mul {1 0 0 }
-div {0 1 0 }
-while_start_label 0
-while_else_label 1
-while_if_label 0
-while_end_label 0
-Visiting while_end_label
-mul11 {1 0 1 }
-mul13 {0 1 0 }
-while_end_label : cleanup19
-Visiting cleanup19
-mul11 {1 0 1 }
-mul13 {0 1 0 }
-cleanup19 0
+bb 0
+bb10 0
+bb12 0
+bb14 0
+bb18 0
+bb29 0
+bb26 0
+bb32 0
+bb39 0
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0032 seconds (0.0032 wall clock)
+  Total Execution Time: 0.0040 seconds (0.0070 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0015 ( 46.8%)   0.0015 ( 46.8%)   0.0015 ( 46.8%)  PrintModulePass
-   0.0009 ( 29.5%)   0.0009 ( 29.5%)   0.0009 ( 29.5%)  HPSSAPass
-   0.0004 ( 11.8%)   0.0004 ( 11.8%)   0.0004 ( 11.8%)  VerifierPass
-   0.0004 ( 11.5%)   0.0004 ( 11.5%)   0.0004 ( 11.5%)  VerifierAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.2%)   0.0000 (  0.2%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.2%)   0.0000 (  0.2%)  DominatorTreeAnalysis
-   0.0032 (100.0%)   0.0032 (100.0%)   0.0032 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0001 ( 14.1%)   0.0009 ( 26.4%)   0.0010 ( 24.0%)   0.0040 ( 56.9%)  HPSSAPass
+   0.0000 (  0.0%)   0.0019 ( 57.2%)   0.0019 ( 46.4%)   0.0019 ( 26.3%)  PrintModulePass
+   0.0003 ( 43.1%)   0.0003 (  8.3%)   0.0006 ( 14.9%)   0.0006 (  8.4%)  VerifierPass
+   0.0003 ( 41.8%)   0.0003 (  8.1%)   0.0006 ( 14.5%)   0.0006 (  8.2%)  VerifierAnalysis
+   0.0000 (  1.1%)   0.0000 (  0.0%)   0.0000 (  0.2%)   0.0000 (  0.1%)  DominatorTreeAnalysis
+   0.0008 (100.0%)   0.0032 (100.0%)   0.0040 (100.0%)   0.0070 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0043 seconds (0.0043 wall clock)
+  Total Execution Time: 0.0078 seconds (0.0087 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0043 (100.0%)   0.0043 (100.0%)   0.0043 (100.0%)  Parse IR
-   0.0043 (100.0%)   0.0043 (100.0%)   0.0043 (100.0%)  Total
+   0.0078 (100.0%)   0.0078 (100.0%)   0.0087 (100.0%)  Parse IR
+   0.0078 (100.0%)   0.0078 (100.0%)   0.0087 (100.0%)  Total
 

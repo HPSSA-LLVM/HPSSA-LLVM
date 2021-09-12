@@ -18,13 +18,13 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
                                          "_Z7counteri", &M);
 
   // create a function type taking a string as an argument
-
   // Function pointer
   // auto sampleFun = M.getOrInsertFunction("writeSomething",
   // Function::ExternalLinkage, fccType);
 
   int count = 0;
-      FILE* bbMap = fopen("bbMap.txt","w");
+  FILE* bbMap = fopen("bbMap.txt","w");
+  
   for (Function &F : M) {
     if(F.isDeclaration())continue;
     SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;

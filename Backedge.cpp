@@ -25,6 +25,7 @@ llvm::PassPluginLibraryInfo getBackedgePluginInfo() {
                 });
           }};
 }
+
 // This is the core interface for pass plugins. It guarantees that 'opt' will
 // be able to recognize HPSSA Pass when added to the pass pipeline on the
 // command line, i.e. via '-passes=hpssa'

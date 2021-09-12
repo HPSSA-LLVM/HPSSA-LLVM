@@ -7,7 +7,7 @@ CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
-ifndef VERBROSE
+ifndef VERBOSE
 .SILENT:
 endif
 

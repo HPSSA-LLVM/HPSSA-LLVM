@@ -56,7 +56,7 @@ int main(int argc, char* argv[]){
 	// get no of hot path
 	long long hotPathCount = 0;
 	for(auto [pathId, count]: pathCount){
-		if(count>=threshold){
+		if(count >= threshold){
 			hotPathCount +=1;
 		}
 	}
