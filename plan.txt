@@ -1,4 +1,0 @@
-AT current basic block:
--> Iterate over all phi functions in bb
-    -> If definition accumulator for that 'variable' exists
-    -> For the current phi node, push (def-acc, b)
