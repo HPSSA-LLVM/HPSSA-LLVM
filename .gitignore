@@ -5,5 +5,10 @@
 *.so
 *.log
 
-build/
-IR/
+*/build/
+*/IR/
+
+*.txt
+*.out
+*.o
+*.a
