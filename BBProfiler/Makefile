@@ -32,5 +32,19 @@ allpasses: mem2reg pass.so
 	# Handle exit code of diff(1 if changes found).
 	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
+
+# test: pathProfiler.cpp 
+# 	$(CXX) $(CXXFLAGS) pathProfiler.cpp IR/LL/test_modified.ll
+# # sh shell
+# 	i=0
+# 	while [ "$i" -lt 100 ];do
+# 		echo "$((RANDOM%40 -20)) $((RANDOM%40-20))"|./a.out
+# 		i=$((i+1))
+# 	done
+# 	$(CXX) $(CXXFLAGS) bbReader.cpp -o bbReader.o
+# 	./bbReader 5
+      
+      
+
 clean: 
 	rm -rf .*.dot output build  IR && mkdir output && mkdir build  && mkdir IR && cd IR && mkdir BC && mkdir LL

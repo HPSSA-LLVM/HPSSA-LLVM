@@ -1,12 +1,6 @@
 #include "headers/BBProfiler.h"
 using namespace llvm;
 using namespace std;
-// static LLVMContext myContext;
-
-void writeSomething() {
-  errs() << "Awesome"
-         << "\n";
-}
 
 PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
 
