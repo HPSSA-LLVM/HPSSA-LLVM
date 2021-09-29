@@ -9,7 +9,7 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
     getPointer[BB.getName()] = &BB;
   }
   ifstream reader;
-  reader.open("path.txt");
+  reader.open("BBProfiler/profileInfo.txt");
   map<BasicBlock *, BitVector> HotPaths;
   int n;
   reader >> n;
@@ -50,7 +50,6 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     IncubationPath &= HotPathSet[BB];
     IncubationPath ^= HotPathSet[BB];
 
-
     // update allPaths
     allPaths |= IncubationPath;
 
@@ -58,10 +57,9 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     if (BB->isEntryBlock()) {
 
       /* Printing stuff */
-      errs() << "===-----------------------------------------------------------"
-                "--------------===\nCaloric Connector and BuddySet "
-                "Information:\n===---------------------------------------------"
-                "----------------------------===\n";
+      errs() << "--------------===\n"
+                "Caloric Connector and BuddySet Information\n"
+                "===--------------\n";
       errs() << BB->getName() << ": ";
       BuddySet[BB].push_back(
           HotPathSet[BB]); // All hot paths in a single buddy set;
@@ -148,12 +146,11 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
       }
     }
 
-
     // * All the definitions reaching to this block are also
     // * avilable along the incubation nodes. Buddy set contains
     // * the set of paths carrying same definition
     // * The buddy sets are no more disjoint.
-    for(auto &buddyDefs: BuddySet[BB]){
+    for (auto &buddyDefs : BuddySet[BB]) {
       buddyDefs |= IncubationPath;
     }
 
@@ -206,10 +203,9 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   auto isCaloric = getCaloricConnector(F);
   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
 
-  errs() << "===---------------------------------------------------------------"
-            "----------===\nInitiating Tau Insertion "
-            "Algroithm\n===----------------------------------------------------"
-            "---------------------===\n";
+  errs() << "----------===\n"
+            " Initiating Tau Insertion Algroithm\n"
+            "===----------\n";
 
   /// RPOT provides access to the reverse iterators of vector containining
   /// basic blocks in Post order ( Assume DAG )
@@ -222,12 +218,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     auto BB = *I; // Pointer to the current basic block being visited
     errs() << BB->getName() << " " << isCaloric[BB] << "\n";
 
-
     // Paths incubating from this basic block
     // auto IncubationPath = allPaths;
     // IncubationPath &= HotPathSet[BB];
     // IncubationPath ^= HotPathSet[BB];
-
 
     // update allPaths
     // allPaths |= IncubationPath;
@@ -266,12 +260,10 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // ? Remove hot backedge or not ?
         defAccumulator[{&phi, BB}].add(arg, temp);
 
-
-        // add paths originating from here 
+        // add paths originating from here
         // this argument is available on these paths too
         // but for that should come from parent.
         // defAccumulator[{&phi,BB}].add(arg,IncubationPath);
-
       }
 
       // errs()<<"\n";

@@ -17,18 +17,21 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
   // Function::ExternalLinkage, fccType);
 
   int count = 0;
-  FILE* bbMap = fopen("bbMap.txt","w");
-  
+  FILE *bbMap = fopen("bbMap.txt", "w");
+
   for (Function &F : M) {
-    if(F.isDeclaration())continue;
+    if (F.isDeclaration())
+      continue;
     SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
     FindFunctionBackedges(F, result); // backedges in this function
     // Assuming one function only
-    if(F.getName() != "main") continue;
+    if (F.getName() != "main")
+      continue;
     for (auto &BB : F) {
       count += 1;
 
-      fprintf(bbMap,"%d %s %s\n",count,F.getName().str().c_str(),BB.getName().str().c_str());
+      fprintf(bbMap, "%d %s %s\n", count, F.getName().str().c_str(),
+              BB.getName().str().c_str());
 
       std::vector<Value *> Args;
       Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()), count));
@@ -37,12 +40,13 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
       // inserting in the end of the basic block
       CallInst::Create(sampleFun, Args, "", BB.getTerminator());
     }
-    for(auto Backedges: result) {
-      BasicBlock* from = const_cast<BasicBlock*>(Backedges.first);
-      BasicBlock* to = const_cast<BasicBlock*>(Backedges.second);
-      BasicBlock* blocker = SplitEdge(from, to);
+    for (auto Backedges : result) {
+      BasicBlock *from = const_cast<BasicBlock *>(Backedges.first);
+      BasicBlock *to = const_cast<BasicBlock *>(Backedges.second);
+      BasicBlock *blocker = SplitEdge(from, to);
       std::vector<Value *> Args;
-      Args.push_back(ConstantInt::get(Type::getInt32Ty(M.getContext()), -1)); //terminate
+      Args.push_back(
+          ConstantInt::get(Type::getInt32Ty(M.getContext()), -1)); // terminate
       CallInst::Create(sampleFun, Args, "", blocker->getTerminator());
     }
   }

@@ -1,6 +1,5 @@
 #include <iostream>
-#ifndef _SUDOKU_PUZZLE_H
-#define _SUDOKU_PUZZLE_H
+#include <cstdlib>
 
 /*
  * See SudokuPuzzle.cpp for implementation and detailed API.
@@ -39,8 +38,6 @@ class SudokuPuzzle {
 	bool solve();
 	
 };
-
-#endif
 
 
 /*
@@ -385,43 +382,51 @@ int main (int argc, char * const argv[]) {
 	 *      -------------------------------
 	 *
 	 */
-	
+//	for(int x = 0;x<9;x++){
+//		for(int y = 0;y<9;y++){
+//			bool decide = (std::rand())%2;
+//                        if(decide)continue;
+//
+//                        int value = (std::rand())%9 + 1;
+//                        puzzle.setBoardValue(x,y,value);
+//		}
+//	}
 	// Set known values on board block 1
 	puzzle.setBoardValue(0,0,1);
 	puzzle.setBoardValue(1,1,3);
 	puzzle.setBoardValue(2,2,9);
-	
+
 	// Set known values on board block 2
 	puzzle.setBoardValue(3,2,6);
 	puzzle.setBoardValue(4,1,2);
 	puzzle.setBoardValue(5,0,7);
-	
+
 	// Set known values on board block 3
 	puzzle.setBoardValue(6,2,5);
 	puzzle.setBoardValue(7,0,9);
 	puzzle.setBoardValue(8,1,8);
-	
+
 	// Set known values on board block 4
 	puzzle.setBoardValue(0,5,6);
 	puzzle.setBoardValue(1,4,1);
 	puzzle.setBoardValue(2,3,5);
-	
+
 	// Set known values on board block 5
 	puzzle.setBoardValue(3,3,3);
 	puzzle.setBoardValue(4,4,8);
 	puzzle.setBoardValue(5,5,4);
-	
+
 	// Set known values on board block 6
 	puzzle.setBoardValue(6,3,9);
 	puzzle.setBoardValue(8,4,2);
-	
+
 	// Set known values on board block 7
 	puzzle.setBoardValue(0,6,3);
 	puzzle.setBoardValue(1,7,4);
 	puzzle.setBoardValue(2,8,7);
-	
+
 	// Board block 8 is empty
-	
+
 	// Set known values on board block 9
 	puzzle.setBoardValue(6,8,3);
 	puzzle.setBoardValue(7,6,1);
