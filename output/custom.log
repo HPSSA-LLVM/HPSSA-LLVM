@@ -1,5 +1,5 @@
 --------------===
-Caloric Connector and BuddySet Information
+ Caloric Connector and BuddySet Information
 ===--------------
 entry: {1 1 1 1 } 
 if.else: { 0 1 1 0 } 
@@ -21,93 +21,34 @@ new_label is a Caloric Connector
 new_label: { 0 1 0 0 } 
 end_label: { 0 1 0 0 } { 1 0 0 0 } { 0 0 1 0 } { 0 0 0 1 } 
 ----------===
- Initiating Tau Insertion Algroithm
+Initiating Tau Insertion Algroithm
 ===----------
-entry 0
-if.else 0
-if.then 0
-if.end 0
-Visiting if.end
-add3 {1 0 0 1 }
-add5 {0 1 1 0 }
-if.end : end_label
-if.end : if.else10
-Visiting if.else10
-add3 {1 0 0 0 }
-add5 {0 1 0 0 }
-if.else10 : if.then12
-if.else10 : if.else30
-Visiting if.else30
-add5 {0 1 0 0 }
 Inserted Tau at : if.else30
-if.else30 : if.then34
-if.else30 : if.else37
-Visiting if.else37
-add5 {0 1 0 0 }
-if.else37 : new_label
-Visiting if.then34
-if.then34 : new_label
-Visiting if.then12
-add3 {1 0 0 0 }
 Inserted Tau at : if.then12
-if.then12 : new_label
-if.then12 : if.end17
-Visiting if.end17
-add3 {1 0 0 0 }
-if.end17 : if.then19
-if.end17 : if.else22
-Visiting if.else22
-add3 {1 0 0 0 }
-if.else22 : if.end27
-Visiting if.then19
-if.then19 : if.end27
-Visiting if.end27
-add3 {1 0 0 0 }
 Inserted Tau at : if.end27
-if.end27 : end_label
-Visiting new_label
-add5 {0 1 0 0 }
 Inserted Tau at : new_label
-new_label : end_label
-Visiting end_label
-add3 {1 0 0 1 }
-add5 {0 1 1 0 }
-if.else10 0
-if.else30 1
-if.else37 0
-if.then34 0
-if.then12 1
-if.end17 0
-if.else22 0
-if.then19 0
-if.end27 1
-Visiting if.end27
-add26 {1 0 0 0 }
 Inserted Tau at : if.end27
-Visiting new_label
-new_labelReached the Dominance frontier
-new_label 1
-end_label 0
+Reached the Dominance frontier while visiting from: new_label
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0036 seconds (0.0036 wall clock)
+  Total Execution Time: 0.0011 seconds (0.0011 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0014 ( 37.9%)   0.0014 ( 37.9%)   0.0014 ( 38.1%)  PrintModulePass
-   0.0012 ( 32.7%)   0.0012 ( 32.7%)   0.0012 ( 32.5%)  HPSSAPass
-   0.0005 ( 14.6%)   0.0005 ( 14.6%)   0.0005 ( 14.6%)  VerifierPass
-   0.0005 ( 14.4%)   0.0005 ( 14.4%)   0.0005 ( 14.4%)  VerifierAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.2%)   0.0000 (  0.2%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.2%)   0.0000 (  0.2%)  DominatorTreeAnalysis
-   0.0036 (100.0%)   0.0036 (100.0%)   0.0036 (100.0%)  Total
+   0.0006 ( 55.9%)   0.0006 ( 55.9%)   0.0006 ( 56.0%)  HPSSAPass
+   0.0002 ( 17.6%)   0.0002 ( 17.6%)   0.0002 ( 17.6%)  PrintModulePass
+   0.0001 ( 12.8%)   0.0001 ( 12.8%)   0.0001 ( 12.8%)  VerifierPass
+   0.0001 ( 12.1%)   0.0001 ( 12.1%)   0.0001 ( 12.1%)  VerifierAnalysis
+   0.0000 (  1.0%)   0.0000 (  1.0%)   0.0000 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.6%)   0.0000 (  0.6%)   0.0000 (  0.7%)  DominatorTreeAnalysis
+   0.0011 (100.0%)   0.0011 (100.0%)   0.0011 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0037 seconds (0.0037 wall clock)
+  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0037 (100.0%)   0.0037 (100.0%)   0.0037 (100.0%)  Parse IR
-   0.0037 (100.0%)   0.0037 (100.0%)   0.0037 (100.0%)  Total
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
 

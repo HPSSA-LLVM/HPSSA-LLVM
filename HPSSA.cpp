@@ -53,16 +53,15 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     // update allPaths
     allPaths |= IncubationPath;
 
-    // if entry block
     if (BB->isEntryBlock()) {
 
       /* Printing stuff */
-      errs() << "--------------===\n"
-                "Caloric Connector and BuddySet Information\n"
-                "===--------------\n";
+      errs() << "--------------===\n Caloric Connector and BuddySet "
+                "Information\n===--------------\n";
       errs() << BB->getName() << ": ";
-      BuddySet[BB].push_back(
-          HotPathSet[BB]); // All hot paths in a single buddy set;
+
+      // All hot paths in a single buddy set;
+      BuddySet[BB].push_back(HotPathSet[BB]);
       for (auto buddy : BuddySet[BB]) {
         errs() << "{";
         for (int i = 0; i < buddy.size(); i++) {
@@ -72,6 +71,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
       }
       errs() << "\n";
       /* Printing stuff */
+
       n = HotPathSet[BB].size();
       continue;
     }
@@ -203,9 +203,8 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   auto isCaloric = getCaloricConnector(F);
   map<std::pair<PHINode *, BasicBlock *>, bool> isInserted;
 
-  errs() << "----------===\n"
-            " Initiating Tau Insertion Algroithm\n"
-            "===----------\n";
+  errs()
+      << "----------===\nInitiating Tau Insertion Algroithm\n===----------\n";
 
   /// RPOT provides access to the reverse iterators of vector containining
   /// basic blocks in Post order ( Assume DAG )
@@ -216,7 +215,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I; // Pointer to the current basic block being visited
-    errs() << BB->getName() << " " << isCaloric[BB] << "\n";
+    // errs() << BB->getName() << " " << isCaloric[BB] << "\n";
 
     // Paths incubating from this basic block
     // auto IncubationPath = allPaths;
@@ -273,31 +272,30 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
       // Use RPOT
       for (auto J = I; J != RPOT.end(); ++J) {
         auto curr = *J;
-        errs() << "Visiting " << curr->getName() << "\n";
+        // errs() << "Visiting " << curr->getName() << "\n";
 
-        for (auto defInfo : defAccumulator[{&phi, curr}].frameVector) {
-          errs() << defInfo.first->getName() << " ";
-          errs() << "{";
-          for (int i = 0; i < defInfo.second.size(); i++) {
-            errs() << defInfo.second[i] << " ";
-          }
-          errs() << "}\n";
-        }
+        // for (auto defInfo : defAccumulator[{&phi, curr}].frameVector) {
+        //   errs() << defInfo.first->getName() << " ";
+        //   errs() << "{";
+        //   for (int i = 0; i < defInfo.second.size(); i++) {
+        //     errs() << defInfo.second[i] << " ";
+        //   }
+        //   errs() << "}\n";
+        // }
 
         // http://pages.cs.wisc.edu/~fischer/cs701.f05/lectures/Lecture22.pdf
 
         // ! Not sure why we need to explicitily check whether the given
         // ! block is current block
         if (curr != BB && !DT.dominates(&phi, curr)) {
-          errs() << curr->getName() << "Reached the Dominance frontier"
-                 << "\n";
+          errs() << "Reached the Dominance frontier while visiting from: "
+                 << curr->getName() << "\n";
           break;
         }
         // Required condition for tau insertion
         if (isCaloric[curr] && !isInserted[{&phi, curr}] &&
             defAccumulator[{&phi, curr}].size() != 0) {
 
-          errs() << "Inserted Tau at : " << curr->getName() << "\n";
           auto TopInstruction = curr->getFirstNonPHI();
 
           std::vector<Type *> Tys;
@@ -322,12 +320,14 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
           // Done
           isInserted[{&phi, curr}] = true;
+
+          errs() << "Inserted Tau at : " << curr->getName() << "\n";
         }
 
         for (auto succ : successors(curr)) {
           if (!DT.dominates(&phi, succ))
             continue;
-          errs() << curr->getName() << " : " << succ->getName() << "\n";
+          // errs() << curr->getName() << " : " << succ->getName() << "\n";
 
           auto temp = HotPathSet[succ];
           temp &= currPaths[curr];
