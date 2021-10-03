@@ -4,9 +4,10 @@ using namespace std;
 bool flag = 1;
 void counter(int n) {
   FILE *pathData = fopen("pathData.txt", "a");
+
   if (n == -1) {
-    // exit(0);
-    fprintf(pathData, "\n"); // new path starting from loop header
+    // new path starting from loop header
+    fprintf(pathData, "\n");
     fclose(pathData);
     return;
   }
