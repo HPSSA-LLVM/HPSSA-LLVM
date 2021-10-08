@@ -19,12 +19,10 @@
 //#include "llvm/Support/TypeBuilder.h" //removed
 #include "TypeBuilder.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/Transforms/Instrumentation.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include <vector>
 
 namespace llvm {
-    class HPSSAPass : public PassInfoMixin<HPSSAPass> {
-        
-    };
-}
+class HPSSAPass : public PassInfoMixin<HPSSAPass> {};
+} // namespace llvm

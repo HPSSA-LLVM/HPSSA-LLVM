@@ -16,6 +16,7 @@ int main() {
 
   a = a + 7;
   b = b * 6;
+  std::cout << a << b << std::endl;
 
   if (b > 6) {
     goto end_label;
@@ -23,6 +24,7 @@ int main() {
     if (a > 9) {
       a = a + 7;
       b = b * 6;
+      std::cout << a << b << std::endl;
 
       if (a < 18)
         goto new_label;
@@ -34,12 +36,14 @@ int main() {
         a = a * 5 + 4;
         b = b * 4 + 3;
       }
+      std::cout << a << b << std::endl;
 
       a = a + b;
       b = a * b;
     } else {
       a = a + 5;
       b = b * 6;
+      std::cout << a << b << std::endl;
 
       if (b > 16) {
         a = a + 5;
@@ -52,9 +56,11 @@ int main() {
     new_label:
       a = a + 7;
       b = b + 6;
+      std::cout << a << b << std::endl;
     }
   }
 
 end_label:
+  std::cout << a << b << std::endl;
   return 0;
 }

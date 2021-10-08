@@ -8,7 +8,7 @@ int main() {
   srand(time(NULL));
 
   for (int j = 0; j < 1000; j++) {
-     if (rand() % 100 == 10) {
+    if (rand() % 100 == 10) {
       a = b + 1;
       d = 50 - arr[(a + d) % 5];
       std::cout << c << d << std::endl;

@@ -27,9 +27,9 @@
 #define LLVM_PATH_NUMBERING_H
 
 #include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/CFG.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/Pass.h"
-#include "llvm/IR/CFG.h"
 // #include "llvm/Analysis/ProfileInfoTypes.h" //removed
 #include "ProfileInfoTypes.h"
 #include <map>
@@ -42,12 +42,12 @@ class BallLarusEdge;
 class BallLarusDag;
 
 // typedefs for storage/ interators of various DAG components
-typedef std::vector<BallLarusNode*> BLNodeVector;
-typedef std::vector<BallLarusNode*>::iterator BLNodeIterator;
-typedef std::vector<BallLarusEdge*> BLEdgeVector;
-typedef std::vector<BallLarusEdge*>::iterator BLEdgeIterator;
-typedef std::map<BasicBlock*, BallLarusNode*> BLBlockNodeMap;
-typedef std::stack<BallLarusNode*> BLNodeStack;
+typedef std::vector<BallLarusNode *> BLNodeVector;
+typedef std::vector<BallLarusNode *>::iterator BLNodeIterator;
+typedef std::vector<BallLarusEdge *> BLEdgeVector;
+typedef std::vector<BallLarusEdge *>::iterator BLEdgeIterator;
+typedef std::map<BasicBlock *, BallLarusNode *> BLBlockNodeMap;
+typedef std::stack<BallLarusNode *> BLNodeStack;
 
 // Represents a basic block with information necessary for the BallLarus
 // algorithms.
@@ -56,14 +56,14 @@ public:
   enum NodeColor { WHITE, GRAY, BLACK };
 
   // Constructor: Initializes a new Node for the given BasicBlock
-  BallLarusNode(BasicBlock* BB) :
-    _basicBlock(BB), _numberPaths(0), _color(WHITE) {
+  BallLarusNode(BasicBlock *BB)
+      : _basicBlock(BB), _numberPaths(0), _color(WHITE) {
     static unsigned nextUID = 0;
     _uid = nextUID++;
   }
 
   // Returns the basic block for the BallLarusNode
-  BasicBlock* getBlock();
+  BasicBlock *getBlock();
 
   // Get/set the number of paths to the exit starting at the node.
   unsigned getNumberPaths();
@@ -86,16 +86,16 @@ public:
   unsigned getNumberSuccEdges();
 
   // Add an edge to the predecessor list.
-  void addPredEdge(BallLarusEdge* edge);
+  void addPredEdge(BallLarusEdge *edge);
 
   // Remove an edge from the predecessor list.
-  void removePredEdge(BallLarusEdge* edge);
+  void removePredEdge(BallLarusEdge *edge);
 
   // Add an edge to the successor list.
-  void addSuccEdge(BallLarusEdge* edge);
+  void addSuccEdge(BallLarusEdge *edge);
 
   // Remove an edge from the successor list.
-  void removeSuccEdge(BallLarusEdge* edge);
+  void removeSuccEdge(BallLarusEdge *edge);
 
   // Returns the name of the BasicBlock being represented.  If BasicBlock
   // is null then returns "<null>".  If BasicBlock has no name, then
@@ -104,7 +104,7 @@ public:
 
 private:
   // The corresponding underlying BB.
-  BasicBlock* _basicBlock;
+  BasicBlock *_basicBlock;
 
   // Holds the predecessor edges of this node.
   BLEdgeVector _predEdges;
@@ -123,25 +123,31 @@ private:
 
   // Removes an edge from an edgeVector.  Used by removePredEdge and
   // removeSuccEdge.
-  void removeEdge(BLEdgeVector& v, BallLarusEdge* e);
+  void removeEdge(BLEdgeVector &v, BallLarusEdge *e);
 };
 
 // Represents an edge in the Dag.  For an edge, v -> w, v is the source, and
 // w is the target.
 class BallLarusEdge {
 public:
-  enum EdgeType { NORMAL, BACKEDGE, SPLITEDGE,
-    BACKEDGE_PHONY, SPLITEDGE_PHONY, CALLEDGE_PHONY };
+  enum EdgeType {
+    NORMAL,
+    BACKEDGE,
+    SPLITEDGE,
+    BACKEDGE_PHONY,
+    SPLITEDGE_PHONY,
+    CALLEDGE_PHONY
+  };
 
   // Constructor: Initializes an BallLarusEdge with a source and target.
-  BallLarusEdge(BallLarusNode* source, BallLarusNode* target,
-                                unsigned duplicateNumber)
-    : _source(source), _target(target), _weight(0), _edgeType(NORMAL),
-      _realEdge(NULL), _duplicateNumber(duplicateNumber) {}
+  BallLarusEdge(BallLarusNode *source, BallLarusNode *target,
+                unsigned duplicateNumber)
+      : _source(source), _target(target), _weight(0), _edgeType(NORMAL),
+        _realEdge(NULL), _duplicateNumber(duplicateNumber) {}
 
   // Returns the source/ target node of this edge.
-  BallLarusNode* getSource() const;
-  BallLarusNode* getTarget() const;
+  BallLarusNode *getSource() const;
+  BallLarusNode *getTarget() const;
 
   // Sets the type of the edge.
   EdgeType getType() const;
@@ -157,26 +163,26 @@ public:
   void setWeight(unsigned weight);
 
   // Gets/sets the phony edge originating at the root.
-  BallLarusEdge* getPhonyRoot();
-  void setPhonyRoot(BallLarusEdge* phonyRoot);
+  BallLarusEdge *getPhonyRoot();
+  void setPhonyRoot(BallLarusEdge *phonyRoot);
 
   // Gets/sets the phony edge terminating at the exit.
-  BallLarusEdge* getPhonyExit();
-  void setPhonyExit(BallLarusEdge* phonyExit);
+  BallLarusEdge *getPhonyExit();
+  void setPhonyExit(BallLarusEdge *phonyExit);
 
   // Gets/sets the associated real edge if this is a phony edge.
-  BallLarusEdge* getRealEdge();
-  void setRealEdge(BallLarusEdge* realEdge);
+  BallLarusEdge *getRealEdge();
+  void setRealEdge(BallLarusEdge *realEdge);
 
   // Returns the duplicate number of the edge.
   unsigned getDuplicateNumber();
 
 protected:
   // Source node for this edge.
-  BallLarusNode* _source;
+  BallLarusNode *_source;
 
   // Target node for this edge.
-  BallLarusNode* _target;
+  BallLarusNode *_target;
 
 private:
   // Edge weight cooresponding to path number increments before removing
@@ -189,16 +195,16 @@ private:
 
   // For backedges and split-edges, the phony edge which is linked to the
   // root node of the DAG. This contains a path number initialization.
-  BallLarusEdge* _phonyRoot;
+  BallLarusEdge *_phonyRoot;
 
   // For backedges and split-edges, the phony edge which is linked to the
   // exit node of the DAG. This contains a path counter increment, and
   // potentially a path number increment.
-  BallLarusEdge* _phonyExit;
+  BallLarusEdge *_phonyExit;
 
   // If this is a phony edge, _realEdge is a link to the back or split
   // edge. Otherwise, this is null.
-  BallLarusEdge* _realEdge;
+  BallLarusEdge *_realEdge;
 
   // An ID to differentiate between those edges which have the same source
   // and destination blocks.
@@ -213,8 +219,7 @@ public:
   // Initializes a BallLarusDag from the CFG of a given function.  Must
   // call init() after creation, since some initialization requires
   // virtual functions.
-  BallLarusDag(Function &F)
-    : _root(NULL), _exit(NULL), _function(F) {}
+  BallLarusDag(Function &F) : _root(NULL), _exit(NULL), _function(F) {}
 
   // Initialization that requires virtual functions which are not fully
   // functional in the constructor.
@@ -231,13 +236,13 @@ public:
   unsigned getNumberOfPaths();
 
   // Returns the root (i.e. entry) node for the DAG.
-  BallLarusNode* getRoot();
+  BallLarusNode *getRoot();
 
   // Returns the exit node for the DAG.
-  BallLarusNode* getExit();
+  BallLarusNode *getExit();
 
   // Returns the function for the DAG.
-  Function& getFunction();
+  Function &getFunction();
 
   // Clears the node colors.
   void clearColors(BallLarusNode::NodeColor color);
@@ -256,7 +261,7 @@ protected:
   // Override this method to produce subclasses of BallLarusNode if
   // necessary. The destructor of BallLarusDag will call free on each pointer
   // created.
-  virtual BallLarusNode* createNode(BasicBlock* BB);
+  virtual BallLarusNode *createNode(BasicBlock *BB);
 
   // Allows subclasses to determine which type of Edge is created.
   // Override this method to produce subclasses of BallLarusEdge if
@@ -264,40 +269,41 @@ protected:
   // createNode and can be cast to the subclass of BallLarusNode*
   // returned by createNode. The destructor of BallLarusDag will call free
   // on each pointer created.
-  virtual BallLarusEdge* createEdge(BallLarusNode* source, BallLarusNode*
-                                    target, unsigned duplicateNumber);
+  virtual BallLarusEdge *createEdge(BallLarusNode *source,
+                                    BallLarusNode *target,
+                                    unsigned duplicateNumber);
 
   // Proxy to node's constructor.  Updates the DAG state.
-  BallLarusNode* addNode(BasicBlock* BB);
+  BallLarusNode *addNode(BasicBlock *BB);
 
   // Proxy to edge's constructor.  Updates the DAG state.
-  BallLarusEdge* addEdge(BallLarusNode* source, BallLarusNode* target,
+  BallLarusEdge *addEdge(BallLarusNode *source, BallLarusNode *target,
                          unsigned duplicateNumber);
 
 private:
   // The root (i.e. entry) node for this DAG.
-  BallLarusNode* _root;
+  BallLarusNode *_root;
 
   // The exit node for this DAG.
-  BallLarusNode* _exit;
+  BallLarusNode *_exit;
 
   // The function represented by this DAG.
-  Function& _function;
+  Function &_function;
 
   // Processes one node and its imediate edges for building the DAG.
-  void buildNode(BLBlockNodeMap& inDag, std::stack<BallLarusNode*>& dfsStack);
+  void buildNode(BLBlockNodeMap &inDag, std::stack<BallLarusNode *> &dfsStack);
 
   // Process an edge in the CFG for DAG building.
-  void buildEdge(BLBlockNodeMap& inDag, std::stack<BallLarusNode*>& dfsStack,
-                 BallLarusNode* currentNode, BasicBlock* succBB,
+  void buildEdge(BLBlockNodeMap &inDag, std::stack<BallLarusNode *> &dfsStack,
+                 BallLarusNode *currentNode, BasicBlock *succBB,
                  unsigned duplicateNumber);
 
   // The weight on each edge is the increment required along any path that
   // contains that edge.
-  void calculatePathNumbersFrom(BallLarusNode* node);
+  void calculatePathNumbersFrom(BallLarusNode *node);
 
   // Adds a backedge with its phony edges.  Updates the DAG state.
-  void addBackedge(BallLarusNode* source, BallLarusNode* target,
+  void addBackedge(BallLarusNode *source, BallLarusNode *target,
                    unsigned duplicateCount);
 };
 } // end namespace llvm

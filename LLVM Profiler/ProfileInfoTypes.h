@@ -22,27 +22,24 @@ extern "C" {
 #endif
 
 /* IDs to distinguish between those path counters stored in hashses vs arrays */
-enum ProfilingStorageType {
-  ProfilingArray = 1,
-  ProfilingHash = 2
-};
+enum ProfilingStorageType { ProfilingArray = 1, ProfilingHash = 2 };
 
 enum ProfilingType {
-  ArgumentInfo  = 1,   /* The command line argument block */
-  FunctionInfo  = 2,   /* Function profiling information  */
-  BlockInfo     = 3,   /* Block profiling information     */
-  EdgeInfo      = 4,   /* Edge profiling information      */
-  PathInfo      = 5,   /* Path profiling information      */
-  BBTraceInfo   = 6,   /* Basic block trace information   */
-  OptEdgeInfo   = 7    /* Edge profiling information, optimal version */
+  ArgumentInfo = 1, /* The command line argument block */
+  FunctionInfo = 2, /* Function profiling information  */
+  BlockInfo = 3,    /* Block profiling information     */
+  EdgeInfo = 4,     /* Edge profiling information      */
+  PathInfo = 5,     /* Path profiling information      */
+  BBTraceInfo = 6,  /* Basic block trace information   */
+  OptEdgeInfo = 7   /* Edge profiling information, optimal version */
 };
 
 /*
  * The header for tables that map path numbers to path counters.
  */
 typedef struct {
-  unsigned fnNumber; /* function number for these counters */
-  unsigned numEntries;   /* number of entries stored */
+  unsigned fnNumber;   /* function number for these counters */
+  unsigned numEntries; /* number of entries stored */
 } PathProfileHeader;
 
 /*
@@ -58,4 +55,4 @@ typedef struct {
 #endif
 
 #endif /* LLVM_ANALYSIS_PROFILEINFOTYPES_H */
-// {"mode":"full","isActive":false}
+       // {"mode":"full","isActive":false}
