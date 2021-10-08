@@ -1,4 +1,4 @@
-; ModuleID = 'test1/program1.bc'
+; ModuleID = 'example1.cpp'
 source_filename = "example1.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -35,53 +35,52 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
 
 ; Function Attrs: mustprogress norecurse uwtable
 define dso_local i32 @main() local_unnamed_addr #3 {
-bb:
-  %i = call i64 @time(i64* null) #6
-  %i1 = trunc i64 %i to i32
-  call void @srand(i32 %i1) #6
-  %i2 = call i32 @rand() #6
-  %i3 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 undef)
-  %i4 = bitcast %"class.std::basic_ostream"* %i3 to i8**
-  %i5 = load i8*, i8** %i4, align 8, !tbaa !3
-  %i6 = getelementptr i8, i8* %i5, i64 -24
-  %i7 = bitcast i8* %i6 to i64*
-  %i8 = load i64, i64* %i7, align 8
-  %i9 = bitcast %"class.std::basic_ostream"* %i3 to i8*
-  %i10 = getelementptr inbounds i8, i8* %i9, i64 %i8
-  %i11 = getelementptr inbounds i8, i8* %i10, i64 240
-  %i12 = bitcast i8* %i11 to %"class.std::ctype"**
-  %i13 = load %"class.std::ctype"*, %"class.std::ctype"** %i12, align 8, !tbaa !6
-  %i14 = icmp eq %"class.std::ctype"* %i13, null
-  br i1 %i14, label %bb15, label %bb16
+  %1 = call i64 @time(i64* null) #6
+  %2 = trunc i64 %1 to i32
+  call void @srand(i32 %2) #6
+  %3 = call i32 @rand() #6
+  %4 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 undef)
+  %5 = bitcast %"class.std::basic_ostream"* %4 to i8**
+  %6 = load i8*, i8** %5, align 8, !tbaa !3
+  %7 = getelementptr i8, i8* %6, i64 -24
+  %8 = bitcast i8* %7 to i64*
+  %9 = load i64, i64* %8, align 8
+  %10 = bitcast %"class.std::basic_ostream"* %4 to i8*
+  %11 = getelementptr inbounds i8, i8* %10, i64 %9
+  %12 = getelementptr inbounds i8, i8* %11, i64 240
+  %13 = bitcast i8* %12 to %"class.std::ctype"**
+  %14 = load %"class.std::ctype"*, %"class.std::ctype"** %13, align 8, !tbaa !6
+  %15 = icmp eq %"class.std::ctype"* %14, null
+  br i1 %15, label %16, label %17
 
-bb15:                                             ; preds = %bb
+16:                                               ; preds = %0
   call void @_ZSt16__throw_bad_castv() #7
   unreachable
 
-bb16:                                             ; preds = %bb
-  %i17 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %i13, i64 0, i32 8
-  %i18 = load i8, i8* %i17, align 8, !tbaa !11
-  %i19 = icmp eq i8 %i18, 0
-  br i1 %i19, label %bb23, label %bb20
+17:                                               ; preds = %0
+  %18 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %14, i64 0, i32 8
+  %19 = load i8, i8* %18, align 8, !tbaa !11
+  %20 = icmp eq i8 %19, 0
+  br i1 %20, label %24, label %21
 
-bb20:                                             ; preds = %bb16
-  %i21 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %i13, i64 0, i32 9, i64 10
-  %i22 = load i8, i8* %i21, align 1, !tbaa !13
-  br label %bb29
+21:                                               ; preds = %17
+  %22 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %14, i64 0, i32 9, i64 10
+  %23 = load i8, i8* %22, align 1, !tbaa !13
+  br label %30
 
-bb23:                                             ; preds = %bb16
-  call void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %i13)
-  %i24 = bitcast %"class.std::ctype"* %i13 to i8 (%"class.std::ctype"*, i8)***
-  %i25 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %i24, align 8, !tbaa !3
-  %i26 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %i25, i64 6
-  %i27 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %i26, align 8
-  %i28 = call signext i8 %i27(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %i13, i8 signext 10)
-  br label %bb29
+24:                                               ; preds = %17
+  call void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %14)
+  %25 = bitcast %"class.std::ctype"* %14 to i8 (%"class.std::ctype"*, i8)***
+  %26 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %25, align 8, !tbaa !3
+  %27 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %26, i64 6
+  %28 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %27, align 8
+  %29 = call signext i8 %28(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %14, i8 signext 10)
+  br label %30
 
-bb29:                                             ; preds = %bb23, %bb20
-  %i30 = phi i8 [ %i22, %bb20 ], [ %i28, %bb23 ]
-  %i31 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %i3, i8 signext %i30)
-  %i32 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %i31)
+30:                                               ; preds = %21, %24
+  %31 = phi i8 [ %23, %21 ], [ %29, %24 ]
+  %32 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %4, i8 signext %31)
+  %33 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %32)
   ret i32 0
 }
 
@@ -107,9 +106,8 @@ declare dso_local void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* no
 
 ; Function Attrs: uwtable
 define internal void @_GLOBAL__sub_I_example1.cpp() #5 section ".text.startup" {
-bb:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
-  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
+  %1 = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
   ret void
 }
 
