@@ -1,5 +1,0 @@
-digraph "CFG for 'tau' function" {
-	label="CFG for 'tau' function";
-
-	Node0x56158b716af0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb:\l  ret i32 0\l}"];
-}

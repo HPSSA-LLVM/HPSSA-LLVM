@@ -1,103 +1,141 @@
 ; ModuleID = 'test1/program1.bc'
-source_filename = "test1/program1.c"
+source_filename = "example1.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@.str = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+%"class.std::ios_base::Init" = type { i8 }
+%"class.std::basic_ostream" = type { i32 (...)**, %"class.std::basic_ios" }
+%"class.std::basic_ios" = type { %"class.std::ios_base", %"class.std::basic_ostream"*, i8, i8, %"class.std::basic_streambuf"*, %"class.std::ctype"*, %"class.std::num_put"*, %"class.std::num_get"* }
+%"class.std::ios_base" = type { i32 (...)**, i64, i64, i32, i32, i32, %"struct.std::ios_base::_Callback_list"*, %"struct.std::ios_base::_Words", [8 x %"struct.std::ios_base::_Words"], i32, %"struct.std::ios_base::_Words"*, %"class.std::locale" }
+%"struct.std::ios_base::_Callback_list" = type { %"struct.std::ios_base::_Callback_list"*, void (i32, %"class.std::ios_base"*, i32)*, i32, i32 }
+%"struct.std::ios_base::_Words" = type { i8*, i64 }
+%"class.std::locale" = type { %"class.std::locale::_Impl"* }
+%"class.std::locale::_Impl" = type { i32, %"class.std::locale::facet"**, i64, %"class.std::locale::facet"**, i8** }
+%"class.std::locale::facet" = type <{ i32 (...)**, i32, [4 x i8] }>
+%"class.std::basic_streambuf" = type { i32 (...)**, i8*, i8*, i8*, i8*, i8*, i8*, %"class.std::locale" }
+%"class.std::ctype" = type <{ %"class.std::locale::facet.base", [4 x i8], %struct.__locale_struct*, i8, [7 x i8], i32*, i32*, i16*, i8, [256 x i8], [256 x i8], i8, [6 x i8] }>
+%"class.std::locale::facet.base" = type <{ i32 (...)**, i32 }>
+%struct.__locale_struct = type { [13 x %struct.__locale_data*], i16*, i32*, i32*, [13 x i8*] }
+%struct.__locale_data = type opaque
+%"class.std::num_put" = type { %"class.std::locale::facet.base", [4 x i8] }
+%"class.std::num_get" = type { %"class.std::locale::facet.base", [4 x i8] }
 
-; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i32 @tau() #0 {
+@_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
+@__dso_handle = external hidden global i8
+@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
+@llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_example1.cpp, i8* null }]
+
+declare dso_local void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #0
+
+; Function Attrs: nounwind
+declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
+
+; Function Attrs: nofree nounwind
+declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
+
+; Function Attrs: mustprogress norecurse uwtable
+define dso_local i32 @main() local_unnamed_addr #3 {
 bb:
-  ret i32 0
-}
+  %i = call i64 @time(i64* null) #6
+  %i1 = trunc i64 %i to i32
+  call void @srand(i32 %i1) #6
+  %i2 = call i32 @rand() #6
+  %i3 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 undef)
+  %i4 = bitcast %"class.std::basic_ostream"* %i3 to i8**
+  %i5 = load i8*, i8** %i4, align 8, !tbaa !3
+  %i6 = getelementptr i8, i8* %i5, i64 -24
+  %i7 = bitcast i8* %i6 to i64*
+  %i8 = load i64, i64* %i7, align 8
+  %i9 = bitcast %"class.std::basic_ostream"* %i3 to i8*
+  %i10 = getelementptr inbounds i8, i8* %i9, i64 %i8
+  %i11 = getelementptr inbounds i8, i8* %i10, i64 240
+  %i12 = bitcast i8* %i11 to %"class.std::ctype"**
+  %i13 = load %"class.std::ctype"*, %"class.std::ctype"** %i12, align 8, !tbaa !6
+  %i14 = icmp eq %"class.std::ctype"* %i13, null
+  br i1 %i14, label %bb15, label %bb16
 
-; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i32 @main() #0 {
-bb:
-  %i = alloca i32, align 4
-  %i1 = alloca i32, align 4
-  %i2 = alloca i32, align 4
-  %i3 = alloca i32, align 4
-  store i32 0, i32* %i, align 4
-  store i32 0, i32* %i1, align 4
-  store i32 0, i32* %i2, align 4
-  store i32 0, i32* %i3, align 4
-  %i4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str, i64 0, i64 0), i32* %i2)
-  store i32 2, i32* %i1, align 4
-  %i5 = load i32, i32* %i2, align 4
-  %i6 = icmp sgt i32 %i5, 0
-  br i1 %i6, label %bb7, label %bb8
+bb15:                                             ; preds = %bb
+  call void @_ZSt16__throw_bad_castv() #7
+  unreachable
 
-bb7:                                              ; preds = %bb
-  store i32 5, i32* %i1, align 4
-  br label %bb9
+bb16:                                             ; preds = %bb
+  %i17 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %i13, i64 0, i32 8
+  %i18 = load i8, i8* %i17, align 8, !tbaa !11
+  %i19 = icmp eq i8 %i18, 0
+  br i1 %i19, label %bb23, label %bb20
 
-bb8:                                              ; preds = %bb
-  store i32 1, i32* %i1, align 4
-  br label %bb9
-
-bb9:                                              ; preds = %bb8, %bb7
-  %i10 = call i32 @tau()
-  %i11 = load i32, i32* %i1, align 4
-  store i32 %i11, i32* %i2, align 4
-  %i12 = load i32, i32* %i2, align 4
-  %i13 = icmp sgt i32 %i12, 5000
-  br i1 %i13, label %bb14, label %bb25
-
-bb14:                                             ; preds = %bb9
-  %i15 = call i32 @tau()
-  %i16 = load i32, i32* %i1, align 4
-  store i32 %i16, i32* %i2, align 4
-  %i17 = load i32, i32* %i2, align 4
-  %i18 = icmp sgt i32 %i17, 6500
-  br i1 %i18, label %bb19, label %bb20
-
-bb19:                                             ; preds = %bb14
-  br label %bb26
-
-bb20:                                             ; preds = %bb14
-  %i21 = load i32, i32* %i2, align 4
-  %i22 = icmp sgt i32 %i21, 5500
-  br i1 %i22, label %bb23, label %bb24
-
-bb23:                                             ; preds = %bb20
+bb20:                                             ; preds = %bb16
+  %i21 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %i13, i64 0, i32 9, i64 10
+  %i22 = load i8, i8* %i21, align 1, !tbaa !13
   br label %bb29
 
-bb24:                                             ; preds = %bb20
-  br label %bb30
+bb23:                                             ; preds = %bb16
+  call void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %i13)
+  %i24 = bitcast %"class.std::ctype"* %i13 to i8 (%"class.std::ctype"*, i8)***
+  %i25 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %i24, align 8, !tbaa !3
+  %i26 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %i25, i64 6
+  %i27 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %i26, align 8
+  %i28 = call signext i8 %i27(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %i13, i8 signext 10)
+  br label %bb29
 
-bb25:                                             ; preds = %bb9
-  br label %bb26
-
-bb26:                                             ; preds = %bb25, %bb19
-  %i27 = call i32 @tau()
-  %i28 = load i32, i32* %i1, align 4
-  store i32 %i28, i32* %i3, align 4
-  br label %bb31
-
-bb29:                                             ; preds = %bb23
-  store i32 50, i32* %i3, align 4
-  br label %bb31
-
-bb30:                                             ; preds = %bb24
-  store i32 70, i32* %i3, align 4
-  br label %bb31
-
-bb31:                                             ; preds = %bb30, %bb29, %bb26
-  %i32 = load i32, i32* %i1, align 4
-  store i32 %i32, i32* %i3, align 4
+bb29:                                             ; preds = %bb23, %bb20
+  %i30 = phi i8 [ %i22, %bb20 ], [ %i28, %bb23 ]
+  %i31 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %i3, i8 signext %i30)
+  %i32 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %i31)
   ret i32 0
 }
 
-declare dso_local i32 @__isoc99_scanf(i8*, ...) #1
+; Function Attrs: nounwind
+declare dso_local void @srand(i32) local_unnamed_addr #1
 
-attributes #0 = { noinline nounwind optnone uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+; Function Attrs: nounwind
+declare dso_local i64 @time(i64*) local_unnamed_addr #1
 
-!llvm.module.flags = !{!0, !1, !2}
-!llvm.ident = !{!3}
+; Function Attrs: nounwind
+declare dso_local i32 @rand() local_unnamed_addr #1
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) local_unnamed_addr #0
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i8 signext) local_unnamed_addr #0
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8)) local_unnamed_addr #0
+
+; Function Attrs: noreturn
+declare dso_local void @_ZSt16__throw_bad_castv() local_unnamed_addr #4
+
+declare dso_local void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570)) local_unnamed_addr #0
+
+; Function Attrs: uwtable
+define internal void @_GLOBAL__sub_I_example1.cpp() #5 section ".text.startup" {
+bb:
+  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
+  ret void
+}
+
+attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #2 = { nofree nounwind }
+attributes #3 = { mustprogress norecurse uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { noreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nounwind }
+attributes #7 = { noreturn }
+
+!llvm.module.flags = !{!0, !1}
+!llvm.ident = !{!2}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"uwtable", i32 1}
-!2 = !{i32 7, !"frame-pointer", i32 2}
-!3 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git 419deccfd19ee6468fd020451fe17ee29db044b9)"}
+!2 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ad890aa2327feb6b6aee676fe85b2352fba2403e)"}
+!3 = !{!4, !4, i64 0}
+!4 = !{!"vtable pointer", !5, i64 0}
+!5 = !{!"Simple C++ TBAA"}
+!6 = !{!7, !8, i64 240}
+!7 = !{!"_ZTSSt9basic_iosIcSt11char_traitsIcEE", !8, i64 216, !9, i64 224, !10, i64 225, !8, i64 232, !8, i64 240, !8, i64 248, !8, i64 256}
+!8 = !{!"any pointer", !9, i64 0}
+!9 = !{!"omnipotent char", !5, i64 0}
+!10 = !{!"bool", !9, i64 0}
+!11 = !{!12, !9, i64 56}
+!12 = !{!"_ZTSSt5ctypeIcE", !8, i64 16, !10, i64 24, !8, i64 32, !8, i64 40, !8, i64 48, !9, i64 56, !9, i64 57, !9, i64 313, !9, i64 569}
+!13 = !{!9, !9, i64 0}

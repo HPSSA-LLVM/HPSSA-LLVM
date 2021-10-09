@@ -6,8 +6,8 @@ PreservedAnalyses BackedgePass::run(Function &F, FunctionAnalysisManager &AM) {
   SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
   FindFunctionBackedges(F, result);
   // result.dump();
-  for(auto comb: result){
-    errs()<<comb.first->getName()<<" -> "<<comb.second->getName()<<"\n";
+  for (auto comb : result) {
+    errs() << comb.first->getName() << " -> " << comb.second->getName() << "\n";
   }
   return PreservedAnalyses::none();
 }

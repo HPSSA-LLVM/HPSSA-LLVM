@@ -18,14 +18,14 @@
 #define PROFILINGUTILS_H
 
 namespace llvm {
-  class Function;
-  class GlobalValue;
-  class BasicBlock;
+class Function;
+class GlobalValue;
+class BasicBlock;
 
-  void InsertProfilingInitCall(Function *MainFn, const char *FnName,
-                               GlobalValue *Arr = 0);
-  void IncrementCounterInBlock(BasicBlock *BB, unsigned CounterNum,
-                               GlobalValue *CounterArray);
-}
+void InsertProfilingInitCall(Function *MainFn, const char *FnName,
+                             GlobalValue *Arr = 0);
+void IncrementCounterInBlock(BasicBlock *BB, unsigned CounterNum,
+                             GlobalValue *CounterArray);
+} // namespace llvm
 
 #endif

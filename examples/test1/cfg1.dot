@@ -1,35 +1,16 @@
 digraph "CFG for 'main' function" {
 	label="CFG for 'main' function";
 
-	Node0x56158b717410 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb:\l  %i = alloca i32, align 4\l  %i1 = alloca i32, align 4\l  %i2 = alloca i32, align 4\l  %i3 = alloca i32, align 4\l  store i32 0, i32* %i, align 4\l  store i32 0, i32* %i1, align 4\l  store i32 0, i32* %i2, align 4\l  store i32 0, i32* %i3, align 4\l  %i4 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x\l... i8], [3 x i8]* @.str, i64 0, i64 0), i32* %i2)\l  store i32 2, i32* %i1, align 4\l  %i5 = load i32, i32* %i2, align 4\l  %i6 = icmp sgt i32 %i5, 0\l  br i1 %i6, label %bb7, label %bb8\l|{<s0>T|<s1>F}}"];
-	Node0x56158b717410:s0 -> Node0x56158b717e10;
-	Node0x56158b717410:s1 -> Node0x56158b717ee0;
-	Node0x56158b717e10 [shape=record,color="#b70d28ff", style=filled, fillcolor="#dc5d4a70",label="{bb7:                                              \l  store i32 5, i32* %i1, align 4\l  br label %bb9\l}"];
-	Node0x56158b717e10 -> Node0x56158b718120;
-	Node0x56158b717ee0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f4987a70",label="{bb8:                                              \l  store i32 1, i32* %i1, align 4\l  br label %bb9\l}"];
-	Node0x56158b717ee0 -> Node0x56158b718120;
-	Node0x56158b718120 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb9:                                              \l  %i10 = call i32 @tau()\l  %i11 = load i32, i32* %i1, align 4\l  store i32 %i11, i32* %i2, align 4\l  %i12 = load i32, i32* %i2, align 4\l  %i13 = icmp sgt i32 %i12, 5000\l  br i1 %i13, label %bb14, label %bb25\l|{<s0>T|<s1>F}}"];
-	Node0x56158b718120:s0 -> Node0x56158b718820;
-	Node0x56158b718120:s1 -> Node0x56158b718890;
-	Node0x56158b718820 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb14:                                             \l  %i15 = call i32 @tau()\l  %i16 = load i32, i32* %i1, align 4\l  store i32 %i16, i32* %i2, align 4\l  %i17 = load i32, i32* %i2, align 4\l  %i18 = icmp sgt i32 %i17, 6500\l  br i1 %i18, label %bb19, label %bb20\l|{<s0>T|<s1>F}}"];
-	Node0x56158b718820:s0 -> Node0x56158b718d30;
-	Node0x56158b718820:s1 -> Node0x56158b718da0;
-	Node0x56158b718d30 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb19:                                             \l  br label %bb26\l}"];
-	Node0x56158b718d30 -> Node0x56158b718f20;
-	Node0x56158b718da0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{bb20:                                             \l  %i21 = load i32, i32* %i2, align 4\l  %i22 = icmp sgt i32 %i21, 5500\l  br i1 %i22, label %bb23, label %bb24\l|{<s0>T|<s1>F}}"];
-	Node0x56158b718da0:s0 -> Node0x56158b719490;
-	Node0x56158b718da0:s1 -> Node0x56158b719500;
-	Node0x56158b719490 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb23:                                             \l  br label %bb29\l}"];
-	Node0x56158b719490 -> Node0x56158b719680;
-	Node0x56158b719500 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb24:                                             \l  br label %bb30\l}"];
-	Node0x56158b719500 -> Node0x56158b719760;
-	Node0x56158b718890 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e97a5f70",label="{bb25:                                             \l  br label %bb26\l}"];
-	Node0x56158b718890 -> Node0x56158b718f20;
-	Node0x56158b718f20 [shape=record,color="#b70d28ff", style=filled, fillcolor="#d0473d70",label="{bb26:                                             \l  %i27 = call i32 @tau()\l  %i28 = load i32, i32* %i1, align 4\l  store i32 %i28, i32* %i3, align 4\l  br label %bb31\l}"];
-	Node0x56158b718f20 -> Node0x56158b719ac0;
-	Node0x56158b719680 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb29:                                             \l  store i32 50, i32* %i3, align 4\l  br label %bb31\l}"];
-	Node0x56158b719680 -> Node0x56158b719ac0;
-	Node0x56158b719760 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#dedcdb70",label="{bb30:                                             \l  store i32 70, i32* %i3, align 4\l  br label %bb31\l}"];
-	Node0x56158b719760 -> Node0x56158b719ac0;
-	Node0x56158b719ac0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb31:                                             \l  %i32 = load i32, i32* %i1, align 4\l  store i32 %i32, i32* %i3, align 4\l  ret i32 0\l}"];
+	Node0x60cc480 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb:\l  %i = call i64 @time(i64* null) #6\l  %i1 = trunc i64 %i to i32\l  call void @srand(i32 %i1) #6\l  %i2 = call i32 @rand() #6\l  %i3 = call nonnull align 8 dereferenceable(8) %\"class.std::basic_ostream\"*\l... @_ZNSolsEi(%\"class.std::basic_ostream\"* nonnull align 8 dereferenceable(8)\l... @_ZSt4cout, i32 undef)\l  %i4 = bitcast %\"class.std::basic_ostream\"* %i3 to i8**\l  %i5 = load i8*, i8** %i4, align 8, !tbaa !3\l  %i6 = getelementptr i8, i8* %i5, i64 -24\l  %i7 = bitcast i8* %i6 to i64*\l  %i8 = load i64, i64* %i7, align 8\l  %i9 = bitcast %\"class.std::basic_ostream\"* %i3 to i8*\l  %i10 = getelementptr inbounds i8, i8* %i9, i64 %i8\l  %i11 = getelementptr inbounds i8, i8* %i10, i64 240\l  %i12 = bitcast i8* %i11 to %\"class.std::ctype\"**\l  %i13 = load %\"class.std::ctype\"*, %\"class.std::ctype\"** %i12, align 8, !tbaa\l... !6\l  %i14 = icmp eq %\"class.std::ctype\"* %i13, null\l  br i1 %i14, label %bb15, label %bb16\l|{<s0>T|<s1>F}}"];
+	Node0x60cc480:s0 -> Node0x60ce810;
+	Node0x60cc480:s1 -> Node0x60ce8e0;
+	Node0x60ce810 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#6687ed70",label="{bb15:                                             \l  call void @_ZSt16__throw_bad_castv() #7\l  unreachable\l}"];
+	Node0x60ce8e0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb16:                                             \l  %i17 = getelementptr inbounds %\"class.std::ctype\", %\"class.std::ctype\"*\l... %i13, i64 0, i32 8\l  %i18 = load i8, i8* %i17, align 8, !tbaa !11\l  %i19 = icmp eq i8 %i18, 0\l  br i1 %i19, label %bb23, label %bb20\l|{<s0>T|<s1>F}}"];
+	Node0x60ce8e0:s0 -> Node0x60cf050;
+	Node0x60ce8e0:s1 -> Node0x60cf0c0;
+	Node0x60cf0c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#c32e3170",label="{bb20:                                             \l  %i21 = getelementptr inbounds %\"class.std::ctype\", %\"class.std::ctype\"*\l... %i13, i64 0, i32 9, i64 10\l  %i22 = load i8, i8* %i21, align 1, !tbaa !13\l  br label %bb29\l}"];
+	Node0x60cf0c0 -> Node0x60cf790;
+	Node0x60cf050 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#cc403a70",label="{bb23:                                             \l  call void @_ZNKSt5ctypeIcE13_M_widen_initEv(%\"class.std::ctype\"* nonnull\l... align 8 dereferenceable(570) %i13)\l  %i24 = bitcast %\"class.std::ctype\"* %i13 to i8 (%\"class.std::ctype\"*, i8)***\l  %i25 = load i8 (%\"class.std::ctype\"*, i8)**, i8 (%\"class.std::ctype\"*,\l... i8)*** %i24, align 8, !tbaa !3\l  %i26 = getelementptr inbounds i8 (%\"class.std::ctype\"*, i8)*, i8\l... (%\"class.std::ctype\"*, i8)** %i25, i64 6\l  %i27 = load i8 (%\"class.std::ctype\"*, i8)*, i8 (%\"class.std::ctype\"*, i8)**\l... %i26, align 8\l  %i28 = call signext i8 %i27(%\"class.std::ctype\"* nonnull align 8\l... dereferenceable(570) %i13, i8 signext 10)\l  br label %bb29\l}"];
+	Node0x60cf050 -> Node0x60cf790;
+	Node0x60cf790 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb29:                                             \l  %i30 = phi i8 [ %i22, %bb20 ], [ %i28, %bb23 ]\l  %i31 = call nonnull align 8 dereferenceable(8) %\"class.std::basic_ostream\"*\l... @_ZNSo3putEc(%\"class.std::basic_ostream\"* nonnull align 8 dereferenceable(8)\l... %i3, i8 signext %i30)\l  %i32 = call nonnull align 8 dereferenceable(8) %\"class.std::basic_ostream\"*\l... @_ZNSo5flushEv(%\"class.std::basic_ostream\"* nonnull align 8\l... dereferenceable(8) %i31)\l  ret i32 0\l}"];
 }

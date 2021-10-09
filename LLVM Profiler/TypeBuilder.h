@@ -82,13 +82,13 @@ namespace llvm {
 /// TypeBuilder cannot handle recursive types or types you only know at runtime.
 /// If you try to give it a recursive type, it will deadlock, infinitely
 /// recurse, or do something similarly undesirable.
-template<typename T, bool cross_compilable> class TypeBuilder {};
+template <typename T, bool cross_compilable> class TypeBuilder {};
 
 // Types for use with cross-compilable TypeBuilders.  These correspond
 // exactly with an LLVM-native type.
 namespace types {
 /// i<N> corresponds to the LLVM IntegerType with N bits.
-template<uint32_t num_bits> class i {};
+template <uint32_t num_bits> class i {};
 
 // The following classes represent the LLVM floating types.
 class ieee_float {};
@@ -98,36 +98,36 @@ class fp128 {};
 class ppc_fp128 {};
 // X86 MMX.
 class x86_mmx {};
-}  // namespace types
+} // namespace types
 
 // LLVM doesn't have const or volatile types.
-template<typename T, bool cross> class TypeBuilder<const T, cross>
-  : public TypeBuilder<T, cross> {};
-template<typename T, bool cross> class TypeBuilder<volatile T, cross>
-  : public TypeBuilder<T, cross> {};
-template<typename T, bool cross> class TypeBuilder<const volatile T, cross>
-  : public TypeBuilder<T, cross> {};
+template <typename T, bool cross>
+class TypeBuilder<const T, cross> : public TypeBuilder<T, cross> {};
+template <typename T, bool cross>
+class TypeBuilder<volatile T, cross> : public TypeBuilder<T, cross> {};
+template <typename T, bool cross>
+class TypeBuilder<const volatile T, cross> : public TypeBuilder<T, cross> {};
 
 // Pointers
-template<typename T, bool cross> class TypeBuilder<T*, cross> {
+template <typename T, bool cross> class TypeBuilder<T *, cross> {
 public:
   static PointerType *get(LLVMContext &Context) {
-    return PointerType::getUnqual(TypeBuilder<T,cross>::get(Context));
+    return PointerType::getUnqual(TypeBuilder<T, cross>::get(Context));
   }
 };
 
 /// There is no support for references
-template<typename T, bool cross> class TypeBuilder<T&, cross> {};
+template <typename T, bool cross> class TypeBuilder<T &, cross> {};
 
 // Arrays
-template<typename T, size_t N, bool cross> class TypeBuilder<T[N], cross> {
+template <typename T, size_t N, bool cross> class TypeBuilder<T[N], cross> {
 public:
   static ArrayType *get(LLVMContext &Context) {
     return ArrayType::get(TypeBuilder<T, cross>::get(Context), N);
   }
 };
 /// LLVM uses an array of length 0 to represent an unknown-length array.
-template<typename T, bool cross> class TypeBuilder<T[], cross> {
+template <typename T, bool cross> class TypeBuilder<T[], cross> {
 public:
   static ArrayType *get(LLVMContext &Context) {
     return ArrayType::get(TypeBuilder<T, cross>::get(Context), 0);
@@ -156,17 +156,17 @@ public:
 //   typedef int size_t;
 //
 // So we define all the primitive C types and nothing else.
-#define DEFINE_INTEGRAL_TYPEBUILDER(T) \
-template<> class TypeBuilder<T, false> { \
-public: \
-  static IntegerType *get(LLVMContext &Context) { \
-    return IntegerType::get(Context, sizeof(T) * CHAR_BIT); \
-  } \
-}; \
-template<> class TypeBuilder<T, true> { \
-  /* We provide a definition here so users don't accidentally */ \
-  /* define these types to work. */ \
-}
+#define DEFINE_INTEGRAL_TYPEBUILDER(T)                                         \
+  template <> class TypeBuilder<T, false> {                                    \
+  public:                                                                      \
+    static IntegerType *get(LLVMContext &Context) {                            \
+      return IntegerType::get(Context, sizeof(T) * CHAR_BIT);                  \
+    }                                                                          \
+  };                                                                           \
+  template <> class TypeBuilder<T, true> {                                     \
+    /* We provide a definition here so users don't accidentally */             \
+    /* define these types to work. */                                          \
+  }
 DEFINE_INTEGRAL_TYPEBUILDER(char);
 DEFINE_INTEGRAL_TYPEBUILDER(signed char);
 DEFINE_INTEGRAL_TYPEBUILDER(unsigned char);
@@ -179,13 +179,13 @@ DEFINE_INTEGRAL_TYPEBUILDER(unsigned long);
 #ifdef _MSC_VER
 DEFINE_INTEGRAL_TYPEBUILDER(__int64);
 DEFINE_INTEGRAL_TYPEBUILDER(unsigned __int64);
-#else /* _MSC_VER */
+#else  /* _MSC_VER */
 DEFINE_INTEGRAL_TYPEBUILDER(long long);
 DEFINE_INTEGRAL_TYPEBUILDER(unsigned long long);
 #endif /* _MSC_VER */
 #undef DEFINE_INTEGRAL_TYPEBUILDER
 
-template<uint32_t num_bits, bool cross>
+template <uint32_t num_bits, bool cross>
 class TypeBuilder<types::i<num_bits>, cross> {
 public:
   static IntegerType *get(LLVMContext &C) {
@@ -193,216 +193,209 @@ public:
   }
 };
 
-template<> class TypeBuilder<float, false> {
+template <> class TypeBuilder<float, false> {
 public:
-  static Type *get(LLVMContext& C) {
-    return Type::getFloatTy(C);
-  }
+  static Type *get(LLVMContext &C) { return Type::getFloatTy(C); }
 };
-template<> class TypeBuilder<float, true> {};
+template <> class TypeBuilder<float, true> {};
 
-template<> class TypeBuilder<double, false> {
+template <> class TypeBuilder<double, false> {
 public:
-  static Type *get(LLVMContext& C) {
-    return Type::getDoubleTy(C);
-  }
+  static Type *get(LLVMContext &C) { return Type::getDoubleTy(C); }
 };
-template<> class TypeBuilder<double, true> {};
+template <> class TypeBuilder<double, true> {};
 
-template<bool cross> class TypeBuilder<types::ieee_float, cross> {
+template <bool cross> class TypeBuilder<types::ieee_float, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getFloatTy(C); }
+  static Type *get(LLVMContext &C) { return Type::getFloatTy(C); }
 };
-template<bool cross> class TypeBuilder<types::ieee_double, cross> {
+template <bool cross> class TypeBuilder<types::ieee_double, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getDoubleTy(C); }
+  static Type *get(LLVMContext &C) { return Type::getDoubleTy(C); }
 };
-template<bool cross> class TypeBuilder<types::x86_fp80, cross> {
+template <bool cross> class TypeBuilder<types::x86_fp80, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getX86_FP80Ty(C); }
+  static Type *get(LLVMContext &C) { return Type::getX86_FP80Ty(C); }
 };
-template<bool cross> class TypeBuilder<types::fp128, cross> {
+template <bool cross> class TypeBuilder<types::fp128, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getFP128Ty(C); }
+  static Type *get(LLVMContext &C) { return Type::getFP128Ty(C); }
 };
-template<bool cross> class TypeBuilder<types::ppc_fp128, cross> {
+template <bool cross> class TypeBuilder<types::ppc_fp128, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getPPC_FP128Ty(C); }
+  static Type *get(LLVMContext &C) { return Type::getPPC_FP128Ty(C); }
 };
-template<bool cross> class TypeBuilder<types::x86_mmx, cross> {
+template <bool cross> class TypeBuilder<types::x86_mmx, cross> {
 public:
-  static Type *get(LLVMContext& C) { return Type::getX86_MMXTy(C); }
+  static Type *get(LLVMContext &C) { return Type::getX86_MMXTy(C); }
 };
 
-template<bool cross> class TypeBuilder<void, cross> {
+template <bool cross> class TypeBuilder<void, cross> {
 public:
-  static Type *get(LLVMContext &C) {
-    return Type::getVoidTy(C);
-  }
+  static Type *get(LLVMContext &C) { return Type::getVoidTy(C); }
 };
 
 /// void* is disallowed in LLVM types, but it occurs often enough in C code that
 /// we special case it.
-template<> class TypeBuilder<void*, false>
-  : public TypeBuilder<types::i<8>*, false> {};
-template<> class TypeBuilder<const void*, false>
-  : public TypeBuilder<types::i<8>*, false> {};
-template<> class TypeBuilder<volatile void*, false>
-  : public TypeBuilder<types::i<8>*, false> {};
-template<> class TypeBuilder<const volatile void*, false>
-  : public TypeBuilder<types::i<8>*, false> {};
+template <>
+class TypeBuilder<void *, false> : public TypeBuilder<types::i<8> *, false> {};
+template <>
+class TypeBuilder<const void *, false>
+    : public TypeBuilder<types::i<8> *, false> {};
+template <>
+class TypeBuilder<volatile void *, false>
+    : public TypeBuilder<types::i<8> *, false> {};
+template <>
+class TypeBuilder<const volatile void *, false>
+    : public TypeBuilder<types::i<8> *, false> {};
 
-template<typename R, bool cross> class TypeBuilder<R(), cross> {
+template <typename R, bool cross> class TypeBuilder<R(), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     return FunctionType::get(TypeBuilder<R, cross>::get(Context), false);
   }
 };
-template<typename R, typename A1, bool cross> class TypeBuilder<R(A1), cross> {
+template <typename R, typename A1, bool cross> class TypeBuilder<R(A1), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, false);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params,
+                             false);
   }
 };
-template<typename R, typename A1, typename A2, bool cross>
+template <typename R, typename A1, typename A2, bool cross>
 class TypeBuilder<R(A1, A2), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, false);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params,
+                             false);
   }
 };
-template<typename R, typename A1, typename A2, typename A3, bool cross>
+template <typename R, typename A1, typename A2, typename A3, bool cross>
 class TypeBuilder<R(A1, A2, A3), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, false);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params,
+                             false);
   }
 };
 
-template<typename R, typename A1, typename A2, typename A3, typename A4,
-         bool cross>
+template <typename R, typename A1, typename A2, typename A3, typename A4,
+          bool cross>
 class TypeBuilder<R(A1, A2, A3, A4), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
-      TypeBuilder<A4, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A4, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, false);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params,
+                             false);
   }
 };
 
-template<typename R, typename A1, typename A2, typename A3, typename A4,
-         typename A5, bool cross>
+template <typename R, typename A1, typename A2, typename A3, typename A4,
+          typename A5, bool cross>
 class TypeBuilder<R(A1, A2, A3, A4, A5), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
-      TypeBuilder<A4, cross>::get(Context),
-      TypeBuilder<A5, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A4, cross>::get(Context),
+        TypeBuilder<A5, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, false);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params,
+                             false);
   }
 };
 
-template<typename R, bool cross> class TypeBuilder<R(...), cross> {
+template <typename R, bool cross> class TypeBuilder<R(...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     return FunctionType::get(TypeBuilder<R, cross>::get(Context), true);
   }
 };
-template<typename R, typename A1, bool cross>
+template <typename R, typename A1, bool cross>
 class TypeBuilder<R(A1, ...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
     };
     return FunctionType::get(TypeBuilder<R, cross>::get(Context), params, true);
   }
 };
-template<typename R, typename A1, typename A2, bool cross>
+template <typename R, typename A1, typename A2, bool cross>
 class TypeBuilder<R(A1, A2, ...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                                   params, true);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params, true);
   }
 };
-template<typename R, typename A1, typename A2, typename A3, bool cross>
+template <typename R, typename A1, typename A2, typename A3, bool cross>
 class TypeBuilder<R(A1, A2, A3, ...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                                   params, true);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params, true);
   }
 };
 
-template<typename R, typename A1, typename A2, typename A3, typename A4,
-         bool cross>
+template <typename R, typename A1, typename A2, typename A3, typename A4,
+          bool cross>
 class TypeBuilder<R(A1, A2, A3, A4, ...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
-      TypeBuilder<A4, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A4, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                             params, true);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params, true);
   }
 };
 
-template<typename R, typename A1, typename A2, typename A3, typename A4,
-         typename A5, bool cross>
+template <typename R, typename A1, typename A2, typename A3, typename A4,
+          typename A5, bool cross>
 class TypeBuilder<R(A1, A2, A3, A4, A5, ...), cross> {
 public:
   static FunctionType *get(LLVMContext &Context) {
     Type *params[] = {
-      TypeBuilder<A1, cross>::get(Context),
-      TypeBuilder<A2, cross>::get(Context),
-      TypeBuilder<A3, cross>::get(Context),
-      TypeBuilder<A4, cross>::get(Context),
-      TypeBuilder<A5, cross>::get(Context),
+        TypeBuilder<A1, cross>::get(Context),
+        TypeBuilder<A2, cross>::get(Context),
+        TypeBuilder<A3, cross>::get(Context),
+        TypeBuilder<A4, cross>::get(Context),
+        TypeBuilder<A5, cross>::get(Context),
     };
-    return FunctionType::get(TypeBuilder<R, cross>::get(Context),
-                                   params, true);
+    return FunctionType::get(TypeBuilder<R, cross>::get(Context), params, true);
   }
 };
 
-}  // namespace llvm
+} // namespace llvm
 
 #endif
 // {"mode":"full","isActive":false}
