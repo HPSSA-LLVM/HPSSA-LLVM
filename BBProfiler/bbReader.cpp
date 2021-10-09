@@ -29,6 +29,8 @@ int main(int argc, char *argv[]) {
   string line;
   while (getline(pathData, line)) {
     // all values stored in line
+    if (line.size() == 0)
+      continue;
     stringstream ss(line);
     vector<long long> v;
     long long bbId;

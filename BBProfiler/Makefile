@@ -4,13 +4,17 @@
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
-CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -g -fPIC -fno-rtti
+# CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
+# removed -g flag, add if needed
+# CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
+CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
 ifndef VERBOSE
 .SILENT:
 endif
 
+.PHONY: build
 
 all: build test profile cfg
 
@@ -32,16 +36,15 @@ profile: test pathProfiler.cpp bbReader.cpp runTest.py
 	$(CXX) $(CXXFLAGS) pathProfiler.cpp IR/LL/test_modified.ll
 	python3 runTest.py
 	$(CXX) $(CXXFLAGS) bbReader.cpp -o bbReader.o
-	./bbReader.o $(LIMIT) 
+	./bbReader.o $(limit) 
       
 cfg: test 
-	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_modified.ll
+	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_modified.ll -o IR/BC/test_modified.bc
 	mv .*.dot IR/cfg/
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 
 	rm -rf output && mkdir output 
-	rm -rf build && mkdir build  
 	rm -rf IR && mkdir IR && mkdir IR/BC && mkdir IR/LL && mkdir IR/cfg 
-	rm -f *.o *.so *.s *.out *.log *.txt
+	rm -f *.s *.out *.log *.txt
 	

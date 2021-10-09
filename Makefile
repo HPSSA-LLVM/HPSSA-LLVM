@@ -4,13 +4,17 @@
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
-# removed -g flag, add if required
+# CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
+# removed -g flag, add if needed
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
+# CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
 ifndef VERBOSE
 .SILENT:
 endif
+
+.PHONY: test 
 
 all: build test cfg 
 
@@ -20,6 +24,7 @@ build: HPSSA.cpp headers/HPSSA.h
 
 test: build tests/test.cpp BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
+	rm tests/test.cpp
 	cp BBProfiler/tests/test.cpp tests/test.cpp
 
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
@@ -36,6 +41,5 @@ cfg: test
 
 clean: 
 	rm -rf output && mkdir output 
-	rm -rf build && mkdir build  
 	rm -rf IR && mkdir IR && mkdir IR/BC && mkdir IR/LL && mkdir IR/cfg 
-	rm -f *.o *.so *.s *.out *.log *.txt
+	rm -f *.s *.out *.log *.txt

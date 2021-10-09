@@ -1,5 +1,8 @@
 #include <iostream>
 
+// limit = 100 introduced no new tau's
+// Caloric connectors were identified
+// but no phi's were present
 using namespace std;
 
 int main() {
