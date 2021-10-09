@@ -29,11 +29,8 @@ int main(int argc, char *argv[]) {
   string line;
   while (getline(pathData, line)) {
     // all values stored in line
-<<<<<<< HEAD
     if (line.size() == 0)
       continue;
-=======
->>>>>>> 3ee17621d926caf3592921d45ebe6ac9ecf59533
     stringstream ss(line);
     vector<long long> v;
     long long bbId;
@@ -47,11 +44,8 @@ int main(int argc, char *argv[]) {
 
   // get block names
   while (getline(bbMap, line)) {
-<<<<<<< HEAD
     if (line.size() == 0)
       continue;
-=======
->>>>>>> 3ee17621d926caf3592921d45ebe6ac9ecf59533
     stringstream ss(line);
     long long bbId;
     string FName, bbName;

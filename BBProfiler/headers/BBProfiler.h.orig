@@ -20,13 +20,6 @@ using namespace std;
 namespace llvm {
 
 class BBProfilerPass : public PassInfoMixin<BBProfilerPass> {
-<<<<<<< HEAD
-=======
-  //   map<BasicBlock *, BitVector> getProfileInfo(Function &F);
-  //   map<BasicBlock *, bool> getCaloricConnector(Function &F);
-
-  // Dominator tree.Probably virtual so that it gets overriden
->>>>>>> 3ee17621d926caf3592921d45ebe6ac9ecf59533
 public:
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM);
 };
