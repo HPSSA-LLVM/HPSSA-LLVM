@@ -1,0 +1,26 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x6bf6000 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#a1c0ff70",label="{bb:\l  %i = alloca i32, align 4\l  %i1 = alloca i32, align 4\l  %i2 = bitcast i32* %i to i8*\l  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i2) #6\l  %i3 = bitcast i32* %i1 to i8*\l  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #6\l  %i4 = call nonnull align 8 dereferenceable(16) %\"class.std::basic_istream\"*\l... @_ZNSirsERi(%\"class.std::basic_istream\"* nonnull align 8 dereferenceable(16)\l... @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %i)\l  %i5 = call nonnull align 8 dereferenceable(16) %\"class.std::basic_istream\"*\l... @_ZNSirsERi(%\"class.std::basic_istream\"* nonnull align 8 dereferenceable(16)\l... %i4, i32* nonnull align 4 dereferenceable(4) %i1)\l  %i6 = load i32, i32* %i, align 4, !tbaa !3\l  %i7 = sdiv i32 %i6, 2\l  store i32 %i7, i32* %i, align 4, !tbaa !3\l  %i8 = load i32, i32* %i1, align 4, !tbaa !3\l  %i9 = sdiv i32 %i8, 2\l  store i32 %i9, i32* %i1, align 4, !tbaa !3\l  %i10 = icmp sgt i32 %i8, 1\l  %i11 = icmp sgt i32 %i8, 1\l  %i12 = icmp sgt i32 %i6, 1\l  br i1 %i12, label %bb13, label %bb30\l|{<s0>T|<s1>F}}"];
+	Node0x6bf6000:s0 -> Node0x6bf8380;
+	Node0x6bf6000:s1 -> Node0x6bf8450;
+	Node0x6bf8380 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7af9170",label="{bb13:                                             \l  %i14 = phi i32 [ %i28, %bb27 ], [ 0, %bb ]\l  %i15 = and i32 %i14, 1\l  %i16 = icmp eq i32 %i15, 0\l  br i1 %i16, label %bb18, label %bb17\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8380:s0 -> Node0x6bf8950;
+	Node0x6bf8380:s1 -> Node0x6bf8a20;
+	Node0x6bf8a20 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f1ccb870",label="{bb17:                                             \l  br i1 %i10, label %bb23, label %bb27\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8a20:s0 -> Node0x6bf8ba0;
+	Node0x6bf8a20:s1 -> Node0x6bf8620;
+	Node0x6bf8950 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f1ccb870",label="{bb18:                                             \l  br i1 %i11, label %bb19, label %bb27\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8950:s0 -> Node0x6bf8cc0;
+	Node0x6bf8950:s1 -> Node0x6bf8620;
+	Node0x6bf8cc0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb19:                                             \l  %i20 = phi i32 [ %i21, %bb19 ], [ 0, %bb18 ]\l  %i21 = add nuw nsw i32 %i20, 1\l  %i22 = icmp eq i32 %i21, %i9\l  br i1 %i22, label %bb27, label %bb19, !llvm.loop !7\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8cc0:s0 -> Node0x6bf8620;
+	Node0x6bf8cc0:s1 -> Node0x6bf8cc0;
+	Node0x6bf8ba0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb23:                                             \l  %i24 = phi i32 [ %i25, %bb23 ], [ 0, %bb17 ]\l  %i25 = add nuw nsw i32 %i24, 1\l  %i26 = icmp eq i32 %i25, %i9\l  br i1 %i26, label %bb27, label %bb23, !llvm.loop !10\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8ba0:s0 -> Node0x6bf8620;
+	Node0x6bf8ba0:s1 -> Node0x6bf8ba0;
+	Node0x6bf8620 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7af9170",label="{bb27:                                             \l  %i28 = add nuw nsw i32 %i14, 1\l  %i29 = icmp eq i32 %i28, %i7\l  br i1 %i29, label %bb30, label %bb13, !llvm.loop !11\l|{<s0>T|<s1>F}}"];
+	Node0x6bf8620:s0 -> Node0x6bf8450;
+	Node0x6bf8620:s1 -> Node0x6bf8380;
+	Node0x6bf8450 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#a1c0ff70",label="{bb30:                                             \l  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #6\l  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i2) #6\l  ret i32 0\l}"];
+}

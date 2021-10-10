@@ -1,0 +1,11 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x5443ce0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5d6f270",label="{bb:\l  %i = alloca i32, align 4\l  %i1 = bitcast i32* %i to i8*\l  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6\l  %i2 = call nonnull align 8 dereferenceable(16) %\"class.std::basic_istream\"*\l... @_ZNSirsERi(%\"class.std::basic_istream\"* nonnull align 8 dereferenceable(16)\l... @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %i)\l  %i3 = load i32, i32* %i, align 4, !tbaa !3\l  %i4 = icmp sgt i32 %i3, 0\l  br i1 %i4, label %bb6, label %bb5\l|{<s0>T|<s1>F}}"];
+	Node0x5443ce0:s0 -> Node0x54450c0;
+	Node0x5443ce0:s1 -> Node0x5445190;
+	Node0x5445190 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5d6f270",label="{bb5:                                              \l  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6\l  ret i32 0\l}"];
+	Node0x54450c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb6:                                              \l  %i7 = phi i32 [ %i12, %bb6 ], [ %i3, %bb ]\l  %i8 = phi i32 [ %i11, %bb6 ], [ 0, %bb ]\l  %i9 = add nsw i32 %i7, 1\l  store i32 %i9, i32* %i, align 4, !tbaa !3\l  %i10 = call nonnull align 8 dereferenceable(8) %\"class.std::basic_ostream\"*\l... @_ZNSolsEi(%\"class.std::basic_ostream\"* nonnull align 8 dereferenceable(8)\l... @_ZSt4cout, i32 %i9)\l  %i11 = add nuw nsw i32 %i8, 1\l  %i12 = load i32, i32* %i, align 4, !tbaa !3\l  %i13 = icmp slt i32 %i11, %i12\l  br i1 %i13, label %bb6, label %bb5, !llvm.loop !7\l|{<s0>T|<s1>F}}"];
+	Node0x54450c0:s0 -> Node0x54450c0;
+	Node0x54450c0:s1 -> Node0x5445190;
+}

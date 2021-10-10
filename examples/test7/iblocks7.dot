@@ -1,0 +1,11 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x6374ce0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5d6f270",label="{bb|{<s0>T|<s1>F}}"];
+	Node0x6374ce0:s0 -> Node0x63760c0;
+	Node0x6374ce0:s1 -> Node0x6376190;
+	Node0x6376190 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5d6f270",label="{bb5}"];
+	Node0x63760c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{bb6|{<s0>T|<s1>F}}"];
+	Node0x63760c0:s0 -> Node0x63760c0;
+	Node0x63760c0:s1 -> Node0x6376190;
+}

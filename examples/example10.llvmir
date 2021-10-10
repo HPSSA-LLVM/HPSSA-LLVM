@@ -1,0 +1,2165 @@
+; ModuleID = 'example10.c'
+source_filename = "example10.c"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+%struct._IO_FILE = type { i32, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, %struct._IO_marker*, %struct._IO_FILE*, i32, i32, i64, i16, i8, [1 x i8], i8*, i64, %struct._IO_codecvt*, %struct._IO_wide_data*, %struct._IO_FILE*, i8*, i64, i32, [20 x i8] }
+%struct._IO_marker = type opaque
+%struct._IO_codecvt = type opaque
+%struct._IO_wide_data = type opaque
+%struct.option = type { i8*, i32, i32*, i32 }
+%struct.offset_reservoir = type { i64, i64* }
+%struct.file_mmap = type { i32, i8*, %struct.stat, i32, i64, i8* }
+%struct.stat = type { i64, i64, i64, i32, i32, i32, i32, i64, i64, i64, i64, %struct.timespec, %struct.timespec, %struct.timespec, [3 x i64] }
+%struct.timespec = type { i64, i64 }
+
+@kTrue = dso_local local_unnamed_addr constant i32 1, align 4
+@kFalse = dso_local local_unnamed_addr constant i32 0, align 4
+@mt = dso_local local_unnamed_addr global [624 x i64] zeroinitializer, align 16
+@mti = dso_local local_unnamed_addr global i32 625, align 4
+@triggered = dso_local local_unnamed_addr global i32 0, align 4
+@mt19937_generate_random_ulong.mag01 = internal unnamed_addr constant [2 x i64] [i64 0, i64 2567483615], align 16
+@stderr = external dso_local local_unnamed_addr global %struct._IO_FILE*, align 8
+@.str = private unnamed_addr constant [33 x i8] c"Debug: offsets instance is NULL\0A\00", align 1
+@.str.1 = private unnamed_addr constant [46 x i8] c"Debug: offset_reservoir instance res is NULL\0A\00", align 1
+@.str.2 = private unnamed_addr constant [50 x i8] c"Error: Offset reservoir pointer instance is NULL\0A\00", align 1
+@stdout = external dso_local local_unnamed_addr global %struct._IO_FILE*, align 8
+@.str.3 = private unnamed_addr constant [17 x i8] c"[%012d] %012lld\0A\00", align 1
+@.str.4 = private unnamed_addr constant [59 x i8] c"Error: Could not allocate memory for resized offset array\0A\00", align 1
+@.str.6 = private unnamed_addr constant [44 x i8] c"Error: Could not rewind input file pointer\0A\00", align 1
+@.str.8 = private unnamed_addr constant [2 x i8] c"-\00", align 1
+@.str.9 = private unnamed_addr constant [2 x i8] c"r\00", align 1
+@stdin = external dso_local local_unnamed_addr global %struct._IO_FILE*, align 8
+@.str.10 = private unnamed_addr constant [54 x i8] c"Error: Stdin not yet supported with this application\0A\00", align 1
+@.str.11 = private unnamed_addr constant [29 x i8] c"Error: Mmap pointer is NULL\0A\00", align 1
+@.str.12 = private unnamed_addr constant [57 x i8] c"Error: Stdin not yet supported with mmap setup function\0A\00", align 1
+@.str.13 = private unnamed_addr constant [48 x i8] c"Error: Mmap pointer's filename pointer is NULL\0A\00", align 1
+@.str.14 = private unnamed_addr constant [32 x i8] c"Error: Mmap pointer map failed\0A\00", align 1
+@sample_client_long_options = internal global [13 x %struct.option] [%struct.option { i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.21, i32 0, i32 0), i32 2, i32* null, i32 107 }, %struct.option { i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.22, i32 0, i32 0), i32 2, i32* null, i32 108 }, %struct.option { i8* getelementptr inbounds ([27 x i8], [27 x i8]* @.str.23, i32 0, i32 0), i32 0, i32* null, i32 111 }, %struct.option { i8* getelementptr inbounds ([24 x i8], [24 x i8]* @.str.24, i32 0, i32 0), i32 0, i32* null, i32 114 }, %struct.option { i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.25, i32 0, i32 0), i32 0, i32* null, i32 115 }, %struct.option { i8* getelementptr inbounds ([15 x i8], [15 x i8]* @.str.26, i32 0, i32 0), i32 0, i32* null, i32 112 }, %struct.option { i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.27, i32 0, i32 0), i32 0, i32* null, i32 121 }, %struct.option { i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.str.28, i32 0, i32 0), i32 0, i32* null, i32 109 }, %struct.option { i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.29, i32 0, i32 0), i32 0, i32* null, i32 99 }, %struct.option { i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.30, i32 0, i32 0), i32 1, i32* null, i32 100 }, %struct.option { i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.31, i32 0, i32 0), i32 0, i32* null, i32 118 }, %struct.option { i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.str.32, i32 0, i32 0), i32 0, i32* null, i32 104 }, %struct.option zeroinitializer], align 16
+@opterr = external dso_local local_unnamed_addr global i32, align 4
+@optarg = external dso_local local_unnamed_addr global i8*, align 8
+@.str.15 = private unnamed_addr constant [70 x i8] c"Error: Sample size option is specified, but its value is unspecified\0A\00", align 1
+@.str.16 = private unnamed_addr constant [75 x i8] c"Error: Lines-per-offset option is specified, but its value is unspecified\0A\00", align 1
+@.str.17 = private unnamed_addr constant [79 x i8] c"Error: RNG seed initializer option is specified, but its value is unspecified\0A\00", align 1
+@optind = external dso_local local_unnamed_addr global i32, align 4
+@.str.18 = private unnamed_addr constant [35 x i8] c"%s\0A  version: %s\0A  author:  %s\0A%s\0A\00", align 1
+@.str.19 = private unnamed_addr constant [32 x i8] c"%s\0A  version: %s\0A  author:  %s\0A\00", align 1
+@.str.20 = private unnamed_addr constant [17 x i8] c"k:l:orspymcd:vh?\00", align 1
+@.str.21 = private unnamed_addr constant [12 x i8] c"sample-size\00", align 1
+@.str.22 = private unnamed_addr constant [17 x i8] c"lines-per-offset\00", align 1
+@.str.23 = private unnamed_addr constant [27 x i8] c"sample-without-replacement\00", align 1
+@.str.24 = private unnamed_addr constant [24 x i8] c"sample-with-replacement\00", align 1
+@.str.25 = private unnamed_addr constant [8 x i8] c"shuffle\00", align 1
+@.str.26 = private unnamed_addr constant [15 x i8] c"preserve-order\00", align 1
+@.str.27 = private unnamed_addr constant [7 x i8] c"hybrid\00", align 1
+@.str.28 = private unnamed_addr constant [5 x i8] c"mmap\00", align 1
+@.str.29 = private unnamed_addr constant [7 x i8] c"cstdio\00", align 1
+@.str.30 = private unnamed_addr constant [9 x i8] c"rng-seed\00", align 1
+@.str.31 = private unnamed_addr constant [8 x i8] c"version\00", align 1
+@.str.32 = private unnamed_addr constant [5 x i8] c"help\00", align 1
+@.str.33 = private unnamed_addr constant [7 x i8] c"sample\00", align 1
+@.str.34 = private unnamed_addr constant [6 x i8] c"1.0.2\00", align 1
+@.str.35 = private unnamed_addr constant [14 x i8] c"Alex Reynolds\00", align 1
+@.str.36 = private unnamed_addr constant [1889 x i8] c"\0AUsage: sample [--sample-size=n] [--lines-per-offset=n] [--sample-without-replacement | --sample-with-replacement] [--shuffle | --preserve-order] [--hybrid | --mmap | --cstdio] [--rng-seed=n] <newline-delimited-file>\0A\0A  Performs reservoir sampling (http://dx.doi.org/10.1145/3147.3165) on very large input\0A  files that are delimited by newline characters. The approach used in this application\0A  reduces memory usage by storing a pool of byte offsets to the start of each line, instead\0A  of the line elements themselves.\0A\0A  If the sample size (--sample-size) parameter is omitted, then the sample binary will shuffle\0A  the entire file.\0A\0A  For text files delimited by multiples of lines, specify a --lines-per-offset value.\0A\0A  Process Flags:\0A\0A  --sample-size=n               | -k n    Number of samples to retrieve (n = positive integer; optional)\0A  --lines-per-offset=n          | -l n    Number of lines per offset (n = positive integer; optional, default=1)\0A  --sample-without-replacement  | -o      Sample without replacement (default)\0A  --sample-with-replacement     | -r      Sample with replacement (optional)\0A  --shuffle                     | -s      Shuffle sample written to standard output (default)\0A  --preserve-order              | -p      Preserve order of sample written to standard output (optional)\0A  --mmap                        | -m      Use memory mapping for handling input file (default)\0A  --cstdio                      | -c      Use C I/O routines for handling input file (optional)\0A  --hybrid                      | -y      Use hybrid of C I/O routines and memory mapping for handling input file (optional)\0A  --rng-seed=n                  | -d n    Initialize the Twister RNG with a specific seed value (n = positive integer; optional)\0A  --version                     | -v      Show binary version\0A  --help                        | -h      Show this usage message\0A\00", align 1
+@sample_global_args.0 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.1 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.2 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.3 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.4 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.5 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.6 = internal unnamed_addr global i1 false, align 8
+@sample_global_args.7 = internal unnamed_addr global i64 0, align 8
+@sample_global_args.8 = internal unnamed_addr global i32 0, align 8
+@sample_global_args.9 = internal unnamed_addr global i8** null, align 8
+@sample_global_args.11 = internal unnamed_addr global i32 0, align 8
+@sample_global_args.12 = internal unnamed_addr global i1 false, align 8
+
+; Function Attrs: nofree norecurse nosync nounwind uwtable
+define dso_local void @mt19937_seed_rng(i64 %0) local_unnamed_addr #0 {
+  %2 = and i64 %0, 4294967295
+  store i64 %2, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  br label %3
+
+3:                                                ; preds = %1, %3
+  %4 = phi i64 [ %2, %1 ], [ %7, %3 ]
+  %5 = phi i64 [ 1, %1 ], [ %9, %3 ]
+  %6 = mul nuw nsw i64 %4, 69069
+  %7 = and i64 %6, 4294967295
+  %8 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %5
+  store i64 %7, i64* %8, align 8, !tbaa !3
+  %9 = add nuw nsw i64 %5, 1
+  %10 = icmp eq i64 %9, 624
+  br i1 %10, label %11, label %3, !llvm.loop !7
+
+11:                                               ; preds = %3
+  store i32 624, i32* @mti, align 4, !tbaa !10
+  ret void
+}
+
+; Function Attrs: nofree norecurse nosync nounwind uwtable
+define dso_local double @mt19937_generate_random_double() local_unnamed_addr #0 {
+  %1 = load i32, i32* @mti, align 4, !tbaa !10
+  %2 = icmp sgt i32 %1, 623
+  br i1 %2, label %3, label %69
+
+3:                                                ; preds = %0
+  %4 = icmp eq i32 %1, 625
+  br i1 %4, label %5, label %15
+
+5:                                                ; preds = %3
+  store i64 4357, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  br label %6
+
+6:                                                ; preds = %6, %5
+  %7 = phi i64 [ 4357, %5 ], [ %10, %6 ]
+  %8 = phi i64 [ 1, %5 ], [ %12, %6 ]
+  %9 = mul nuw nsw i64 %7, 69069
+  %10 = and i64 %9, 4294967295
+  %11 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %8
+  store i64 %10, i64* %11, align 8, !tbaa !3
+  %12 = add nuw nsw i64 %8, 1
+  %13 = icmp eq i64 %12, 624
+  br i1 %13, label %14, label %6, !llvm.loop !7
+
+14:                                               ; preds = %6
+  store i32 624, i32* @mti, align 4, !tbaa !10
+  br label %15
+
+15:                                               ; preds = %14, %3
+  br label %16
+
+16:                                               ; preds = %15, %16
+  %17 = phi i64 [ %21, %16 ], [ 0, %15 ]
+  %18 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %17
+  %19 = load i64, i64* %18, align 8, !tbaa !3
+  %20 = and i64 %19, 2147483648
+  %21 = add nuw nsw i64 %17, 1
+  %22 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %21
+  %23 = load i64, i64* %22, align 8, !tbaa !3
+  %24 = and i64 %23, 2147483646
+  %25 = or i64 %24, %20
+  %26 = add nuw nsw i64 %17, 397
+  %27 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %26
+  %28 = load i64, i64* %27, align 8, !tbaa !3
+  %29 = lshr exact i64 %25, 1
+  %30 = and i64 %23, 1
+  %31 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %30
+  %32 = load i64, i64* %31, align 8, !tbaa !3
+  %33 = xor i64 %32, %28
+  %34 = xor i64 %33, %29
+  store i64 %34, i64* %18, align 8, !tbaa !3
+  %35 = icmp eq i64 %21, 227
+  br i1 %35, label %36, label %16, !llvm.loop !12
+
+36:                                               ; preds = %16, %36
+  %37 = phi i64 [ %41, %36 ], [ 227, %16 ]
+  %38 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %37
+  %39 = load i64, i64* %38, align 8, !tbaa !3
+  %40 = and i64 %39, 2147483648
+  %41 = add nuw nsw i64 %37, 1
+  %42 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %41
+  %43 = load i64, i64* %42, align 8, !tbaa !3
+  %44 = and i64 %43, 2147483646
+  %45 = or i64 %44, %40
+  %46 = add nsw i64 %37, -227
+  %47 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %46
+  %48 = load i64, i64* %47, align 8, !tbaa !3
+  %49 = lshr exact i64 %45, 1
+  %50 = and i64 %43, 1
+  %51 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %50
+  %52 = load i64, i64* %51, align 8, !tbaa !3
+  %53 = xor i64 %52, %48
+  %54 = xor i64 %53, %49
+  store i64 %54, i64* %38, align 8, !tbaa !3
+  %55 = icmp eq i64 %41, 623
+  br i1 %55, label %56, label %36, !llvm.loop !13
+
+56:                                               ; preds = %36
+  %57 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 623), align 8, !tbaa !3
+  %58 = and i64 %57, 2147483648
+  %59 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  %60 = and i64 %59, 2147483646
+  %61 = or i64 %60, %58
+  %62 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 396), align 16, !tbaa !3
+  %63 = lshr exact i64 %61, 1
+  %64 = and i64 %59, 1
+  %65 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %64
+  %66 = load i64, i64* %65, align 8, !tbaa !3
+  %67 = xor i64 %66, %62
+  %68 = xor i64 %67, %63
+  store i64 %68, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 623), align 8, !tbaa !3
+  store i32 0, i32* @mti, align 4, !tbaa !10
+  br label %69
+
+69:                                               ; preds = %56, %0
+  %70 = load i32, i32* @mti, align 4, !tbaa !10
+  %71 = add nsw i32 %70, 1
+  store i32 %71, i32* @mti, align 4, !tbaa !10
+  %72 = sext i32 %70 to i64
+  %73 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %72
+  %74 = load i64, i64* %73, align 8, !tbaa !3
+  %75 = lshr i64 %74, 11
+  %76 = xor i64 %75, %74
+  %77 = shl i64 %76, 7
+  %78 = and i64 %77, 2636928640
+  %79 = xor i64 %78, %76
+  %80 = shl i64 %79, 15
+  %81 = and i64 %80, 4022730752
+  %82 = xor i64 %81, %79
+  %83 = lshr i64 %82, 18
+  %84 = xor i64 %83, %82
+  %85 = uitofp i64 %84 to double
+  %86 = fdiv double %85, 0x41EFFFFFFFE00000
+  ret double %86
+}
+
+; Function Attrs: argmemonly mustprogress nofree nosync nounwind willreturn
+declare void @llvm.lifetime.start.p0i8(i64 immarg, i8* nocapture) #1
+
+; Function Attrs: argmemonly mustprogress nofree nosync nounwind willreturn
+declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #1
+
+; Function Attrs: nofree norecurse nosync nounwind uwtable
+define dso_local i64 @mt19937_generate_random_ulong() local_unnamed_addr #0 {
+  %1 = load i32, i32* @mti, align 4, !tbaa !10
+  %2 = icmp sgt i32 %1, 623
+  br i1 %2, label %3, label %69
+
+3:                                                ; preds = %0
+  %4 = icmp eq i32 %1, 625
+  br i1 %4, label %5, label %15
+
+5:                                                ; preds = %3
+  store i64 4357, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  br label %6
+
+6:                                                ; preds = %6, %5
+  %7 = phi i64 [ 4357, %5 ], [ %10, %6 ]
+  %8 = phi i64 [ 1, %5 ], [ %12, %6 ]
+  %9 = mul nuw nsw i64 %7, 69069
+  %10 = and i64 %9, 4294967295
+  %11 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %8
+  store i64 %10, i64* %11, align 8, !tbaa !3
+  %12 = add nuw nsw i64 %8, 1
+  %13 = icmp eq i64 %12, 624
+  br i1 %13, label %14, label %6, !llvm.loop !7
+
+14:                                               ; preds = %6
+  store i32 624, i32* @mti, align 4, !tbaa !10
+  br label %15
+
+15:                                               ; preds = %14, %3
+  br label %16
+
+16:                                               ; preds = %15, %16
+  %17 = phi i64 [ %21, %16 ], [ 0, %15 ]
+  %18 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %17
+  %19 = load i64, i64* %18, align 8, !tbaa !3
+  %20 = and i64 %19, 2147483648
+  %21 = add nuw nsw i64 %17, 1
+  %22 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %21
+  %23 = load i64, i64* %22, align 8, !tbaa !3
+  %24 = and i64 %23, 2147483646
+  %25 = or i64 %24, %20
+  %26 = add nuw nsw i64 %17, 397
+  %27 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %26
+  %28 = load i64, i64* %27, align 8, !tbaa !3
+  %29 = lshr exact i64 %25, 1
+  %30 = and i64 %23, 1
+  %31 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %30
+  %32 = load i64, i64* %31, align 8, !tbaa !3
+  %33 = xor i64 %32, %28
+  %34 = xor i64 %33, %29
+  store i64 %34, i64* %18, align 8, !tbaa !3
+  %35 = icmp eq i64 %21, 227
+  br i1 %35, label %36, label %16, !llvm.loop !14
+
+36:                                               ; preds = %16, %36
+  %37 = phi i64 [ %41, %36 ], [ 227, %16 ]
+  %38 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %37
+  %39 = load i64, i64* %38, align 8, !tbaa !3
+  %40 = and i64 %39, 2147483648
+  %41 = add nuw nsw i64 %37, 1
+  %42 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %41
+  %43 = load i64, i64* %42, align 8, !tbaa !3
+  %44 = and i64 %43, 2147483646
+  %45 = or i64 %44, %40
+  %46 = add nsw i64 %37, -227
+  %47 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %46
+  %48 = load i64, i64* %47, align 8, !tbaa !3
+  %49 = lshr exact i64 %45, 1
+  %50 = and i64 %43, 1
+  %51 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %50
+  %52 = load i64, i64* %51, align 8, !tbaa !3
+  %53 = xor i64 %52, %48
+  %54 = xor i64 %53, %49
+  store i64 %54, i64* %38, align 8, !tbaa !3
+  %55 = icmp eq i64 %41, 623
+  br i1 %55, label %56, label %36, !llvm.loop !15
+
+56:                                               ; preds = %36
+  %57 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 623), align 8, !tbaa !3
+  %58 = and i64 %57, 2147483648
+  %59 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  %60 = and i64 %59, 2147483646
+  %61 = or i64 %60, %58
+  %62 = load i64, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 396), align 16, !tbaa !3
+  %63 = lshr exact i64 %61, 1
+  %64 = and i64 %59, 1
+  %65 = getelementptr inbounds [2 x i64], [2 x i64]* @mt19937_generate_random_ulong.mag01, i64 0, i64 %64
+  %66 = load i64, i64* %65, align 8, !tbaa !3
+  %67 = xor i64 %66, %62
+  %68 = xor i64 %67, %63
+  store i64 %68, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 623), align 8, !tbaa !3
+  store i32 0, i32* @mti, align 4, !tbaa !10
+  br label %69
+
+69:                                               ; preds = %56, %0
+  %70 = load i32, i32* @mti, align 4, !tbaa !10
+  %71 = add nsw i32 %70, 1
+  store i32 %71, i32* @mti, align 4, !tbaa !10
+  %72 = sext i32 %70 to i64
+  %73 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %72
+  %74 = load i64, i64* %73, align 8, !tbaa !3
+  %75 = lshr i64 %74, 11
+  %76 = xor i64 %75, %74
+  %77 = shl i64 %76, 7
+  %78 = and i64 %77, 2636928640
+  %79 = xor i64 %78, %76
+  %80 = shl i64 %79, 15
+  %81 = and i64 %80, 4022730752
+  %82 = xor i64 %81, %79
+  %83 = lshr i64 %82, 18
+  %84 = xor i64 %83, %82
+  ret i64 %84
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local i32 @main(i32 %0, i8** %1) local_unnamed_addr #2 {
+  %3 = alloca %struct.offset_reservoir*, align 8
+  %4 = bitcast %struct.offset_reservoir** %3 to i8*
+  call void @llvm.lifetime.start.p0i8(i64 8, i8* nonnull %4) #20
+  store %struct.offset_reservoir* null, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  call void @parse_command_line_options(i32 %0, i8** %1)
+  %5 = load i64, i64* @sample_global_args.7, align 8, !tbaa !18
+  %6 = load i8**, i8*** @sample_global_args.9, align 8, !tbaa !20
+  %7 = load i8*, i8** %6, align 8, !tbaa !16
+  %8 = load i1, i1* @sample_global_args.2, align 8
+  %9 = load i1, i1* @sample_global_args.3, align 8
+  %10 = load i1, i1* @sample_global_args.1, align 8
+  %11 = load i1, i1* @sample_global_args.0, align 8
+  %12 = load i1, i1* @sample_global_args.4, align 8
+  %13 = load i1, i1* @sample_global_args.5, align 8
+  %14 = load i1, i1* @sample_global_args.6, align 8
+  %15 = load i32, i32* @sample_global_args.8, align 8, !tbaa !21
+  %16 = load i1, i1* @sample_global_args.12, align 8
+  br i1 %16, label %17, label %28
+
+17:                                               ; preds = %2
+  %18 = load i32, i32* @sample_global_args.11, align 8, !tbaa !22
+  %19 = zext i32 %18 to i64
+  store i64 %19, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  br label %20
+
+20:                                               ; preds = %20, %17
+  %21 = phi i64 [ %19, %17 ], [ %24, %20 ]
+  %22 = phi i64 [ 1, %17 ], [ %26, %20 ]
+  %23 = mul nuw nsw i64 %21, 69069
+  %24 = and i64 %23, 4294967295
+  %25 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %22
+  store i64 %24, i64* %25, align 8, !tbaa !3
+  %26 = add nuw nsw i64 %22, 1
+  %27 = icmp eq i64 %26, 624
+  br i1 %27, label %39, label %20, !llvm.loop !7
+
+28:                                               ; preds = %2
+  %29 = call i64 @time(i64* null) #20
+  %30 = and i64 %29, 4294967295
+  store i64 %30, i64* getelementptr inbounds ([624 x i64], [624 x i64]* @mt, i64 0, i64 0), align 16, !tbaa !3
+  br label %31
+
+31:                                               ; preds = %31, %28
+  %32 = phi i64 [ %30, %28 ], [ %35, %31 ]
+  %33 = phi i64 [ 1, %28 ], [ %37, %31 ]
+  %34 = mul nuw nsw i64 %32, 69069
+  %35 = and i64 %34, 4294967295
+  %36 = getelementptr inbounds [624 x i64], [624 x i64]* @mt, i64 0, i64 %33
+  store i64 %35, i64* %36, align 8, !tbaa !3
+  %37 = add nuw nsw i64 %33, 1
+  %38 = icmp eq i64 %37, 624
+  br i1 %38, label %39, label %31, !llvm.loop !7
+
+39:                                               ; preds = %31, %20
+  store i32 624, i32* @mti, align 4, !tbaa !10
+  %40 = call %struct.offset_reservoir* @new_offset_reservoir_ptr(i64 %5)
+  store %struct.offset_reservoir* %40, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  br i1 %12, label %41, label %158
+
+41:                                               ; preds = %39
+  %42 = select i1 %10, i1 true, i1 %9
+  br i1 %42, label %43, label %79
+
+43:                                               ; preds = %41
+  %44 = call i32 @strcmp(i8* noundef nonnull dereferenceable(1) %7, i8* noundef nonnull dereferenceable(2) getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0)) #21
+  %45 = icmp eq i32 %44, 0
+  br i1 %45, label %48, label %46
+
+46:                                               ; preds = %43
+  %47 = call %struct._IO_FILE* @fopen(i8* %7, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.9, i64 0, i64 0)) #20
+  br label %50
+
+48:                                               ; preds = %43
+  %49 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  br label %50
+
+50:                                               ; preds = %48, %46
+  %51 = phi %struct._IO_FILE* [ %47, %46 ], [ %49, %48 ]
+  %52 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  %53 = icmp eq %struct._IO_FILE* %51, %52
+  br i1 %53, label %54, label %57
+
+54:                                               ; preds = %50
+  %55 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %56 = call i64 @fwrite(i8* getelementptr inbounds ([54 x i8], [54 x i8]* @.str.10, i64 0, i64 0), i64 53, i64 1, %struct._IO_FILE* %55) #22
+  call void @exit(i32 1) #23
+  unreachable
+
+57:                                               ; preds = %50
+  br i1 %14, label %58, label %59
+
+58:                                               ; preds = %57
+  call void @sample_reservoir_offsets_without_replacement_via_cstdio_with_fixed_k(%struct._IO_FILE* %51, %struct.offset_reservoir** nonnull %3, i32 %15)
+  br label %193
+
+59:                                               ; preds = %57
+  call void @sample_reservoir_offsets_without_replacement_via_cstdio_with_unspecified_k(%struct._IO_FILE* %51, %struct.offset_reservoir** nonnull %3, i32 %15)
+  %60 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %61 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %60, i64 0, i32 0
+  %62 = load i64, i64* %61, align 8, !tbaa !23
+  %63 = icmp sgt i64 %62, 1
+  br i1 %63, label %64, label %193
+
+64:                                               ; preds = %59, %64
+  %65 = phi i64 [ %66, %64 ], [ %62, %59 ]
+  %66 = add nsw i64 %65, -1
+  %67 = call double @mt19937_generate_random_double() #20
+  %68 = sitofp i64 %65 to double
+  %69 = fmul double %67, %68
+  %70 = fptosi double %69 to i64
+  %71 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %72 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %71, i64 0, i32 1
+  %73 = load i64*, i64** %72, align 8, !tbaa !25
+  %74 = getelementptr inbounds i64, i64* %73, i64 %66
+  %75 = load i64, i64* %74, align 8, !tbaa !3
+  %76 = getelementptr inbounds i64, i64* %73, i64 %70
+  %77 = load i64, i64* %76, align 8, !tbaa !3
+  store i64 %77, i64* %74, align 8, !tbaa !3
+  store i64 %75, i64* %76, align 8, !tbaa !3
+  %78 = icmp sgt i64 %65, 2
+  br i1 %78, label %64, label %193, !llvm.loop !26
+
+79:                                               ; preds = %41
+  br i1 %8, label %80, label %193
+
+80:                                               ; preds = %79
+  %81 = call %struct.file_mmap* @new_file_mmap(i8* %7)
+  br i1 %14, label %82, label %138
+
+82:                                               ; preds = %80
+  %83 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %84 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %83, i64 0, i32 0
+  %85 = load i64, i64* %84, align 8, !tbaa !23
+  %86 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %81, i64 0, i32 4
+  %87 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %81, i64 0, i32 5
+  %88 = sext i32 %15 to i64
+  %89 = sitofp i64 %85 to double
+  %90 = load i64, i64* %86, align 8, !tbaa !27
+  %91 = icmp eq i64 %90, 0
+  br i1 %91, label %132, label %92
+
+92:                                               ; preds = %82, %125
+  %93 = phi i64 [ %128, %125 ], [ 0, %82 ]
+  %94 = phi i64 [ %127, %125 ], [ 0, %82 ]
+  %95 = phi i64 [ %129, %125 ], [ 0, %82 ]
+  %96 = phi i64 [ %126, %125 ], [ 0, %82 ]
+  %97 = load i8*, i8** %87, align 8, !tbaa !31
+  %98 = getelementptr inbounds i8, i8* %97, i64 %95
+  %99 = load i8, i8* %98, align 1, !tbaa !32
+  %100 = icmp eq i8 %99, 10
+  br i1 %100, label %101, label %125
+
+101:                                              ; preds = %92
+  %102 = add nsw i64 %94, 1
+  %103 = srem i64 %102, %88
+  %104 = icmp eq i64 %103, 0
+  br i1 %104, label %105, label %125
+
+105:                                              ; preds = %101
+  %106 = icmp slt i64 %93, %85
+  br i1 %106, label %116, label %107
+
+107:                                              ; preds = %105
+  %108 = add nsw i64 %93, 1
+  %109 = sitofp i64 %108 to double
+  %110 = fdiv double %89, %109
+  %111 = call i64 @mt19937_generate_random_ulong() #20
+  %112 = call double @mt19937_generate_random_double() #20
+  %113 = fcmp ogt double %110, %112
+  br i1 %113, label %114, label %122
+
+114:                                              ; preds = %107
+  %115 = urem i64 %111, %85
+  br label %116
+
+116:                                              ; preds = %105, %114
+  %117 = phi i64 [ %115, %114 ], [ %93, %105 ]
+  %118 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %119 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %118, i64 0, i32 1
+  %120 = load i64*, i64** %119, align 8, !tbaa !25
+  %121 = getelementptr inbounds i64, i64* %120, i64 %117
+  store i64 %96, i64* %121, align 8, !tbaa !3
+  br label %122
+
+122:                                              ; preds = %116, %107
+  %123 = add nuw nsw i64 %95, 1
+  %124 = add nsw i64 %93, 1
+  br label %125
+
+125:                                              ; preds = %122, %101, %92
+  %126 = phi i64 [ %96, %101 ], [ %123, %122 ], [ %96, %92 ]
+  %127 = phi i64 [ %102, %101 ], [ %102, %122 ], [ %94, %92 ]
+  %128 = phi i64 [ %93, %101 ], [ %124, %122 ], [ %93, %92 ]
+  %129 = add nuw i64 %95, 1
+  %130 = load i64, i64* %86, align 8, !tbaa !27
+  %131 = icmp ult i64 %129, %130
+  br i1 %131, label %92, label %132, !llvm.loop !33
+
+132:                                              ; preds = %125, %82
+  %133 = phi i64 [ 0, %82 ], [ %128, %125 ]
+  %134 = icmp slt i64 %133, %85
+  br i1 %134, label %135, label %193
+
+135:                                              ; preds = %132
+  %136 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %137 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %136, i64 0, i32 0
+  store i64 %133, i64* %137, align 8, !tbaa !23
+  br label %193
+
+138:                                              ; preds = %80
+  call void @sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(%struct.file_mmap* %81, %struct.offset_reservoir** nonnull %3, i32 %15)
+  %139 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %140 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %139, i64 0, i32 0
+  %141 = load i64, i64* %140, align 8, !tbaa !23
+  %142 = icmp sgt i64 %141, 1
+  br i1 %142, label %143, label %193
+
+143:                                              ; preds = %138, %143
+  %144 = phi i64 [ %145, %143 ], [ %141, %138 ]
+  %145 = add nsw i64 %144, -1
+  %146 = call double @mt19937_generate_random_double() #20
+  %147 = sitofp i64 %144 to double
+  %148 = fmul double %146, %147
+  %149 = fptosi double %148 to i64
+  %150 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %151 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %150, i64 0, i32 1
+  %152 = load i64*, i64** %151, align 8, !tbaa !25
+  %153 = getelementptr inbounds i64, i64* %152, i64 %145
+  %154 = load i64, i64* %153, align 8, !tbaa !3
+  %155 = getelementptr inbounds i64, i64* %152, i64 %149
+  %156 = load i64, i64* %155, align 8, !tbaa !3
+  store i64 %156, i64* %153, align 8, !tbaa !3
+  store i64 %154, i64* %155, align 8, !tbaa !3
+  %157 = icmp sgt i64 %144, 2
+  br i1 %157, label %143, label %193, !llvm.loop !26
+
+158:                                              ; preds = %39
+  br i1 %13, label %159, label %193
+
+159:                                              ; preds = %158
+  %160 = select i1 %10, i1 true, i1 %9
+  br i1 %160, label %161, label %183
+
+161:                                              ; preds = %159
+  %162 = call i32 @strcmp(i8* noundef nonnull dereferenceable(1) %7, i8* noundef nonnull dereferenceable(2) getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0)) #21
+  %163 = icmp eq i32 %162, 0
+  br i1 %163, label %166, label %164
+
+164:                                              ; preds = %161
+  %165 = call %struct._IO_FILE* @fopen(i8* %7, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.9, i64 0, i64 0)) #20
+  br label %168
+
+166:                                              ; preds = %161
+  %167 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  br label %168
+
+168:                                              ; preds = %166, %164
+  %169 = phi %struct._IO_FILE* [ %165, %164 ], [ %167, %166 ]
+  %170 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  %171 = icmp eq %struct._IO_FILE* %169, %170
+  br i1 %171, label %172, label %175
+
+172:                                              ; preds = %168
+  %173 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %174 = call i64 @fwrite(i8* getelementptr inbounds ([54 x i8], [54 x i8]* @.str.10, i64 0, i64 0), i64 53, i64 1, %struct._IO_FILE* %173) #22
+  call void @exit(i32 1) #23
+  unreachable
+
+175:                                              ; preds = %168
+  call void @sample_reservoir_offsets_without_replacement_via_cstdio_with_fixed_k(%struct._IO_FILE* %169, %struct.offset_reservoir** nonnull %3, i32 %15)
+  br i1 %14, label %176, label %178
+
+176:                                              ; preds = %175
+  %177 = trunc i64 %5 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %3, i32 %177) #20
+  br label %193
+
+178:                                              ; preds = %175
+  %179 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %180 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %179, i64 0, i32 0
+  %181 = load i64, i64* %180, align 8, !tbaa !23
+  %182 = trunc i64 %181 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %3, i32 %182) #20
+  br label %193
+
+183:                                              ; preds = %159
+  br i1 %8, label %184, label %193
+
+184:                                              ; preds = %183
+  %185 = call %struct.file_mmap* @new_file_mmap(i8* %7)
+  call void @sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(%struct.file_mmap* %185, %struct.offset_reservoir** nonnull %3, i32 %15)
+  br i1 %14, label %186, label %188
+
+186:                                              ; preds = %184
+  %187 = trunc i64 %5 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %3, i32 %187) #20
+  br label %193
+
+188:                                              ; preds = %184
+  %189 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %190 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %189, i64 0, i32 0
+  %191 = load i64, i64* %190, align 8, !tbaa !23
+  %192 = trunc i64 %191 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %3, i32 %192) #20
+  br label %193
+
+193:                                              ; preds = %143, %64, %138, %135, %132, %59, %158, %183, %188, %186, %176, %178, %58, %79
+  %194 = phi %struct._IO_FILE* [ %51, %58 ], [ null, %79 ], [ %169, %176 ], [ %169, %178 ], [ null, %186 ], [ null, %188 ], [ null, %183 ], [ null, %158 ], [ %51, %59 ], [ null, %132 ], [ null, %135 ], [ null, %138 ], [ %51, %64 ], [ null, %143 ]
+  %195 = phi %struct.file_mmap* [ null, %58 ], [ null, %79 ], [ null, %176 ], [ null, %178 ], [ %185, %186 ], [ %185, %188 ], [ null, %183 ], [ null, %158 ], [ null, %59 ], [ %81, %132 ], [ %81, %135 ], [ %81, %138 ], [ null, %64 ], [ %81, %143 ]
+  br i1 %11, label %196, label %203
+
+196:                                              ; preds = %193
+  %197 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %198 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %197, i64 0, i32 1
+  %199 = bitcast i64** %198 to i8**
+  %200 = load i8*, i8** %199, align 8, !tbaa !25
+  %201 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %197, i64 0, i32 0
+  %202 = load i64, i64* %201, align 8, !tbaa !23
+  call void @qsort(i8* %200, i64 %202, i64 8, i32 (i8*, i8*)* nonnull @offset_compare) #20
+  br label %203
+
+203:                                              ; preds = %196, %193
+  br i1 %10, label %204, label %245
+
+204:                                              ; preds = %203
+  %205 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %206 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %205, i64 0, i32 0
+  %207 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %205, i64 0, i32 1
+  %208 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 5
+  %209 = sext i32 %15 to i64
+  %210 = load i64, i64* %206, align 8, !tbaa !23
+  %211 = icmp sgt i64 %210, 0
+  br i1 %211, label %212, label %292
+
+212:                                              ; preds = %204, %240
+  %213 = phi i64 [ %242, %240 ], [ 0, %204 ]
+  %214 = phi i64 [ %241, %240 ], [ 0, %204 ]
+  %215 = load i64*, i64** %207, align 8, !tbaa !25
+  %216 = getelementptr inbounds i64, i64* %215, i64 %213
+  %217 = load i64, i64* %216, align 8, !tbaa !3
+  %218 = add nsw i64 %217, 65535
+  br label %219
+
+219:                                              ; preds = %236, %212
+  %220 = phi i64 [ %214, %212 ], [ %237, %236 ]
+  %221 = phi i64 [ %217, %212 ], [ %238, %236 ]
+  %222 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %223 = load i8*, i8** %208, align 8, !tbaa !31
+  %224 = getelementptr inbounds i8, i8* %223, i64 %221
+  %225 = load i8, i8* %224, align 1, !tbaa !32
+  %226 = sext i8 %225 to i32
+  %227 = call i32 @fputc(i32 %226, %struct._IO_FILE* %222) #20
+  %228 = load i8*, i8** %208, align 8, !tbaa !31
+  %229 = getelementptr inbounds i8, i8* %228, i64 %221
+  %230 = load i8, i8* %229, align 1, !tbaa !32
+  %231 = icmp eq i8 %230, 10
+  br i1 %231, label %232, label %236
+
+232:                                              ; preds = %219
+  %233 = add nsw i64 %220, 1
+  %234 = srem i64 %233, %209
+  %235 = icmp eq i64 %234, 0
+  br i1 %235, label %240, label %236
+
+236:                                              ; preds = %232, %219
+  %237 = phi i64 [ %233, %232 ], [ %220, %219 ]
+  %238 = add nsw i64 %221, 1
+  %239 = icmp slt i64 %221, %218
+  br i1 %239, label %219, label %240, !llvm.loop !34
+
+240:                                              ; preds = %236, %232
+  %241 = phi i64 [ %233, %232 ], [ %237, %236 ]
+  %242 = add nuw nsw i64 %213, 1
+  %243 = load i64, i64* %206, align 8, !tbaa !23
+  %244 = icmp sgt i64 %243, %242
+  br i1 %244, label %212, label %292, !llvm.loop !35
+
+245:                                              ; preds = %203
+  br i1 %9, label %246, label %250
+
+246:                                              ; preds = %245
+  %247 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  br i1 %11, label %248, label %249
+
+248:                                              ; preds = %246
+  call void @print_sorted_offset_reservoir_sample_via_cstdio(%struct._IO_FILE* %194, %struct.offset_reservoir* %247, i32 %15)
+  br label %292
+
+249:                                              ; preds = %246
+  call void @print_unsorted_offset_reservoir_sample_via_cstdio(%struct._IO_FILE* %194, %struct.offset_reservoir* %247, i32 %15)
+  br label %292
+
+250:                                              ; preds = %245
+  br i1 %8, label %251, label %292
+
+251:                                              ; preds = %250
+  %252 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %253 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %252, i64 0, i32 0
+  %254 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %252, i64 0, i32 1
+  %255 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 5
+  %256 = sext i32 %15 to i64
+  %257 = load i64, i64* %253, align 8, !tbaa !23
+  %258 = icmp sgt i64 %257, 0
+  br i1 %258, label %259, label %292
+
+259:                                              ; preds = %251, %287
+  %260 = phi i64 [ %289, %287 ], [ 0, %251 ]
+  %261 = phi i64 [ %288, %287 ], [ 0, %251 ]
+  %262 = load i64*, i64** %254, align 8, !tbaa !25
+  %263 = getelementptr inbounds i64, i64* %262, i64 %260
+  %264 = load i64, i64* %263, align 8, !tbaa !3
+  %265 = add nsw i64 %264, 65535
+  br label %266
+
+266:                                              ; preds = %283, %259
+  %267 = phi i64 [ %261, %259 ], [ %284, %283 ]
+  %268 = phi i64 [ %264, %259 ], [ %285, %283 ]
+  %269 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %270 = load i8*, i8** %255, align 8, !tbaa !31
+  %271 = getelementptr inbounds i8, i8* %270, i64 %268
+  %272 = load i8, i8* %271, align 1, !tbaa !32
+  %273 = sext i8 %272 to i32
+  %274 = call i32 @fputc(i32 %273, %struct._IO_FILE* %269) #20
+  %275 = load i8*, i8** %255, align 8, !tbaa !31
+  %276 = getelementptr inbounds i8, i8* %275, i64 %268
+  %277 = load i8, i8* %276, align 1, !tbaa !32
+  %278 = icmp eq i8 %277, 10
+  br i1 %278, label %279, label %283
+
+279:                                              ; preds = %266
+  %280 = add nsw i64 %267, 1
+  %281 = srem i64 %280, %256
+  %282 = icmp eq i64 %281, 0
+  br i1 %282, label %287, label %283
+
+283:                                              ; preds = %279, %266
+  %284 = phi i64 [ %280, %279 ], [ %267, %266 ]
+  %285 = add nsw i64 %268, 1
+  %286 = icmp slt i64 %268, %265
+  br i1 %286, label %266, label %287, !llvm.loop !34
+
+287:                                              ; preds = %283, %279
+  %288 = phi i64 [ %280, %279 ], [ %284, %283 ]
+  %289 = add nuw nsw i64 %260, 1
+  %290 = load i64, i64* %253, align 8, !tbaa !23
+  %291 = icmp sgt i64 %290, %289
+  br i1 %291, label %259, label %292, !llvm.loop !35
+
+292:                                              ; preds = %287, %240, %251, %204, %249, %248, %250
+  %293 = load %struct.offset_reservoir*, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  %294 = icmp eq %struct.offset_reservoir* %293, null
+  br i1 %294, label %306, label %295
+
+295:                                              ; preds = %292
+  %296 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %293, i64 0, i32 1
+  %297 = load i64*, i64** %296, align 8, !tbaa !25
+  %298 = icmp eq i64* %297, null
+  br i1 %298, label %303, label %299
+
+299:                                              ; preds = %295
+  %300 = bitcast i64* %297 to i8*
+  call void @free(i8* %300) #20
+  %301 = bitcast %struct.offset_reservoir** %3 to i8**
+  %302 = load i8*, i8** %301, align 8, !tbaa !16
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(16) %302, i8 0, i64 16, i1 false)
+  br label %303
+
+303:                                              ; preds = %295, %299
+  %304 = bitcast %struct.offset_reservoir** %3 to i8**
+  %305 = load i8*, i8** %304, align 8, !tbaa !16
+  call void @free(i8* %305) #20
+  store %struct.offset_reservoir* null, %struct.offset_reservoir** %3, align 8, !tbaa !16
+  br label %306
+
+306:                                              ; preds = %303, %292
+  %307 = icmp eq %struct.file_mmap* %195, null
+  br i1 %307, label %320, label %308
+
+308:                                              ; preds = %306
+  %309 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 0
+  %310 = load i32, i32* %309, align 8, !tbaa !36
+  %311 = call i32 @close(i32 %310) #20
+  %312 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 5
+  %313 = load i8*, i8** %312, align 8, !tbaa !31
+  %314 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 4
+  %315 = load i64, i64* %314, align 8, !tbaa !27
+  %316 = call i32 @munmap(i8* %313, i64 %315) #20
+  %317 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %195, i64 0, i32 1
+  %318 = load i8*, i8** %317, align 8, !tbaa !37
+  call void @free(i8* %318) #20
+  store i8* null, i8** %317, align 8, !tbaa !37
+  %319 = bitcast %struct.file_mmap* %195 to i8*
+  call void @free(i8* %319) #20
+  br label %320
+
+320:                                              ; preds = %308, %306
+  %321 = icmp eq %struct._IO_FILE* %194, null
+  br i1 %321, label %324, label %322
+
+322:                                              ; preds = %320
+  %323 = call i32 @fclose(%struct._IO_FILE* nonnull %194) #20
+  br label %324
+
+324:                                              ; preds = %322, %320
+  call void @llvm.lifetime.end.p0i8(i64 8, i8* nonnull %4) #20
+  ret i32 0
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @parse_command_line_options(i32 %0, i8** %1) local_unnamed_addr #2 {
+  %3 = alloca i32, align 4
+  %4 = bitcast i32* %3 to i8*
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %4) #20
+  %5 = call i32 @getopt_long(i32 %0, i8** %1, i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.20, i64 0, i64 0), %struct.option* getelementptr inbounds ([13 x %struct.option], [13 x %struct.option]* @sample_client_long_options, i64 0, i64 0), i32* nonnull %3) #20
+  store i32 0, i32* @opterr, align 4, !tbaa !10
+  store i1 false, i1* @sample_global_args.6, align 8
+  store i1 true, i1* @sample_global_args.4, align 8
+  store i1 false, i1* @sample_global_args.5, align 8
+  store i1 false, i1* @sample_global_args.0, align 8
+  store i1 false, i1* @sample_global_args.1, align 8
+  store i1 true, i1* @sample_global_args.2, align 8
+  store i1 false, i1* @sample_global_args.3, align 8
+  store i64 0, i64* @sample_global_args.7, align 8, !tbaa !18
+  store i32 1, i32* @sample_global_args.8, align 8, !tbaa !21
+  store i32 1, i32* @sample_global_args.11, align 8, !tbaa !22
+  store i1 false, i1* @sample_global_args.12, align 8
+  store i8** null, i8*** @sample_global_args.9, align 8, !tbaa !20
+  br label %6
+
+6:                                                ; preds = %63, %2
+  %7 = phi i32 [ %5, %2 ], [ %68, %63 ]
+  %8 = phi i32 [ 0, %2 ], [ %64, %63 ]
+  %9 = phi i32 [ 0, %2 ], [ %65, %63 ]
+  %10 = phi i32 [ 0, %2 ], [ %66, %63 ]
+  %11 = phi i32 [ 0, %2 ], [ %67, %63 ]
+  switch i32 %7, label %63 [
+    i32 -1, label %69
+    i32 107, label %12
+    i32 108, label %23
+    i32 111, label %33
+    i32 114, label %35
+    i32 115, label %37
+    i32 112, label %39
+    i32 121, label %41
+    i32 109, label %43
+    i32 99, label %45
+    i32 100, label %47
+    i32 118, label %57
+    i32 104, label %59
+    i32 63, label %61
+  ]
+
+12:                                               ; preds = %6
+  %13 = load i8*, i8** @optarg, align 8, !tbaa !16
+  %14 = icmp eq i8* %13, null
+  br i1 %14, label %19, label %15
+
+15:                                               ; preds = %12
+  %16 = call i64 @strtol(i8* nocapture nonnull %13, i8** null, i32 10) #20
+  %17 = shl i64 %16, 32
+  %18 = ashr exact i64 %17, 32
+  store i64 %18, i64* @sample_global_args.7, align 8, !tbaa !18
+  br label %63
+
+19:                                               ; preds = %12
+  %20 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %21 = call i64 @fwrite(i8* getelementptr inbounds ([70 x i8], [70 x i8]* @.str.15, i64 0, i64 0), i64 69, i64 1, %struct._IO_FILE* %20) #24
+  %22 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %22)
+  call void @exit(i32 1) #23
+  unreachable
+
+23:                                               ; preds = %6
+  %24 = load i8*, i8** @optarg, align 8, !tbaa !16
+  %25 = icmp eq i8* %24, null
+  br i1 %25, label %29, label %26
+
+26:                                               ; preds = %23
+  %27 = call i64 @strtol(i8* nocapture nonnull %24, i8** null, i32 10) #20
+  %28 = trunc i64 %27 to i32
+  store i32 %28, i32* @sample_global_args.8, align 8, !tbaa !21
+  br label %63
+
+29:                                               ; preds = %23
+  %30 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %31 = call i64 @fwrite(i8* getelementptr inbounds ([75 x i8], [75 x i8]* @.str.16, i64 0, i64 0), i64 74, i64 1, %struct._IO_FILE* %30) #24
+  %32 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %32)
+  call void @exit(i32 1) #23
+  unreachable
+
+33:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.4, align 8
+  %34 = add nsw i32 %9, 1
+  br label %63
+
+35:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.5, align 8
+  store i1 false, i1* @sample_global_args.4, align 8
+  %36 = add nsw i32 %9, 1
+  br label %63
+
+37:                                               ; preds = %6
+  store i1 false, i1* @sample_global_args.0, align 8
+  %38 = add nsw i32 %8, 1
+  br label %63
+
+39:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.0, align 8
+  %40 = add nsw i32 %8, 1
+  br label %63
+
+41:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.1, align 8
+  store i1 false, i1* @sample_global_args.2, align 8
+  %42 = add nsw i32 %10, 1
+  br label %63
+
+43:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.2, align 8
+  %44 = add nsw i32 %10, 1
+  br label %63
+
+45:                                               ; preds = %6
+  store i1 true, i1* @sample_global_args.3, align 8
+  store i1 false, i1* @sample_global_args.2, align 8
+  %46 = add nsw i32 %10, 1
+  br label %63
+
+47:                                               ; preds = %6
+  %48 = load i8*, i8** @optarg, align 8, !tbaa !16
+  %49 = icmp eq i8* %48, null
+  br i1 %49, label %53, label %50
+
+50:                                               ; preds = %47
+  %51 = call i64 @strtol(i8* nocapture nonnull %48, i8** null, i32 10) #20
+  %52 = trunc i64 %51 to i32
+  store i32 %52, i32* @sample_global_args.11, align 8, !tbaa !22
+  store i1 true, i1* @sample_global_args.12, align 8
+  br label %63
+
+53:                                               ; preds = %47
+  %54 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %55 = call i64 @fwrite(i8* getelementptr inbounds ([79 x i8], [79 x i8]* @.str.17, i64 0, i64 0), i64 78, i64 1, %struct._IO_FILE* %54) #24
+  %56 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %56)
+  call void @exit(i32 1) #23
+  unreachable
+
+57:                                               ; preds = %6
+  %58 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  call void @print_version(%struct._IO_FILE* %58)
+  call void @exit(i32 0) #23
+  unreachable
+
+59:                                               ; preds = %6
+  %60 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %60)
+  call void @exit(i32 0) #23
+  unreachable
+
+61:                                               ; preds = %6
+  %62 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %62)
+  call void @exit(i32 1) #23
+  unreachable
+
+63:                                               ; preds = %6, %50, %45, %43, %41, %39, %37, %35, %33, %26, %15
+  %64 = phi i32 [ %8, %50 ], [ %8, %45 ], [ %8, %43 ], [ %8, %41 ], [ %40, %39 ], [ %38, %37 ], [ %8, %35 ], [ %8, %33 ], [ %8, %26 ], [ %8, %15 ], [ %8, %6 ]
+  %65 = phi i32 [ %9, %50 ], [ %9, %45 ], [ %9, %43 ], [ %9, %41 ], [ %9, %39 ], [ %9, %37 ], [ %36, %35 ], [ %34, %33 ], [ %9, %26 ], [ %9, %15 ], [ %9, %6 ]
+  %66 = phi i32 [ %10, %50 ], [ %46, %45 ], [ %44, %43 ], [ %42, %41 ], [ %10, %39 ], [ %10, %37 ], [ %10, %35 ], [ %10, %33 ], [ %10, %26 ], [ %10, %15 ], [ %10, %6 ]
+  %67 = phi i32 [ %11, %50 ], [ %11, %45 ], [ %11, %43 ], [ %11, %41 ], [ %11, %39 ], [ %11, %37 ], [ %11, %35 ], [ %11, %33 ], [ %11, %26 ], [ 1, %15 ], [ %11, %6 ]
+  %68 = call i32 @getopt_long(i32 %0, i8** %1, i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.20, i64 0, i64 0), %struct.option* getelementptr inbounds ([13 x %struct.option], [13 x %struct.option]* @sample_client_long_options, i64 0, i64 0), i32* nonnull %3) #20
+  br label %6, !llvm.loop !38
+
+69:                                               ; preds = %6
+  %70 = load i32, i32* @optind, align 4, !tbaa !10
+  %71 = sext i32 %70 to i64
+  %72 = getelementptr inbounds i8*, i8** %1, i64 %71
+  store i8** %72, i8*** @sample_global_args.9, align 8, !tbaa !20
+  %73 = sub nsw i32 %0, %70
+  %74 = icmp eq i32 %11, 0
+  br i1 %74, label %75, label %78
+
+75:                                               ; preds = %69
+  %76 = load i64, i64* @sample_global_args.7, align 8, !tbaa !18
+  %77 = add nsw i64 %76, 10000
+  store i64 %77, i64* @sample_global_args.7, align 8, !tbaa !18
+  br label %79
+
+78:                                               ; preds = %69
+  store i1 true, i1* @sample_global_args.6, align 8
+  br label %79
+
+79:                                               ; preds = %78, %75
+  %80 = icmp sgt i32 %8, 1
+  %81 = icmp sgt i32 %9, 1
+  %82 = select i1 %80, i1 true, i1 %81
+  %83 = icmp sgt i32 %10, 1
+  %84 = select i1 %82, i1 true, i1 %83
+  %85 = load i32, i32* @sample_global_args.8, align 8
+  %86 = icmp slt i32 %85, 1
+  %87 = select i1 %84, i1 true, i1 %86
+  %88 = load i64, i64* @sample_global_args.7, align 8
+  %89 = icmp slt i64 %88, 1
+  %90 = select i1 %87, i1 true, i1 %89
+  %91 = icmp ne i32 %73, 1
+  %92 = select i1 %90, i1 true, i1 %91
+  %93 = load i32, i32* @sample_global_args.11, align 8
+  %94 = icmp slt i32 %93, 1
+  %95 = select i1 %92, i1 true, i1 %94
+  br i1 %95, label %96, label %98
+
+96:                                               ; preds = %79
+  %97 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  call void @print_usage(%struct._IO_FILE* %97)
+  call void @exit(i32 1) #23
+  unreachable
+
+98:                                               ; preds = %79
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %4) #20
+  ret void
+}
+
+; Function Attrs: nounwind
+declare dso_local i64 @time(i64*) local_unnamed_addr #3
+
+; Function Attrs: nounwind uwtable
+define dso_local noalias %struct.offset_reservoir* @new_offset_reservoir_ptr(i64 %0) local_unnamed_addr #2 {
+  %2 = shl i64 %0, 3
+  %3 = call noalias align 16 i8* @malloc(i64 %2) #20
+  %4 = icmp eq i8* %3, null
+  br i1 %4, label %5, label %8
+
+5:                                                ; preds = %1
+  %6 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %7 = call i64 @fwrite(i8* getelementptr inbounds ([33 x i8], [33 x i8]* @.str, i64 0, i64 0), i64 32, i64 1, %struct._IO_FILE* %6) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+8:                                                ; preds = %1
+  %9 = call noalias align 16 dereferenceable_or_null(16) i8* @malloc(i64 16) #20
+  %10 = bitcast i8* %9 to %struct.offset_reservoir*
+  %11 = icmp eq i8* %9, null
+  br i1 %11, label %12, label %15
+
+12:                                               ; preds = %8
+  %13 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %14 = call i64 @fwrite(i8* getelementptr inbounds ([46 x i8], [46 x i8]* @.str.1, i64 0, i64 0), i64 45, i64 1, %struct._IO_FILE* %13) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+15:                                               ; preds = %8
+  %16 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %10, i64 0, i32 0
+  store i64 %0, i64* %16, align 16, !tbaa !23
+  %17 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %10, i64 0, i32 1
+  %18 = bitcast i64** %17 to i8**
+  store i8* %3, i8** %18, align 8, !tbaa !25
+  ret %struct.offset_reservoir* %10
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local %struct._IO_FILE* @new_file_ptr(i8* nocapture readonly %0) local_unnamed_addr #2 {
+  %2 = call i32 @strcmp(i8* noundef nonnull dereferenceable(1) %0, i8* noundef nonnull dereferenceable(2) getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0)) #21
+  %3 = icmp eq i32 %2, 0
+  br i1 %3, label %6, label %4
+
+4:                                                ; preds = %1
+  %5 = call %struct._IO_FILE* @fopen(i8* %0, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.9, i64 0, i64 0))
+  br label %8
+
+6:                                                ; preds = %1
+  %7 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  br label %8
+
+8:                                                ; preds = %6, %4
+  %9 = phi %struct._IO_FILE* [ %5, %4 ], [ %7, %6 ]
+  %10 = load %struct._IO_FILE*, %struct._IO_FILE** @stdin, align 8, !tbaa !16
+  %11 = icmp eq %struct._IO_FILE* %9, %10
+  br i1 %11, label %12, label %15
+
+12:                                               ; preds = %8
+  %13 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %14 = call i64 @fwrite(i8* getelementptr inbounds ([54 x i8], [54 x i8]* @.str.10, i64 0, i64 0), i64 53, i64 1, %struct._IO_FILE* %13) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+15:                                               ; preds = %8
+  ret %struct._IO_FILE* %9
+}
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @sample_reservoir_offsets_without_replacement_via_cstdio_with_fixed_k(%struct._IO_FILE* nocapture %0, %struct.offset_reservoir** nocapture readonly %1, i32 %2) local_unnamed_addr #4 {
+  %4 = alloca [65537 x i8], align 16
+  %5 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %5) #20
+  %6 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %7 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %6, i64 0, i32 0
+  %8 = load i64, i64* %7, align 8, !tbaa !23
+  %9 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 65536
+  store i8 49, i8* %9, align 16, !tbaa !32
+  %10 = sext i32 %2 to i64
+  %11 = sitofp i64 %8 to double
+  br label %12
+
+12:                                               ; preds = %41, %3
+  %13 = phi i64 [ %42, %41 ], [ 0, %3 ]
+  %14 = phi i64 [ %21, %41 ], [ 0, %3 ]
+  %15 = phi i64 [ %43, %41 ], [ 0, %3 ]
+  br label %16
+
+16:                                               ; preds = %12, %20
+  %17 = phi i64 [ %21, %20 ], [ %14, %12 ]
+  %18 = call i8* @fgets(i8* nonnull %5, i32 65537, %struct._IO_FILE* %0)
+  %19 = icmp eq i8* %18, null
+  br i1 %19, label %44, label %20
+
+20:                                               ; preds = %16
+  %21 = add nsw i64 %17, 1
+  %22 = srem i64 %21, %10
+  %23 = icmp eq i64 %22, 0
+  br i1 %23, label %24, label %16, !llvm.loop !39
+
+24:                                               ; preds = %20
+  %25 = icmp slt i64 %15, %8
+  br i1 %25, label %35, label %26
+
+26:                                               ; preds = %24
+  %27 = add nuw nsw i64 %15, 1
+  %28 = sitofp i64 %27 to double
+  %29 = fdiv double %11, %28
+  %30 = call i64 @mt19937_generate_random_ulong()
+  %31 = call double @mt19937_generate_random_double()
+  %32 = fcmp ogt double %29, %31
+  br i1 %32, label %33, label %41
+
+33:                                               ; preds = %26
+  %34 = urem i64 %30, %8
+  br label %35
+
+35:                                               ; preds = %24, %33
+  %36 = phi i64 [ %34, %33 ], [ %15, %24 ]
+  %37 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %38 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %37, i64 0, i32 1
+  %39 = load i64*, i64** %38, align 8, !tbaa !25
+  %40 = getelementptr inbounds i64, i64* %39, i64 %36
+  store i64 %13, i64* %40, align 8, !tbaa !3
+  br label %41
+
+41:                                               ; preds = %35, %26
+  %42 = call i64 @ftell(%struct._IO_FILE* %0)
+  %43 = add nuw nsw i64 %15, 1
+  br label %12, !llvm.loop !39
+
+44:                                               ; preds = %16
+  %45 = icmp slt i64 %15, %8
+  br i1 %45, label %46, label %49
+
+46:                                               ; preds = %44
+  %47 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %48 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %47, i64 0, i32 0
+  store i64 %15, i64* %48, align 8, !tbaa !23
+  br label %49
+
+49:                                               ; preds = %46, %44
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %5) #20
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_without_replacement_via_cstdio_with_unspecified_k(%struct._IO_FILE* nocapture %0, %struct.offset_reservoir** nocapture readonly %1, i32 %2) local_unnamed_addr #2 {
+  %4 = alloca [65537 x i8], align 16
+  %5 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %5) #20
+  %6 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %7 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %6, i64 0, i32 0
+  %8 = load i64, i64* %7, align 8, !tbaa !23
+  %9 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 65536
+  store i8 49, i8* %9, align 16, !tbaa !32
+  %10 = sext i32 %2 to i64
+  br label %11
+
+11:                                               ; preds = %42, %3
+  %12 = phi i64 [ %48, %42 ], [ 0, %3 ]
+  %13 = phi i64 [ %43, %42 ], [ %8, %3 ]
+  %14 = phi i64 [ %21, %42 ], [ 0, %3 ]
+  %15 = phi i64 [ %49, %42 ], [ 0, %3 ]
+  br label %16
+
+16:                                               ; preds = %11, %20
+  %17 = phi i64 [ %21, %20 ], [ %14, %11 ]
+  %18 = call i8* @fgets(i8* nonnull %5, i32 65537, %struct._IO_FILE* %0)
+  %19 = icmp eq i8* %18, null
+  br i1 %19, label %50, label %20
+
+20:                                               ; preds = %16
+  %21 = add nsw i64 %17, 1
+  %22 = srem i64 %21, %10
+  %23 = icmp eq i64 %22, 0
+  br i1 %23, label %24, label %16, !llvm.loop !40
+
+24:                                               ; preds = %20
+  %25 = icmp eq i64 %15, %13
+  br i1 %25, label %26, label %42
+
+26:                                               ; preds = %24
+  %27 = add nsw i64 %13, 10000
+  %28 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %29 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %28, i64 0, i32 1
+  %30 = bitcast i64** %29 to i8**
+  %31 = load i8*, i8** %30, align 8, !tbaa !25
+  %32 = shl i64 %27, 3
+  %33 = call align 16 i8* @realloc(i8* %31, i64 %32) #20
+  %34 = icmp eq i8* %33, null
+  br i1 %34, label %35, label %38
+
+35:                                               ; preds = %26
+  %36 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %37 = call i64 @fwrite(i8* getelementptr inbounds ([59 x i8], [59 x i8]* @.str.4, i64 0, i64 0), i64 58, i64 1, %struct._IO_FILE* %36) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+38:                                               ; preds = %26
+  %39 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %40 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %39, i64 0, i32 1
+  %41 = bitcast i64** %40 to i8**
+  store i8* %33, i8** %41, align 8, !tbaa !25
+  br label %42
+
+42:                                               ; preds = %38, %24
+  %43 = phi i64 [ %27, %38 ], [ %13, %24 ]
+  %44 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %45 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %44, i64 0, i32 1
+  %46 = load i64*, i64** %45, align 8, !tbaa !25
+  %47 = getelementptr inbounds i64, i64* %46, i64 %15
+  store i64 %12, i64* %47, align 8, !tbaa !3
+  %48 = call i64 @ftell(%struct._IO_FILE* %0)
+  %49 = add nuw nsw i64 %15, 1
+  br label %11, !llvm.loop !40
+
+50:                                               ; preds = %16
+  %51 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %52 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %51, i64 0, i32 0
+  store i64 %15, i64* %52, align 8, !tbaa !23
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %5) #20
+  ret void
+}
+
+; Function Attrs: nofree norecurse nosync nounwind uwtable
+define dso_local void @shuffle_reservoir_offsets_via_fisher_yates(%struct.offset_reservoir** nocapture readonly %0) local_unnamed_addr #0 {
+  %2 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %3 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 0
+  %4 = load i64, i64* %3, align 8, !tbaa !23
+  %5 = icmp sgt i64 %4, 1
+  br i1 %5, label %6, label %21
+
+6:                                                ; preds = %1, %6
+  %7 = phi i64 [ %8, %6 ], [ %4, %1 ]
+  %8 = add nsw i64 %7, -1
+  %9 = call double @mt19937_generate_random_double()
+  %10 = sitofp i64 %7 to double
+  %11 = fmul double %9, %10
+  %12 = fptosi double %11 to i64
+  %13 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %14 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %13, i64 0, i32 1
+  %15 = load i64*, i64** %14, align 8, !tbaa !25
+  %16 = getelementptr inbounds i64, i64* %15, i64 %8
+  %17 = load i64, i64* %16, align 8, !tbaa !3
+  %18 = getelementptr inbounds i64, i64* %15, i64 %12
+  %19 = load i64, i64* %18, align 8, !tbaa !3
+  store i64 %19, i64* %16, align 8, !tbaa !3
+  store i64 %17, i64* %18, align 8, !tbaa !3
+  %20 = icmp sgt i64 %7, 2
+  br i1 %20, label %6, label %21, !llvm.loop !26
+
+21:                                               ; preds = %6, %1
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local %struct.file_mmap* @new_file_mmap(i8* nocapture readonly %0) local_unnamed_addr #2 {
+  %2 = call noalias align 16 dereferenceable_or_null(184) i8* @malloc(i64 184) #20
+  %3 = bitcast i8* %2 to %struct.file_mmap*
+  %4 = icmp eq i8* %2, null
+  br i1 %4, label %5, label %8
+
+5:                                                ; preds = %1
+  %6 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %7 = call i64 @fwrite(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str.11, i64 0, i64 0), i64 28, i64 1, %struct._IO_FILE* %6) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+8:                                                ; preds = %1
+  %9 = call i32 @strcmp(i8* noundef nonnull dereferenceable(1) %0, i8* noundef nonnull dereferenceable(2) getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0)) #21
+  %10 = icmp eq i32 %9, 0
+  br i1 %10, label %11, label %14
+
+11:                                               ; preds = %8
+  %12 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %13 = call i64 @fwrite(i8* getelementptr inbounds ([57 x i8], [57 x i8]* @.str.12, i64 0, i64 0), i64 56, i64 1, %struct._IO_FILE* %12) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+14:                                               ; preds = %8
+  %15 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 1
+  store i8* null, i8** %15, align 8, !tbaa !37
+  %16 = call i64 @strlen(i8* noundef nonnull dereferenceable(1) %0) #21
+  %17 = add i64 %16, 1
+  %18 = call noalias align 16 i8* @malloc(i64 %17) #20
+  store i8* %18, i8** %15, align 8, !tbaa !37
+  %19 = icmp eq i8* %18, null
+  br i1 %19, label %20, label %23
+
+20:                                               ; preds = %14
+  %21 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %22 = call i64 @fwrite(i8* getelementptr inbounds ([48 x i8], [48 x i8]* @.str.13, i64 0, i64 0), i64 47, i64 1, %struct._IO_FILE* %21) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+23:                                               ; preds = %14
+  %24 = call i8* @strncpy(i8* noundef nonnull %18, i8* %0, i64 %17) #20
+  %25 = call i32 (i8*, i32, ...) @open(i8* nonnull %18, i32 0) #20
+  %26 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 0
+  store i32 %25, i32* %26, align 16, !tbaa !36
+  %27 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 2
+  %28 = call i32 @__fxstat(i32 1, i32 %25, %struct.stat* nonnull %27) #20
+  %29 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 3
+  store i32 %28, i32* %29, align 16, !tbaa !41
+  %30 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 2, i32 8
+  %31 = load i64, i64* %30, align 16, !tbaa !42
+  %32 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 4
+  store i64 %31, i64* %32, align 8, !tbaa !27
+  %33 = load i32, i32* %26, align 16, !tbaa !36
+  %34 = call i8* @mmap(i8* null, i64 %31, i32 1, i32 1, i32 %33, i64 0) #20
+  %35 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %3, i64 0, i32 5
+  store i8* %34, i8** %35, align 16, !tbaa !31
+  %36 = icmp eq i8* %34, inttoptr (i64 -1 to i8*)
+  br i1 %36, label %37, label %40
+
+37:                                               ; preds = %23
+  %38 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %39 = call i64 @fwrite(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @.str.14, i64 0, i64 0), i64 31, i64 1, %struct._IO_FILE* %38) #24
+  br label %40
+
+40:                                               ; preds = %37, %23
+  ret %struct.file_mmap* %3
+}
+
+; Function Attrs: nofree norecurse nosync nounwind uwtable
+define dso_local void @sample_reservoir_offsets_without_replacement_via_mmap_with_fixed_k(%struct.file_mmap* nocapture readonly %0, %struct.offset_reservoir** nocapture readonly %1, i32 %2) local_unnamed_addr #0 {
+  %4 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %5 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %4, i64 0, i32 0
+  %6 = load i64, i64* %5, align 8, !tbaa !23
+  %7 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %0, i64 0, i32 4
+  %8 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %0, i64 0, i32 5
+  %9 = sext i32 %2 to i64
+  %10 = sitofp i64 %6 to double
+  %11 = load i64, i64* %7, align 8, !tbaa !27
+  %12 = icmp eq i64 %11, 0
+  br i1 %12, label %53, label %13
+
+13:                                               ; preds = %3, %46
+  %14 = phi i64 [ %49, %46 ], [ 0, %3 ]
+  %15 = phi i64 [ %48, %46 ], [ 0, %3 ]
+  %16 = phi i64 [ %50, %46 ], [ 0, %3 ]
+  %17 = phi i64 [ %47, %46 ], [ 0, %3 ]
+  %18 = load i8*, i8** %8, align 8, !tbaa !31
+  %19 = getelementptr inbounds i8, i8* %18, i64 %16
+  %20 = load i8, i8* %19, align 1, !tbaa !32
+  %21 = icmp eq i8 %20, 10
+  br i1 %21, label %22, label %46
+
+22:                                               ; preds = %13
+  %23 = add nsw i64 %15, 1
+  %24 = srem i64 %23, %9
+  %25 = icmp eq i64 %24, 0
+  br i1 %25, label %26, label %46
+
+26:                                               ; preds = %22
+  %27 = icmp slt i64 %14, %6
+  br i1 %27, label %37, label %28
+
+28:                                               ; preds = %26
+  %29 = add nsw i64 %14, 1
+  %30 = sitofp i64 %29 to double
+  %31 = fdiv double %10, %30
+  %32 = call i64 @mt19937_generate_random_ulong()
+  %33 = call double @mt19937_generate_random_double()
+  %34 = fcmp ogt double %31, %33
+  br i1 %34, label %35, label %43
+
+35:                                               ; preds = %28
+  %36 = urem i64 %32, %6
+  br label %37
+
+37:                                               ; preds = %26, %35
+  %38 = phi i64 [ %36, %35 ], [ %14, %26 ]
+  %39 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %40 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %39, i64 0, i32 1
+  %41 = load i64*, i64** %40, align 8, !tbaa !25
+  %42 = getelementptr inbounds i64, i64* %41, i64 %38
+  store i64 %17, i64* %42, align 8, !tbaa !3
+  br label %43
+
+43:                                               ; preds = %37, %28
+  %44 = add nuw nsw i64 %16, 1
+  %45 = add nsw i64 %14, 1
+  br label %46
+
+46:                                               ; preds = %13, %43, %22
+  %47 = phi i64 [ %17, %22 ], [ %44, %43 ], [ %17, %13 ]
+  %48 = phi i64 [ %23, %22 ], [ %23, %43 ], [ %15, %13 ]
+  %49 = phi i64 [ %14, %22 ], [ %45, %43 ], [ %14, %13 ]
+  %50 = add nuw i64 %16, 1
+  %51 = load i64, i64* %7, align 8, !tbaa !27
+  %52 = icmp ult i64 %50, %51
+  br i1 %52, label %13, label %53, !llvm.loop !33
+
+53:                                               ; preds = %46, %3
+  %54 = phi i64 [ 0, %3 ], [ %49, %46 ]
+  %55 = icmp slt i64 %54, %6
+  br i1 %55, label %56, label %59
+
+56:                                               ; preds = %53
+  %57 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %58 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %57, i64 0, i32 0
+  store i64 %54, i64* %58, align 8, !tbaa !23
+  br label %59
+
+59:                                               ; preds = %56, %53
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(%struct.file_mmap* nocapture readonly %0, %struct.offset_reservoir** nocapture readonly %1, i32 %2) local_unnamed_addr #2 {
+  %4 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %0, i64 0, i32 4
+  %5 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %0, i64 0, i32 5
+  %6 = sext i32 %2 to i64
+  %7 = load i64, i64* %4, align 8, !tbaa !27
+  %8 = icmp eq i64 %7, 0
+  br i1 %8, label %61, label %9
+
+9:                                                ; preds = %3
+  %10 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %11 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %10, i64 0, i32 0
+  %12 = load i64, i64* %11, align 8, !tbaa !23
+  br label %13
+
+13:                                               ; preds = %9, %53
+  %14 = phi i64 [ %57, %53 ], [ 0, %9 ]
+  %15 = phi i64 [ %56, %53 ], [ 0, %9 ]
+  %16 = phi i64 [ %55, %53 ], [ %12, %9 ]
+  %17 = phi i64 [ %54, %53 ], [ 0, %9 ]
+  %18 = phi i64 [ %58, %53 ], [ 0, %9 ]
+  %19 = load i8*, i8** %5, align 8, !tbaa !31
+  %20 = getelementptr inbounds i8, i8* %19, i64 %18
+  %21 = load i8, i8* %20, align 1, !tbaa !32
+  %22 = icmp eq i8 %21, 10
+  br i1 %22, label %23, label %53
+
+23:                                               ; preds = %13
+  %24 = add nsw i64 %15, 1
+  %25 = srem i64 %24, %6
+  %26 = icmp eq i64 %25, 0
+  br i1 %26, label %27, label %53
+
+27:                                               ; preds = %23
+  %28 = icmp eq i64 %14, %16
+  br i1 %28, label %29, label %45
+
+29:                                               ; preds = %27
+  %30 = add nsw i64 %16, 10000
+  %31 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %32 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %31, i64 0, i32 1
+  %33 = bitcast i64** %32 to i8**
+  %34 = load i8*, i8** %33, align 8, !tbaa !25
+  %35 = shl i64 %30, 3
+  %36 = call align 16 i8* @realloc(i8* %34, i64 %35) #20
+  %37 = icmp eq i8* %36, null
+  br i1 %37, label %38, label %41
+
+38:                                               ; preds = %29
+  %39 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %40 = call i64 @fwrite(i8* getelementptr inbounds ([59 x i8], [59 x i8]* @.str.4, i64 0, i64 0), i64 58, i64 1, %struct._IO_FILE* %39) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+41:                                               ; preds = %29
+  %42 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %43 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %42, i64 0, i32 1
+  %44 = bitcast i64** %43 to i8**
+  store i8* %36, i8** %44, align 8, !tbaa !25
+  br label %45
+
+45:                                               ; preds = %41, %27
+  %46 = phi i64 [ %30, %41 ], [ %16, %27 ]
+  %47 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %48 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %47, i64 0, i32 1
+  %49 = load i64*, i64** %48, align 8, !tbaa !25
+  %50 = getelementptr inbounds i64, i64* %49, i64 %14
+  store i64 %17, i64* %50, align 8, !tbaa !3
+  %51 = add nuw nsw i64 %18, 1
+  %52 = add nsw i64 %14, 1
+  br label %53
+
+53:                                               ; preds = %13, %45, %23
+  %54 = phi i64 [ %17, %23 ], [ %51, %45 ], [ %17, %13 ]
+  %55 = phi i64 [ %16, %23 ], [ %46, %45 ], [ %16, %13 ]
+  %56 = phi i64 [ %24, %23 ], [ %24, %45 ], [ %15, %13 ]
+  %57 = phi i64 [ %14, %23 ], [ %52, %45 ], [ %14, %13 ]
+  %58 = add nuw i64 %18, 1
+  %59 = load i64, i64* %4, align 8, !tbaa !27
+  %60 = icmp ult i64 %58, %59
+  br i1 %60, label %13, label %61, !llvm.loop !43
+
+61:                                               ; preds = %53, %3
+  %62 = phi i64 [ 0, %3 ], [ %57, %53 ]
+  %63 = load %struct.offset_reservoir*, %struct.offset_reservoir** %1, align 8, !tbaa !16
+  %64 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %63, i64 0, i32 0
+  store i64 %62, i64* %64, align 8, !tbaa !23
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_with_replacement_via_cstdio_with_fixed_k(%struct.offset_reservoir** nocapture %0, i32 %1) local_unnamed_addr #2 {
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** %0, i32 %1)
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_with_replacement_via_cstdio_with_unspecified_k(%struct.offset_reservoir** nocapture %0) local_unnamed_addr #2 {
+  %2 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %3 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 0
+  %4 = load i64, i64* %3, align 8, !tbaa !23
+  %5 = trunc i64 %4 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %0, i32 %5) #20
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_with_replacement_via_mmap_with_fixed_k(%struct.offset_reservoir** nocapture %0, i32 %1) local_unnamed_addr #2 {
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** %0, i32 %1)
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_with_replacement_via_mmap_with_unspecified_k(%struct.offset_reservoir** nocapture %0) local_unnamed_addr #2 {
+  %2 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %3 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 0
+  %4 = load i64, i64* %3, align 8, !tbaa !23
+  %5 = trunc i64 %4 to i32
+  call void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nonnull %0, i32 %5) #20
+  ret void
+}
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @sort_offset_reservoir_ptr_offsets(%struct.offset_reservoir** nocapture readonly %0) local_unnamed_addr #4 {
+  %2 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %3 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 1
+  %4 = bitcast i64** %3 to i8**
+  %5 = load i8*, i8** %4, align 8, !tbaa !25
+  %6 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 0
+  %7 = load i64, i64* %6, align 8, !tbaa !23
+  call void @qsort(i8* %5, i64 %7, i64 8, i32 (i8*, i8*)* nonnull @offset_compare) #20
+  ret void
+}
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @print_offset_reservoir_sample_via_mmap(%struct.file_mmap* nocapture readonly %0, %struct.offset_reservoir* nocapture readonly %1, i32 %2) local_unnamed_addr #4 {
+  %4 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 0
+  %5 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 1
+  %6 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %0, i64 0, i32 5
+  %7 = sext i32 %2 to i64
+  %8 = load i64, i64* %4, align 8, !tbaa !23
+  %9 = icmp sgt i64 %8, 0
+  br i1 %9, label %10, label %43
+
+10:                                               ; preds = %3, %38
+  %11 = phi i64 [ %40, %38 ], [ 0, %3 ]
+  %12 = phi i64 [ %39, %38 ], [ 0, %3 ]
+  %13 = load i64*, i64** %5, align 8, !tbaa !25
+  %14 = getelementptr inbounds i64, i64* %13, i64 %11
+  %15 = load i64, i64* %14, align 8, !tbaa !3
+  %16 = add nsw i64 %15, 65535
+  br label %17
+
+17:                                               ; preds = %10, %34
+  %18 = phi i64 [ %12, %10 ], [ %35, %34 ]
+  %19 = phi i64 [ %15, %10 ], [ %36, %34 ]
+  %20 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %21 = load i8*, i8** %6, align 8, !tbaa !31
+  %22 = getelementptr inbounds i8, i8* %21, i64 %19
+  %23 = load i8, i8* %22, align 1, !tbaa !32
+  %24 = sext i8 %23 to i32
+  %25 = call i32 @fputc(i32 %24, %struct._IO_FILE* %20)
+  %26 = load i8*, i8** %6, align 8, !tbaa !31
+  %27 = getelementptr inbounds i8, i8* %26, i64 %19
+  %28 = load i8, i8* %27, align 1, !tbaa !32
+  %29 = icmp eq i8 %28, 10
+  br i1 %29, label %30, label %34
+
+30:                                               ; preds = %17
+  %31 = add nsw i64 %18, 1
+  %32 = srem i64 %31, %7
+  %33 = icmp eq i64 %32, 0
+  br i1 %33, label %38, label %34
+
+34:                                               ; preds = %17, %30
+  %35 = phi i64 [ %31, %30 ], [ %18, %17 ]
+  %36 = add nsw i64 %19, 1
+  %37 = icmp slt i64 %19, %16
+  br i1 %37, label %17, label %38, !llvm.loop !34
+
+38:                                               ; preds = %34, %30
+  %39 = phi i64 [ %31, %30 ], [ %35, %34 ]
+  %40 = add nuw nsw i64 %11, 1
+  %41 = load i64, i64* %4, align 8, !tbaa !23
+  %42 = icmp sgt i64 %41, %40
+  br i1 %42, label %10, label %43, !llvm.loop !35
+
+43:                                               ; preds = %38, %3
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @print_sorted_offset_reservoir_sample_via_cstdio(%struct._IO_FILE* nocapture %0, %struct.offset_reservoir* nocapture readonly %1, i32 %2) local_unnamed_addr #2 {
+  %4 = alloca [65537 x i8], align 16
+  %5 = alloca [65537 x i8], align 16
+  %6 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %6) #20
+  %7 = getelementptr inbounds [65537 x i8], [65537 x i8]* %5, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %7) #20
+  %8 = call i32 @fseek(%struct._IO_FILE* %0, i64 0, i32 0)
+  %9 = icmp eq i32 %8, -1
+  br i1 %9, label %17, label %10
+
+10:                                               ; preds = %3
+  %11 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 0
+  %12 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 1
+  %13 = sext i32 %2 to i64
+  %14 = icmp sgt i32 %2, 0
+  %15 = load i64, i64* %11, align 8, !tbaa !23
+  %16 = icmp sgt i64 %15, 0
+  br i1 %16, label %20, label %55
+
+17:                                               ; preds = %3
+  %18 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %19 = call i64 @fwrite(i8* getelementptr inbounds ([44 x i8], [44 x i8]* @.str.6, i64 0, i64 0), i64 43, i64 1, %struct._IO_FILE* %18) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+20:                                               ; preds = %10, %42
+  %21 = phi i64 [ %52, %42 ], [ 0, %10 ]
+  %22 = phi i64 [ %48, %42 ], [ 0, %10 ]
+  %23 = phi i64 [ %51, %42 ], [ 0, %10 ]
+  %24 = load i64*, i64** %12, align 8, !tbaa !25
+  %25 = getelementptr inbounds i64, i64* %24, i64 %21
+  %26 = load i64, i64* %25, align 8, !tbaa !3
+  %27 = add i64 %22, %23
+  %28 = sub i64 %26, %27
+  %29 = call i32 @fseek(%struct._IO_FILE* %0, i64 %28, i32 1)
+  br i1 %14, label %30, label %42
+
+30:                                               ; preds = %20, %30
+  %31 = phi i32 [ %39, %30 ], [ 0, %20 ]
+  %32 = phi i64 [ %40, %30 ], [ 0, %20 ]
+  %33 = call i8* @fgets(i8* nonnull %7, i32 65537, %struct._IO_FILE* %0)
+  %34 = sext i32 %31 to i64
+  %35 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 %34
+  %36 = call i64 @strlen(i8* noundef nonnull %7) #21
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* nonnull align 1 %35, i8* nonnull align 16 %7, i64 %36, i1 false)
+  %37 = call i64 @strlen(i8* noundef nonnull %7) #21
+  %38 = trunc i64 %37 to i32
+  %39 = add i32 %31, %38
+  %40 = add nuw nsw i64 %32, 1
+  %41 = icmp eq i64 %40, %13
+  br i1 %41, label %42, label %30, !llvm.loop !44
+
+42:                                               ; preds = %30, %20
+  %43 = phi i32 [ 0, %20 ], [ %39, %30 ]
+  %44 = sext i32 %43 to i64
+  %45 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 %44
+  store i8 0, i8* %45, align 1, !tbaa !32
+  %46 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %47 = call i32 @fputs(i8* nonnull %6, %struct._IO_FILE* %46)
+  %48 = call i64 @strlen(i8* noundef nonnull %6) #21
+  %49 = load i64*, i64** %12, align 8, !tbaa !25
+  %50 = getelementptr inbounds i64, i64* %49, i64 %21
+  %51 = load i64, i64* %50, align 8, !tbaa !3
+  %52 = add nuw nsw i64 %21, 1
+  %53 = load i64, i64* %11, align 8, !tbaa !23
+  %54 = icmp sgt i64 %53, %52
+  br i1 %54, label %20, label %55, !llvm.loop !45
+
+55:                                               ; preds = %42, %10
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %7) #20
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %6) #20
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @print_unsorted_offset_reservoir_sample_via_cstdio(%struct._IO_FILE* nocapture %0, %struct.offset_reservoir* nocapture readonly %1, i32 %2) local_unnamed_addr #2 {
+  %4 = alloca [65537 x i8], align 16
+  %5 = alloca [65537 x i8], align 16
+  %6 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %6) #20
+  %7 = getelementptr inbounds [65537 x i8], [65537 x i8]* %5, i64 0, i64 0
+  call void @llvm.lifetime.start.p0i8(i64 65537, i8* nonnull %7) #20
+  %8 = call i32 @fseek(%struct._IO_FILE* %0, i64 0, i32 0)
+  %9 = icmp eq i32 %8, -1
+  br i1 %9, label %17, label %10
+
+10:                                               ; preds = %3
+  %11 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 0
+  %12 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %1, i64 0, i32 1
+  %13 = sext i32 %2 to i64
+  %14 = icmp sgt i32 %2, 0
+  %15 = load i64, i64* %11, align 8, !tbaa !23
+  %16 = icmp sgt i64 %15, 0
+  br i1 %16, label %20, label %47
+
+17:                                               ; preds = %3
+  %18 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %19 = call i64 @fwrite(i8* getelementptr inbounds ([44 x i8], [44 x i8]* @.str.6, i64 0, i64 0), i64 43, i64 1, %struct._IO_FILE* %18) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+20:                                               ; preds = %10, %38
+  %21 = phi i64 [ %44, %38 ], [ 0, %10 ]
+  %22 = load i64*, i64** %12, align 8, !tbaa !25
+  %23 = getelementptr inbounds i64, i64* %22, i64 %21
+  %24 = load i64, i64* %23, align 8, !tbaa !3
+  %25 = call i32 @fseek(%struct._IO_FILE* %0, i64 %24, i32 0)
+  br i1 %14, label %26, label %38
+
+26:                                               ; preds = %20, %26
+  %27 = phi i32 [ %35, %26 ], [ 0, %20 ]
+  %28 = phi i64 [ %36, %26 ], [ 0, %20 ]
+  %29 = call i8* @fgets(i8* nonnull %7, i32 65537, %struct._IO_FILE* %0)
+  %30 = sext i32 %27 to i64
+  %31 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 %30
+  %32 = call i64 @strlen(i8* noundef nonnull %7) #21
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* nonnull align 1 %31, i8* nonnull align 16 %7, i64 %32, i1 false)
+  %33 = call i64 @strlen(i8* noundef nonnull %7) #21
+  %34 = trunc i64 %33 to i32
+  %35 = add i32 %27, %34
+  %36 = add nuw nsw i64 %28, 1
+  %37 = icmp eq i64 %36, %13
+  br i1 %37, label %38, label %26, !llvm.loop !46
+
+38:                                               ; preds = %26, %20
+  %39 = phi i32 [ 0, %20 ], [ %35, %26 ]
+  %40 = sext i32 %39 to i64
+  %41 = getelementptr inbounds [65537 x i8], [65537 x i8]* %4, i64 0, i64 %40
+  store i8 0, i8* %41, align 1, !tbaa !32
+  %42 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %43 = call i32 @fputs(i8* nonnull %6, %struct._IO_FILE* %42)
+  %44 = add nuw nsw i64 %21, 1
+  %45 = load i64, i64* %11, align 8, !tbaa !23
+  %46 = icmp sgt i64 %45, %44
+  br i1 %46, label %20, label %47, !llvm.loop !47
+
+47:                                               ; preds = %38, %10
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %7) #20
+  call void @llvm.lifetime.end.p0i8(i64 65537, i8* nonnull %6) #20
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @delete_offset_reservoir_ptr(%struct.offset_reservoir** nocapture %0) local_unnamed_addr #2 {
+  %2 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %3 = icmp eq %struct.offset_reservoir* %2, null
+  br i1 %3, label %4, label %7
+
+4:                                                ; preds = %1
+  %5 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %6 = call i64 @fwrite(i8* getelementptr inbounds ([50 x i8], [50 x i8]* @.str.2, i64 0, i64 0), i64 49, i64 1, %struct._IO_FILE* %5) #24
+  call void @exit(i32 1) #23
+  unreachable
+
+7:                                                ; preds = %1
+  %8 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %2, i64 0, i32 1
+  %9 = load i64*, i64** %8, align 8, !tbaa !25
+  %10 = icmp eq i64* %9, null
+  br i1 %10, label %17, label %11
+
+11:                                               ; preds = %7
+  %12 = bitcast i64* %9 to i8*
+  call void @free(i8* %12) #20
+  %13 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %14 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %13, i64 0, i32 1
+  store i64* null, i64** %14, align 8, !tbaa !25
+  %15 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %16 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %15, i64 0, i32 0
+  store i64 0, i64* %16, align 8, !tbaa !23
+  br label %17
+
+17:                                               ; preds = %11, %7
+  %18 = bitcast %struct.offset_reservoir** %0 to i8**
+  %19 = load i8*, i8** %18, align 8, !tbaa !16
+  call void @free(i8* %19) #20
+  store %struct.offset_reservoir* null, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  ret void
+}
+
+; Function Attrs: nounwind uwtable
+define dso_local void @delete_file_mmap(%struct.file_mmap** nocapture %0) local_unnamed_addr #2 {
+  %2 = load %struct.file_mmap*, %struct.file_mmap** %0, align 8, !tbaa !16
+  %3 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %2, i64 0, i32 0
+  %4 = load i32, i32* %3, align 8, !tbaa !36
+  %5 = call i32 @close(i32 %4) #20
+  %6 = load %struct.file_mmap*, %struct.file_mmap** %0, align 8, !tbaa !16
+  %7 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %6, i64 0, i32 5
+  %8 = load i8*, i8** %7, align 8, !tbaa !31
+  %9 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %6, i64 0, i32 4
+  %10 = load i64, i64* %9, align 8, !tbaa !27
+  %11 = call i32 @munmap(i8* %8, i64 %10) #20
+  %12 = load %struct.file_mmap*, %struct.file_mmap** %0, align 8, !tbaa !16
+  %13 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %12, i64 0, i32 1
+  %14 = load i8*, i8** %13, align 8, !tbaa !37
+  call void @free(i8* %14) #20
+  %15 = load %struct.file_mmap*, %struct.file_mmap** %0, align 8, !tbaa !16
+  %16 = getelementptr inbounds %struct.file_mmap, %struct.file_mmap* %15, i64 0, i32 1
+  store i8* null, i8** %16, align 8, !tbaa !37
+  %17 = bitcast %struct.file_mmap** %0 to i8**
+  %18 = load i8*, i8** %17, align 8, !tbaa !16
+  call void @free(i8* %18) #20
+  store %struct.file_mmap* null, %struct.file_mmap** %0, align 8, !tbaa !16
+  ret void
+}
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @delete_file_ptr(%struct._IO_FILE** nocapture %0) local_unnamed_addr #4 {
+  %2 = load %struct._IO_FILE*, %struct._IO_FILE** %0, align 8, !tbaa !16
+  %3 = call i32 @fclose(%struct._IO_FILE* %2)
+  store %struct._IO_FILE* null, %struct._IO_FILE** %0, align 8, !tbaa !16
+  ret void
+}
+
+; Function Attrs: inaccessiblememonly mustprogress nofree nounwind willreturn
+declare dso_local noalias noundef i8* @malloc(i64 noundef) local_unnamed_addr #5
+
+; Function Attrs: nofree nounwind
+declare dso_local noundef i32 @fprintf(%struct._IO_FILE* nocapture noundef, i8* nocapture noundef readonly, ...) local_unnamed_addr #6
+
+; Function Attrs: noreturn nounwind
+declare dso_local void @exit(i32) local_unnamed_addr #7
+
+; Function Attrs: inaccessiblemem_or_argmemonly mustprogress nounwind willreturn
+declare dso_local void @free(i8* nocapture noundef) local_unnamed_addr #8
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @print_offset_reservoir_ptr(%struct.offset_reservoir* nocapture readonly %0) local_unnamed_addr #4 {
+  %2 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %0, i64 0, i32 0
+  %3 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %0, i64 0, i32 1
+  %4 = load i64, i64* %2, align 8, !tbaa !23
+  %5 = icmp sgt i64 %4, 0
+  br i1 %5, label %6, label %17
+
+6:                                                ; preds = %1, %6
+  %7 = phi i64 [ %14, %6 ], [ 0, %1 ]
+  %8 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !tbaa !16
+  %9 = load i64*, i64** %3, align 8, !tbaa !25
+  %10 = getelementptr inbounds i64, i64* %9, i64 %7
+  %11 = load i64, i64* %10, align 8, !tbaa !3
+  %12 = trunc i64 %7 to i32
+  %13 = call i32 (%struct._IO_FILE*, i8*, ...) @fprintf(%struct._IO_FILE* %8, i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.3, i64 0, i64 0), i32 %12, i64 %11)
+  %14 = add nuw nsw i64 %7, 1
+  %15 = load i64, i64* %2, align 8, !tbaa !23
+  %16 = icmp sgt i64 %15, %14
+  br i1 %16, label %6, label %17, !llvm.loop !48
+
+17:                                               ; preds = %6, %1
+  ret void
+}
+
+; Function Attrs: nofree nounwind
+declare dso_local noundef i8* @fgets(i8* noundef, i32 noundef, %struct._IO_FILE* nocapture noundef) local_unnamed_addr #6
+
+; Function Attrs: nofree nounwind
+declare dso_local noundef i64 @ftell(%struct._IO_FILE* nocapture noundef) local_unnamed_addr #6
+
+; Function Attrs: nounwind uwtable
+define dso_local void @sample_reservoir_offsets_with_replacement_with_fixed_k(%struct.offset_reservoir** nocapture %0, i32 %1) local_unnamed_addr #2 {
+  %3 = load %struct.offset_reservoir*, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  %4 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %3, i64 0, i32 0
+  %5 = load i64, i64* %4, align 8, !tbaa !23
+  %6 = sext i32 %1 to i64
+  %7 = call %struct.offset_reservoir* @new_offset_reservoir_ptr(i64 %6)
+  %8 = sitofp i64 %5 to double
+  %9 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %3, i64 0, i32 1
+  %10 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %7, i64 0, i32 1
+  %11 = icmp sgt i32 %1, 1
+  br i1 %11, label %12, label %28
+
+12:                                               ; preds = %2
+  %13 = add nsw i32 %1, -1
+  %14 = call i32 @llvm.smax.i32(i32 %13, i32 1)
+  %15 = zext i32 %14 to i64
+  br label %16
+
+16:                                               ; preds = %12, %16
+  %17 = phi i64 [ %26, %16 ], [ 0, %12 ]
+  %18 = call double @mt19937_generate_random_double()
+  %19 = fmul double %18, %8
+  %20 = fptosi double %19 to i64
+  %21 = load i64*, i64** %9, align 8, !tbaa !25
+  %22 = getelementptr inbounds i64, i64* %21, i64 %20
+  %23 = load i64, i64* %22, align 8, !tbaa !3
+  %24 = load i64*, i64** %10, align 8, !tbaa !25
+  %25 = getelementptr inbounds i64, i64* %24, i64 %17
+  store i64 %23, i64* %25, align 8, !tbaa !3
+  %26 = add nuw nsw i64 %17, 1
+  %27 = icmp eq i64 %26, %15
+  br i1 %27, label %28, label %16, !llvm.loop !49
+
+28:                                               ; preds = %16, %2
+  %29 = icmp eq %struct.offset_reservoir* %3, null
+  br i1 %29, label %30, label %33
+
+30:                                               ; preds = %28
+  %31 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !tbaa !16
+  %32 = call i64 @fwrite(i8* getelementptr inbounds ([50 x i8], [50 x i8]* @.str.2, i64 0, i64 0), i64 49, i64 1, %struct._IO_FILE* %31) #22
+  call void @exit(i32 1) #23
+  unreachable
+
+33:                                               ; preds = %28
+  %34 = getelementptr inbounds %struct.offset_reservoir, %struct.offset_reservoir* %3, i64 0, i32 1
+  %35 = load i64*, i64** %34, align 8, !tbaa !25
+  %36 = icmp eq i64* %35, null
+  br i1 %36, label %40, label %37
+
+37:                                               ; preds = %33
+  %38 = bitcast i64* %35 to i8*
+  call void @free(i8* %38) #20
+  %39 = bitcast %struct.offset_reservoir* %3 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(16) %39, i8 0, i64 16, i1 false)
+  br label %40
+
+40:                                               ; preds = %33, %37
+  %41 = bitcast %struct.offset_reservoir* %3 to i8*
+  call void @free(i8* %41) #20
+  store %struct.offset_reservoir* %7, %struct.offset_reservoir** %0, align 8, !tbaa !16
+  ret void
+}
+
+; Function Attrs: inaccessiblemem_or_argmemonly mustprogress nounwind willreturn
+declare dso_local noalias noundef i8* @realloc(i8* nocapture, i64 noundef) local_unnamed_addr #8
+
+; Function Attrs: nofree
+declare dso_local void @qsort(i8* noundef, i64 noundef, i64 noundef, i32 (i8*, i8*)* nocapture noundef) local_unnamed_addr #9
+
+; Function Attrs: mustprogress nofree norecurse nosync nounwind readonly uwtable willreturn
+define dso_local i32 @offset_compare(i8* nocapture readonly %0, i8* nocapture readonly %1) #10 {
+  %3 = bitcast i8* %0 to i64*
+  %4 = load i64, i64* %3, align 8, !tbaa !3
+  %5 = bitcast i8* %1 to i64*
+  %6 = load i64, i64* %5, align 8, !tbaa !3
+  %7 = icmp sgt i64 %4, %6
+  %8 = select i1 %7, i32 1, i32 -1
+  ret i32 %8
+}
+
+; Function Attrs: nofree nounwind
+declare dso_local noundef i32 @fseek(%struct._IO_FILE* nocapture noundef, i64 noundef, i32 noundef) local_unnamed_addr #6
+
+; Function Attrs: argmemonly mustprogress nofree nounwind readonly willreturn
+declare dso_local i64 @strlen(i8* nocapture) local_unnamed_addr #11
+
+; Function Attrs: argmemonly mustprogress nofree nounwind willreturn
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* noalias nocapture writeonly, i8* noalias nocapture readonly, i64, i1 immarg) #12
+
+; Function Attrs: argmemonly mustprogress nofree nounwind readonly willreturn
+declare dso_local i32 @strcmp(i8* nocapture, i8* nocapture) local_unnamed_addr #11
+
+; Function Attrs: nofree nounwind
+declare dso_local noalias noundef %struct._IO_FILE* @fopen(i8* nocapture noundef readonly, i8* nocapture noundef readonly) local_unnamed_addr #6
+
+; Function Attrs: nofree nounwind
+declare dso_local noundef i32 @fclose(%struct._IO_FILE* nocapture noundef) local_unnamed_addr #6
+
+; Function Attrs: argmemonly mustprogress nofree nounwind willreturn
+declare dso_local i8* @strncpy(i8* noalias returned writeonly, i8* noalias nocapture readonly, i64) local_unnamed_addr #13
+
+; Function Attrs: nofree
+declare dso_local noundef i32 @open(i8* nocapture noundef readonly, i32 noundef, ...) local_unnamed_addr #9
+
+; Function Attrs: nounwind
+declare dso_local i8* @mmap(i8*, i64, i32, i32, i32, i64) local_unnamed_addr #3
+
+declare dso_local i32 @close(i32) local_unnamed_addr #14
+
+; Function Attrs: nounwind
+declare dso_local i32 @munmap(i8*, i64) local_unnamed_addr #3
+
+; Function Attrs: mustprogress nofree norecurse nosync nounwind uwtable willreturn writeonly
+define dso_local void @initialize_globals() local_unnamed_addr #15 {
+  store i1 false, i1* @sample_global_args.6, align 8
+  store i1 true, i1* @sample_global_args.4, align 8
+  store i1 false, i1* @sample_global_args.5, align 8
+  store i1 false, i1* @sample_global_args.0, align 8
+  store i1 false, i1* @sample_global_args.1, align 8
+  store i1 true, i1* @sample_global_args.2, align 8
+  store i1 false, i1* @sample_global_args.3, align 8
+  store i64 0, i64* @sample_global_args.7, align 8, !tbaa !18
+  store i32 1, i32* @sample_global_args.8, align 8, !tbaa !21
+  store i32 1, i32* @sample_global_args.11, align 8, !tbaa !22
+  store i1 false, i1* @sample_global_args.12, align 8
+  store i8** null, i8*** @sample_global_args.9, align 8, !tbaa !20
+  ret void
+}
+
+; Function Attrs: nounwind
+declare dso_local i32 @getopt_long(i32, i8**, i8*, %struct.option*, i32*) local_unnamed_addr #3
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @print_usage(%struct._IO_FILE* nocapture %0) local_unnamed_addr #4 {
+  %2 = call i32 (%struct._IO_FILE*, i8*, ...) @fprintf(%struct._IO_FILE* %0, i8* getelementptr inbounds ([35 x i8], [35 x i8]* @.str.18, i64 0, i64 0), i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.33, i64 0, i64 0), i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str.34, i64 0, i64 0), i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.35, i64 0, i64 0), i8* getelementptr inbounds ([1889 x i8], [1889 x i8]* @.str.36, i64 0, i64 0))
+  ret void
+}
+
+; Function Attrs: nofree nounwind uwtable
+define dso_local void @print_version(%struct._IO_FILE* nocapture %0) local_unnamed_addr #4 {
+  %2 = call i32 (%struct._IO_FILE*, i8*, ...) @fprintf(%struct._IO_FILE* %0, i8* getelementptr inbounds ([32 x i8], [32 x i8]* @.str.19, i64 0, i64 0), i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.33, i64 0, i64 0), i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str.34, i64 0, i64 0), i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.35, i64 0, i64 0))
+  ret void
+}
+
+; Function Attrs: nounwind
+declare dso_local i32 @__fxstat(i32, i32, %struct.stat*) local_unnamed_addr #3
+
+; Function Attrs: mustprogress nofree nounwind willreturn
+declare dso_local i64 @strtol(i8* readonly, i8** nocapture, i32) local_unnamed_addr #16
+
+; Function Attrs: nofree nounwind
+declare noundef i64 @fwrite(i8* nocapture noundef, i64 noundef, i64 noundef, %struct._IO_FILE* nocapture noundef) local_unnamed_addr #17
+
+; Function Attrs: nofree nounwind
+declare noundef i32 @fputc(i32 noundef, %struct._IO_FILE* nocapture noundef) local_unnamed_addr #17
+
+; Function Attrs: nofree nounwind
+declare noundef i32 @fputs(i8* nocapture noundef readonly, %struct._IO_FILE* nocapture noundef) local_unnamed_addr #17
+
+; Function Attrs: argmemonly nofree nounwind willreturn writeonly
+declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #18
+
+; Function Attrs: nofree nosync nounwind readnone speculatable willreturn
+declare i32 @llvm.smax.i32(i32, i32) #19
+
+attributes #0 = { nofree norecurse nosync nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { argmemonly mustprogress nofree nosync nounwind willreturn }
+attributes #2 = { nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #3 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { nofree nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { inaccessiblememonly mustprogress nofree nounwind willreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nofree nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #7 = { noreturn nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #8 = { inaccessiblemem_or_argmemonly mustprogress nounwind willreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #9 = { nofree "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #10 = { mustprogress nofree norecurse nosync nounwind readonly uwtable willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #11 = { argmemonly mustprogress nofree nounwind readonly willreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #12 = { argmemonly mustprogress nofree nounwind willreturn }
+attributes #13 = { argmemonly mustprogress nofree nounwind willreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #14 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #15 = { mustprogress nofree norecurse nosync nounwind uwtable willreturn writeonly "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #16 = { mustprogress nofree nounwind willreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #17 = { nofree nounwind }
+attributes #18 = { argmemonly nofree nounwind willreturn writeonly }
+attributes #19 = { nofree nosync nounwind readnone speculatable willreturn }
+attributes #20 = { nounwind }
+attributes #21 = { nounwind readonly willreturn }
+attributes #22 = { cold nounwind }
+attributes #23 = { noreturn nounwind }
+attributes #24 = { cold }
+
+!llvm.module.flags = !{!0, !1}
+!llvm.ident = !{!2}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 7, !"uwtable", i32 1}
+!2 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ad890aa2327feb6b6aee676fe85b2352fba2403e)"}
+!3 = !{!4, !4, i64 0}
+!4 = !{!"long", !5, i64 0}
+!5 = !{!"omnipotent char", !6, i64 0}
+!6 = !{!"Simple C/C++ TBAA"}
+!7 = distinct !{!7, !8, !9}
+!8 = !{!"llvm.loop.mustprogress"}
+!9 = !{!"llvm.loop.unroll.disable"}
+!10 = !{!11, !11, i64 0}
+!11 = !{!"int", !5, i64 0}
+!12 = distinct !{!12, !8, !9}
+!13 = distinct !{!13, !8, !9}
+!14 = distinct !{!14, !8, !9}
+!15 = distinct !{!15, !8, !9}
+!16 = !{!17, !17, i64 0}
+!17 = !{!"any pointer", !5, i64 0}
+!18 = !{!19, !4, i64 32}
+!19 = !{!"sample_global_args_t", !11, i64 0, !11, i64 4, !11, i64 8, !11, i64 12, !11, i64 16, !11, i64 20, !11, i64 24, !4, i64 32, !11, i64 40, !17, i64 48, !11, i64 56, !11, i64 60, !11, i64 64}
+!20 = !{!19, !17, i64 48}
+!21 = !{!19, !11, i64 40}
+!22 = !{!19, !11, i64 60}
+!23 = !{!24, !4, i64 0}
+!24 = !{!"offset_reservoir", !4, i64 0, !17, i64 8}
+!25 = !{!24, !17, i64 8}
+!26 = distinct !{!26, !8, !9}
+!27 = !{!28, !4, i64 168}
+!28 = !{!"file_mmap", !11, i64 0, !17, i64 8, !29, i64 16, !11, i64 160, !4, i64 168, !17, i64 176}
+!29 = !{!"stat", !4, i64 0, !4, i64 8, !4, i64 16, !11, i64 24, !11, i64 28, !11, i64 32, !11, i64 36, !4, i64 40, !4, i64 48, !4, i64 56, !4, i64 64, !30, i64 72, !30, i64 88, !30, i64 104, !5, i64 120}
+!30 = !{!"timespec", !4, i64 0, !4, i64 8}
+!31 = !{!28, !17, i64 176}
+!32 = !{!5, !5, i64 0}
+!33 = distinct !{!33, !8, !9}
+!34 = distinct !{!34, !8, !9}
+!35 = distinct !{!35, !8, !9}
+!36 = !{!28, !11, i64 0}
+!37 = !{!28, !17, i64 8}
+!38 = distinct !{!38, !8, !9}
+!39 = distinct !{!39, !8, !9}
+!40 = distinct !{!40, !8, !9}
+!41 = !{!28, !11, i64 160}
+!42 = !{!28, !4, i64 64}
+!43 = distinct !{!43, !8, !9}
+!44 = distinct !{!44, !8, !9}
+!45 = distinct !{!45, !8, !9}
+!46 = distinct !{!46, !8, !9}
+!47 = distinct !{!47, !8, !9}
+!48 = distinct !{!48, !8, !9}
+!49 = distinct !{!49, !8, !9}
