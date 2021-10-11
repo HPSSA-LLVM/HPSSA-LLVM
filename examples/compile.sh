@@ -6,6 +6,8 @@ then
     exit 1
 fi
 
+mkdir -p test$1
+
 if [[ $1 == "10" ]];
 then
     echo "Reservoir Example"
@@ -16,8 +18,6 @@ else
     clang++ -I include example$1.cpp -O1 -emit-llvm -S -o example$1.llvmir
     clang++ -I include -c -Xclang -emit-llvm -O1 example$1.cpp -o test$1/program$1.bc
 fi 
-
-mkdir -p test$1
 
 opt -instnamer -mem2reg -enable-new-pm=0 test$1/program$1.bc -S -o test$1/program$1.mem2reg.ll
 

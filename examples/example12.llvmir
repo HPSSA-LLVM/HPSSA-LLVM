@@ -1,0 +1,647 @@
+; ModuleID = 'example12.cpp'
+source_filename = "example12.cpp"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+%"class.std::ios_base::Init" = type { i8 }
+%"class.std::basic_ostream" = type { i32 (...)**, %"class.std::basic_ios" }
+%"class.std::basic_ios" = type { %"class.std::ios_base", %"class.std::basic_ostream"*, i8, i8, %"class.std::basic_streambuf"*, %"class.std::ctype"*, %"class.std::num_put"*, %"class.std::num_get"* }
+%"class.std::ios_base" = type { i32 (...)**, i64, i64, i32, i32, i32, %"struct.std::ios_base::_Callback_list"*, %"struct.std::ios_base::_Words", [8 x %"struct.std::ios_base::_Words"], i32, %"struct.std::ios_base::_Words"*, %"class.std::locale" }
+%"struct.std::ios_base::_Callback_list" = type { %"struct.std::ios_base::_Callback_list"*, void (i32, %"class.std::ios_base"*, i32)*, i32, i32 }
+%"struct.std::ios_base::_Words" = type { i8*, i64 }
+%"class.std::locale" = type { %"class.std::locale::_Impl"* }
+%"class.std::locale::_Impl" = type { i32, %"class.std::locale::facet"**, i64, %"class.std::locale::facet"**, i8** }
+%"class.std::locale::facet" = type <{ i32 (...)**, i32, [4 x i8] }>
+%"class.std::basic_streambuf" = type { i32 (...)**, i8*, i8*, i8*, i8*, i8*, i8*, %"class.std::locale" }
+%"class.std::ctype" = type <{ %"class.std::locale::facet.base", [4 x i8], %struct.__locale_struct*, i8, [7 x i8], i32*, i32*, i16*, i8, [256 x i8], [256 x i8], i8, [6 x i8] }>
+%"class.std::locale::facet.base" = type <{ i32 (...)**, i32 }>
+%struct.__locale_struct = type { [13 x %struct.__locale_data*], i16*, i32*, i32*, [13 x i8*] }
+%struct.__locale_data = type opaque
+%"class.std::num_put" = type { %"class.std::locale::facet.base", [4 x i8] }
+%"class.std::num_get" = type { %"class.std::locale::facet.base", [4 x i8] }
+%class.tree = type { i32, %"class.std::unique_ptr.2" }
+%"class.std::unique_ptr.2" = type { %"struct.std::__uniq_ptr_data.3" }
+%"struct.std::__uniq_ptr_data.3" = type { %"class.std::__uniq_ptr_impl.4" }
+%"class.std::__uniq_ptr_impl.4" = type { %"class.std::tuple.5" }
+%"class.std::tuple.5" = type { %"struct.std::_Tuple_impl.6" }
+%"struct.std::_Tuple_impl.6" = type { %"struct.std::_Head_base.11" }
+%"struct.std::_Head_base.11" = type { %class.node* }
+%class.node = type { i32, %"class.std::unique_ptr.2", %"class.std::unique_ptr.2" }
+
+$_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev = comdat any
+
+$__clang_call_terminate = comdat any
+
+$_ZN4nodeD2Ev = comdat any
+
+$_ZN4treeD2Ev = comdat any
+
+$_ZN4nodeC2Ei = comdat any
+
+@_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
+@__dso_handle = external hidden global i8
+@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
+@.str = private unnamed_addr constant [15 x i8] c"Delete Node : \00", align 1
+@.str.1 = private unnamed_addr constant [12 x i8] c"New tree : \00", align 1
+@.str.2 = private unnamed_addr constant [15 x i8] c"Delete tree : \00", align 1
+@.str.3 = private unnamed_addr constant [12 x i8] c"New node : \00", align 1
+@llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_example12.cpp, i8* null }]
+
+declare dso_local void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #0
+
+; Function Attrs: nounwind
+declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
+
+; Function Attrs: nofree nounwind
+declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
+
+; Function Attrs: norecurse uwtable
+define dso_local i32 @main() local_unnamed_addr #3 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
+  %1 = call noalias nonnull dereferenceable(16) i8* @_Znwm(i64 16) #13, !noalias !3
+  %2 = bitcast i8* %1 to %class.tree*
+  %3 = getelementptr inbounds %class.tree, %class.tree* %2, i64 0, i32 0
+  store i32 13, i32* %3, align 8, !tbaa !6, !noalias !3
+  %4 = getelementptr inbounds %class.tree, %class.tree* %2, i64 0, i32 1
+  %5 = bitcast %"class.std::unique_ptr.2"* %4 to i64*
+  store i64 0, i64* %5, align 8, !noalias !3
+  %6 = getelementptr inbounds %"class.std::unique_ptr.2", %"class.std::unique_ptr.2"* %4, i64 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  store %class.node* null, %class.node** %6, align 8, !tbaa !13, !noalias !3
+  %7 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i8* nonnull getelementptr inbounds ([12 x i8], [12 x i8]* @.str.1, i64 0, i64 0), i64 11)
+          to label %8 unwind label %44, !noalias !3
+
+8:                                                ; preds = %0
+  %9 = load i32, i32* %3, align 8, !tbaa !6, !noalias !3
+  %10 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %9)
+          to label %11 unwind label %44, !noalias !3
+
+11:                                               ; preds = %8
+  %12 = bitcast %"class.std::basic_ostream"* %10 to i8**
+  %13 = load i8*, i8** %12, align 8, !tbaa !16, !noalias !3
+  %14 = getelementptr i8, i8* %13, i64 -24
+  %15 = bitcast i8* %14 to i64*
+  %16 = load i64, i64* %15, align 8, !noalias !3
+  %17 = bitcast %"class.std::basic_ostream"* %10 to i8*
+  %18 = getelementptr inbounds i8, i8* %17, i64 %16
+  %19 = getelementptr inbounds i8, i8* %18, i64 240
+  %20 = bitcast i8* %19 to %"class.std::ctype"**
+  %21 = load %"class.std::ctype"*, %"class.std::ctype"** %20, align 8, !tbaa !18, !noalias !3
+  %22 = icmp eq %"class.std::ctype"* %21, null
+  br i1 %22, label %23, label %25
+
+23:                                               ; preds = %11
+  invoke void @_ZSt16__throw_bad_castv() #14
+          to label %24 unwind label %44, !noalias !3
+
+24:                                               ; preds = %23
+  unreachable
+
+25:                                               ; preds = %11
+  %26 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %21, i64 0, i32 8
+  %27 = load i8, i8* %26, align 8, !tbaa !21, !noalias !3
+  %28 = icmp eq i8 %27, 0
+  br i1 %28, label %32, label %29
+
+29:                                               ; preds = %25
+  %30 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %21, i64 0, i32 9, i64 10
+  %31 = load i8, i8* %30, align 1, !tbaa !23, !noalias !3
+  br label %39
+
+32:                                               ; preds = %25
+  invoke void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %21)
+          to label %33 unwind label %44, !noalias !3
+
+33:                                               ; preds = %32
+  %34 = bitcast %"class.std::ctype"* %21 to i8 (%"class.std::ctype"*, i8)***
+  %35 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %34, align 8, !tbaa !16, !noalias !3
+  %36 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %35, i64 6
+  %37 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %36, align 8, !noalias !3
+  %38 = invoke signext i8 %37(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %21, i8 signext 10)
+          to label %39 unwind label %44, !noalias !3
+
+39:                                               ; preds = %33, %29
+  %40 = phi i8 [ %31, %29 ], [ %38, %33 ]
+  %41 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %10, i8 signext %40)
+          to label %42 unwind label %44, !noalias !3
+
+42:                                               ; preds = %39
+  %43 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %41)
+          to label %48 unwind label %44, !noalias !3
+
+44:                                               ; preds = %42, %39, %33, %32, %23, %8, %0
+  %45 = landingpad { i8*, i32 }
+          cleanup
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %4) #15, !noalias !3
+  br label %46
+
+46:                                               ; preds = %95, %44
+  %47 = phi { i8*, i32 } [ %45, %44 ], [ %96, %95 ]
+  call void @_ZdlPv(i8* %1) #16
+  resume { i8*, i32 } %47
+
+48:                                               ; preds = %42
+  %49 = invoke noalias nonnull dereferenceable(24) i8* @_Znwm(i64 24) #13
+          to label %50 unwind label %89
+
+50:                                               ; preds = %48
+  %51 = bitcast i8* %49 to %class.node*
+  invoke void @_ZN4nodeC2Ei(%class.node* nonnull align 8 dereferenceable(24) %51, i32 15)
+          to label %54 unwind label %52, !noalias !24
+
+52:                                               ; preds = %50
+  %53 = landingpad { i8*, i32 }
+          cleanup
+  call void @_ZdlPv(i8* %49) #16, !noalias !24
+  br label %95
+
+54:                                               ; preds = %50
+  %55 = load %class.node*, %class.node** %6, align 8, !tbaa !27
+  %56 = bitcast %"class.std::unique_ptr.2"* %4 to i8**
+  store i8* %49, i8** %56, align 8, !tbaa !27
+  %57 = icmp eq %class.node* %55, null
+  br i1 %57, label %60, label %58
+
+58:                                               ; preds = %54
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %55) #15
+  %59 = bitcast %class.node* %55 to i8*
+  call void @_ZdlPv(i8* %59) #16
+  br label %60
+
+60:                                               ; preds = %58, %54
+  %61 = invoke noalias nonnull dereferenceable(24) i8* @_Znwm(i64 24) #13
+          to label %62 unwind label %91
+
+62:                                               ; preds = %60
+  %63 = bitcast i8* %61 to %class.node*
+  invoke void @_ZN4nodeC2Ei(%class.node* nonnull align 8 dereferenceable(24) %63, i32 23)
+          to label %66 unwind label %64, !noalias !28
+
+64:                                               ; preds = %62
+  %65 = landingpad { i8*, i32 }
+          cleanup
+  call void @_ZdlPv(i8* %61) #16, !noalias !28
+  br label %95
+
+66:                                               ; preds = %62
+  %67 = load %class.node*, %class.node** %6, align 8, !tbaa !27
+  %68 = getelementptr inbounds %class.node, %class.node* %67, i64 0, i32 1, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %69 = load %class.node*, %class.node** %68, align 8, !tbaa !27
+  %70 = bitcast %class.node** %68 to i8**
+  store i8* %61, i8** %70, align 8, !tbaa !27
+  %71 = icmp eq %class.node* %69, null
+  br i1 %71, label %74, label %72
+
+72:                                               ; preds = %66
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %69) #15
+  %73 = bitcast %class.node* %69 to i8*
+  call void @_ZdlPv(i8* %73) #16
+  br label %74
+
+74:                                               ; preds = %72, %66
+  %75 = invoke noalias nonnull dereferenceable(24) i8* @_Znwm(i64 24) #13
+          to label %76 unwind label %93
+
+76:                                               ; preds = %74
+  %77 = bitcast i8* %75 to %class.node*
+  invoke void @_ZN4nodeC2Ei(%class.node* nonnull align 8 dereferenceable(24) %77, i32 41)
+          to label %80 unwind label %78, !noalias !31
+
+78:                                               ; preds = %76
+  %79 = landingpad { i8*, i32 }
+          cleanup
+  call void @_ZdlPv(i8* %75) #16, !noalias !31
+  br label %95
+
+80:                                               ; preds = %76
+  %81 = load %class.node*, %class.node** %6, align 8, !tbaa !27
+  %82 = getelementptr inbounds %class.node, %class.node* %81, i64 0, i32 2, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %83 = load %class.node*, %class.node** %82, align 8, !tbaa !27
+  %84 = bitcast %class.node** %82 to i8**
+  store i8* %75, i8** %84, align 8, !tbaa !27
+  %85 = icmp eq %class.node* %83, null
+  br i1 %85, label %88, label %86
+
+86:                                               ; preds = %80
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %83) #15
+  %87 = bitcast %class.node* %83 to i8*
+  call void @_ZdlPv(i8* %87) #16
+  br label %88
+
+88:                                               ; preds = %86, %80
+  call void @_ZN4treeD2Ev(%class.tree* nonnull align 8 dereferenceable(16) %2) #15
+  call void @_ZdlPv(i8* %1) #16
+  ret i32 0
+
+89:                                               ; preds = %48
+  %90 = landingpad { i8*, i32 }
+          cleanup
+  br label %95
+
+91:                                               ; preds = %60
+  %92 = landingpad { i8*, i32 }
+          cleanup
+  br label %95
+
+93:                                               ; preds = %74
+  %94 = landingpad { i8*, i32 }
+          cleanup
+  br label %95
+
+95:                                               ; preds = %93, %78, %91, %64, %89, %52
+  %96 = phi { i8*, i32 } [ %90, %89 ], [ %53, %52 ], [ %92, %91 ], [ %65, %64 ], [ %94, %93 ], [ %79, %78 ]
+  call void @_ZN4treeD2Ev(%class.tree* nonnull align 8 dereferenceable(16) %2) #15
+  br label %46
+}
+
+declare dso_local i32 @__gxx_personality_v0(...)
+
+; Function Attrs: nounwind uwtable
+define linkonce_odr dso_local void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %0) unnamed_addr #4 comdat align 2 {
+  %2 = getelementptr inbounds %"class.std::unique_ptr.2", %"class.std::unique_ptr.2"* %0, i64 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %3 = load %class.node*, %class.node** %2, align 8, !tbaa !27
+  %4 = icmp eq %class.node* %3, null
+  br i1 %4, label %7, label %5
+
+5:                                                ; preds = %1
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %3) #15
+  %6 = bitcast %class.node* %3 to i8*
+  call void @_ZdlPv(i8* %6) #16
+  br label %7
+
+7:                                                ; preds = %5, %1
+  store %class.node* null, %class.node** %2, align 8, !tbaa !27
+  ret void
+}
+
+; Function Attrs: noinline noreturn nounwind
+define linkonce_odr hidden void @__clang_call_terminate(i8* %0) local_unnamed_addr #5 comdat {
+  %2 = call i8* @__cxa_begin_catch(i8* %0) #15
+  call void @_ZSt9terminatev() #17
+  unreachable
+}
+
+declare dso_local i8* @__cxa_begin_catch(i8*) local_unnamed_addr
+
+declare dso_local void @_ZSt9terminatev() local_unnamed_addr
+
+; Function Attrs: inlinehint nounwind uwtable
+define linkonce_odr dso_local void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %0) unnamed_addr #6 comdat align 2 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
+  %2 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i8* nonnull getelementptr inbounds ([15 x i8], [15 x i8]* @.str, i64 0, i64 0), i64 14)
+          to label %3 unwind label %53
+
+3:                                                ; preds = %1
+  %4 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 0
+  %5 = load i32, i32* %4, align 8, !tbaa !34
+  %6 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %5)
+          to label %7 unwind label %53
+
+7:                                                ; preds = %3
+  %8 = bitcast %"class.std::basic_ostream"* %6 to i8**
+  %9 = load i8*, i8** %8, align 8, !tbaa !16
+  %10 = getelementptr i8, i8* %9, i64 -24
+  %11 = bitcast i8* %10 to i64*
+  %12 = load i64, i64* %11, align 8
+  %13 = bitcast %"class.std::basic_ostream"* %6 to i8*
+  %14 = getelementptr inbounds i8, i8* %13, i64 %12
+  %15 = getelementptr inbounds i8, i8* %14, i64 240
+  %16 = bitcast i8* %15 to %"class.std::ctype"**
+  %17 = load %"class.std::ctype"*, %"class.std::ctype"** %16, align 8, !tbaa !18
+  %18 = icmp eq %"class.std::ctype"* %17, null
+  br i1 %18, label %19, label %21
+
+19:                                               ; preds = %7
+  invoke void @_ZSt16__throw_bad_castv() #14
+          to label %20 unwind label %53
+
+20:                                               ; preds = %19
+  unreachable
+
+21:                                               ; preds = %7
+  %22 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %17, i64 0, i32 8
+  %23 = load i8, i8* %22, align 8, !tbaa !21
+  %24 = icmp eq i8 %23, 0
+  br i1 %24, label %28, label %25
+
+25:                                               ; preds = %21
+  %26 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %17, i64 0, i32 9, i64 10
+  %27 = load i8, i8* %26, align 1, !tbaa !23
+  br label %35
+
+28:                                               ; preds = %21
+  invoke void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %17)
+          to label %29 unwind label %53
+
+29:                                               ; preds = %28
+  %30 = bitcast %"class.std::ctype"* %17 to i8 (%"class.std::ctype"*, i8)***
+  %31 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %30, align 8, !tbaa !16
+  %32 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %31, i64 6
+  %33 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %32, align 8
+  %34 = invoke signext i8 %33(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %17, i8 signext 10)
+          to label %35 unwind label %53
+
+35:                                               ; preds = %29, %25
+  %36 = phi i8 [ %27, %25 ], [ %34, %29 ]
+  %37 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %6, i8 signext %36)
+          to label %38 unwind label %53
+
+38:                                               ; preds = %35
+  %39 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %37)
+          to label %40 unwind label %53
+
+40:                                               ; preds = %38
+  %41 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 2, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %42 = load %class.node*, %class.node** %41, align 8, !tbaa !27
+  %43 = icmp eq %class.node* %42, null
+  br i1 %43, label %46, label %44
+
+44:                                               ; preds = %40
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %42) #15
+  %45 = bitcast %class.node* %42 to i8*
+  call void @_ZdlPv(i8* %45) #16
+  br label %46
+
+46:                                               ; preds = %40, %44
+  store %class.node* null, %class.node** %41, align 8, !tbaa !27
+  %47 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 1, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %48 = load %class.node*, %class.node** %47, align 8, !tbaa !27
+  %49 = icmp eq %class.node* %48, null
+  br i1 %49, label %52, label %50
+
+50:                                               ; preds = %46
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %48) #15
+  %51 = bitcast %class.node* %48 to i8*
+  call void @_ZdlPv(i8* %51) #16
+  br label %52
+
+52:                                               ; preds = %46, %50
+  store %class.node* null, %class.node** %47, align 8, !tbaa !27
+  ret void
+
+53:                                               ; preds = %38, %35, %29, %28, %19, %1, %3
+  %54 = landingpad { i8*, i32 }
+          catch i8* null
+  %55 = extractvalue { i8*, i32 } %54, 0
+  %56 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 2
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %56) #15
+  %57 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 1
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %57) #15
+  call void @__clang_call_terminate(i8* %55) #17
+  unreachable
+}
+
+; Function Attrs: nobuiltin nounwind
+declare dso_local void @_ZdlPv(i8*) local_unnamed_addr #7
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) local_unnamed_addr #0
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i8*, i64) local_unnamed_addr #0
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i8 signext) local_unnamed_addr #0
+
+declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8)) local_unnamed_addr #0
+
+; Function Attrs: noreturn
+declare dso_local void @_ZSt16__throw_bad_castv() local_unnamed_addr #8
+
+declare dso_local void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570)) local_unnamed_addr #0
+
+; Function Attrs: nobuiltin allocsize(0)
+declare dso_local nonnull i8* @_Znwm(i64) local_unnamed_addr #9
+
+; Function Attrs: argmemonly mustprogress nofree nounwind willreturn writeonly
+declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) #10
+
+; Function Attrs: inlinehint nounwind uwtable
+define linkonce_odr dso_local void @_ZN4treeD2Ev(%class.tree* nonnull align 8 dereferenceable(16) %0) unnamed_addr #6 comdat align 2 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
+  %2 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i8* nonnull getelementptr inbounds ([15 x i8], [15 x i8]* @.str.2, i64 0, i64 0), i64 14)
+          to label %3 unwind label %47
+
+3:                                                ; preds = %1
+  %4 = getelementptr inbounds %class.tree, %class.tree* %0, i64 0, i32 0
+  %5 = load i32, i32* %4, align 8, !tbaa !6
+  %6 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %5)
+          to label %7 unwind label %47
+
+7:                                                ; preds = %3
+  %8 = bitcast %"class.std::basic_ostream"* %6 to i8**
+  %9 = load i8*, i8** %8, align 8, !tbaa !16
+  %10 = getelementptr i8, i8* %9, i64 -24
+  %11 = bitcast i8* %10 to i64*
+  %12 = load i64, i64* %11, align 8
+  %13 = bitcast %"class.std::basic_ostream"* %6 to i8*
+  %14 = getelementptr inbounds i8, i8* %13, i64 %12
+  %15 = getelementptr inbounds i8, i8* %14, i64 240
+  %16 = bitcast i8* %15 to %"class.std::ctype"**
+  %17 = load %"class.std::ctype"*, %"class.std::ctype"** %16, align 8, !tbaa !18
+  %18 = icmp eq %"class.std::ctype"* %17, null
+  br i1 %18, label %19, label %21
+
+19:                                               ; preds = %7
+  invoke void @_ZSt16__throw_bad_castv() #14
+          to label %20 unwind label %47
+
+20:                                               ; preds = %19
+  unreachable
+
+21:                                               ; preds = %7
+  %22 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %17, i64 0, i32 8
+  %23 = load i8, i8* %22, align 8, !tbaa !21
+  %24 = icmp eq i8 %23, 0
+  br i1 %24, label %28, label %25
+
+25:                                               ; preds = %21
+  %26 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %17, i64 0, i32 9, i64 10
+  %27 = load i8, i8* %26, align 1, !tbaa !23
+  br label %35
+
+28:                                               ; preds = %21
+  invoke void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %17)
+          to label %29 unwind label %47
+
+29:                                               ; preds = %28
+  %30 = bitcast %"class.std::ctype"* %17 to i8 (%"class.std::ctype"*, i8)***
+  %31 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %30, align 8, !tbaa !16
+  %32 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %31, i64 6
+  %33 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %32, align 8
+  %34 = invoke signext i8 %33(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %17, i8 signext 10)
+          to label %35 unwind label %47
+
+35:                                               ; preds = %29, %25
+  %36 = phi i8 [ %27, %25 ], [ %34, %29 ]
+  %37 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %6, i8 signext %36)
+          to label %38 unwind label %47
+
+38:                                               ; preds = %35
+  %39 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %37)
+          to label %40 unwind label %47
+
+40:                                               ; preds = %38
+  %41 = getelementptr inbounds %class.tree, %class.tree* %0, i64 0, i32 1, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0
+  %42 = load %class.node*, %class.node** %41, align 8, !tbaa !27
+  %43 = icmp eq %class.node* %42, null
+  br i1 %43, label %46, label %44
+
+44:                                               ; preds = %40
+  call void @_ZN4nodeD2Ev(%class.node* nonnull align 8 dereferenceable(24) %42) #15
+  %45 = bitcast %class.node* %42 to i8*
+  call void @_ZdlPv(i8* %45) #16
+  br label %46
+
+46:                                               ; preds = %40, %44
+  store %class.node* null, %class.node** %41, align 8, !tbaa !27
+  ret void
+
+47:                                               ; preds = %38, %35, %29, %28, %19, %1, %3
+  %48 = landingpad { i8*, i32 }
+          catch i8* null
+  %49 = extractvalue { i8*, i32 } %48, 0
+  %50 = getelementptr inbounds %class.tree, %class.tree* %0, i64 0, i32 1
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %50) #15
+  call void @__clang_call_terminate(i8* %49) #17
+  unreachable
+}
+
+; Function Attrs: inlinehint uwtable
+define linkonce_odr dso_local void @_ZN4nodeC2Ei(%class.node* nonnull align 8 dereferenceable(24) %0, i32 %1) unnamed_addr #11 comdat align 2 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
+  %3 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 0
+  store i32 %1, i32* %3, align 8, !tbaa !34
+  %4 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 1
+  %5 = getelementptr inbounds %class.node, %class.node* %0, i64 0, i32 2
+  %6 = bitcast %"class.std::unique_ptr.2"* %4 to i8*
+  call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(16) %6, i8 0, i64 16, i1 false)
+  %7 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i8* nonnull getelementptr inbounds ([12 x i8], [12 x i8]* @.str.3, i64 0, i64 0), i64 11)
+          to label %8 unwind label %45
+
+8:                                                ; preds = %2
+  %9 = load i32, i32* %3, align 8, !tbaa !34
+  %10 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %9)
+          to label %11 unwind label %45
+
+11:                                               ; preds = %8
+  %12 = bitcast %"class.std::basic_ostream"* %10 to i8**
+  %13 = load i8*, i8** %12, align 8, !tbaa !16
+  %14 = getelementptr i8, i8* %13, i64 -24
+  %15 = bitcast i8* %14 to i64*
+  %16 = load i64, i64* %15, align 8
+  %17 = bitcast %"class.std::basic_ostream"* %10 to i8*
+  %18 = getelementptr inbounds i8, i8* %17, i64 %16
+  %19 = getelementptr inbounds i8, i8* %18, i64 240
+  %20 = bitcast i8* %19 to %"class.std::ctype"**
+  %21 = load %"class.std::ctype"*, %"class.std::ctype"** %20, align 8, !tbaa !18
+  %22 = icmp eq %"class.std::ctype"* %21, null
+  br i1 %22, label %23, label %25
+
+23:                                               ; preds = %11
+  invoke void @_ZSt16__throw_bad_castv() #14
+          to label %24 unwind label %45
+
+24:                                               ; preds = %23
+  unreachable
+
+25:                                               ; preds = %11
+  %26 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %21, i64 0, i32 8
+  %27 = load i8, i8* %26, align 8, !tbaa !21
+  %28 = icmp eq i8 %27, 0
+  br i1 %28, label %32, label %29
+
+29:                                               ; preds = %25
+  %30 = getelementptr inbounds %"class.std::ctype", %"class.std::ctype"* %21, i64 0, i32 9, i64 10
+  %31 = load i8, i8* %30, align 1, !tbaa !23
+  br label %39
+
+32:                                               ; preds = %25
+  invoke void @_ZNKSt5ctypeIcE13_M_widen_initEv(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %21)
+          to label %33 unwind label %45
+
+33:                                               ; preds = %32
+  %34 = bitcast %"class.std::ctype"* %21 to i8 (%"class.std::ctype"*, i8)***
+  %35 = load i8 (%"class.std::ctype"*, i8)**, i8 (%"class.std::ctype"*, i8)*** %34, align 8, !tbaa !16
+  %36 = getelementptr inbounds i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %35, i64 6
+  %37 = load i8 (%"class.std::ctype"*, i8)*, i8 (%"class.std::ctype"*, i8)** %36, align 8
+  %38 = invoke signext i8 %37(%"class.std::ctype"* nonnull align 8 dereferenceable(570) %21, i8 signext 10)
+          to label %39 unwind label %45
+
+39:                                               ; preds = %33, %29
+  %40 = phi i8 [ %31, %29 ], [ %38, %33 ]
+  %41 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %10, i8 signext %40)
+          to label %42 unwind label %45
+
+42:                                               ; preds = %39
+  %43 = invoke nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo5flushEv(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %41)
+          to label %44 unwind label %45
+
+44:                                               ; preds = %42
+  ret void
+
+45:                                               ; preds = %42, %39, %33, %32, %23, %2, %8
+  %46 = landingpad { i8*, i32 }
+          cleanup
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %5) #15
+  call void @_ZNSt10unique_ptrI4nodeSt14default_deleteIS0_EED2Ev(%"class.std::unique_ptr.2"* nonnull align 8 dereferenceable(8) %4) #15
+  resume { i8*, i32 } %46
+}
+
+; Function Attrs: uwtable
+define internal void @_GLOBAL__sub_I_example12.cpp() #12 section ".text.startup" {
+  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
+  %1 = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #15
+  ret void
+}
+
+attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #2 = { nofree nounwind }
+attributes #3 = { norecurse uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { noinline noreturn nounwind }
+attributes #6 = { inlinehint nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #7 = { nobuiltin nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #8 = { noreturn "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #9 = { nobuiltin allocsize(0) "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #10 = { argmemonly mustprogress nofree nounwind willreturn writeonly }
+attributes #11 = { inlinehint uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #12 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #13 = { builtin allocsize(0) }
+attributes #14 = { noreturn }
+attributes #15 = { nounwind }
+attributes #16 = { builtin nounwind }
+attributes #17 = { noreturn nounwind }
+
+!llvm.module.flags = !{!0, !1}
+!llvm.ident = !{!2}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 7, !"uwtable", i32 1}
+!2 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ad890aa2327feb6b6aee676fe85b2352fba2403e)"}
+!3 = !{!4}
+!4 = distinct !{!4, !5, !"_ZSt11make_uniqueI4treeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_: argument 0"}
+!5 = distinct !{!5, !"_ZSt11make_uniqueI4treeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_"}
+!6 = !{!7, !8, i64 0}
+!7 = !{!"_ZTS4tree", !8, i64 0, !11, i64 8}
+!8 = !{!"int", !9, i64 0}
+!9 = !{!"omnipotent char", !10, i64 0}
+!10 = !{!"Simple C++ TBAA"}
+!11 = !{!"_ZTSSt10unique_ptrI4nodeSt14default_deleteIS0_EE", !12, i64 0}
+!12 = !{!"_ZTSSt15__uniq_ptr_dataI4nodeSt14default_deleteIS0_ELb1ELb1EE"}
+!13 = !{!14, !15, i64 0}
+!14 = !{!"_ZTSSt10_Head_baseILm0EP4nodeLb0EE", !15, i64 0}
+!15 = !{!"any pointer", !9, i64 0}
+!16 = !{!17, !17, i64 0}
+!17 = !{!"vtable pointer", !10, i64 0}
+!18 = !{!19, !15, i64 240}
+!19 = !{!"_ZTSSt9basic_iosIcSt11char_traitsIcEE", !15, i64 216, !9, i64 224, !20, i64 225, !15, i64 232, !15, i64 240, !15, i64 248, !15, i64 256}
+!20 = !{!"bool", !9, i64 0}
+!21 = !{!22, !9, i64 56}
+!22 = !{!"_ZTSSt5ctypeIcE", !15, i64 16, !20, i64 24, !15, i64 32, !15, i64 40, !15, i64 48, !9, i64 56, !9, i64 57, !9, i64 313, !9, i64 569}
+!23 = !{!9, !9, i64 0}
+!24 = !{!25}
+!25 = distinct !{!25, !26, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_: argument 0"}
+!26 = distinct !{!26, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_"}
+!27 = !{!15, !15, i64 0}
+!28 = !{!29}
+!29 = distinct !{!29, !30, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_: argument 0"}
+!30 = distinct !{!30, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_"}
+!31 = !{!32}
+!32 = distinct !{!32, !33, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_: argument 0"}
+!33 = distinct !{!33, !"_ZSt11make_uniqueI4nodeJiEENSt9_MakeUniqIT_E15__single_objectEDpOT0_"}
+!34 = !{!35, !8, i64 0}
+!35 = !{!"_ZTS4node", !8, i64 0, !11, i64 8, !11, i64 16}
