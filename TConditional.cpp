@@ -14,9 +14,13 @@ PreservedAnalyses TConditionalPass::run(Function &F,
           (CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau")))
         continue;
       CI->dump();
-      for (auto &U : CI->operands()) {
-        U->dump();
-      }
+      IRBuilder<> builder(CI);
+
+      Value *first = CI->getOperand(0);
+      Value *second = CI->getOperand(1);
+      Value *newInst = builder.CreateICmp(CmpInst::ICMP_NE, first, second);
+      // for (auto &U : CI->operands()) {
+      // }
       // CF is a call instance of tau function
       // CF->dump();
     }
