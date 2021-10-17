@@ -153,7 +153,6 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
     for (auto &buddyDefs : BuddySet[BB]) {
       buddyDefs |= IncubationPath;
     }
-
     if (hasHotPath && hasColdPath) {
       isCaloric[BB] = true;
       errs() << BB->getName() << " is a Caloric Connector\n";
