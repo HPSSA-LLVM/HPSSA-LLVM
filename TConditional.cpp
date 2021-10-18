@@ -4,8 +4,12 @@ using namespace llvm;
 
 PreservedAnalyses TConditionalPass::run(Function &F,
                                         FunctionAnalysisManager &AM) {
-  for (auto &B : F) {
-    for (auto &I : B) {
+  DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
+  vector<vector<Value *>> allTauArgs;
+  ReversePostOrderTraversal<Function *> RPOT(&F);
+  Instruction *lastTau = nullptr;
+  for (auto B = RPOT.begin(); B != RPOT.end(); ++B) {
+    for (Instruction &I : **B) {
       CallInst *CI = dyn_cast<CallInst>(&I);
       if (CI == NULL)
         continue;
@@ -13,18 +17,35 @@ PreservedAnalyses TConditionalPass::run(Function &F,
       if ((CF == NULL) ||
           (CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau")))
         continue;
-      CI->dump();
-      IRBuilder<> builder(CI);
-
-      Value *first = CI->getOperand(0);
-      Value *second = CI->getOperand(1);
-      Value *newInst = builder.CreateICmp(CmpInst::ICMP_NE, first, second);
-      // for (auto &U : CI->operands()) {
-      // }
+      // CI->dump();
+      lastTau = &I;
+      vector<Value *> tauArgs;
+      // IRBuilder<> builder(CI);
+      // Value *first = CI->getOperand(0);
+      // Value *second = CI->getOperand(1);
+      // Value *newInst = builder.CreateICmp(CmpInst::ICMP_NE, first, second);
+      // newInst->dump();
+      for (auto &U : CI->operands()) {
+        tauArgs.push_back(U);
+      }
       // CF is a call instance of tau function
       // CF->dump();
     }
   }
+  // No Tau instruction present
+  if (lastTau == nullptr)
+    return PreservedAnalyses::none();
+
+  // Insert all conditional statements after last tau Instruction
+  // while doing RPOT So that all uses are dominated by the user;
+  IRBuilder<> builder(lastTau->getNextNode());
+  // lastTau->dump();
+  Value *first = lastTau->getOperand(0);
+  Value *second = lastTau->getOperand(1);
+  Value *newInst = builder.CreateICmp(CmpInst::ICMP_NE, first, second);
+  lastTau->getParent()->dump();
+  // newInst->dump();
+
   return PreservedAnalyses::none();
 }
 
