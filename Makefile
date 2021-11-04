@@ -18,11 +18,11 @@ endif
 
 all: build test cfg 
 
-build: HPSSA.cpp headers/HPSSA.h TConditional.cpp headers/TConditional.h
+build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
 	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
-	$(CXX) -c TConditional.cpp -o build/TConditional.cpp.o $(CXXFLAGS)
-	$(CXX) $(CXXFLAGS) -shared build/TConditional.cpp.o -o build/TConditional.cpp.so $(LDFLAGS)
+	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
 
 test: build tests/test.cpp BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
@@ -33,14 +33,14 @@ test: build tests/test.cpp BBProfiler/profileInfo.txt
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
-	$(BUILD_PATH)/opt -load-pass-plugin=build/TConditional.cpp.so -passes=tcond -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tcond.ll -f 2> output/custom_tcond.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/TDestruction.cpp.so -passes=tdstr -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tdstr.ll -f 2> output/custom_tdstr.log
 	# Handle exit code of diff(1 if changes found).
 	diff IR/LL/test_mem2reg.ll IR/LL/test_hpssa.ll > output/changes_hpssa.log; [ $$? -eq 1 ]
-	diff IR/LL/test_hpssa.ll IR/LL/test_tcond.ll > output/changes_tcond.log; [ $$? -eq 1 ]
+	diff IR/LL/test_hpssa.ll IR/LL/test_tdstr.ll > output/changes_tdstr.log; [ $$? -eq 1 ]
 
 cfg: test 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_hpssa.ll -o IR/BC/test_hpssa.bc 
-	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_tcond.ll -o IR/BC/test_tcond.bc 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_tdstr.ll -o IR/BC/test_tdstr.bc 
 	mv .*.dot IR/cfg/
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 
