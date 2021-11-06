@@ -3,28 +3,22 @@ using namespace llvm;
 // using namespace std;
 
 PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
-  vector<Instruction *> toBeDeleted;
   for (auto &BB : F) {
     for (auto &I : BB) {
       CallInst *CI = dyn_cast<CallInst>(&I);
       if (CI == NULL)
         continue;
       Function *CF = CI->getCalledFunction();
-      if ((CF == NULL) ||
-          (CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau")))
+      if (CF == NULL ||
+          CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau"))
         continue;
-      // I.eraseFromParent();
-      I.dump();
-      toBeDeleted.push_back(&I);
-    }
-  }
 
-  for (auto *I : toBeDeleted) {
-    IRBuilder<> builder(I); 
-    builder.C
-    Value *first = I->getOperand(0);
-    builder.CreateUnOp();
-    I->eraseFromParent();
+      IRBuilder<> Builder(CI);
+      Value *origPhi = CI->getOperand(0);
+      Value *newTau =
+          Builder.CreateAlloca(origPhi->getType(), nullptr, "tau.alloca");
+      Value *storeTau = Builder.CreateStore(origPhi, newTau);
+    }
   }
   return PreservedAnalyses::none();
 }
