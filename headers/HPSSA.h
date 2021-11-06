@@ -20,6 +20,7 @@ namespace llvm {
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
   map<BasicBlock *, BitVector> getProfileInfo(Function &F);
   map<BasicBlock *, bool> getCaloricConnector(Function &F);
+  void Search(BasicBlock &X, DomTreeNode &DTN);
 
   // Dominator tree.Probably virtual so that it gets overriden
 public:
