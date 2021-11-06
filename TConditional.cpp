@@ -19,7 +19,7 @@ PreservedAnalyses TConditionalPass::run(Function &F,
         auto operand = phi.getIncomingValue(i);
         IRBuilder<> builder(predBlock);
         Value *first =
-            ConstantInt::get(Type::getInt32Ty(predBlock->getContext()), i+1);
+            ConstantInt::get(Type::getInt32Ty(predBlock->getContext()), i + 1);
         Value *second =
             ConstantInt::get(Type::getInt32Ty(predBlock->getContext()), 0);
         Value *newInst =

@@ -18,11 +18,11 @@ endif
 
 all: build test cfg 
 
-build: HPSSA.cpp headers/HPSSA.h TConditional.cpp headers/TConditional.h
+build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
 	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
-	$(CXX) -c TConditional.cpp -o build/TConditional.cpp.o $(CXXFLAGS)
-	$(CXX) $(CXXFLAGS) -shared build/TConditional.cpp.o -o build/TConditional.cpp.so $(LDFLAGS)
+	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
 
 test: build tests/test.cpp BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
