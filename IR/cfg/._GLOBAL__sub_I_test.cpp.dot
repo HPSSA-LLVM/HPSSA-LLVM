@@ -1,5 +1,5 @@
 digraph "CFG for '_GLOBAL__sub_I_test.cpp' function" {
 	label="CFG for '_GLOBAL__sub_I_test.cpp' function";
 
-	Node0x55a184083af0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry:\l  call void @_ZNSt8ios_base4InitC1Ev(%\"class.std::ios_base::Init\"* nonnull\l... align 1 dereferenceable(1) @_ZStL8__ioinit)\l  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void\l... (%\"class.std::ios_base::Init\"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*),\l... i8* getelementptr inbounds (%\"class.std::ios_base::Init\",\l... %\"class.std::ios_base::Init\"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull\l... @__dso_handle) #7\l  ret void\l}"];
+	Node0x56039afeeaf0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry:\l  call void @_ZNSt8ios_base4InitC1Ev(%\"class.std::ios_base::Init\"* nonnull\l... align 1 dereferenceable(1) @_ZStL8__ioinit)\l  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void\l... (%\"class.std::ios_base::Init\"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*),\l... i8* getelementptr inbounds (%\"class.std::ios_base::Init\",\l... %\"class.std::ios_base::Init\"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull\l... @__dso_handle) #7\l  ret void\l}"];
 }

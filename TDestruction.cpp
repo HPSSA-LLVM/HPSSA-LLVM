@@ -3,6 +3,7 @@ using namespace llvm;
 // using namespace std;
 
 PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
+  vector<Instruction*> toBeRemoved;
   for (auto &BB : F) {
     for (auto &I : BB) {
       CallInst *CI = dyn_cast<CallInst>(&I);
@@ -12,14 +13,22 @@ PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
       if (CF == NULL ||
           CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau"))
         continue;
-
+      toBeRemoved.push_back(&I);
+    }
+  }
+  for(auto I: toBeRemoved) {
+      CallInst *CI = dyn_cast<CallInst>(I);
+      I->getType()->dump();
       IRBuilder<> Builder(CI);
       Value *origPhi = CI->getOperand(0);
       Value *newTau =
-          Builder.CreateAlloca(origPhi->getType(), nullptr, "tau.alloca");
+          Builder.CreateAlloca(origPhi->getType(), nullptr, CI->getName()+".alloca");
+      newTau->getType()->dump();
       Value *storeTau = Builder.CreateStore(origPhi, newTau);
+      Value *loadInst = Builder.CreateLoad(origPhi->getType(), newTau, newTau->getName()+".load");
+      I->replaceAllUsesWith(loadInst);
+      I->eraseFromParent();
     }
-  }
   return PreservedAnalyses::none();
 }
 

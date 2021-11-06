@@ -37,6 +37,7 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
 map<Value*,vector<Value*>> renaming_stack; 
 map<pair<BasicBlock*,Value*>, bool> hasPhi, hasTau; // if BB has corresponding phi or tau instruction
 void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) { // ? Meaning of Ordinary Assignment in LLVM Context
+  // ? Should we prune unused tau?
   for(auto &I: BB) {
     // this is a change
     for(auto phi: renaming_stack) {

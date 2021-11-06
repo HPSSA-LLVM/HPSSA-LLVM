@@ -2,6 +2,7 @@
 #define LLVM_TRANSFORMS_TDSTR_TDSTR_H
 
 #include "llvm/Analysis/CFG.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/IR/Function.h"
