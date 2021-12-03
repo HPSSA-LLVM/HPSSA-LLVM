@@ -13,3 +13,9 @@ Directory Structure:
   - [custom.log](./output/custom.log) shows custom output from pass printed through error stream.
 - [tests](./tests) : Files on which passes will be tested.
 - Other files are for standard use.
+
+## Running 
+
+```
+$ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all
+```
