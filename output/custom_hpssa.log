@@ -1,66 +1,22 @@
 --------------===
  Caloric Connector and BuddySet Information
 ===--------------
-entry: {1 0 0 0 } 
-if.else: { 1 0 0 0 } 
-if.then: 
-if.end is a Caloric Connector
-if.end: { 1 0 0 0 } 
-if.else10: { 1 0 0 0 } 
-if.else30: { 1 0 0 0 } 
-if.else37: { 1 0 0 0 } 
-if.then34: 
-if.then12: 
-if.end17: 
-if.else22: 
-if.then19: 
-if.end27: 
-new_label is a Caloric Connector
-new_label: { 1 0 0 0 } 
-end_label: 
+bb: {} 
+bb14: 
+bb8: 
+bb18: 
+bb24: 
+bb45: 
+bb52: 
+bb49: 
+bb26: 
+bb30: 
+bb35: 
+bb32: 
+bb40: 
+bb55: 
+bb60: 
 ----------===
 Initiating Tau Insertion Algroithm
 ===----------
-Inserted Tau at : if.end
-Inserted Tau at : new_label
-i64 4
-i64 4
-@_ZSt3cin = external global %"class.std::basic_istream", align 8
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
-DomPar: entry DomChild: if.then
-DomPar: entry DomChild: if.end
-  %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]
-DomPar: if.end DomChild: end_label
-i64 4
-i64 4
-DomPar: if.end DomChild: if.else10
-DomPar: if.else10 DomChild: if.then12
-DomPar: if.then12 DomChild: if.end17
-DomPar: if.end17 DomChild: if.then19
-DomPar: if.end17 DomChild: if.end27
-DomPar: if.end17 DomChild: if.else22
-DomPar: if.else10 DomChild: new_label
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
-DomPar: if.else10 DomChild: if.else30
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
-Stack dump:
-0.	Program arguments: /home/mabhay/projects/llvm-project/build/bin/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f
- #0 0x000055c78fb5c9a4 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
- #1 0x000055c78fb59cee SignalHandler(int) Signals.cpp:0:0
- #2 0x00007feb44c5b3c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
- #3 0x00007feb44c7309b llvm::HPSSAPass::Search(llvm::BasicBlock&, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA.cpp.so+0x709b)
- #4 0x00007feb44c738cd llvm::HPSSAPass::Search(llvm::BasicBlock&, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA.cpp.so+0x78cd)
- #5 0x00007feb44c738cd llvm::HPSSAPass::Search(llvm::BasicBlock&, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA.cpp.so+0x78cd)
- #6 0x00007feb44c738cd llvm::HPSSAPass::Search(llvm::BasicBlock&, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA.cpp.so+0x78cd)
- #7 0x00007feb44c778c4 llvm::HPSSAPass::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/HPSSA.cpp.so+0xb8c4)
- #8 0x00007feb44c7955d llvm::detail::PassModel<llvm::Function, llvm::HPSSAPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/HPSSA.cpp.so+0xd55d)
- #9 0x000055c78f21bac6 llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/mabhay/projects/llvm-project/build/bin/opt+0x213aac6)
-#10 0x000055c78fe1c8e6 llvm::detail::PassModel<llvm::Function, llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) PassBuilder.cpp:0:0
-#11 0x000055c78f21a5e9 llvm::ModuleToFunctionPassAdaptor::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/mabhay/projects/llvm-project/build/bin/opt+0x21395e9)
-#12 0x000055c78e3b1806 llvm::detail::PassModel<llvm::Module, llvm::ModuleToFunctionPassAdaptor, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) NewPMDriver.cpp:0:0
-#13 0x000055c78f217ecf llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/mabhay/projects/llvm-project/build/bin/opt+0x2136ecf)
-#14 0x000055c78e3be820 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/mabhay/projects/llvm-project/build/bin/opt+0x12dd820)
-#15 0x000055c78e3d0ff7 main (/home/mabhay/projects/llvm-project/build/bin/opt+0x12efff7)
-#16 0x00007feb4470b0b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
-#17 0x000055c78e3af30e _start (/home/mabhay/projects/llvm-project/build/bin/opt+0x12ce30e)
-Segmentation fault (core dumped)
+/usr/local/bin/opt: symbol lookup error: build/HPSSA.cpp.so: undefined symbol: _ZNK4llvm5Value4dumpEv
