@@ -1,16 +1,11 @@
 .vscode
-*.ll
 *.bc
 *.o
 *.so
-*.log
 
 */build/
-*/IR/
 
-*.txt
 *.out
 *.o
 *.a
-*.png
 .*.dot

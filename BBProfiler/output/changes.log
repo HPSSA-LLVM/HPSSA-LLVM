@@ -1,0 +1,41 @@
+1c1
+< ; ModuleID = 'IR/BC/test.bc'
+---
+> ; ModuleID = 'IR/LL/test_mem2reg.ll'
+49a50
+>   call void @_Z7counteri(i32 1)
+58a60
+>   call void @_Z7counteri(i32 2)
+65a68
+>   call void @_Z7counteri(i32 3)
+76a80
+>   call void @_Z7counteri(i32 4)
+80a85
+>   call void @_Z7counteri(i32 5)
+88a94
+>   call void @_Z7counteri(i32 6)
+92a99
+>   call void @_Z7counteri(i32 7)
+98a106
+>   call void @_Z7counteri(i32 8)
+106a115
+>   call void @_Z7counteri(i32 9)
+116a126
+>   call void @_Z7counteri(i32 10)
+124a135
+>   call void @_Z7counteri(i32 11)
+131a143
+>   call void @_Z7counteri(i32 12)
+138a151
+>   call void @_Z7counteri(i32 13)
+141c154
+< new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
+---
+> new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
+147a161
+>   call void @_Z7counteri(i32 14)
+152a167
+>   call void @_Z7counteri(i32 15)
+170a186,187
+> 
+> declare void @_Z7counteri(i32)

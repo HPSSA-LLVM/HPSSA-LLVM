@@ -1,0 +1,23 @@
+Title: Implementation of HPSSA Construction Algorithm using The LLVM Compiler
+Framework
+
+Abstract: Hot Path Static Single Assignment, HPSSA in short, is a data structure
+          built upon the well recognized Static Single Assignment(SSA) Form of
+          Intermediate Representation(IR) of Programs.  HPSSA form weaves Static
+          Program Information with run-time information allowing speculative
+          optimizations by compilers. The HPSSA Construction Algorithm [ Smriti
+          Jaiswal, Praveen Hegde, and Subhajit Roy. 2017. Constructing HPSSA
+          over SSA ] takes Hot Path Profile Information and using Data Flow
+          Analysis instruments the CFG of the program in SSA form. The
+          instrumentation is in the form of tau functions which serve as a
+          container of the run time profile information. The implementation
+          Consists of a set of two Compiler Passes built using modern LLVM
+          Compiler Framework. Construction Pass inserts tau function at suitable
+          places, which can be used later by other passes. Destruction pass
+          removes the instrumentation converting the program back to SSA form.
+          The use of suitable data structures and CFG traversal routines makes
+          the current implementation efficient in running time and memory usage.
+
+          --- We tested the implementation on various small programs for
+          correctness using a minimal Hot path profiler and explored
+          possibilities of using it for improving fuzzing techniques. ---
