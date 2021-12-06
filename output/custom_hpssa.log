@@ -1,23 +1,21 @@
 --------------===
  Caloric Connector and BuddySet Information
 ===--------------
-entry: {1 0 0 0 } 
-if.else: { 1 0 0 0 } 
-if.then: 
-if.end is a Caloric Connector
-if.end: { 1 0 0 0 } 
-if.else10: { 1 0 0 0 } 
-if.else30: { 1 0 0 0 } 
-if.else37: { 1 0 0 0 } 
-if.then34: 
-if.then12: 
-if.end17: 
-if.else22: 
-if.then19: 
-if.end27: 
-new_label is a Caloric Connector
-new_label: { 1 0 0 0 } 
-end_label: 
+bb: {} 
+bb14: 
+bb8: 
+bb18: 
+bb24: 
+bb45: 
+bb52: 
+bb49: 
+bb26: 
+bb30: 
+bb35: 
+bb32: 
+bb40: 
+bb55: 
+bb60: 
 ----------===
 Initiating Tau Insertion Algroithm
 ===----------

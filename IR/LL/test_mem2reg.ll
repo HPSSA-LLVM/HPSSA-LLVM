@@ -36,120 +36,120 @@ declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
 
 ; Function Attrs: norecurse uwtable mustprogress
 define i32 @main() local_unnamed_addr #3 {
-entry:
-  %a = alloca i32, align 4
-  %b = alloca i32, align 4
-  %i = bitcast i32* %a to i8*
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
-  %i1 = bitcast i32* %b to i8*
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
-  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %b)
-  %i2 = load i32, i32* %a, align 4, !tbaa !4
-  %cmp = icmp sgt i32 %i2, 5
-  br i1 %cmp, label %if.then, label %if.else
+bb:
+  %i = alloca i32, align 4
+  %i1 = alloca i32, align 4
+  %i2 = bitcast i32* %i to i8*
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i2) #6
+  %i3 = bitcast i32* %i1 to i8*
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #6
+  %i4 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %i)
+  %i5 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %i4, i32* nonnull align 4 dereferenceable(4) %i1)
+  %i6 = load i32, i32* %i, align 4, !tbaa !4
+  %i7 = icmp sgt i32 %i6, 5
+  br i1 %i7, label %bb8, label %bb14
 
-if.then:                                          ; preds = %entry
-  %mul = mul nsw i32 %i2, 9
-  %add = add nsw i32 %mul, 6
-  store i32 %add, i32* %a, align 4, !tbaa !4
-  %i3 = load i32, i32* %b, align 4, !tbaa !4
-  %mul2 = mul nsw i32 %i3, 3
-  %add3 = add nsw i32 %mul2, 1
-  br label %if.end
+bb8:                                              ; preds = %bb
+  %i9 = mul nsw i32 %i6, 9
+  %i10 = add nsw i32 %i9, 6
+  store i32 %i10, i32* %i, align 4, !tbaa !4
+  %i11 = load i32, i32* %i1, align 4, !tbaa !4
+  %i12 = mul nsw i32 %i11, 3
+  %i13 = add nsw i32 %i12, 1
+  br label %bb18
 
-if.else:                                          ; preds = %entry
-  %add4 = add nsw i32 %i2, 8
-  store i32 %add4, i32* %a, align 4, !tbaa !4
-  %i4 = load i32, i32* %b, align 4, !tbaa !4
-  %add5 = add nsw i32 %i4, 9
-  br label %if.end
+bb14:                                             ; preds = %bb
+  %i15 = add nsw i32 %i6, 8
+  store i32 %i15, i32* %i, align 4, !tbaa !4
+  %i16 = load i32, i32* %i1, align 4, !tbaa !4
+  %i17 = add nsw i32 %i16, 9
+  br label %bb18
 
-if.end:                                           ; preds = %if.else, %if.then
-  %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]
-  store i32 %storemerge, i32* %b, align 4, !tbaa !4
-  %i5 = load i32, i32* %a, align 4, !tbaa !4
-  %add6 = add nsw i32 %i5, 7
-  store i32 %add6, i32* %a, align 4, !tbaa !4
-  %mul7 = mul nsw i32 %storemerge, 6
-  store i32 %mul7, i32* %b, align 4, !tbaa !4
-  %cmp8 = icmp sgt i32 %mul7, 6
-  br i1 %cmp8, label %end_label, label %if.else10
+bb18:                                             ; preds = %bb14, %bb8
+  %i19 = phi i32 [ %i17, %bb14 ], [ %i13, %bb8 ]
+  store i32 %i19, i32* %i1, align 4, !tbaa !4
+  %i20 = load i32, i32* %i, align 4, !tbaa !4
+  %i21 = add nsw i32 %i20, 7
+  store i32 %i21, i32* %i, align 4, !tbaa !4
+  %i22 = mul nsw i32 %i19, 6
+  store i32 %i22, i32* %i1, align 4, !tbaa !4
+  %i23 = icmp sgt i32 %i22, 6
+  br i1 %i23, label %bb60, label %bb24
 
-if.else10:                                        ; preds = %if.end
-  %cmp11 = icmp sgt i32 %i5, 2
-  br i1 %cmp11, label %if.then12, label %if.else30
+bb24:                                             ; preds = %bb18
+  %i25 = icmp sgt i32 %i20, 2
+  br i1 %i25, label %bb26, label %bb45
 
-if.then12:                                        ; preds = %if.else10
-  %add13 = add nsw i32 %i5, 14
-  store i32 %add13, i32* %a, align 4, !tbaa !4
-  %mul14 = mul i32 %storemerge, 36
-  store i32 %mul14, i32* %b, align 4, !tbaa !4
-  %cmp15 = icmp eq i32 %add6, 10
-  br i1 %cmp15, label %new_label, label %if.end17
+bb26:                                             ; preds = %bb24
+  %i27 = add nsw i32 %i20, 14
+  store i32 %i27, i32* %i, align 4, !tbaa !4
+  %i28 = mul i32 %i19, 36
+  store i32 %i28, i32* %i1, align 4, !tbaa !4
+  %i29 = icmp eq i32 %i21, 10
+  br i1 %i29, label %bb55, label %bb30
 
-if.end17:                                         ; preds = %if.then12
-  %cmp18 = icmp sgt i32 %mul14, 15
-  br i1 %cmp18, label %if.then19, label %if.else22
+bb30:                                             ; preds = %bb26
+  %i31 = icmp sgt i32 %i28, 15
+  br i1 %i31, label %bb32, label %bb35
 
-if.then19:                                        ; preds = %if.end17
-  %mul20 = mul nsw i32 %add13, 7
-  store i32 %mul20, i32* %a, align 4, !tbaa !4
-  %mul21 = mul i32 %storemerge, 144
-  br label %if.end27
+bb32:                                             ; preds = %bb30
+  %i33 = mul nsw i32 %i27, 7
+  store i32 %i33, i32* %i, align 4, !tbaa !4
+  %i34 = mul i32 %i19, 144
+  br label %bb40
 
-if.else22:                                        ; preds = %if.end17
-  %mul23 = mul nsw i32 %add13, 5
-  %add24 = add nsw i32 %mul23, 4
-  store i32 %add24, i32* %a, align 4, !tbaa !4
-  %mul25 = mul i32 %storemerge, 144
-  %add26 = or i32 %mul25, 3
-  br label %if.end27
+bb35:                                             ; preds = %bb30
+  %i36 = mul nsw i32 %i27, 5
+  %i37 = add nsw i32 %i36, 4
+  store i32 %i37, i32* %i, align 4, !tbaa !4
+  %i38 = mul i32 %i19, 144
+  %i39 = or i32 %i38, 3
+  br label %bb40
 
-if.end27:                                         ; preds = %if.else22, %if.then19
-  %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
-  store i32 %storemerge48, i32* %b, align 4, !tbaa !4
-  %i6 = load i32, i32* %a, align 4, !tbaa !4
-  %add28 = add nsw i32 %i6, %storemerge48
-  store i32 %add28, i32* %a, align 4, !tbaa !4
-  %mul29 = mul nsw i32 %add28, %storemerge48
-  store i32 %mul29, i32* %b, align 4, !tbaa !4
-  br label %end_label
+bb40:                                             ; preds = %bb35, %bb32
+  %i41 = phi i32 [ %i39, %bb35 ], [ %i34, %bb32 ]
+  store i32 %i41, i32* %i1, align 4, !tbaa !4
+  %i42 = load i32, i32* %i, align 4, !tbaa !4
+  %i43 = add nsw i32 %i42, %i41
+  store i32 %i43, i32* %i, align 4, !tbaa !4
+  %i44 = mul nsw i32 %i43, %i41
+  store i32 %i44, i32* %i1, align 4, !tbaa !4
+  br label %bb60
 
-if.else30:                                        ; preds = %if.else10
-  %add31 = add nsw i32 %i5, 12
-  store i32 %add31, i32* %a, align 4, !tbaa !4
-  %mul32 = mul i32 %storemerge, 36
-  store i32 %mul32, i32* %b, align 4, !tbaa !4
-  %cmp33 = icmp sgt i32 %mul32, 16
-  br i1 %cmp33, label %if.then34, label %if.else37
+bb45:                                             ; preds = %bb24
+  %i46 = add nsw i32 %i20, 12
+  store i32 %i46, i32* %i, align 4, !tbaa !4
+  %i47 = mul i32 %i19, 36
+  store i32 %i47, i32* %i1, align 4, !tbaa !4
+  %i48 = icmp sgt i32 %i47, 16
+  br i1 %i48, label %bb49, label %bb52
 
-if.then34:                                        ; preds = %if.else30
-  %add35 = add nsw i32 %i5, 17
-  store i32 %add35, i32* %a, align 4, !tbaa !4
-  %add36 = add nsw i32 %mul32, 7
-  store i32 %add36, i32* %b, align 4, !tbaa !4
-  br label %new_label
+bb49:                                             ; preds = %bb45
+  %i50 = add nsw i32 %i20, 17
+  store i32 %i50, i32* %i, align 4, !tbaa !4
+  %i51 = add nsw i32 %i47, 7
+  store i32 %i51, i32* %i1, align 4, !tbaa !4
+  br label %bb55
 
-if.else37:                                        ; preds = %if.else30
-  %mul38 = shl nsw i32 %add31, 2
-  store i32 %mul38, i32* %a, align 4, !tbaa !4
-  %mul39 = mul i32 %storemerge, 216
-  store i32 %mul39, i32* %b, align 4, !tbaa !4
-  br label %new_label
+bb52:                                             ; preds = %bb45
+  %i53 = shl nsw i32 %i46, 2
+  store i32 %i53, i32* %i, align 4, !tbaa !4
+  %i54 = mul i32 %i19, 216
+  store i32 %i54, i32* %i1, align 4, !tbaa !4
+  br label %bb55
 
-new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
-  %i7 = load i32, i32* %a, align 4, !tbaa !4
-  %add41 = add nsw i32 %i7, 7
-  store i32 %add41, i32* %a, align 4, !tbaa !4
-  %i8 = load i32, i32* %b, align 4, !tbaa !4
-  %add42 = add nsw i32 %i8, 6
-  store i32 %add42, i32* %b, align 4, !tbaa !4
-  br label %end_label
+bb55:                                             ; preds = %bb49, %bb52, %bb26
+  %i56 = load i32, i32* %i, align 4, !tbaa !4
+  %i57 = add nsw i32 %i56, 7
+  store i32 %i57, i32* %i, align 4, !tbaa !4
+  %i58 = load i32, i32* %i1, align 4, !tbaa !4
+  %i59 = add nsw i32 %i58, 6
+  store i32 %i59, i32* %i1, align 4, !tbaa !4
+  br label %bb60
 
-end_label:                                        ; preds = %new_label, %if.end27, %if.end
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
+bb60:                                             ; preds = %bb55, %bb40, %bb18
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #6
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i2) #6
   ret i32 0
 }
 
@@ -163,7 +163,7 @@ declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
 
 ; Function Attrs: uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #5 section ".text.startup" {
-entry:
+bb:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
   ret void
@@ -183,7 +183,7 @@ attributes #6 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"PIC Level", i32 2}
 !2 = !{i32 7, !"uwtable", i32 1}
-!3 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
+!3 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project 131343d35bf2ce55001fdd9c4cdf2965b56f26d8)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
