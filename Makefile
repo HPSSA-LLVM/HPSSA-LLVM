@@ -19,7 +19,6 @@ endif
 all: build test cfg 
 
 build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
-	mkdir -p IR/BC IR/LL output build
 	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
 	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)

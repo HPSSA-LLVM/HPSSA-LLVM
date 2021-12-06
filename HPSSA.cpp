@@ -33,85 +33,87 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
 // After Buddy set creation check if it is a loop header
 // if yes :
 //            Union the incubating hot paths with every buddy set
-//                      |-> taking xor with hot paths of entry block
-map<Value *, vector<Value *>> renaming_stack;
-map<pair<BasicBlock *, Value *>, bool> hasPhi,
-    hasTau; // if BB has corresponding phi or tau instruction
-void HPSSAPass::Search(
-    BasicBlock &BB,
-    DomTreeNode &DTN) { // ? Meaning of Ordinary Assignment in LLVM Context
-  // ? Should we prune unused tau?
-  for (auto &I : BB) {
-    // this is a change
-    for (auto phi : renaming_stack) {
-      // errs()<<"Trying to Replace...\n";
-      I.replaceUsesOfWith(phi.first, phi.second.back());
-    }
-    if (PHINode *phi = dyn_cast<PHINode>(&I)) { // if is a phi
-      hasPhi[{&BB, phi}] = true;
-      renaming_stack[phi].push_back(phi); // renaming stack for phi created
-    }
-    if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-      Function *CF = CI->getCalledFunction();
-      CI->getOperand(0)->dump();
-      if (CF != NULL && (CF->getIntrinsicID() ==
-                         Function::lookupIntrinsicID("llvm.tau"))) { // tau call
-        // errs()<<"Entered Call Instruction Logic...\n";
-        hasTau[{&BB, CI->getOperand(0)}] = true;
-        renaming_stack[CI->getOperand(0)].push_back(
-            &I); // tauNode pushed to the renaming stack of corresponding phi
-      }
-    }
-  }
+//             /         |-> taking xor with hot paths of entry block
+// map<Value *, vector<Value *>> renaming_stack;
+// map<pair<BasicBlock *, Value *>, bool> hasPhi,
+//     hasTau; // if BB has corresponding phi or tau instruction
+// void HPSSAPass::Search(
+//     BasicBlock &BB,
+//     DomTreeNode &DTN) { // ? Meaning of Ordinary Assignment in LLVM Context
+//   // ? Should we prune unused tau?
+//   for (auto &I : BB) {
+//     // this is a change
+//     for (auto phi : renaming_stack) {
+//       // errs()<<"Trying to Replace...\n";
+//       I.replaceUsesOfWith(phi.first, phi.second.back());
+//     }
+//     if (PHINode *phi = dyn_cast<PHINode>(&I)) { // if is a phi
+//       hasPhi[{&BB, phi}] = true;
+//       renaming_stack[phi].push_back(phi); // renaming stack for phi created
+//     }
+//     if (CallInst *CI = dyn_cast<CallInst>(&I)) {
+//       Function *CF = CI->getCalledFunction();
+//       CI->getOperand(0)->dump();
+//       if (CF != NULL && (CF->getIntrinsicID() ==
+//                          Function::lookupIntrinsicID("llvm.tau"))) { // tau call
+//         // errs()<<"Entered Call Instruction Logic...\n";
+//         hasTau[{&BB, CI->getOperand(0)}] = true;
+//         renaming_stack[CI->getOperand(0)].push_back(
+//             &I); // tauNode pushed to the renaming stack of corresponding phi
+//       }
+//     }
+//   }
 
-  for (auto Succ : successors(&BB)) {
-    for (auto &phi : Succ->phis()) {
-      Value *V = phi.getIncomingValueForBlock(
-          &BB); // ! Assuming this gives the operand coming from this block
-      if (PHINode *operand = dyn_cast<PHINode>(V)) { // if is a phi
-        phi.replaceUsesOfWith(operand, renaming_stack[operand].back());
-      }
-      if (CallInst *CI = dyn_cast<CallInst>(V)) {
-        Function *CF = CI->getCalledFunction();
-        CI->getOperand(0)->dump();
-        if (CF != NULL &&
-            (CF->getIntrinsicID() ==
-             Function::lookupIntrinsicID("llvm.tau"))) { // tau call
-          // errs()<<"Entered Call Instruction Logic...\n";
-          phi.replaceUsesOfWith(
-              CI, renaming_stack[CI->getOperand(0)]
-                      .back()); // tau replaced with the current top
-        }
-      }
-    }
-  }
+//   for (auto Succ : successors(&BB)) {
+//     for (auto &phi : Succ->phis()) {
+//       Value *V = phi.getIncomingValueForBlock(
+//           &BB); // ! Assuming this gives the operand coming from this block
+//       if (PHINode *operand = dyn_cast<PHINode>(V)) { // if is a phi
+//         phi.replaceUsesOfWith(operand, renaming_stack[operand].back());
+//       }
+//       if (CallInst *CI = dyn_cast<CallInst>(V)) {
+//         Function *CF = CI->getCalledFunction();
+//         CI->getOperand(0)->dump();
+//         if (CF != NULL &&
+//             (CF->getIntrinsicID() ==
+//              Function::lookupIntrinsicID("llvm.tau"))) { // tau call
+//           // errs()<<"Entered Call Instruction Logic...\n";
+//           phi.replaceUsesOfWith(
+//               CI, renaming_stack[CI->getOperand(0)]
+//                       .back()); // tau replaced with the current top
+//         }
+//       }
+//     }
+//   }
 
-  for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
-    errs() << "DomPar: " << DTN.getBlock()->getName()
-           << " DomChild: " << (**Child).getBlock()->getName() << "\n";
-    BasicBlock *ChildBB = (**Child).getBlock();
-    Search(*ChildBB, **Child);
-  }
 
-  for (auto &varstack : renaming_stack) {
-    if (hasTau[{&BB, varstack.first}]) {
-      varstack.second.pop_back();
-    }
-  }
-  // errs()<<"Stack at BB "<<BB.getName()<<": \n";
-  // for(auto &BBphi: BB.phis()) {
-  //   errs()<<"Size of Stack for phi "<<BBphi.getName()<<":
-  //   "<<renaming_stack[&BBphi].size()<<"\n";
-  //     // renaming_stack[&BBphi].pop_back();
-  //   if(hasTau[{&BB, &BBphi}]) {
-  //     renaming_stack[&BBphi].pop_back();
-  //   }
-  //   // errs()<<"PHI Variable "<<BBphi.getName()<<" :\n";
-  //   // for(auto phi: renaming_stack[&BBphi]) {
-  //   //   phi->dump();
-  //   // }
-  // }
-}
+
+//   for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
+//     errs() << "DomPar: " << DTN.getBlock()->getName()
+//            << " DomChild: " << (**Child).getBlock()->getName() << "\n";
+//     BasicBlock *ChildBB = (**Child).getBlock();
+//     Search(*ChildBB, **Child);
+//   }
+
+//   for (auto &varstack : renaming_stack) {
+//     if (hasTau[{&BB, varstack.first}]) {
+//       varstack.second.pop_back();
+//     }
+//   }
+//   // errs()<<"Stack at BB "<<BB.getName()<<": \n";
+//   // for(auto &BBphi: BB.phis()) {
+//   //   errs()<<"Size of Stack for phi "<<BBphi.getName()<<":
+//   //   "<<renaming_stack[&BBphi].size()<<"\n";
+//   //     // renaming_stack[&BBphi].pop_back();
+//   //   if(hasTau[{&BB, &BBphi}]) {
+//   //     renaming_stack[&BBphi].pop_back();
+//   //   }
+//   //   // errs()<<"PHI Variable "<<BBphi.getName()<<" :\n";
+//   //   // for(auto phi: renaming_stack[&BBphi]) {
+//   //   //   phi->dump();
+//   //   // }
+//   // }
+// }
 
 map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
   auto HotPathSet = getProfileInfo(F);
@@ -437,7 +439,7 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
     }
   }
   // DomTreeNode *DTN = getNode(F.getEntryBlock());
-  Search(F.getEntryBlock(), *DT.getRootNode());
+  // Search(F.getEntryBlock(), *DT.getRootNode());
   return PreservedAnalyses::none();
 }
 
