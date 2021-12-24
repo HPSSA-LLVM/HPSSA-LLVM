@@ -10,13 +10,40 @@
 <   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
 ---
 >   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7
-69a70
+70c70,71
+<   store i32 %storemerge, i32* %b, align 4, !tbaa !4
+---
 >   %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
+>   store i32 %tau, i32* %b, align 4, !tbaa !4
+74c75
+<   %mul7 = mul nsw i32 %storemerge, 6
+---
+>   %mul7 = mul nsw i32 %tau, 6
+86c87
+<   %mul14 = mul i32 %storemerge, 36
+---
+>   %mul14 = mul i32 %tau, 36
+98c99
+<   %mul21 = mul i32 %storemerge, 144
+---
+>   %mul21 = mul i32 %tau, 144
+105c106
+<   %mul25 = mul i32 %storemerge, 144
+---
+>   %mul25 = mul i32 %tau, 144
+122c123
+<   %mul32 = mul i32 %storemerge, 36
+---
+>   %mul32 = mul i32 %tau, 36
+137c138
+<   %mul39 = mul i32 %storemerge, 216
+---
+>   %mul39 = mul i32 %tau, 216
 141c142,143
 < new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
 ---
 > new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
->   %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
+>   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add5)
 151,152c153,154
 <   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
 <   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
