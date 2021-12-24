@@ -18,20 +18,23 @@ PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
   }
   for (auto I : toBeRemoved) {
     CallInst *CI = dyn_cast<CallInst>(I);
+    Function *CF = CI->getCalledFunction();
+    llvm::errs() << "Tau to be removed : " << CF->getName() << "\t\n";
     // I->getType()->dump();
-    errs()<<"Original"<<"\n";
-    I->dump();
+    // errs() << "Original"
+    //        << "\n";
+    // I->dump();
     IRBuilder<> Builder(CI);
-    Value *origPhi = CI->getOperand(0);
-    errs()<<"first operand"<<"\n";
-    origPhi->dump();
-    Value *newTau = Builder.CreateAlloca(origPhi->getType(), nullptr,
-                                         CI->getName() + ".alloca");
-    // newTau->getType()->dump();
-    Value *storeTau = Builder.CreateStore(origPhi, newTau);
-    Value *loadInst = Builder.CreateLoad(origPhi->getType(), newTau,
-                                         newTau->getName() + ".load");
-    I->replaceAllUsesWith(loadInst);
+    Value *origPhi = CI;
+    Value *replaceTAU = CI->getOperand(0);
+    llvm::errs() << "Replacing variable " << origPhi->getName() << " with "
+                 << replaceTAU->getName() << ".\n";
+    // Value *newTau = Builder.CreateAlloca(origPhi->getType(), nullptr,
+    //                                      CI->getName() + ".alloca");
+    // Value *storeTau = Builder.CreateStore(replaceTAU, origPhi, false);
+    // Value *loadInst = Builder.CreateLoad(origPhi->getType(), newTau,
+    //                                      newTau->getName() + ".load");
+    I->replaceAllUsesWith(replaceTAU);
     I->eraseFromParent();
   }
   return PreservedAnalyses::none();
