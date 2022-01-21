@@ -35,8 +35,8 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
 //            Union the incubating hot paths with every buddy set
 //             /         |-> taking xor with hot paths of entry block
 map<Value *, vector<Value *>> renaming_stack;
-map<pair<BasicBlock *, Value *>, bool> hasPhi,
-    hasTau; // if BB has corresponding phi or tau instruction
+map<pair<BasicBlock *, Value *>, bool> hasPhi, hasTau;
+map<Value*, Value*> stackmap;
 void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
   // ? Meaning of Ordinary Assignment in LLVM Context
   // ? Should we prune unused tau?
@@ -61,11 +61,15 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
       }
     }
 
+    // tau = (phi1, phi2, ...)
+    // x.2 = add phi1, x.3
+
     if (PHINode *phi = dyn_cast<PHINode>(&I)) {
       errs() << "------ ";
       errs() << "a phi instruction\n";
       hasPhi[{&BB, phi}] = true;
       renaming_stack[phi].push_back(phi);
+      stackmap[phi] = phi;
     } else {
       errs() << "------ ";
       errs() << "Not a phi instruction\n";
@@ -84,9 +88,11 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
         // ! phi ) is being renamed to its most recent tau definition
 
         // ! TEMPORARY FIX
-        if (PHINode *parPhi = dyn_cast<PHINode>(CI->getOperand(0))) {
-          hasTau[{&BB, parPhi}] = true;
-          renaming_stack[parPhi].push_back(&I);
+        if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
+          hasTau[{&BB, stackmap[parPhi]}] = true;
+          renaming_stack[stackmap[parPhi]].push_back(&I);
+          stackmap[&I] = stackmap[parPhi];
+          
         }
         // ? delay replacing the uses of current instruction?
       } else {
@@ -115,7 +121,7 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
       if (PHINode *operand = dyn_cast<PHINode>(V)) {
         errs() << "---------- ";
         errs() << "a phi operand\n";
-        phi.replaceUsesOfWith(operand, renaming_stack[operand].back());
+        phi.replaceUsesOfWith(operand, renaming_stack[stackmap[operand]].back());
       } else {
         errs() << "---------- ";
         errs() << "Not a phi operand\n";
@@ -130,9 +136,10 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
           errs() << "---------- ";
           errs() << "a tau operand\n";
 
+
           // ! FIX THIS TOO
-          if (PHINode *parPhi = dyn_cast<PHINode>(CI->getOperand(0))) {
-            phi.replaceUsesOfWith(CI, renaming_stack[parPhi].back());
+          if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
+            phi.replaceUsesOfWith(CI, renaming_stack[stackmap[parPhi]].back());
           }
         }
       } else {
@@ -169,19 +176,6 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
       errs() << "mrd not changed\n";
     }
   }
-  // errs()<<"Stack at BB "<<BB.getName()<<": \n";
-  // for(auto &BBphi: BB.phis()) {
-  //   errs()<<"Size of Stack for phi "<<BBphi.getName()<<":
-  //   "<<renaming_stack[&BBphi].size()<<"\n";
-  //     // renaming_stack[&BBphi].pop_back();
-  //   if(hasTau[{&BB, &BBphi}]) {
-  //     renaming_stack[&BBphi].pop_back();
-  //   }
-  //   // errs()<<"PHI Variable "<<BBphi.getName()<<" :\n";
-  //   // for(auto phi: renaming_stack[&BBphi]) {
-  //   //   phi->dump();
-  //   // }
-  // }
 }
 
 map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {

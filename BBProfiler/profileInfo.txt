@@ -1,5 +1,11 @@
-4 8 
-1. entry if.else if.end if.else10 if.else30 if.else37 new_label end_label
- 9
-entry if.then if.end if.else10 if.then12 if.end17 if.else22 if.end27 end_label 4
-entry if.else if.end end_label 4 entry if.then if.end end_label 
+5
+8
+entry if.else if.end if.else10 if.else30 if.else37 new_label end_label 
+4
+entry if.then if.end end_label 
+9
+entry if.else if.end if.else10 if.then12 if.end17 if.else22 if.end27 end_label 
+9
+entry if.then if.end if.else10 if.then12 if.end17 if.else22 if.end27 end_label 
+4
+entry if.else if.end end_label 

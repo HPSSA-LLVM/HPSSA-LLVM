@@ -1,6 +1,8 @@
 # FIX: Results not properly updating
 # ! UPDATE ACCORDING TO YOUR LLVM PATH
 
+#! RUN: make limit
+
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1

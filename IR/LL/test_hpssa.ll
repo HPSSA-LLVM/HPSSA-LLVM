@@ -67,12 +67,11 @@ if.else:                                          ; preds = %entry
 
 if.end:                                           ; preds = %if.else, %if.then
   %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
-  store i32 %tau, i32* %b, align 4, !tbaa !4
+  store i32 %storemerge, i32* %b, align 4, !tbaa !4
   %i5 = load i32, i32* %a, align 4, !tbaa !4
   %add6 = add nsw i32 %i5, 7
   store i32 %add6, i32* %a, align 4, !tbaa !4
-  %mul7 = mul nsw i32 %tau, 6
+  %mul7 = mul nsw i32 %storemerge, 6
   store i32 %mul7, i32* %b, align 4, !tbaa !4
   %cmp8 = icmp sgt i32 %mul7, 6
   br i1 %cmp8, label %end_label, label %if.else10
@@ -84,7 +83,7 @@ if.else10:                                        ; preds = %if.end
 if.then12:                                        ; preds = %if.else10
   %add13 = add nsw i32 %i5, 14
   store i32 %add13, i32* %a, align 4, !tbaa !4
-  %mul14 = mul i32 %tau, 36
+  %mul14 = mul i32 %storemerge, 36
   store i32 %mul14, i32* %b, align 4, !tbaa !4
   %cmp15 = icmp eq i32 %add6, 10
   br i1 %cmp15, label %new_label, label %if.end17
@@ -96,28 +95,31 @@ if.end17:                                         ; preds = %if.then12
 if.then19:                                        ; preds = %if.end17
   %mul20 = mul nsw i32 %add13, 7
   store i32 %mul20, i32* %a, align 4, !tbaa !4
-  %mul21 = mul i32 %tau, 144
+  %mul21 = mul i32 %storemerge, 144
   br label %if.end27
 
 if.else22:                                        ; preds = %if.end17
   %mul23 = mul nsw i32 %add13, 5
   %add24 = add nsw i32 %mul23, 4
   store i32 %add24, i32* %a, align 4, !tbaa !4
-  %mul25 = mul i32 %tau, 144
+  %mul25 = mul i32 %storemerge, 144
   %add26 = or i32 %mul25, 3
   br label %if.end27
 
 if.end27:                                         ; preds = %if.else22, %if.then19
   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
-  store i32 %storemerge48, i32* %b, align 4, !tbaa !4
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %add26)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3, i32 %add5)
+  store i32 %tau3, i32* %b, align 4, !tbaa !4
   %i6 = load i32, i32* %a, align 4, !tbaa !4
-  %add28 = add nsw i32 %i6, %storemerge48
+  %add28 = add nsw i32 %i6, %tau3
   store i32 %add28, i32* %a, align 4, !tbaa !4
-  %mul29 = mul nsw i32 %add28, %storemerge48
+  %mul29 = mul nsw i32 %add28, %tau3
   store i32 %mul29, i32* %b, align 4, !tbaa !4
   br label %end_label
 
 if.else30:                                        ; preds = %if.else10
+  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
   %add31 = add nsw i32 %i5, 12
   store i32 %add31, i32* %a, align 4, !tbaa !4
   %mul32 = mul i32 %tau, 36
@@ -140,7 +142,7 @@ if.else37:                                        ; preds = %if.else30
   br label %new_label
 
 new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add5)
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
   %i7 = load i32, i32* %a, align 4, !tbaa !4
   %add41 = add nsw i32 %i7, 7
   store i32 %add41, i32* %a, align 4, !tbaa !4

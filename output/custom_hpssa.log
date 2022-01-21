@@ -1,24 +1,28 @@
 ----------===Caloric Connector and BuddySet Information===----------
-entry: {1 0 0 0 } 
-if.else: { 1 0 0 0 } 
-if.then: 
-if.end is a Caloric Connector
-if.end: { 1 0 0 0 } 
-if.else10: { 1 0 0 0 } 
-if.else30: { 1 0 0 0 } 
-if.else37: { 1 0 0 0 } 
+entry: {1 1 1 1 1 } 
+if.else: { 1 0 1 0 1 } 
+if.then: { 0 1 0 1 0 } 
+if.end: { 1 0 1 0 1 } { 0 1 0 1 0 } 
+if.else10: { 1 0 1 0 0 } { 0 0 0 1 0 } 
+if.else30 is a Caloric Connector
+if.else30: { 1 0 0 0 0 } 
+if.else37: { 1 0 0 0 0 } 
 if.then34: 
-if.then12: 
-if.end17: 
-if.else22: 
+if.then12: { 0 0 1 0 0 } { 0 0 0 1 0 } 
+if.end17: { 0 0 1 0 0 } { 0 0 0 1 0 } 
+if.else22: { 0 0 1 0 0 } { 0 0 0 1 0 } 
 if.then19: 
-if.end27: 
+if.end27 is a Caloric Connector
+if.end27: { 0 0 1 0 0 } { 0 0 0 1 0 } 
 new_label is a Caloric Connector
-new_label: { 1 0 0 0 } 
-end_label: 
+new_label: { 1 0 0 0 0 } 
+end_label: { 1 0 0 0 0 } { 0 0 1 0 0 } { 0 0 0 1 0 } { 0 0 0 0 1 } { 0 1 0 0 0 } 
 ----------===Initiating Tau Insertion Algroithm===----------
-Inserted Tau at : if.end
+Inserted Tau at : if.else30
+Inserted Tau at : if.end27
 Inserted Tau at : new_label
+Inserted Tau at : if.end27
+Reached the Dominance frontier while visiting from: new_label
 -- BB: entry
 ---- I:   %a = alloca i32, align 4
 ---- attempt to renaming uses in I
@@ -112,67 +116,60 @@ Inserted Tau at : new_label
 ---- attempt to renaming uses in I
 ------ a phi instruction
 ------ Not a tau instruction
----- I:   %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
+---- I:   store i32 %storemerge, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
 ------ storemerge
 ------ mrd: storemerge
 ------ Not a phi instruction
------- a tau instruction
----- I:   store i32 %storemerge, i32* %b, align 4, !tbaa !4
----- attempt to renaming uses in I
------- phi: storemerge
------- tau
------- mrd: tau
------- Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %i5 = load i32, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %add6 = add nsw i32 %i5, 7
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %add6, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %mul7 = mul nsw i32 %storemerge, 6
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %mul7, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %cmp8 = icmp sgt i32 %mul7, 6
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br i1 %cmp8, label %end_label, label %if.else10
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -184,43 +181,43 @@ Inserted Tau at : new_label
 ---- I:   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   ret i32 0
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
+-------- phi: storemerge mrd: storemerge
 ---------- mrd not changed
 -------- Parent: if.end | Child: if.else10
 -- BB: if.else10
 ---- I:   %cmp11 = icmp sgt i32 %i5, 2
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br i1 %cmp11, label %if.then12, label %if.else30
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -232,43 +229,43 @@ Inserted Tau at : new_label
 ---- I:   %add13 = add nsw i32 %i5, 14
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %add13, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %mul14 = mul i32 %storemerge, 36
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %mul14, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %cmp15 = icmp eq i32 %add6, 10
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br i1 %cmp15, label %new_label, label %if.end17
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -280,15 +277,15 @@ Inserted Tau at : new_label
 ---- I:   %cmp18 = icmp sgt i32 %mul14, 15
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br i1 %cmp18, label %if.then19, label %if.else22
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -300,29 +297,29 @@ Inserted Tau at : new_label
 ---- I:   %mul20 = mul nsw i32 %add13, 7
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %mul20, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %mul21 = mul i32 %storemerge, 144
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br label %if.end27
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -333,102 +330,122 @@ Inserted Tau at : new_label
 ---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
+-------- phi: storemerge mrd: storemerge
 ---------- mrd not changed
 -------- Parent: if.end17 | Child: if.end27
 -- BB: if.end27
 ---- I:   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ a phi instruction
 ------ Not a tau instruction
----- I:   store i32 %storemerge48, i32* %b, align 4, !tbaa !4
+---- I:   %tau3 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %add26)
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
+------ Not a phi instruction
+------ a tau instruction
+---- I:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3, i32 %add5)
+---- attempt to renaming uses in I
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: storemerge48
+------ tau3
+------ mrd: tau3
+------ Not a phi instruction
+------ a tau instruction
+---- I:   store i32 %storemerge48, i32* %b, align 4, !tbaa !4
+---- attempt to renaming uses in I
+------ phi: storemerge
+------ tau1
+------ mrd: tau1
+------ phi: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %i6 = load i32, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %add28 = add nsw i32 %i6, %storemerge48
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %add28, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   %mul29 = mul nsw i32 %add28, %storemerge48
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   store i32 %mul29, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I:   br label %end_label
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau1
+------ mrd: tau1
 ------ phi: storemerge48
------- storemerge48
------- mrd: storemerge48
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end_label
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
----------- mrd not changed
--------- phi: storemerge48 mrd: storemerge48
----------- mrd not changed
+-------- phi: storemerge mrd: tau1
+---------- mrd changed
+-------- phi: storemerge48 mrd: tau3
+---------- mrd changed
 -------- Parent: if.end17 | Child: if.else22
 -- BB: if.else22
 ---- I:   %mul23 = mul nsw i32 %add13, 5
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -437,8 +454,8 @@ Inserted Tau at : new_label
 ---- I:   %add24 = add nsw i32 %mul23, 4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -447,8 +464,8 @@ Inserted Tau at : new_label
 ---- I:   store i32 %add24, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -457,8 +474,8 @@ Inserted Tau at : new_label
 ---- I:   %mul25 = mul i32 %storemerge, 144
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -467,8 +484,8 @@ Inserted Tau at : new_label
 ---- I:   %add26 = or i32 %mul25, 3
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -477,8 +494,8 @@ Inserted Tau at : new_label
 ---- I:   br label %if.end27
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -492,27 +509,27 @@ Inserted Tau at : new_label
 ---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
+-------- phi: storemerge mrd: storemerge
 ---------- mrd not changed
 -------- phi: storemerge48 mrd: storemerge48
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
+-------- phi: storemerge mrd: storemerge
 ---------- mrd not changed
 -------- phi: storemerge48 mrd: storemerge48
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
+-------- phi: storemerge mrd: storemerge
 ---------- mrd not changed
 -------- phi: storemerge48 mrd: storemerge48
 ---------- mrd not changed
 -------- Parent: if.else10 | Child: new_label
 -- BB: new_label
----- I:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
+---- I:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ storemerge
+------ mrd: storemerge
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -521,8 +538,8 @@ Inserted Tau at : new_label
 ---- I:   %i7 = load i32, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -531,8 +548,8 @@ Inserted Tau at : new_label
 ---- I:   %add41 = add nsw i32 %i7, 7
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -541,8 +558,8 @@ Inserted Tau at : new_label
 ---- I:   store i32 %add41, i32* %a, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -551,8 +568,8 @@ Inserted Tau at : new_label
 ---- I:   %i8 = load i32, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -561,8 +578,8 @@ Inserted Tau at : new_label
 ---- I:   %add42 = add nsw i32 %i8, 6
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -571,8 +588,8 @@ Inserted Tau at : new_label
 ---- I:   store i32 %add42, i32* %b, align 4, !tbaa !4
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -581,8 +598,8 @@ Inserted Tau at : new_label
 ---- I:   br label %end_label
 ---- attempt to renaming uses in I
 ------ phi: storemerge
------- tau
------- mrd: tau
+------ tau2
+------ mrd: tau2
 ------ phi: storemerge48
 ------ storemerge48
 ------ mrd: storemerge48
@@ -592,12 +609,22 @@ Inserted Tau at : new_label
 -------- Succ: end_label
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: storemerge mrd: tau
----------- mrd not changed
+-------- phi: storemerge mrd: tau2
+---------- mrd changed
 -------- phi: storemerge48 mrd: storemerge48
 ---------- mrd not changed
 -------- Parent: if.else10 | Child: if.else30
 -- BB: if.else30
+---- I:   %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
+---- attempt to renaming uses in I
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: storemerge48
+------ storemerge48
+------ mrd: storemerge48
+------ Not a phi instruction
+------ a tau instruction
 ---- I:   %add31 = add nsw i32 %i5, 12
 ---- attempt to renaming uses in I
 ------ phi: storemerge
@@ -784,17 +811,17 @@ Inserted Tau at : new_label
 ---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: storemerge mrd: tau
----------- mrd not changed
--------- phi: storemerge48 mrd: storemerge48
----------- mrd not changed
------- Remove definitions if needed
--------- phi: storemerge mrd: tau
----------- mrd not changed
--------- phi: storemerge48 mrd: storemerge48
----------- mrd not changed
------- Remove definitions if needed
--------- phi: storemerge mrd: tau
 ---------- mrd changed
+-------- phi: storemerge48 mrd: storemerge48
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: storemerge48 mrd: storemerge48
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
 -------- phi: storemerge48 mrd: storemerge48
 ---------- mrd not changed
 -------- Parent: entry | Child: if.else
@@ -869,23 +896,23 @@ Inserted Tau at : new_label
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0107 seconds (0.0107 wall clock)
+  Total Execution Time: 0.0154 seconds (0.0154 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0100 ( 93.4%)   0.0100 ( 93.4%)   0.0100 ( 93.4%)  HPSSAPass
-   0.0002 (  2.3%)   0.0002 (  2.3%)   0.0002 (  2.3%)  PrintModulePass
-   0.0002 (  2.1%)   0.0002 (  2.1%)   0.0002 (  2.1%)  VerifierPass
-   0.0002 (  1.9%)   0.0002 (  1.9%)   0.0002 (  1.9%)  VerifierAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  DominatorTreeAnalysis
-   0.0107 (100.0%)   0.0107 (100.0%)   0.0107 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0033 ( 90.2%)   0.0112 ( 95.1%)   0.0145 ( 94.0%)   0.0145 ( 93.9%)  HPSSAPass
+   0.0001 (  3.4%)   0.0002 (  2.1%)   0.0004 (  2.4%)   0.0004 (  2.4%)  PrintModulePass
+   0.0001 (  3.1%)   0.0002 (  1.3%)   0.0003 (  1.7%)   0.0003 (  1.8%)  VerifierPass
+   0.0001 (  2.9%)   0.0002 (  1.3%)   0.0003 (  1.7%)   0.0003 (  1.7%)  VerifierAnalysis
+   0.0000 (  0.2%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.2%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  DominatorTreeAnalysis
+   0.0037 (100.0%)   0.0118 (100.0%)   0.0154 (100.0%)   0.0154 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0006 seconds (0.0006 wall clock)
+  Total Execution Time: 0.0008 seconds (0.0008 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Parse IR
-   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Parse IR
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Total
 

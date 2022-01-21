@@ -41,16 +41,16 @@ test: build tests/test.cpp BBProfiler/profileInfo.txt
 
 
 cfg_before: build tests/test.cpp BBProfiler/profileInfo.txt 
-	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
 	make dot2png
 
 dom_before:build tests/test.cpp BBProfiler/profileInfo.txt 
-	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
 	make dot2png
 
 cfg_after: test 
-	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_hpssa.ll -o IR/BC/test_hpssa.bc
-	# $(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_tcond.ll -o IR/BC/test_tcond.bc 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_hpssa.ll -o IR/BC/test_hpssa.bc
+	# $(BUILD_PATH)/opt --dot-cfg IR/LL/test_tcond.ll -o IR/BC/test_tcond.bc 
 	make dot2png
 
 dom_after: test
