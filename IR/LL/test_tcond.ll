@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'IR/LL/test_hpssa.ll'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -110,11 +110,11 @@ if.end27:                                         ; preds = %if.else22, %if.then
   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
   %tau3 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %add26)
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3, i32 %add5)
-  store i32 %tau3, i32* %b, align 4, !tbaa !4
+  store i32 %storemerge48, i32* %b, align 4, !tbaa !4
   %i6 = load i32, i32* %a, align 4, !tbaa !4
-  %add28 = add nsw i32 %i6, %tau3
+  %add28 = add nsw i32 %i6, %storemerge48
   store i32 %add28, i32* %a, align 4, !tbaa !4
-  %mul29 = mul nsw i32 %add28, %tau3
+  %mul29 = mul nsw i32 %add28, %storemerge48
   store i32 %mul29, i32* %b, align 4, !tbaa !4
   br label %end_label
 
@@ -122,7 +122,7 @@ if.else30:                                        ; preds = %if.else10
   %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
   %add31 = add nsw i32 %i5, 12
   store i32 %add31, i32* %a, align 4, !tbaa !4
-  %mul32 = mul i32 %tau, 36
+  %mul32 = mul i32 %storemerge, 36
   store i32 %mul32, i32* %b, align 4, !tbaa !4
   %cmp33 = icmp sgt i32 %mul32, 16
   br i1 %cmp33, label %if.then34, label %if.else37
@@ -137,7 +137,7 @@ if.then34:                                        ; preds = %if.else30
 if.else37:                                        ; preds = %if.else30
   %mul38 = shl nsw i32 %add31, 2
   store i32 %mul38, i32* %a, align 4, !tbaa !4
-  %mul39 = mul i32 %tau, 216
+  %mul39 = mul i32 %storemerge, 216
   store i32 %mul39, i32* %b, align 4, !tbaa !4
   br label %new_label
 

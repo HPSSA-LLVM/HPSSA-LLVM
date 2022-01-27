@@ -1,0 +1,39 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x560a4068db90 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry|{<s0>T|<s1>F}}"];
+	Node0x560a4068db90:s0 -> Node0x560a4068f5d0;
+	Node0x560a4068db90:s1 -> Node0x560a4068f6a0;
+	Node0x560a4068f5d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e36c5570",label="{if.then}"];
+	Node0x560a4068f5d0 -> Node0x560a40690440;
+	Node0x560a4068f6a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e36c5570",label="{if.else}"];
+	Node0x560a4068f6a0 -> Node0x560a40690440;
+	Node0x560a40690440 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{if.end: \l %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]|{<s0>T|<s1>F}}"];
+	Node0x560a40690440:s0 -> Node0x560a40691060;
+	Node0x560a40690440:s1 -> Node0x560a406910e0;
+	Node0x560a406910e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#e36c5570",label="{if.else10|{<s0>T|<s1>F}}"];
+	Node0x560a406910e0:s0 -> Node0x560a40691350;
+	Node0x560a406910e0:s1 -> Node0x560a406913d0;
+	Node0x560a40691350 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7ac8e70",label="{if.then12|{<s0>T|<s1>F}}"];
+	Node0x560a40691350:s0 -> Node0x560a40691920;
+	Node0x560a40691350:s1 -> Node0x560a406919a0;
+	Node0x560a406919a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ead5c970",label="{if.end17|{<s0>T|<s1>F}}"];
+	Node0x560a406919a0:s0 -> Node0x560a40691c10;
+	Node0x560a406919a0:s1 -> Node0x560a406924a0;
+	Node0x560a40691c10 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c7d7f070",label="{if.then19}"];
+	Node0x560a40691c10 -> Node0x560a40692850;
+	Node0x560a406924a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c7d7f070",label="{if.else22}"];
+	Node0x560a406924a0 -> Node0x560a40692850;
+	Node0x560a40692850 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ead5c970",label="{if.end27: \l %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ] \l %tau3.alloca = alloca i32, align 4 \l store i32 %storemerge48, i32* %tau3.alloca, align 4 \l %tau3.alloca.load = load i32, i32* %tau3.alloca, align 4 \l %tau1.alloca = alloca i32, align 4 \l store i32 %storemerge, i32* %tau1.alloca, align 4 \l %tau1.alloca.load = load i32, i32* %tau1.alloca, align 4}"];
+	Node0x560a40692850 -> Node0x560a40691060;
+	Node0x560a406913d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7ac8e70",label="{if.else30: \l %tau.alloca = alloca i32, align 4 \l store i32 %storemerge, i32* %tau.alloca, align 4 \l %tau.alloca.load = load i32, i32* %tau.alloca, align 4|{<s0>T|<s1>F}}"];
+	Node0x560a406913d0:s0 -> Node0x560a40693f90;
+	Node0x560a406913d0:s1 -> Node0x560a40694010;
+	Node0x560a40693f90 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ead5c970",label="{if.then34}"];
+	Node0x560a40693f90 -> Node0x560a40691920;
+	Node0x560a40694010 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ead5c970",label="{if.else37}"];
+	Node0x560a40694010 -> Node0x560a40691920;
+	Node0x560a40691920 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#ef886b70",label="{new_label: \l %tau2.alloca = alloca i32, align 4 \l store i32 %storemerge, i32* %tau2.alloca, align 4 \l %tau2.alloca.load = load i32, i32* %tau2.alloca, align 4}"];
+	Node0x560a40691920 -> Node0x560a40691060;
+	Node0x560a40691060 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{end_label}"];
+}

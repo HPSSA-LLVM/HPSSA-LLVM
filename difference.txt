@@ -1,0 +1,64 @@
+1c1
+< ; ModuleID = 'IR/LL/test_mem2reg.ll'
+---
+> ; ModuleID = 'IR/BC/test.bc'
+43c43
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #7
+---
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
+45c45
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7
+---
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
+105c105
+<   %mul25 = mul i32 %tau1, 144
+---
+>   %mul25 = mul i32 %storemerge, 144
+111,113c111
+<   %tau3 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %add26)
+<   %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3, i32 %add5)
+<   store i32 %tau3, i32* %b, align 4, !tbaa !4
+---
+>   store i32 %storemerge48, i32* %b, align 4, !tbaa !4
+115c113
+<   %add28 = add nsw i32 %i6, %tau3
+---
+>   %add28 = add nsw i32 %i6, %storemerge48
+117c115
+<   %mul29 = mul nsw i32 %add28, %tau3
+---
+>   %mul29 = mul nsw i32 %add28, %storemerge48
+122d119
+<   %tau = call i32 (...) @llvm.tau.i32(i32 %tau1, i32 %add5)
+125c122
+<   %mul32 = mul i32 %tau1, 36
+---
+>   %mul32 = mul i32 %storemerge, 36
+140c137
+<   %mul39 = mul i32 %tau1, 216
+---
+>   %mul39 = mul i32 %storemerge, 216
+144,145c141
+< new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
+<   %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau1, i32 %add5)
+---
+> new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
+155,156c151,152
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7
+---
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
+172c168
+<   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #7
+---
+>   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
+176,178d171
+< ; Function Attrs: nofree nosync nounwind willreturn
+< declare i32 @llvm.tau.i32(...) #6
+< 
+185,186c178
+< attributes #6 = { nofree nosync nounwind willreturn }
+< attributes #7 = { nounwind }
+---
+> attributes #6 = { nounwind }

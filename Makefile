@@ -16,7 +16,7 @@ endif
 
 .PHONY: test 
 
-all: build test cfg_after
+all: build test cfg_before cfg_after
 
 build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
 	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
@@ -43,19 +43,23 @@ test: build tests/test.cpp BBProfiler/profileInfo.txt
 cfg_before: build tests/test.cpp BBProfiler/profileInfo.txt 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
 	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_before.png
 
 dom_before:build tests/test.cpp BBProfiler/profileInfo.txt 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
 	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/dom_before.png
 
 cfg_after: test 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_hpssa.ll -o IR/BC/test_hpssa.bc
 	# $(BUILD_PATH)/opt --dot-cfg IR/LL/test_tcond.ll -o IR/BC/test_tcond.bc 
 	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_after.png
 
 dom_after: test
 	$(BUILD_PATH)/opt --dot-dom-only IR/LL/test_hpssa.ll -o IR/BC/test_hpssa.bc 
 	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/dom_after.png
 
 dot2png: 
 	mv .*.dot IR/cfg/
