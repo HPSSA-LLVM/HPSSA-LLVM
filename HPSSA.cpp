@@ -36,7 +36,7 @@ map<BasicBlock *, BitVector> HPSSAPass::getProfileInfo(Function &F) {
 //             /         |-> taking xor with hot paths of entry block
 map<Value *, vector<Value *>> renaming_stack;
 map<pair<BasicBlock *, Value *>, bool> hasPhi, hasTau;
-map<Value*, Value*> stackmap;
+map<Value *, Value *> stackmap;
 void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
   // ? Meaning of Ordinary Assignment in LLVM Context
   // ? Should we prune unused tau?
@@ -92,7 +92,6 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
           hasTau[{&BB, stackmap[parPhi]}] = true;
           renaming_stack[stackmap[parPhi]].push_back(&I);
           stackmap[&I] = stackmap[parPhi];
-          
         }
         // ? delay replacing the uses of current instruction?
       } else {
@@ -121,7 +120,8 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
       if (PHINode *operand = dyn_cast<PHINode>(V)) {
         errs() << "---------- ";
         errs() << "a phi operand\n";
-        phi.replaceUsesOfWith(operand, renaming_stack[stackmap[operand]].back());
+        phi.replaceUsesOfWith(operand,
+                              renaming_stack[stackmap[operand]].back());
       } else {
         errs() << "---------- ";
         errs() << "Not a phi operand\n";
@@ -135,7 +135,6 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
           // errs()<<"Entered Call Instruction Logic...\n";
           errs() << "---------- ";
           errs() << "a tau operand\n";
-
 
           // ! FIX THIS TOO
           if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {

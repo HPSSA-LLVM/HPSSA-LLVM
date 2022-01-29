@@ -22,11 +22,12 @@ PreservedAnalyses BBProfilerPass::run(Module &M, ModuleAnalysisManager &AM) {
   for (Function &F : M) {
     if (F.isDeclaration())
       continue;
-    SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
-    FindFunctionBackedges(F, result); // backedges in this function
+
     // Assuming one function only
     if (F.getName() != "main")
       continue;
+    SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+    FindFunctionBackedges(F, result); // backedges in this function
     for (auto &BB : F) {
       count += 1;
 
