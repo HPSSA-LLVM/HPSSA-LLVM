@@ -1,0 +1,218 @@
+1c1
+< ; ModuleID = 'IR/BC/test.bc'
+---
+> ; ModuleID = 'IR/LL/test_mem2reg.ll'
+27a28
+> @counter = global i32 0
+50c51
+<   br i1 %cmp, label %if.then, label %if.else
+---
+>   br i1 %cmp, label %if.then.split5, label %if.else.split6
+52c53,59
+< if.then:                                          ; preds = %entry
+---
+> if.then.split5:                                   ; preds = %entry
+>   %0 = load i32, i32* @counter, align 4
+>   %1 = add i32 %0, 0
+>   store i32 %1, i32* @counter, align 4
+>   br label %if.then
+> 
+> if.then:                                          ; preds = %if.then.split5
+58a66,71
+>   br label %if.then.split
+> 
+> if.then.split:                                    ; preds = %if.then
+>   %2 = load i32, i32* @counter, align 4
+>   %3 = add i32 %2, 0
+>   store i32 %3, i32* @counter, align 4
+61c74,80
+< if.else:                                          ; preds = %entry
+---
+> if.else.split6:                                   ; preds = %entry
+>   %4 = load i32, i32* @counter, align 4
+>   %5 = add i32 %4, 6
+>   store i32 %5, i32* @counter, align 4
+>   br label %if.else
+> 
+> if.else:                                          ; preds = %if.else.split6
+65a85,90
+>   br label %if.else.split
+> 
+> if.else.split:                                    ; preds = %if.else
+>   %6 = load i32, i32* @counter, align 4
+>   %7 = add i32 %6, 0
+>   store i32 %7, i32* @counter, align 4
+68,69c93,94
+< if.end:                                           ; preds = %if.else, %if.then
+<   %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]
+---
+> if.end:                                           ; preds = %if.else.split, %if.then.split
+>   %storemerge = phi i32 [ %add5, %if.else.split ], [ %add3, %if.then.split ]
+77c102,108
+<   br i1 %cmp8, label %end_label, label %if.else10
+---
+>   br i1 %cmp8, label %if.end.end_label_crit_edge, label %if.else10.split
+> 
+> if.end.end_label_crit_edge:                       ; preds = %if.end
+>   %8 = load i32, i32* @counter, align 4
+>   %9 = add i32 %8, 0
+>   store i32 %9, i32* @counter, align 4
+>   br label %end_label
+79c110,116
+< if.else10:                                        ; preds = %if.end
+---
+> if.else10.split:                                  ; preds = %if.end
+>   %10 = load i32, i32* @counter, align 4
+>   %11 = add i32 %10, 1
+>   store i32 %11, i32* @counter, align 4
+>   br label %if.else10
+> 
+> if.else10:                                        ; preds = %if.else10.split
+81c118,124
+<   br i1 %cmp11, label %if.then12, label %if.else30
+---
+>   br i1 %cmp11, label %if.then12.split, label %if.else30.split
+> 
+> if.then12.split:                                  ; preds = %if.else10
+>   %12 = load i32, i32* @counter, align 4
+>   %13 = add i32 %12, 0
+>   store i32 %13, i32* @counter, align 4
+>   br label %if.then12
+83c126
+< if.then12:                                        ; preds = %if.else10
+---
+> if.then12:                                        ; preds = %if.then12.split
+89c132,144
+<   br i1 %cmp15, label %new_label, label %if.end17
+---
+>   br i1 %cmp15, label %if.then12.new_label_crit_edge, label %if.end17.split
+> 
+> if.then12.new_label_crit_edge:                    ; preds = %if.then12
+>   %14 = load i32, i32* @counter, align 4
+>   %15 = add i32 %14, 0
+>   store i32 %15, i32* @counter, align 4
+>   br label %new_label
+> 
+> if.end17.split:                                   ; preds = %if.then12
+>   %16 = load i32, i32* @counter, align 4
+>   %17 = add i32 %16, 1
+>   store i32 %17, i32* @counter, align 4
+>   br label %if.end17
+91c146
+< if.end17:                                         ; preds = %if.then12
+---
+> if.end17:                                         ; preds = %if.end17.split
+93c148
+<   br i1 %cmp18, label %if.then19, label %if.else22
+---
+>   br i1 %cmp18, label %if.then19.split1, label %if.else22.split2
+95c150,156
+< if.then19:                                        ; preds = %if.end17
+---
+> if.then19.split1:                                 ; preds = %if.end17
+>   %18 = load i32, i32* @counter, align 4
+>   %19 = add i32 %18, 0
+>   store i32 %19, i32* @counter, align 4
+>   br label %if.then19
+> 
+> if.then19:                                        ; preds = %if.then19.split1
+98a160,165
+>   br label %if.then19.split
+> 
+> if.then19.split:                                  ; preds = %if.then19
+>   %20 = load i32, i32* @counter, align 4
+>   %21 = add i32 %20, 0
+>   store i32 %21, i32* @counter, align 4
+101c168,174
+< if.else22:                                        ; preds = %if.end17
+---
+> if.else22.split2:                                 ; preds = %if.end17
+>   %22 = load i32, i32* @counter, align 4
+>   %23 = add i32 %22, 1
+>   store i32 %23, i32* @counter, align 4
+>   br label %if.else22
+> 
+> if.else22:                                        ; preds = %if.else22.split2
+106a180,185
+>   br label %if.else22.split
+> 
+> if.else22.split:                                  ; preds = %if.else22
+>   %24 = load i32, i32* @counter, align 4
+>   %25 = add i32 %24, 0
+>   store i32 %25, i32* @counter, align 4
+109,110c188,189
+< if.end27:                                         ; preds = %if.else22, %if.then19
+<   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
+---
+> if.end27:                                         ; preds = %if.else22.split, %if.then19.split
+>   %storemerge48 = phi i32 [ %add26, %if.else22.split ], [ %mul21, %if.then19.split ]
+116a196,201
+>   br label %if.end27.split
+> 
+> if.end27.split:                                   ; preds = %if.end27
+>   %26 = load i32, i32* @counter, align 4
+>   %27 = add i32 %26, 0
+>   store i32 %27, i32* @counter, align 4
+119c204,210
+< if.else30:                                        ; preds = %if.else10
+---
+> if.else30.split:                                  ; preds = %if.else10
+>   %28 = load i32, i32* @counter, align 4
+>   %29 = add i32 %28, 3
+>   store i32 %29, i32* @counter, align 4
+>   br label %if.else30
+> 
+> if.else30:                                        ; preds = %if.else30.split
+125c216
+<   br i1 %cmp33, label %if.then34, label %if.else37
+---
+>   br i1 %cmp33, label %if.then34.split3, label %if.else37.split4
+127c218,224
+< if.then34:                                        ; preds = %if.else30
+---
+> if.then34.split3:                                 ; preds = %if.else30
+>   %30 = load i32, i32* @counter, align 4
+>   %31 = add i32 %30, 0
+>   store i32 %31, i32* @counter, align 4
+>   br label %if.then34
+> 
+> if.then34:                                        ; preds = %if.then34.split3
+131a229,234
+>   br label %if.then34.split
+> 
+> if.then34.split:                                  ; preds = %if.then34
+>   %32 = load i32, i32* @counter, align 4
+>   %33 = add i32 %32, 0
+>   store i32 %33, i32* @counter, align 4
+134c237,243
+< if.else37:                                        ; preds = %if.else30
+---
+> if.else37.split4:                                 ; preds = %if.else30
+>   %34 = load i32, i32* @counter, align 4
+>   %35 = add i32 %34, 1
+>   store i32 %35, i32* @counter, align 4
+>   br label %if.else37
+> 
+> if.else37:                                        ; preds = %if.else37.split4
+138a248,253
+>   br label %if.else37.split
+> 
+> if.else37.split:                                  ; preds = %if.else37
+>   %36 = load i32, i32* @counter, align 4
+>   %37 = add i32 %36, 0
+>   store i32 %37, i32* @counter, align 4
+141c256
+< new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
+---
+> new_label:                                        ; preds = %if.then12.new_label_crit_edge, %if.else37.split, %if.then34.split
+147a263,268
+>   br label %new_label.split
+> 
+> new_label.split:                                  ; preds = %new_label
+>   %38 = load i32, i32* @counter, align 4
+>   %39 = add i32 %38, 0
+>   store i32 %39, i32* @counter, align 4
+150c271
+< end_label:                                        ; preds = %new_label, %if.end27, %if.end
+---
+> end_label:                                        ; preds = %if.end.end_label_crit_edge, %new_label.split, %if.end27.split

@@ -1,23 +1,21 @@
-  %0 = alloca i32, align 4
-opt: /home/muzzammil/HPSSA/llvm-project/llvm/lib/IR/Instructions.cpp:2544: static llvm::BinaryOperator* llvm::BinaryOperator::Create(llvm::Instruction::BinaryOps, llvm::Value*, llvm::Value*, const llvm::Twine&, llvm::Instruction*): Assertion `S1->getType() == S2->getType() && "Cannot create binary operator with two operands of differing type!"' failed.
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
-Stack dump:
-0.	Program arguments: /home/muzzammil/HPSSA/llvm-project/build/bin/opt -load-pass-plugin=build/BallLarusProfiler.cpp.so -passes=blprofiler -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f
- #0 0x000055d967944ff4 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
- #1 0x000055d9679427ae SignalHandler(int) Signals.cpp:0:0
- #2 0x00007f0d45f0e3c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
- #3 0x00007f0d459fb18bd raise /build/glibc-eX1tMB/glibc-2.31/signal/../sysdeps/unix/sysv/linux/raise.c:51:1
- #4 0x00007f0d459da859 abort /build/glibc-eX1tMB/glibc-2.31/stdlib/abort.c:81:7
- #5 0x00007f0d459da729 get_sysdep_segment_value /build/glibc-eX1tMB/glibc-2.31/intl/loadmsgcat.c:509:8
- #6 0x00007f0d459da729 _nl_load_domain /build/glibc-eX1tMB/glibc-2.31/intl/loadmsgcat.c:970:34
- #7 0x00007f0d459ebf36 (/lib/x86_64-linux-gnu/libc.so.6+0x36f36)
- #8 0x000055d966fc5ab5 (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x12b6ab5)
- #9 0x000055d966fd08a4 (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x12c18a4)
-#10 0x00007f0d45f2ca85 llvm::BallLarusProfilerPass::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (build/BallLarusProfiler.cpp.so+0x3a85)
-#11 0x00007f0d45f2dab9 llvm::detail::PassModel<llvm::Module, llvm::BallLarusProfilerPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (build/BallLarusProfiler.cpp.so+0x4ab9)
-#12 0x000055d96704846f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x133946f)
-#13 0x000055d966227ea0 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x518ea0)
-#14 0x000055d9661a7af7 main (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x498af7)
-#15 0x00007f0d459dc0b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
-#16 0x000055d966219afe _start (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x50aafe)
-Aborted (core dumped)
+===-------------------------------------------------------------------------===
+                      ... Pass execution timing report ...
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0009 seconds (0.0009 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0004 ( 40.9%)   0.0004 ( 40.9%)   0.0004 ( 40.9%)  PrintModulePass
+   0.0002 ( 22.3%)   0.0002 ( 22.3%)   0.0002 ( 22.3%)  VerifierPass
+   0.0002 ( 21.3%)   0.0002 ( 21.3%)   0.0002 ( 21.2%)  VerifierAnalysis
+   0.0001 ( 15.6%)   0.0001 ( 15.6%)   0.0001 ( 15.6%)  BallLarusProfilerPass
+   0.0009 (100.0%)   0.0009 (100.0%)   0.0009 (100.0%)  Total
+
+===-------------------------------------------------------------------------===
+                                LLVM IR Parsing
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0008 seconds (0.0008 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Parse IR
+   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Total
+

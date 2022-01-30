@@ -21,7 +21,8 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
     string counterName = "counter";
     M.getOrInsertGlobal(counterName, Builder.getInt32Ty());
     GlobalVariable *gVar = M.getNamedGlobal(counterName);
-    gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M.getContext()), 0)); // initialize r to 0
+    gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M.getContext()),
+                                          0)); // initialize r to 0
     // gVar->setLinkage(GlobalValue::CommonLinkage);
     // gVar->setAlignment(4);
 
@@ -40,39 +41,39 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
               Succ); // ! Will this cast cause error in future?
           BasicBlock *instrument = SplitEdge(from, to);
           Builder.SetInsertPoint(instrument->getTerminator());
-          Value* alloca = Builder.CreateAlloca(Type::getInt32Ty(M.getContext()));
-          alloca->dump();
-        //   Value* store = Builder.CreateStore(gVar, alloca);
-        //   store->dump();
-          Value* added = Builder.CreateAdd(alloca, Builder.getInt32(NumPaths[BB]));
-        //   StoreInst* gstore = Builder.CreateStore(added, gVar);
+          Value *load = Builder.CreateLoad(Type::getInt32Ty(instrument->getContext()),gVar);
+          // Value *second =
+          //     ConstantInt::get(Type::getInt32Ty(instrument->getContext()), NumPaths[BB]);
+          Value *newInst =
+            Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
+          Value* store = Builder.CreateStore(newInst, gVar);
           NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
         }
       }
     }
   }
-        return PreservedAnalyses::none();
+  return PreservedAnalyses::none();
 }
 
-  llvm::PassPluginLibraryInfo getBallLarusProfilerPluginInfo() {
-    return {LLVM_PLUGIN_API_VERSION, "BallLarusProfiler", "v0.1",
-            [](PassBuilder &PB) {
-              PB.registerPipelineParsingCallback(
-                  [](StringRef Name, ModulePassManager &MPM,
-                     ArrayRef<PassBuilder::PipelineElement>) {
-                    if (Name == "blprofiler") {
-                      MPM.addPass(BallLarusProfilerPass());
-                      return true;
-                    }
-                    return false;
-                  });
-            }};
-  }
+llvm::PassPluginLibraryInfo getBallLarusProfilerPluginInfo() {
+  return {LLVM_PLUGIN_API_VERSION, "BallLarusProfiler", "v0.1",
+          [](PassBuilder &PB) {
+            PB.registerPipelineParsingCallback(
+                [](StringRef Name, ModulePassManager &MPM,
+                   ArrayRef<PassBuilder::PipelineElement>) {
+                  if (Name == "blprofiler") {
+                    MPM.addPass(BallLarusProfilerPass());
+                    return true;
+                  }
+                  return false;
+                });
+          }};
+}
 
-  // This is the core interface for pass plugins. It guarantees that 'opt' will
-  // be able to recognize  BallLarusProfiler Pass when added to the pass
-  // pipeline on the command line, i.e. via '-passes= blprofiler'
-  extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
-  llvmGetPassPluginInfo() {
-    return getBallLarusProfilerPluginInfo();
-  }
+// This is the core interface for pass plugins. It guarantees that 'opt' will
+// be able to recognize  BallLarusProfiler Pass when added to the pass
+// pipeline on the command line, i.e. via '-passes= blprofiler'
+extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
+llvmGetPassPluginInfo() {
+  return getBallLarusProfilerPluginInfo();
+}

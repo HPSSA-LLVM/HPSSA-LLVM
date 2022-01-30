@@ -18,7 +18,7 @@ endif
 
 .PHONY: build
 
-all: build test profile cfg
+all: build test cfg # profile
 
 build: BallLarusProfiler.cpp headers/BallLarusProfiler.h
 	$(CXX) -c BallLarusProfiler.cpp -o build/BallLarusProfiler.cpp.o $(CXXFLAGS) 
@@ -40,8 +40,19 @@ profile: test pathProfiler.cpp bbReader.cpp runTest.py
 	$(CXX) $(CXXFLAGS) bbReader.cpp -o bbReader.o
 	./bbReader.o $(limit) 
       
-cfg: test 
-	$(BUILD_PATH)/opt --dot-cfg-only IR/LL/test_modified.ll -o IR/BC/test_modified.bc
+cfg: cfg_before cfg_after
+
+cfg_before: build tests/test.cpp
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
+	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_before.png
+
+cfg_after: test 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_modified.ll -o IR/BC/test_modified.bc 
+	make dot2png
+	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_after.png
+
+dot2png: 
 	mv .*.dot IR/cfg/
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 
