@@ -896,23 +896,23 @@ Reached the Dominance frontier while visiting from: new_label
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0131 seconds (0.0131 wall clock)
+  Total Execution Time: 0.0107 seconds (0.0111 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0123 ( 94.2%)   0.0123 ( 94.2%)   0.0123 ( 94.2%)  HPSSAPass
-   0.0003 (  2.2%)   0.0003 (  2.2%)   0.0003 (  2.2%)  PrintModulePass
-   0.0002 (  1.7%)   0.0002 (  1.7%)   0.0002 (  1.7%)  VerifierPass
-   0.0002 (  1.7%)   0.0002 (  1.7%)   0.0002 (  1.6%)  VerifierAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  DominatorTreeAnalysis
-   0.0131 (100.0%)   0.0131 (100.0%)   0.0131 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0036 ( 88.2%)   0.0065 ( 97.2%)   0.0101 ( 93.8%)   0.0104 ( 94.0%)  HPSSAPass
+   0.0001 (  3.5%)   0.0001 (  1.5%)   0.0002 (  2.3%)   0.0002 (  2.2%)  PrintModulePass
+   0.0002 (  3.9%)   0.0000 (  0.7%)   0.0002 (  1.9%)   0.0002 (  1.8%)  VerifierPass
+   0.0002 (  3.7%)   0.0000 (  0.6%)   0.0002 (  1.8%)   0.0002 (  1.8%)  VerifierAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)  DominatorTreeAnalysis
+   0.0041 (100.0%)   0.0066 (100.0%)   0.0107 (100.0%)   0.0111 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0007 seconds (0.0007 wall clock)
+  Total Execution Time: 0.0006 seconds (0.0006 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0007 (100.0%)   0.0007 (100.0%)   0.0007 (100.0%)  Parse IR
-   0.0007 (100.0%)   0.0007 (100.0%)   0.0007 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Parse IR
+   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
 

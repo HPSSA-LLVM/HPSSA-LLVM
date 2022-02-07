@@ -1,8 +1,6 @@
-#include "headers/HPSSA.h"
+#include "headers/HPSSA_new.h"
 using namespace llvm;
 using namespace std;
-
-map<BasicBlock *, BitVector> HotPathSet;
 
 class frame {
 public:
@@ -25,6 +23,9 @@ public:
   void push(frame f, BasicBlock *BB) { // ? Should we take frame pointer instead
     pstack.push({f, BB});
   }
+  // Assumption: Whenever pop is called in the algorithm, the frames
+  // corresponding to BB (if any) are in the top
+  // Proof: Structural induction on cfg ( True for child -> true for parent)
   void pop(BasicBlock *BB) {
     while (!pstack.empty()) {
       if (pstack.top().second != BB) {
@@ -36,6 +37,8 @@ public:
   pair<frame, BasicBlock *> top() { return pstack.top(); }
 };
 
+map<BasicBlock *, BitVector> HotPathSet;
+
 // Hot Path Information
 void HPSSAPass::getProfileInfo(Function &F) {
   map<StringRef, BasicBlock *> getPointer;
@@ -44,15 +47,11 @@ void HPSSAPass::getProfileInfo(Function &F) {
   }
   ifstream reader;
   reader.open("BBProfiler/profileInfo.txt");
-  //   map<BasicBlock *, BitVector> HotPaths;
-  int n;
+  int n, numNodes;
+  string node;
   reader >> n;
   for (int i = 0; i < n; i++) {
-    // vector<string> path;
-    // getline()
-    int numNodes;
     reader >> numNodes;
-    string node;
     for (int j = 0; j < numNodes; j++) {
       reader >> node;
       if (HotPathSet[getPointer[node]].size() == 0) {
@@ -67,6 +66,22 @@ void HPSSAPass::getProfileInfo(Function &F) {
 // if yes :
 //            Union the incubating hot paths with every buddy set
 //             /         |-> taking xor with hot paths of entry block
+
+PHINode *isPhi(Value *v) { return dyn_cast<PHINode>(v); }
+CallInst *isTau(Value *v) { // ! Check this logic
+  CallInst *CI = dyn_cast<CallInst>(v);
+  if (!CI) {
+    return CI;
+  }
+
+  Function *CF = CI->getCalledFunction();
+  if (CF != NULL &&
+      (CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))) {
+    return CI;
+  }
+  return NULL;
+}
+
 map<Value *, vector<Value *>> renaming_stack;
 map<pair<BasicBlock *, Value *>, bool> hasPhi, hasTau;
 map<Value *, Value *> stackmap;
@@ -74,204 +89,99 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
   // ? Meaning of Ordinary Assignment in LLVM Context
   // ? Should we prune unused tau?
 
-  errs() << "-- BB: " << BB.getName() << "\n";
-
   for (auto &I : BB) {
-    errs() << "---- I: ";
-    I.dump();
-
-    errs() << "---- ";
-    errs() << "attempt to renaming uses in I\n";
     for (auto &phi : renaming_stack) {
-      errs() << "------ ";
-      errs() << "phi: " << phi.first->getName() << "\n";
       if (phi.second.back() != NULL) {
-        errs() << "------ ";
-        errs() << phi.second.back()->getName() << "\n";
-        errs() << "------ ";
-        errs() << "mrd: " << phi.second.back()->getName() << "\n";
         I.replaceUsesOfWith(phi.first, phi.second.back());
       }
     }
-
-    // tau = (phi1, phi2, ...)
-    // x.2 = add phi1, x.3
-
     if (PHINode *phi = dyn_cast<PHINode>(&I)) {
-      errs() << "------ ";
-      errs() << "a phi instruction\n";
       hasPhi[{&BB, phi}] = true;
       renaming_stack[phi].push_back(phi);
       stackmap[phi] = phi;
-    } else {
-      errs() << "------ ";
-      errs() << "Not a phi instruction\n";
     }
 
-    if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-      Function *CF = CI->getCalledFunction();
-      if (CF != NULL && (CF->getIntrinsicID() ==
-                         Function::lookupIntrinsicID("llvm.tau"))) { // tau call
-        // errs()<<"Entered Call Instruction Logic...\n";
-        errs() << "------ ";
-        errs() << "a tau instruction\n";
-
-        // ! We assumed first operand of a tau is a PHINode, except its not due
-        // ! to nature of our updates. The first operand (which was originally a
-        // ! phi ) is being renamed to its most recent tau definition
-
-        // ! TEMPORARY FIX
-        if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
-          hasTau[{&BB, stackmap[parPhi]}] = true;
-          renaming_stack[stackmap[parPhi]].push_back(&I);
-          stackmap[&I] = stackmap[parPhi];
-        }
-        // ? delay replacing the uses of current instruction?
-      } else {
-        errs() << "------ ";
-        errs() << "Not a tau instruction\n";
+    if (CallInst *CI = isTau(&I)) {
+      if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
+        hasTau[{&BB, stackmap[parPhi]}] = true;
+        renaming_stack[stackmap[parPhi]].push_back(&I);
+        stackmap[&I] = stackmap[parPhi];
       }
-    } else {
-      errs() << "------ ";
-      errs() << "Not a tau instruction\n";
     }
   }
-
-  errs() << "------ ";
-  errs() << "Succesor Logic\n";
 
   for (auto Succ : successors(&BB)) {
-    errs() << "-------- ";
-    errs() << "Succ: " << Succ->getName() << "\n";
     for (auto &phi : Succ->phis()) {
-      errs() << "---------- ";
-      errs() << "phi: " << phi.getName() << "\n";
       // ! Assuming this gives the operand coming from this block
       Value *V = phi.getIncomingValueForBlock(&BB);
-      errs() << "---------- ";
-      errs() << "V: " << V->getName() << "\n";
-      if (PHINode *operand = dyn_cast<PHINode>(V)) {
-        errs() << "---------- ";
-        errs() << "a phi operand\n";
+      if (PHINode *operand = isPhi(V)) {
         phi.replaceUsesOfWith(operand,
                               renaming_stack[stackmap[operand]].back());
-      } else {
-        errs() << "---------- ";
-        errs() << "Not a phi operand\n";
       }
 
-      if (CallInst *CI = dyn_cast<CallInst>(V)) {
-        Function *CF = CI->getCalledFunction();
-        if (CF != NULL &&
-            (CF->getIntrinsicID() ==
-             Function::lookupIntrinsicID("llvm.tau"))) { // tau call
-          // errs()<<"Entered Call Instruction Logic...\n";
-          errs() << "---------- ";
-          errs() << "a tau operand\n";
-
-          // ! FIX THIS TOO
-          if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
-            phi.replaceUsesOfWith(CI, renaming_stack[stackmap[parPhi]].back());
-          }
+      if (CallInst *CI = isTau(V)) {
+        if (Value *parPhi = dyn_cast<Value>(CI->getOperand(0))) {
+          phi.replaceUsesOfWith(CI, renaming_stack[stackmap[parPhi]].back());
         }
-      } else {
-        errs() << "---------- ";
-        errs() << "Not a tau operand\n";
       }
     }
   }
 
-  errs() << "------ ";
-  errs() << "Recurse over Child \n";
-
   for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
-    errs() << "-------- ";
-    errs() << "Parent: " << DTN.getBlock()->getName();
-    errs() << " | Child: " << (**Child).getBlock()->getName() << "\n";
     BasicBlock *ChildBB = (**Child).getBlock();
     Search(*ChildBB, **Child);
   }
 
-  errs() << "------ ";
-  errs() << "Remove definitions if needed\n";
-
   for (auto &varstack : renaming_stack) {
-    errs() << "-------- ";
-    errs() << "phi: " << varstack.first->getName()
-           << " mrd: " << varstack.second.back()->getName() << "\n";
     if (hasTau[{&BB, varstack.first}]) {
-      errs() << "---------- ";
-      errs() << "mrd changed\n";
       varstack.second.pop_back();
-    } else {
-      errs() << "---------- ";
-      errs() << "mrd not changed\n";
     }
   }
 }
 
-bool isPhi(Value *v) { return dyn_cast<PHINode>(v) != nullptr; }
-bool isTau(Value *v) { // ! Check this logic
-  CallInst *CI = dyn_cast<CallInst>(v);
-  if (!CI) {
-    return false;
-  }
-
-  Function *CF = CI->getCalledFunction();
-  if (CF != NULL &&
-      (CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))) {
-    return true;
-  }
-  return false;
-}
-
-BitVector IncubationPaths(BasicBlock *BB) {
+BitVector getIncubationPaths(BasicBlock *BB) {
   auto BBVector = HotPathSet[BB];
   auto PredVector = BitVector(BBVector.size());
   for (auto pred : predecessors(BB)) {
     PredVector |= HotPathSet[pred];
   }
-  BBVector |= PredVector; // BBVector Union PredVector
-  BBVector ^= PredVector; // Unset Common Bits
+  BBVector |= PredVector; // All paths present
+  BBVector ^= PredVector; // paths only in current basic blocks
 
   return BBVector;
 }
 
-// x.1 = phi [x.0, z.4, y.3]
 map<pair<BasicBlock *, PHINode *>, frame> defAcc;
 map<PHINode *, pStack> phiStack;
 void AllocateArgs(BasicBlock *BB) {
   for (auto &phi : BB->phis()) {
     auto deFrame = defAcc[{BB, &phi}];
     if (!deFrame.empty()) {
-      phiStack[&phi].push(deFrame, BB); // ! IS this  INTELLISENSE problem
+      phiStack[&phi].push(deFrame, BB);
     }
     auto topFrame = phiStack[&phi].top().first;
     auto currHotPath = HotPathSet[BB];
-    BitVector IncPaths = IncubationPaths(BB);
-    if (IncPaths.any()) {
+    BitVector incubationPaths = getIncubationPaths(BB);
+    if (incubationPaths.any()) {
       frame newFrame;
-      for (auto &[currDef, hotPath] :
-           topFrame.frameVector) { // ? Change to g++14
-        newFrame.add(currDef, IncPaths);
+      // ? Use C++14 notation
+      for (auto &[currDef, hotPath] : topFrame.frameVector) {
+        newFrame.add(currDef, incubationPaths);
       }
-      newFrame.add(
-          &phi,
-          currHotPath); // ? should we separate incubation paths and then add
+      // ? should we separate incubation paths
+      newFrame.add(&phi, currHotPath);
+      // and then add
       for (auto &args : phi.operands()) {
         if (!(isPhi(args) || isTau(args))) {
-          
         }
-          continue;
-        newFrame.add(args, IncPaths);
+        continue;
+        newFrame.add(args, incubationPaths);
       }
     }
   }
 }
 
 map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
-  //   auto HotPathSet = getProfileInfo(F);
-
   map<BasicBlock *, vector<BitVector>> BuddySet;
   map<BasicBlock *, bool> isCaloric;
   int n; // no of hot paths.
@@ -280,8 +190,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
   ReversePostOrderTraversal<Function *> RPOT(&F);
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I;
-    // Paths incubating from this basic block
-    auto IncubationPath = allPaths;
+    auto IncubationPath = allPaths; // Paths incubating from this basic block
     IncubationPath &= HotPathSet[BB];
     IncubationPath ^= HotPathSet[BB];
 
@@ -290,31 +199,17 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
     if (BB->isEntryBlock()) {
 
-      /* Printing stuff */
-      errs() << "----------===";
-      errs() << "Caloric Connector and BuddySet Information";
-      errs() << "===----------\n";
+      errs() << "Caloric Connector and BuddySet Information\n";
       errs() << BB->getName() << ": ";
 
       // All hot paths in a single buddy set;
       BuddySet[BB].push_back(HotPathSet[BB]);
-      for (auto buddy : BuddySet[BB]) {
-        errs() << "{";
-        for (int i = 0; i < buddy.size(); i++) {
-          errs() << buddy[i] << " ";
-        }
-        errs() << "} ";
-      }
-      errs() << "\n";
-      /* Printing stuff */
-
       n = HotPathSet[BB].size();
       continue;
     }
 
     BitVector alreadyInSets(n);
     auto currHotPaths = HotPathSet[BB];
-
     bool hasHotPath = currHotPaths.any();
     bool hasColdPath = false;
 
@@ -342,37 +237,28 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
         newPaths ^= oldPaths;
 
         // New paths form a different set
-        if (newPaths.any())
+        if (newPaths.any()) {
           BuddySet[BB].push_back(newPaths);
+        }
 
-        // New paths added
-        alreadyInSets |= newPaths;
+        alreadyInSets |= newPaths; // New paths added
+        vector<BitVector> toPush;  // New Sets formed
 
-        // New Sets formed
-        vector<BitVector> toPush;
-
-        // *Invariant : All buddy sets in the child block are disjoint.
-
+        // All buddy sets in the child block are disjoint ** at this stage **
         for (auto &Buddy : BuddySet[BB]) {
-
           auto temp = oldPaths;
           temp &= Buddy;
-          // nothing to process
+
           if (oldPaths.none())
             break;
 
-          // nothing to process
           if (temp.none())
             continue;
 
-          // Breakup needed
           if (temp != Buddy) {
-            // 1st part
             Buddy ^= temp;
-            // 2nd part
             toPush.push_back(temp);
           }
-          // update Old path
           oldPaths ^= temp;
         }
 
@@ -382,10 +268,9 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
       }
     }
 
-    // * All the definitions reaching to this block are also
-    // * avilable along the incubation nodes. Buddy set contains
-    // * the set of paths carrying same definition
-    // * The buddy sets are no more disjoint.
+    // * All the definitions reaching to this block are also avilable along the
+    // * incubation nodes. Buddy set contains the set of paths carrying same
+    // * definition The buddy sets are no more disjoint.
     for (auto &buddyDefs : BuddySet[BB]) {
       buddyDefs |= IncubationPath;
     }
@@ -393,59 +278,33 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
       isCaloric[BB] = true;
       errs() << BB->getName() << " is a Caloric Connector\n";
     }
-
-    /* Printing stuff */
-    errs() << BB->getName() << ": ";
-    for (auto buddy : BuddySet[BB]) {
-      errs() << "{ ";
-      for (int i = 0; i < buddy.size(); i++) {
-        errs() << buddy[i] << " ";
-      }
-      errs() << "} ";
-    }
-    errs() << "\n";
-    /* Printing stuff */
   }
-
   return isCaloric;
 }
-class frame {
-public:
-  map<Value *, BitVector> frameVector; // ? Will pair<> be better?
-  void add(Value *v, BitVector e) {
-    if (frameVector[v].empty()) {
-      frameVector[v] = e;
-    } else {
-      frameVector[v] |= e;
-    }
-  }
-  int size() { return frameVector.size(); }
-};
 
 PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
   // ! Running on Main Function Only
-  if (F.getName() !=
-      "main") { // ? Look for alternative as name could not be relied upon
+  // ? Look for alternative as name could not be relied upon
+  if (F.getName() != "main") {
     return PreservedAnalyses::all();
   }
+
   DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
-  getProfileInfo(F); // Fill the HotPathSet
+  getProfileInfo(F);
   auto isCaloric = getCaloricConnector(F);
   map<pair<Instruction *, BasicBlock *>, bool> isInserted;
 
-  ReversePostOrderTraversal<Function *> RPOT(
-      &F); // ! Is RPOT same as Topological?
+  // ! Is RPOT same as Topological?
+  ReversePostOrderTraversal<Function *> RPOT(&F);
 
   for (auto J = RPOT.begin(); J != RPOT.end(); ++J) {
     auto BB = *J;
     for (auto &phi : BB->phis()) {
       auto BBHotPaths = HotPathSet[BB];
-      // ! Replacing Loops 5 and 6, by the following algo:
-      // ! Traverse the subtree rooted at BB in the Dominator tree of CFG and
-      // insert taus
+      // ! Replacing Loops 5 and 6, by the following algo: Traverse the
+      // ! subtree rooted at BB in the Dominator tree of CFG and insert taus
 
-      // ! The BFS over Dominator tree is clean but inefficient than
-      // ! on CFG.
+      // ! The BFS over Dominator tree is clean but inefficient than on CFG.
       queue<BasicBlock *> BFSQueue;
       BFSQueue.push(BB);
       while (BFSQueue.empty() == false) {
@@ -456,13 +315,13 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
         // ! isInserted is not needed in this implementation
 
         // All the childrens are alerady dominated
-        auto &DTNode =
-            *DT.getNode(currBB); // Corresponding Dominator tree node for BB
+        // Corresponding Dominator tree node for BB
+        auto &DTNode = *DT.getNode(currBB);
         for (auto Child = DTNode.begin(); Child != DTNode.end(); ++Child)
           BFSQueue.push((**Child).getBlock());
 
-        if (!currHotPath.anyCommon(BBHotPaths) ||
-            !isCaloric[currBB]) // traverse along hot paths only
+        // traverse along hot paths only
+        if (!currHotPath.anyCommon(BBHotPaths) || !isCaloric[currBB])
           continue;
         std::vector<Type *> Tys;
         std::vector<Value *> Args;
@@ -478,20 +337,18 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
       }
     }
   }
-
   Search(F.getEntryBlock(), *DT.getRootNode()); // Renaming Algo
-
-  AllocateArgs(F.getEntryBlock()); // Argument allocation algo
+  AllocateArgs(F.getEntryBlock());              // Argument allocation algo
 
   return PreservedAnalyses::none();
 }
 
 llvm::PassPluginLibraryInfo getHPSSAPluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "HPSSA", "v0.1", [](PassBuilder &PB) {
+  return {LLVM_PLUGIN_API_VERSION, "HPSSA_new", "v0.1", [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback(
                 [](StringRef Name, FunctionPassManager &FPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
-                  if (Name == "hpssa") {
+                  if (Name == "hpssa_new") {
                     FPM.addPass(HPSSAPass());
                     return true;
                   }
@@ -500,9 +357,9 @@ llvm::PassPluginLibraryInfo getHPSSAPluginInfo() {
           }};
 }
 
-// This is the core interface for pass plugins. It guarantees that 'opt' will
-// be able to recognize HPSSA Pass when added to the pass pipeline on the
-// command line, i.e. via '-passes=hpssa'
+// This is the core interface for pass plugins. It guarantees that 'opt' will be
+// able to recognize HPSSA Pass when added to the pass pipeline on the command
+// line, i.e. via '-passes=hpssa'
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
   return getHPSSAPluginInfo();
