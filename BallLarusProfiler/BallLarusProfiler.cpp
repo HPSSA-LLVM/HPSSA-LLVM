@@ -23,8 +23,12 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
     GlobalVariable *gVar = M.getNamedGlobal(counterName);
     gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M.getContext()),
                                           0)); // initialize r to 0
-    // gVar->setLinkage(GlobalValue::CommonLinkage);
-    // gVar->setAlignment(4);
+    // Printf function
+    vector<Type *> Params{Type::getInt32Ty(M.getContext())};
+    FunctionType *fccType =
+        FunctionType::get(Type::getVoidTy(M.getContext()), Params, false);
+    Function *sampleFun = Function::Create(
+        fccType, GlobalValue::ExternalLinkage, "_Z7counteri", &M);
 
     map<BasicBlock *, int32_t> NumPaths;
 
@@ -33,6 +37,13 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
       BasicBlock *BB = *it;
       if (succ_empty(BB)) { // Leaf Node
         NumPaths[BB] = 1;
+        std::vector<Value *> Args;
+        Builder.SetInsertPoint(BB->getTerminator());
+        Value *load =
+            Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
+        Args.push_back(load);
+        // inserting in the end of the basic block
+        CallInst::Create(sampleFun, Args, "", BB->getTerminator());
       } else {
         NumPaths[BB] = 0;
         for (auto Succ : successors(BB)) {
@@ -41,12 +52,11 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
               Succ); // ! Will this cast cause error in future?
           BasicBlock *instrument = SplitEdge(from, to);
           Builder.SetInsertPoint(instrument->getTerminator());
-          Value *load = Builder.CreateLoad(Type::getInt32Ty(instrument->getContext()),gVar);
-          // Value *second =
-          //     ConstantInt::get(Type::getInt32Ty(instrument->getContext()), NumPaths[BB]);
+          Value *load = Builder.CreateLoad(
+              Type::getInt32Ty(instrument->getContext()), gVar);
           Value *newInst =
-            Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
-          Value* store = Builder.CreateStore(newInst, gVar);
+              Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
+          Value *store = Builder.CreateStore(newInst, gVar);
           NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
         }
       }

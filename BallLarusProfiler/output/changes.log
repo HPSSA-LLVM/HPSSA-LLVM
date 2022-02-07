@@ -102,19 +102,19 @@
 < if.end17:                                         ; preds = %if.then12
 ---
 > if.end17:                                         ; preds = %if.end17.split
-93c148
+93c148,154
 <   br i1 %cmp18, label %if.then19, label %if.else22
 ---
 >   br i1 %cmp18, label %if.then19.split1, label %if.else22.split2
-95c150,156
-< if.then19:                                        ; preds = %if.end17
----
+> 
 > if.then19.split1:                                 ; preds = %if.end17
 >   %18 = load i32, i32* @counter, align 4
 >   %19 = add i32 %18, 0
 >   store i32 %19, i32* @counter, align 4
 >   br label %if.then19
-> 
+95c156
+< if.then19:                                        ; preds = %if.end17
+---
 > if.then19:                                        ; preds = %if.then19.split1
 98a160,165
 >   br label %if.then19.split
@@ -163,19 +163,19 @@
 >   br label %if.else30
 > 
 > if.else30:                                        ; preds = %if.else30.split
-125c216
+125c216,222
 <   br i1 %cmp33, label %if.then34, label %if.else37
 ---
 >   br i1 %cmp33, label %if.then34.split3, label %if.else37.split4
-127c218,224
-< if.then34:                                        ; preds = %if.else30
----
+> 
 > if.then34.split3:                                 ; preds = %if.else30
 >   %30 = load i32, i32* @counter, align 4
 >   %31 = add i32 %30, 0
 >   store i32 %31, i32* @counter, align 4
 >   br label %if.then34
-> 
+127c224
+< if.then34:                                        ; preds = %if.else30
+---
 > if.then34:                                        ; preds = %if.then34.split3
 131a229,234
 >   br label %if.then34.split
@@ -216,3 +216,9 @@
 < end_label:                                        ; preds = %new_label, %if.end27, %if.end
 ---
 > end_label:                                        ; preds = %if.end.end_label_crit_edge, %new_label.split, %if.end27.split
+152a274,275
+>   %40 = load i32, i32* @counter, align 4
+>   call void @_Z7counteri(i32 %40)
+170a294,295
+> 
+> declare void @_Z7counteri(i32)

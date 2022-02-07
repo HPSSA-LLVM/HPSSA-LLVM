@@ -271,6 +271,8 @@ new_label.split:                                  ; preds = %new_label
 end_label:                                        ; preds = %if.end.end_label_crit_edge, %new_label.split, %if.end27.split
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
+  %40 = load i32, i32* @counter, align 4
+  call void @_Z7counteri(i32 %40)
   ret i32 0
 }
 
@@ -290,6 +292,8 @@ entry:
   ret void
 }
 
+declare void @_Z7counteri(i32)
+
 attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nofree nounwind }
@@ -304,7 +308,7 @@ attributes #6 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"PIC Level", i32 2}
 !2 = !{i32 7, !"uwtable", i32 1}
-!3 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!3 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

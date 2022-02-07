@@ -1,21 +1,21 @@
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0009 seconds (0.0009 wall clock)
+  Total Execution Time: 0.0006 seconds (0.0006 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0004 ( 40.9%)   0.0004 ( 40.9%)   0.0004 ( 40.9%)  PrintModulePass
-   0.0002 ( 22.3%)   0.0002 ( 22.3%)   0.0002 ( 22.3%)  VerifierPass
-   0.0002 ( 21.3%)   0.0002 ( 21.3%)   0.0002 ( 21.2%)  VerifierAnalysis
-   0.0001 ( 15.6%)   0.0001 ( 15.6%)   0.0001 ( 15.6%)  BallLarusProfilerPass
-   0.0009 (100.0%)   0.0009 (100.0%)   0.0009 (100.0%)  Total
+   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0003 ( 42.5%)   0.0003 ( 42.5%)   0.0003 ( 42.4%)  PrintModulePass
+   0.0001 ( 23.2%)   0.0001 ( 23.2%)   0.0001 ( 23.3%)  VerifierPass
+   0.0001 ( 22.1%)   0.0001 ( 22.1%)   0.0001 ( 22.0%)  VerifierAnalysis
+   0.0001 ( 12.2%)   0.0001 ( 12.2%)   0.0001 ( 12.3%)  BallLarusProfilerPass
+   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0008 seconds (0.0008 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Parse IR
-   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Total
+   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 
