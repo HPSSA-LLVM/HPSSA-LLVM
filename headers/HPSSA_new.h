@@ -2,6 +2,7 @@
 #define LLVM_TRANSFORMS_HPSSA_HPSSA_H
 
 #include "llvm/Analysis/CFG.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstIterator.h"
@@ -22,7 +23,7 @@ class HPSSAPass : public PassInfoMixin<HPSSAPass> {
   void getProfileInfo(Function &F);
   map<BasicBlock *, bool> getCaloricConnector(Function &F);
   void Search(BasicBlock &X, DomTreeNode &DTN);
-  void AllocateArgs(BasicBlock& BB);
+  void AllocateArgs(BasicBlock* BB, DomTreeNode &DTN);
 
   // Dominator tree.Probably virtual so that it gets overriden
 public:

@@ -153,31 +153,106 @@ BitVector getIncubationPaths(BasicBlock *BB) {
 
 map<pair<BasicBlock *, PHINode *>, frame> defAcc;
 map<PHINode *, pStack> phiStack;
-void AllocateArgs(BasicBlock *BB) {
+map<Value *, Value *> corrPhi; // phi corresponding to a tau
+void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
+  // COMPUTING BACKEDGES
+  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+  FindFunctionBackedges(*BB->getParent(), result); // backedges in this function
+  map<std::pair<const BasicBlock *, const BasicBlock *>, bool> isBackedge;
+  for (auto &info : result) {
+    isBackedge[info] = true;
+  }
+  auto currHotPath = HotPathSet[BB];
+  BitVector incubationPaths = getIncubationPaths(BB);
+
   for (auto &phi : BB->phis()) {
     auto deFrame = defAcc[{BB, &phi}];
     if (!deFrame.empty()) {
       phiStack[&phi].push(deFrame, BB);
     }
     auto topFrame = phiStack[&phi].top().first;
-    auto currHotPath = HotPathSet[BB];
-    BitVector incubationPaths = getIncubationPaths(BB);
     if (incubationPaths.any()) {
-      frame newFrame;
+      frame newFrame(topFrame);
       // ? Use C++14 notation
       for (auto &[currDef, hotPath] : topFrame.frameVector) {
         newFrame.add(currDef, incubationPaths);
       }
-      // ? should we separate incubation paths
-      newFrame.add(&phi, currHotPath);
-      // and then add
+
       for (auto &args : phi.operands()) {
-        if (!(isPhi(args) || isTau(args))) {
+        auto BBParent = phi.getIncomingBlock(args);
+        if (!(isPhi(args) || isTau(args))) { // ? Incoming edge meaning
+          auto PathSet = HotPathSet[BBParent];
+          PathSet &= currHotPath; // pathSet(bp->b)
+          newFrame.add(args, incubationPaths);
+          newFrame.add(args, PathSet);
         }
-        continue;
-        newFrame.add(args, incubationPaths);
+        if (isBackedge[{BBParent, BB}]) {
+          newFrame.add(args, incubationPaths);
+        }
+      }
+
+      phiStack[&phi].push(newFrame, BB);
+    }
+  }
+
+  // According to our implementation, all taus are inserted before the first
+  // non-phi instruction. So if there is a tau, it will be right after the list
+  // of phis
+  BasicBlock::iterator it(BB->getFirstNonPHI());
+  while (isTau(&*it)) {
+    auto phi = dyn_cast<PHINode>(corrPhi[&*it]);
+
+    std::vector<Type *> Tys;
+    std::vector<Value *> Args;
+
+    Tys.push_back(phi->getType());
+    Args.push_back(dyn_cast<Value>(phi));
+
+    for (auto &[phiArgs, phiArgsPath] : phiStack[phi].top().first.frameVector) {
+      auto commonPaths = phiArgsPath;
+      commonPaths &= currHotPath;
+      if (commonPaths.any()) {
+        Args.push_back(dyn_cast<Value>(phiArgs));
+      }
+
+      // ! Need to again create tau functions
+      Function *tau = Intrinsic::getDeclaration(
+          BB->getParent()->getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
+
+      CallInst *TAUNode;
+      TAUNode = CallInst::Create(tau, Args, "tau", BB->getFirstNonPHI());
+      it->dump();
+      it->replaceAllUsesWith(TAUNode); // ! Replace the uses with the new use
+      ReplaceInstWithInst(&*it, TAUNode); // ! Replacing the original tau instruction
+      it->dump(); 
+    }
+
+    ++it;
+  }
+
+  for (auto Succ : successors(BB)) {
+
+    if (pred_size(Succ) <= 1) // not a join node
+      continue;
+    auto PathSet = HotPathSet[Succ];
+    PathSet &= currHotPath; // pathSet(bp->b)
+    for (auto &[phi, frameStack] : phiStack) {
+      for (auto &[phiArgs, phiArgsPath] : frameStack.top().first.frameVector) {
+        phiArgsPath &= PathSet;
+        defAcc[{BB, phi}].add(phiArgs, phiArgsPath);
       }
     }
+  }
+  // !NOT DONE YET
+  // ! Store topological numbering, sort children of domtree according
+  // to that numbering, then call recursively.
+  for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
+    BasicBlock *ChildBB = (**Child).getBlock();
+    AllocateArgs(ChildBB, **Child);
+  }
+
+  for(auto &[phi, corr_pStack]: phiStack) {
+    corr_pStack.pop(BB);
   }
 }
 
@@ -334,11 +409,13 @@ PreservedAnalyses HPSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
 
         CallInst *TAUNode;
         TAUNode = CallInst::Create(tau, Args, "tau", currBB->getFirstNonPHI());
+        corrPhi[TAUNode] = &phi; // Mapping taus to phis
       }
     }
   }
   Search(F.getEntryBlock(), *DT.getRootNode()); // Renaming Algo
-  AllocateArgs(F.getEntryBlock());              // Argument allocation algo
+  AllocateArgs(&F.getEntryBlock(),
+               *DT.getRootNode()); // Argument allocation algo
 
   return PreservedAnalyses::none();
 }

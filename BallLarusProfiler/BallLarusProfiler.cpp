@@ -3,6 +3,17 @@
 using namespace llvm;
 using namespace std;
 
+void BallLarusProfilerPass::convertToDAG(Function &F) {
+  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+  FindFunctionBackedges(F,result); // backedges in this function
+
+}
+
+void BallLarusProfilerPass::getAnalysisUsage(AnalysisUsage &Info) {
+  Info.addRequired<UnifyFunctionExitNodesLegacyPass>();
+  // Used legacy pass for now, will change to new pass
+}
+
 PreservedAnalyses BallLarusProfilerPass::run(Module &M,
                                              ModuleAnalysisManager &AM) {
   // ! Assuming the function to be a DAG for now
@@ -14,6 +25,8 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
     // Assuming one function only
     if (F.getName() != "main")
       continue;
+
+    convertToDAG(F);
 
     // Inside main function
     IRBuilder<> Builder(M.getContext());

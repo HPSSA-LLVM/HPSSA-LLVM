@@ -40,9 +40,9 @@ entry:
   %a = alloca i32, align 4
   %b = alloca i32, align 4
   %i = bitcast i32* %a to i8*
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #7
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
   %i1 = bitcast i32* %b to i8*
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
   %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %b)
   %i2 = load i32, i32* %a, align 4, !tbaa !4
@@ -108,21 +108,18 @@ if.else22:                                        ; preds = %if.end17
 
 if.end27:                                         ; preds = %if.else22, %if.then19
   %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %storemerge48, i32 %add26)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add3, i32 %add5)
-  store i32 %tau3, i32* %b, align 4, !tbaa !4
+  store i32 %storemerge48, i32* %b, align 4, !tbaa !4
   %i6 = load i32, i32* %a, align 4, !tbaa !4
-  %add28 = add nsw i32 %i6, %tau3
+  %add28 = add nsw i32 %i6, %storemerge48
   store i32 %add28, i32* %a, align 4, !tbaa !4
-  %mul29 = mul nsw i32 %add28, %tau3
+  %mul29 = mul nsw i32 %add28, %storemerge48
   store i32 %mul29, i32* %b, align 4, !tbaa !4
   br label %end_label
 
 if.else30:                                        ; preds = %if.else10
-  %tau = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
   %add31 = add nsw i32 %i5, 12
   store i32 %add31, i32* %a, align 4, !tbaa !4
-  %mul32 = mul i32 %tau, 36
+  %mul32 = mul i32 %storemerge, 36
   store i32 %mul32, i32* %b, align 4, !tbaa !4
   %cmp33 = icmp sgt i32 %mul32, 16
   br i1 %cmp33, label %if.then34, label %if.else37
@@ -137,12 +134,11 @@ if.then34:                                        ; preds = %if.else30
 if.else37:                                        ; preds = %if.else30
   %mul38 = shl nsw i32 %add31, 2
   store i32 %mul38, i32* %a, align 4, !tbaa !4
-  %mul39 = mul i32 %tau, 216
+  %mul39 = mul i32 %storemerge, 216
   store i32 %mul39, i32* %b, align 4, !tbaa !4
   br label %new_label
 
 new_label:                                        ; preds = %if.else37, %if.then34, %if.then12
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %storemerge, i32 %add5)
   %i7 = load i32, i32* %a, align 4, !tbaa !4
   %add41 = add nsw i32 %i7, 7
   store i32 %add41, i32* %a, align 4, !tbaa !4
@@ -152,8 +148,8 @@ new_label:                                        ; preds = %if.else37, %if.then
   br label %end_label
 
 end_label:                                        ; preds = %new_label, %if.end27, %if.end
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
   ret i32 0
 }
 
@@ -169,12 +165,9 @@ declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
 define internal void @_GLOBAL__sub_I_test.cpp() #5 section ".text.startup" {
 entry:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
-  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #7
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
   ret void
 }
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #6
 
 attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
@@ -182,8 +175,7 @@ attributes #2 = { nofree nounwind }
 attributes #3 = { norecurse uwtable mustprogress "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #4 = { argmemonly nofree nosync nounwind willreturn }
 attributes #5 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { nofree nosync nounwind willreturn }
-attributes #7 = { nounwind }
+attributes #6 = { nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
@@ -191,7 +183,7 @@ attributes #7 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"PIC Level", i32 2}
 !2 = !{i32 7, !"uwtable", i32 1}
-!3 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!3 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
