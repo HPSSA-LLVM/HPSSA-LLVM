@@ -2,23 +2,26 @@ Caloric Connector and BuddySet Information
 entry: if.else30 is a Caloric Connector
 if.end27 is a Caloric Connector
 new_label is a Caloric Connector
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
-Stack dump:
-0.	Program arguments: /home/muzzammil/HPSSA/llvm-project/build/bin/opt -load-pass-plugin=build/HPSSA_new.cpp.so -passes=hpssa_new -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_HPSSA_new.ll -f
- #0 0x0000561d667daff4 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
- #1 0x0000561d667d87ae SignalHandler(int) Signals.cpp:0:0
- #2 0x00007f0f006eb3c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x153c0)
- #3 0x00007f0f0017aa28 llvm::HPSSAPass::AllocateArgs(llvm::BasicBlock*, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA_new.cpp.so+0xaa28)
- #4 0x00007f0f0017c0e3 llvm::HPSSAPass::AllocateArgs(llvm::BasicBlock*, llvm::DomTreeNodeBase<llvm::BasicBlock>&) (build/HPSSA_new.cpp.so+0xc0e3)
- #5 0x00007f0f0017ea16 llvm::HPSSAPass::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/HPSSA_new.cpp.so+0xea16)
- #6 0x00007f0f00180e8d llvm::detail::PassModel<llvm::Function, llvm::HPSSAPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/HPSSA_new.cpp.so+0x10e8d)
- #7 0x0000561d65ee2066 llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x133d066)
- #8 0x0000561d66aa35f6 llvm::detail::PassModel<llvm::Function, llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x1efe5f6)
- #9 0x0000561d65ee0b89 llvm::ModuleToFunctionPassAdaptor::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x133bb89)
-#10 0x0000561d650b1e96 llvm::detail::PassModel<llvm::Module, llvm::ModuleToFunctionPassAdaptor, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x50ce96)
-#11 0x0000561d65ede46f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x133946f)
-#12 0x0000561d650bdea0 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool, bool) (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x518ea0)
-#13 0x0000561d6503daf7 main (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x498af7)
-#14 0x00007f0f001b90b3 __libc_start_main /build/glibc-eX1tMB/glibc-2.31/csu/../csu/libc-start.c:342:3
-#15 0x0000561d650afafe _start (/home/muzzammil/HPSSA/llvm-project/build/bin/opt+0x50aafe)
-Segmentation fault (core dumped)
+===-------------------------------------------------------------------------===
+                      ... Pass execution timing report ...
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0008 seconds (0.0008 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0003 ( 34.8%)   0.0003 ( 34.8%)   0.0003 ( 34.8%)  HPSSAPass
+   0.0002 ( 27.1%)   0.0002 ( 27.1%)   0.0002 ( 27.1%)  PrintModulePass
+   0.0001 ( 18.2%)   0.0001 ( 18.2%)   0.0001 ( 18.3%)  VerifierPass
+   0.0001 ( 17.3%)   0.0001 ( 17.3%)   0.0001 ( 17.3%)  VerifierAnalysis
+   0.0000 (  1.4%)   0.0000 (  1.4%)   0.0000 (  1.3%)  PreservedCFGCheckerAnalysis
+   0.0000 (  1.3%)   0.0000 (  1.3%)   0.0000 (  1.1%)  DominatorTreeAnalysis
+   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Total
+
+===-------------------------------------------------------------------------===
+                                LLVM IR Parsing
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
+
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
+

@@ -70,6 +70,7 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
           Value *newInst =
               Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
           Value *store = Builder.CreateStore(newInst, gVar);
+          
           NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
         }
       }

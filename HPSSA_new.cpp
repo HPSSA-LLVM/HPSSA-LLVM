@@ -35,6 +35,7 @@ public:
     }
   }
   pair<frame, BasicBlock *> top() { return pstack.top(); }
+  bool empty() { return pstack.empty(); }
 };
 
 map<BasicBlock *, BitVector> HotPathSet;
@@ -80,6 +81,15 @@ CallInst *isTau(Value *v) { // ! Check this logic
     return CI;
   }
   return NULL;
+}
+
+map<BasicBlock*, int> topoNum;
+void HPSSAPass::fillTopologicalNumbering(ReversePostOrderTraversal<Function *> RPOT) {
+  int ctr = 0;
+  for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
+    auto BB = *I;
+    topoNum[BB] = ctr++;
+  }
 }
 
 map<Value *, vector<Value *>> renaming_stack;
@@ -155,9 +165,10 @@ map<pair<BasicBlock *, PHINode *>, frame> defAcc;
 map<PHINode *, pStack> phiStack;
 map<Value *, Value *> corrPhi; // phi corresponding to a tau
 void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
+  // errs()<<"Why so?\n";
   // COMPUTING BACKEDGES
   SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
-  FindFunctionBackedges(*BB->getParent(), result); // backedges in this function
+  FindFunctionBackedges(*(BB->getParent()), result); // backedges in this function
   map<std::pair<const BasicBlock *, const BasicBlock *>, bool> isBackedge;
   for (auto &info : result) {
     isBackedge[info] = true;
@@ -170,14 +181,17 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     if (!deFrame.empty()) {
       phiStack[&phi].push(deFrame, BB);
     }
-    auto topFrame = phiStack[&phi].top().first;
+    
+    frame topFrame;
+    if(!phiStack[&phi].empty()) {
+      topFrame = phiStack[&phi].top().first;
+    }
     if (incubationPaths.any()) {
       frame newFrame(topFrame);
       // ? Use C++14 notation
       for (auto &[currDef, hotPath] : topFrame.frameVector) {
         newFrame.add(currDef, incubationPaths);
       }
-
       for (auto &args : phi.operands()) {
         auto BBParent = phi.getIncomingBlock(args);
         if (!(isPhi(args) || isTau(args))) { // ? Incoming edge meaning
@@ -194,7 +208,6 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
       phiStack[&phi].push(newFrame, BB);
     }
   }
-
   // According to our implementation, all taus are inserted before the first
   // non-phi instruction. So if there is a tau, it will be right after the list
   // of phis
@@ -208,7 +221,8 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     Tys.push_back(phi->getType());
     Args.push_back(dyn_cast<Value>(phi));
 
-    for (auto &[phiArgs, phiArgsPath] : phiStack[phi].top().first.frameVector) {
+    if(!phiStack[phi].empty()) {
+       for (auto &[phiArgs, phiArgsPath] : phiStack[phi].top().first.frameVector) {
       auto commonPaths = phiArgsPath;
       commonPaths &= currHotPath;
       if (commonPaths.any()) {
@@ -227,9 +241,9 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
       it->dump(); 
     }
 
+    }
     ++it;
   }
-
   for (auto Succ : successors(BB)) {
 
     if (pred_size(Succ) <= 1) // not a join node
@@ -237,6 +251,7 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     auto PathSet = HotPathSet[Succ];
     PathSet &= currHotPath; // pathSet(bp->b)
     for (auto &[phi, frameStack] : phiStack) {
+      if(frameStack.empty()) continue;
       for (auto &[phiArgs, phiArgsPath] : frameStack.top().first.frameVector) {
         phiArgsPath &= PathSet;
         defAcc[{BB, phi}].add(phiArgs, phiArgsPath);
@@ -246,9 +261,17 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
   // !NOT DONE YET
   // ! Store topological numbering, sort children of domtree according
   // to that numbering, then call recursively.
+  vector<tuple<int, BasicBlock*, DomTreeNode**>> Children;
   for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
     BasicBlock *ChildBB = (**Child).getBlock();
-    AllocateArgs(ChildBB, **Child);
+    Children.push_back({topoNum[ChildBB], ChildBB, Child});
+    //  errs()<<"Idhar hi fault dedo\n";
+    //  errs()<<((*Child == nullptr)?"Yo\bro\n":"Nah\n");
+  }
+  std::sort(Children.begin(), Children.end()); // ? Is there any other function
+
+  for(auto &[Num, ChildBB, ChildN]: Children) {
+    AllocateArgs(ChildBB, **ChildN);
   }
 
   for(auto &[phi, corr_pStack]: phiStack) {
@@ -263,6 +286,7 @@ map<BasicBlock *, bool> HPSSAPass::getCaloricConnector(Function &F) {
 
   BitVector allPaths;
   ReversePostOrderTraversal<Function *> RPOT(&F);
+  fillTopologicalNumbering(RPOT);
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I;
     auto IncubationPath = allPaths; // Paths incubating from this basic block
