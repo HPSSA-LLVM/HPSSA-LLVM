@@ -83,8 +83,9 @@ CallInst *isTau(Value *v) { // ! Check this logic
   return NULL;
 }
 
-map<BasicBlock*, int> topoNum;
-void HPSSAPass::fillTopologicalNumbering(ReversePostOrderTraversal<Function *> RPOT) {
+map<BasicBlock *, int> topoNum;
+void HPSSAPass::fillTopologicalNumbering(
+    ReversePostOrderTraversal<Function *> RPOT) {
   int ctr = 0;
   for (auto I = RPOT.begin(); I != RPOT.end(); ++I) {
     auto BB = *I;
@@ -164,11 +165,12 @@ BitVector getIncubationPaths(BasicBlock *BB) {
 map<pair<BasicBlock *, PHINode *>, frame> defAcc;
 map<PHINode *, pStack> phiStack;
 map<Value *, Value *> corrPhi; // phi corresponding to a tau
-void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
+void HPSSAPass::AllocateArgs(BasicBlock *BB, DomTreeNode &DTN) {
   // errs()<<"Why so?\n";
   // COMPUTING BACKEDGES
   SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
-  FindFunctionBackedges(*(BB->getParent()), result); // backedges in this function
+  FindFunctionBackedges(*(BB->getParent()),
+                        result); // backedges in this function
   map<std::pair<const BasicBlock *, const BasicBlock *>, bool> isBackedge;
   for (auto &info : result) {
     isBackedge[info] = true;
@@ -181,9 +183,9 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     if (!deFrame.empty()) {
       phiStack[&phi].push(deFrame, BB);
     }
-    
+
     frame topFrame;
-    if(!phiStack[&phi].empty()) {
+    if (!phiStack[&phi].empty()) {
       topFrame = phiStack[&phi].top().first;
     }
     if (incubationPaths.any()) {
@@ -221,26 +223,28 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     Tys.push_back(phi->getType());
     Args.push_back(dyn_cast<Value>(phi));
 
-    if(!phiStack[phi].empty()) {
-       for (auto &[phiArgs, phiArgsPath] : phiStack[phi].top().first.frameVector) {
-      auto commonPaths = phiArgsPath;
-      commonPaths &= currHotPath;
-      if (commonPaths.any()) {
-        Args.push_back(dyn_cast<Value>(phiArgs));
+    if (!phiStack[phi].empty()) {
+      for (auto &[phiArgs, phiArgsPath] :
+           phiStack[phi].top().first.frameVector) {
+        auto commonPaths = phiArgsPath;
+        commonPaths &= currHotPath;
+        if (commonPaths.any()) {
+          Args.push_back(dyn_cast<Value>(phiArgs));
+        }
+
+        // ! Need to again create tau functions
+        Function *tau = Intrinsic::getDeclaration(
+            BB->getParent()->getParent(),
+            Function::lookupIntrinsicID("llvm.tau"), Tys);
+
+        CallInst *TAUNode;
+        TAUNode = CallInst::Create(tau, Args, "tau", BB->getFirstNonPHI());
+        it->dump();
+        it->replaceAllUsesWith(TAUNode); // ! Replace the uses with the new use
+        ReplaceInstWithInst(
+            &*it, TAUNode); // ! Replacing the original tau instruction
+        it->dump();
       }
-
-      // ! Need to again create tau functions
-      Function *tau = Intrinsic::getDeclaration(
-          BB->getParent()->getParent(), Function::lookupIntrinsicID("llvm.tau"), Tys);
-
-      CallInst *TAUNode;
-      TAUNode = CallInst::Create(tau, Args, "tau", BB->getFirstNonPHI());
-      it->dump();
-      it->replaceAllUsesWith(TAUNode); // ! Replace the uses with the new use
-      ReplaceInstWithInst(&*it, TAUNode); // ! Replacing the original tau instruction
-      it->dump(); 
-    }
-
     }
     ++it;
   }
@@ -251,7 +255,8 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
     auto PathSet = HotPathSet[Succ];
     PathSet &= currHotPath; // pathSet(bp->b)
     for (auto &[phi, frameStack] : phiStack) {
-      if(frameStack.empty()) continue;
+      if (frameStack.empty())
+        continue;
       for (auto &[phiArgs, phiArgsPath] : frameStack.top().first.frameVector) {
         phiArgsPath &= PathSet;
         defAcc[{BB, phi}].add(phiArgs, phiArgsPath);
@@ -261,7 +266,7 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
   // !NOT DONE YET
   // ! Store topological numbering, sort children of domtree according
   // to that numbering, then call recursively.
-  vector<tuple<int, BasicBlock*, DomTreeNode**>> Children;
+  vector<tuple<int, BasicBlock *, DomTreeNode **>> Children;
   for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
     BasicBlock *ChildBB = (**Child).getBlock();
     Children.push_back({topoNum[ChildBB], ChildBB, Child});
@@ -270,11 +275,11 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode &DTN) {
   }
   std::sort(Children.begin(), Children.end()); // ? Is there any other function
 
-  for(auto &[Num, ChildBB, ChildN]: Children) {
+  for (auto &[Num, ChildBB, ChildN] : Children) {
     AllocateArgs(ChildBB, **ChildN);
   }
 
-  for(auto &[phi, corr_pStack]: phiStack) {
+  for (auto &[phi, corr_pStack] : phiStack) {
     corr_pStack.pop(BB);
   }
 }

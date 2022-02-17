@@ -1,6 +1,6 @@
 5
-8
-entry if.else if.end if.else10 if.else30 if.else37 new_label end_label 
+7
+entry _ZSt13__check_facetISt5ctypeIcEERKT_PS3_.exit.i.i if.end.i.i.i _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit if.else14 if.then18 if.then.i.i.i92 
 4
 entry if.then if.end end_label 
 9

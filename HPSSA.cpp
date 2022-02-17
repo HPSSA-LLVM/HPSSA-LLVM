@@ -45,7 +45,7 @@ void HPSSAPass::Search(BasicBlock &BB, DomTreeNode &DTN) {
 
   for (auto &I : BB) {
     errs() << "---- I: ";
-    I.dump();
+    // I.dump();
 
     errs() << "---- ";
     errs() << "attempt to renaming uses in I\n";

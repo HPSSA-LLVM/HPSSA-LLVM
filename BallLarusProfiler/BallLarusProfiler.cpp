@@ -5,8 +5,7 @@ using namespace std;
 
 void BallLarusProfilerPass::convertToDAG(Function &F) {
   SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
-  FindFunctionBackedges(F,result); // backedges in this function
-
+  FindFunctionBackedges(F, result); // backedges in this function
 }
 
 void BallLarusProfilerPass::getAnalysisUsage(AnalysisUsage &Info) {
@@ -70,7 +69,7 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
           Value *newInst =
               Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
           Value *store = Builder.CreateStore(newInst, gVar);
-          
+
           NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
         }
       }
