@@ -20,15 +20,15 @@ using namespace std;
 namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
-  void fillTopologicalNumbering(ReversePostOrderTraversal<Function *> RPOT);
-  void getProfileInfo(Function &F);
-  map<BasicBlock *, bool> getCaloricConnector(Function &F);
-  void Search(BasicBlock &X, DomTreeNode &DTN);
-  void AllocateArgs(BasicBlock *BB, DomTreeNode &DTN);
+  void fillTopologicalNumbering(ReversePostOrderTraversal<Function*> RPOT);
+  void getProfileInfo(Function& F);
+  map<BasicBlock*, bool> getCaloricConnector(Function& F);
+  void Search(BasicBlock& X, DomTreeNode& DTN);
+  void AllocateArgs(BasicBlock* BB, DomTreeNode& DTN);
 
   // Dominator tree.Probably virtual so that it gets overriden
 public:
-  PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
+  PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
   // virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 };
 

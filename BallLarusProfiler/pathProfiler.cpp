@@ -3,7 +3,7 @@ using namespace std;
 
 bool flag = 1;
 void counter(int n) {
-  FILE *pathData = fopen("pathData.txt", "a");
+  FILE* pathData = fopen("pathData.txt", "a");
   fprintf(pathData, "%d\n", n);
   fclose(pathData);
 }

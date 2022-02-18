@@ -2,14 +2,14 @@
 using namespace llvm;
 // using namespace std;
 
-PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
-  vector<Instruction *> toBeRemoved;
-  for (auto &BB : F) {
-    for (auto &I : BB) {
-      CallInst *CI = dyn_cast<CallInst>(&I);
+PreservedAnalyses TDSTRPass::run(Function& F, FunctionAnalysisManager& AM) {
+  vector<Instruction*> toBeRemoved;
+  for (auto& BB : F) {
+    for (auto& I : BB) {
+      CallInst* CI = dyn_cast<CallInst>(&I);
       if (CI == NULL)
         continue;
-      Function *CF = CI->getCalledFunction();
+      Function* CF = CI->getCalledFunction();
       if (CF == NULL ||
           CF->getIntrinsicID() != Function::lookupIntrinsicID("llvm.tau"))
         continue;
@@ -17,16 +17,16 @@ PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
     }
   }
   for (auto I : toBeRemoved) {
-    CallInst *CI = dyn_cast<CallInst>(I);
-    Function *CF = CI->getCalledFunction();
+    CallInst* CI = dyn_cast<CallInst>(I);
+    Function* CF = CI->getCalledFunction();
     llvm::errs() << "Tau to be removed : " << CF->getName() << "\t\n";
     // I->getType()->dump();
     // errs() << "Original"
     //        << "\n";
     // I->dump();
     IRBuilder<> Builder(CI);
-    Value *origPhi = CI;
-    Value *replaceTAU = CI->getOperand(0);
+    Value* origPhi = CI;
+    Value* replaceTAU = CI->getOperand(0);
     llvm::errs() << "Replacing variable " << origPhi->getName() << " with "
                  << replaceTAU->getName() << ".\n";
     // Value *newTau = Builder.CreateAlloca(origPhi->getType(), nullptr,
@@ -41,9 +41,9 @@ PreservedAnalyses TDSTRPass::run(Function &F, FunctionAnalysisManager &AM) {
 }
 
 llvm::PassPluginLibraryInfo getTDestructionPluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "TDestruction", "v0.1", [](PassBuilder &PB) {
+  return {LLVM_PLUGIN_API_VERSION, "TDestruction", "v0.1", [](PassBuilder& PB) {
             PB.registerPipelineParsingCallback(
-                [](StringRef Name, FunctionPassManager &FPM,
+                [](StringRef Name, FunctionPassManager& FPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "tdstr") {
                     FPM.addPass(TDSTRPass());

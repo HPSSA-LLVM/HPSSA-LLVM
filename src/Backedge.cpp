@@ -2,8 +2,8 @@
 using namespace llvm;
 // using namespace std;
 
-PreservedAnalyses BackedgePass::run(Function &F, FunctionAnalysisManager &AM) {
-  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+PreservedAnalyses BackedgePass::run(Function& F, FunctionAnalysisManager& AM) {
+  SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
   FindFunctionBackedges(F, result);
   // result.dump();
   for (auto comb : result) {
@@ -13,9 +13,9 @@ PreservedAnalyses BackedgePass::run(Function &F, FunctionAnalysisManager &AM) {
 }
 
 llvm::PassPluginLibraryInfo getBackedgePluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "Backedge", "v0.1", [](PassBuilder &PB) {
+  return {LLVM_PLUGIN_API_VERSION, "Backedge", "v0.1", [](PassBuilder& PB) {
             PB.registerPipelineParsingCallback(
-                [](StringRef Name, FunctionPassManager &FPM,
+                [](StringRef Name, FunctionPassManager& FPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "backedgeChecker") {
                     FPM.addPass(BackedgePass());

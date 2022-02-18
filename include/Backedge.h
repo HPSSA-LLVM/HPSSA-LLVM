@@ -22,7 +22,7 @@ namespace llvm {
 class BackedgePass : public PassInfoMixin<BackedgePass> {
 
 public:
-  PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
+  PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
   // virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 };
 

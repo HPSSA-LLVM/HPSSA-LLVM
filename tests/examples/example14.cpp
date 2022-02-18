@@ -34,7 +34,7 @@ template <typename T> struct Edge {
   long long weight;
   Edge(T a, T b, long long f) : vertex1(a), vertex2(b), weight(f) {}
   Edge(T a, T b) : vertex1(a), vertex2(b), weight(0) {}
-  void setWeight(const long long &w) { this->weight = w; }
+  void setWeight(const long long& w) { this->weight = w; }
 };
 
 template <typename T> struct Graph {
@@ -62,7 +62,7 @@ template <typename T> void PerformPrim(Graph<T> graph) {
   unordered_map<T, int> key;
   /* Initialized Parent and Key array. All keys are inf, since not
    * visited/computed yet. */
-  for (const auto &vertex : graph.vertices) // O(V)
+  for (const auto& vertex : graph.vertices) // O(V)
   {
     /* Put all the vertices in the queue */
     Q.emplace_back(vertex);
@@ -89,7 +89,7 @@ template <typename T> void PerformPrim(Graph<T> graph) {
     auto adjecent = graph.FindAdjecent(u); // O(E)
     /* We update the key of each vertex, it is the minimum we have seen so far.
      */
-    for (auto &vertex : adjecent) {
+    for (auto& vertex : adjecent) {
       /* We do this check to see if vertex is in the queue or not.
        * We dont want to update the key values of vertices not in consideration.
        * They are not a part of the minimum spanning tree.
@@ -105,7 +105,7 @@ template <typename T> void PerformPrim(Graph<T> graph) {
   }
   /* We return the minimum spanning tree, O(V^2) */
   cout << "Minimum Spanning Tree : Prim Algorithm" << endl;
-  for (const auto &item : min_spanning_tree) {
+  for (const auto& item : min_spanning_tree) {
     cout << item.first << "---" << item.second << ". " << endl;
   }
 }
@@ -119,30 +119,30 @@ template <typename T> class Disjoint_set {
 
 public:
   Disjoint_set() {}
-  Disjoint_set(std::vector<T> &universe) {
+  Disjoint_set(std::vector<T>& universe) {
     vset = universe;
-    for (const auto &elem : vset) {
+    for (const auto& elem : vset) {
       /* A set of single-element sets */
       parent[elem] = elem;
       rank[elem] = 0;
     }
   }
   ~Disjoint_set() {}
-  void Insert_Set(std::vector<T> &universe) {
+  void Insert_Set(std::vector<T>& universe) {
     vset = universe;
-    for (const auto &elem : vset) {
+    for (const auto& elem : vset) {
       /* A set of single-element sets */
       parent[elem] = elem;
     }
   }
-  T Find_set(T &item) {
+  T Find_set(T& item) {
     if (parent[item] == item) {
       return item;
     } else {
       Find_set(parent[item]);
     }
   }
-  void Union_Set(T &set_a, T &set_b) {
+  void Union_Set(T& set_a, T& set_b) {
     if (rank[set_a] > rank[set_b])
       parent[set_b] = set_a;
     else if (rank[set_a] < rank[set_b])
@@ -152,7 +152,7 @@ public:
       ++rank[set_b];
     }
   }
-  void Make_set(T &vertex) {
+  void Make_set(T& vertex) {
     parent[vertex] = vertex;
     rank[vertex] = 0;
   }
@@ -161,21 +161,21 @@ public:
 template <typename T> void PerformKruskal(Graph<T> graph) {
   Disjoint_set<T> temp_set;
   std::vector<Edge<T>> Edges;
-  for (const auto &item : graph.vertices) {
-    temp_set.Make_set((char &)item);
+  for (const auto& item : graph.vertices) {
+    temp_set.Make_set((char&)item);
   }
   std::sort(graph.edges.begin(), graph.edges.end(),
             [](Edge<T> x, Edge<T> y) { return x.weight < y.weight; });
-  for (const auto &e : graph.edges) {
-    char a = temp_set.Find_set((char &)e.vertex1);
-    char b = temp_set.Find_set((char &)e.vertex2);
+  for (const auto& e : graph.edges) {
+    char a = temp_set.Find_set((char&)e.vertex1);
+    char b = temp_set.Find_set((char&)e.vertex2);
     if (a != b) {
       Edges.emplace_back(e);
       temp_set.Union_Set(a, b);
     }
   }
   cout << "Minimum Spanning Tree : Krushkal Algorithm" << endl;
-  for (const auto &item : Edges) {
+  for (const auto& item : Edges) {
     cout << item.vertex1 << "---" << item.vertex2 << ", " << item.weight << ". "
          << endl;
   }

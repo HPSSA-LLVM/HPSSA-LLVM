@@ -2,7 +2,7 @@
 
 int main() {
   int a, b, c, d, x, y, z = 0;
-  std::cin >> a >> b >> c >> d; 
+  std::cin >> a >> b >> c >> d;
   if (rand() % 100 >= 90) {
     x = a + b;
     y = 90;

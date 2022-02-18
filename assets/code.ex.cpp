@@ -20,7 +20,8 @@
 //     (with some timeout)3. Maintains a coverge, prevC = {p1, p2, p3},
 //     nextC =
 //         {p1, p2, p3, p4} 4. Adds next_input->List of inputs
-//             .(corpus)5. Add a negation condition that takes you to a low freq.
+//             .(corpus)5. Add a negation condition that takes you to a low
+//             freq.
 
 //         How fuzzer picks inputs
 //     ? t1->e1,
@@ -56,16 +57,17 @@
 //             return 0;
 // }
 
-//     The other is to use dataflow coverage. Note that for the tau nodes: tau(x, x1, x2),
-//     if it takes one of the frequent paths then ((x = x1) \/ (x = x2)) must be satisfied. 
-//     So, we add coverage for the case (not((x = x1) \/ (x = x2))). This is easy to do: 
-//     add an if condition: if (not((x = x1) \/ (x = x2))) dummy(); So, normal branch coverage (in AFL) 
-//     can now cover these cases too. 
+//     The other is to use dataflow coverage. Note that for the tau nodes:
+//     tau(x, x1, x2), if it takes one of the frequent paths then ((x = x1) \/
+//     (x = x2)) must be satisfied. So, we add coverage for the case (not((x =
+//     x1) \/ (x = x2))). This is easy to do: add an if condition: if (not((x =
+//     x1) \/ (x = x2))) dummy(); So, normal branch coverage (in AFL) can now
+//     cover these cases too.
 // The whole scheme can be as follows:
-// Run the fuzzer for some time on the original binary B1 and collect interesting inputs (say X1)
-// 1, Create HPSSA with the interesting inputs X1
-// 2, Add the mentioned instrumentation and create binary B2
-// 3, Run the fuzzer on B2 with X1 as seed inputs;
+// Run the fuzzer for some time on the original binary B1 and collect
+// interesting inputs (say X1) 1, Create HPSSA with the interesting inputs X1 2,
+// Add the mentioned instrumentation and create binary B2 3, Run the fuzzer on
+// B2 with X1 as seed inputs;
 //     collect interesting inputs(say X2) 4,
 //         Goto 2 with X1 = X1 \cup X2 till timeout is reached 5,
 //                     Check vulnerabilities found and coverage with X1 on B1

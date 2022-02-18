@@ -21,7 +21,7 @@ namespace llvm {
 
 class TDSTRPass : public PassInfoMixin<TDSTRPass> {
 public:
-  PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
+  PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
 };
 
 } // namespace llvm

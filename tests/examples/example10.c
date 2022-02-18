@@ -122,15 +122,15 @@ unsigned long mt19937_generate_random_ulong() {
   return y;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> main()\n");
 #endif
 
-  offset_reservoir *offset_reservoir_ptr = NULL;
-  char *in_filename = NULL;
-  FILE *in_file_ptr = NULL;
-  file_mmap *in_file_mmap_ptr = NULL;
+  offset_reservoir* offset_reservoir_ptr = NULL;
+  char* in_filename = NULL;
+  FILE* in_file_ptr = NULL;
+  file_mmap* in_file_mmap_ptr = NULL;
   boolean preserve_output_order;
   boolean mmap_in_file;
   boolean cstdio_in_file;
@@ -256,13 +256,13 @@ int main(int argc, char **argv) {
   return EXIT_SUCCESS;
 }
 
-offset_reservoir *new_offset_reservoir_ptr(const long len) {
+offset_reservoir* new_offset_reservoir_ptr(const long len) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> new_offset_reservoir_ptr()\n");
 #endif
 
-  offset_reservoir *res = NULL;
-  off_t *offsets = NULL;
+  offset_reservoir* res = NULL;
+  off_t* offsets = NULL;
 
   offsets = malloc(sizeof(off_t) * len);
   if (!offsets) {
@@ -286,7 +286,7 @@ offset_reservoir *new_offset_reservoir_ptr(const long len) {
   return res;
 }
 
-void delete_offset_reservoir_ptr(offset_reservoir **res_ptr) {
+void delete_offset_reservoir_ptr(offset_reservoir** res_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> delete_offset_reservoir_ptr()\n");
 #endif
@@ -310,7 +310,7 @@ void delete_offset_reservoir_ptr(offset_reservoir **res_ptr) {
 #endif
 }
 
-void print_offset_reservoir_ptr(const offset_reservoir *res_ptr) {
+void print_offset_reservoir_ptr(const offset_reservoir* res_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> print_offset_reservoir_ptr()\n");
 #endif
@@ -327,7 +327,7 @@ void print_offset_reservoir_ptr(const offset_reservoir *res_ptr) {
 }
 
 void sample_reservoir_offsets_without_replacement_via_cstdio_with_fixed_k(
-    FILE *in_file_ptr, offset_reservoir **res_ptr, const int lines_per_offset) {
+    FILE* in_file_ptr, offset_reservoir** res_ptr, const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "sample_reservoir_offsets_without_replacement_via_cstdio_"
@@ -394,7 +394,7 @@ void sample_reservoir_offsets_without_replacement_via_cstdio_with_fixed_k(
 }
 
 void sample_reservoir_offsets_with_replacement_via_cstdio_with_fixed_k(
-    offset_reservoir **res_ptr, const int sample_size) {
+    offset_reservoir** res_ptr, const int sample_size) {
 #ifdef DEBUG
   fprintf(
       stderr,
@@ -413,7 +413,7 @@ void sample_reservoir_offsets_with_replacement_via_cstdio_with_fixed_k(
 }
 
 void sample_reservoir_offsets_with_replacement_via_cstdio_with_unspecified_k(
-    offset_reservoir **res_ptr) {
+    offset_reservoir** res_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "sample_reservoir_offsets_with_replacement_via_cstdio_with_"
@@ -436,7 +436,7 @@ void sample_reservoir_offsets_with_replacement_via_cstdio_with_unspecified_k(
 }
 
 void sample_reservoir_offsets_without_replacement_via_cstdio_with_unspecified_k(
-    FILE *in_file_ptr, offset_reservoir **res_ptr, const int lines_per_offset) {
+    FILE* in_file_ptr, offset_reservoir** res_ptr, const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "sample_reservoir_offsets_without_replacement_via_cstdio_"
@@ -449,7 +449,7 @@ void sample_reservoir_offsets_without_replacement_via_cstdio_with_unspecified_k(
   long k = (*res_ptr)->num_offsets;
   long ln_idx = 0;
   long grp_idx = 0;
-  off_t *resized_offsets = NULL;
+  off_t* resized_offsets = NULL;
 
   in_line[LINE_LENGTH_VALUE] = '1';
 
@@ -484,7 +484,7 @@ void sample_reservoir_offsets_without_replacement_via_cstdio_with_unspecified_k(
 }
 
 void sample_reservoir_offsets_without_replacement_via_mmap_with_fixed_k(
-    file_mmap *in_mmap, offset_reservoir **res_ptr,
+    file_mmap* in_mmap, offset_reservoir** res_ptr,
     const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(
@@ -541,7 +541,7 @@ void sample_reservoir_offsets_without_replacement_via_mmap_with_fixed_k(
 }
 
 void sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(
-    file_mmap *in_mmap, offset_reservoir **res_ptr,
+    file_mmap* in_mmap, offset_reservoir** res_ptr,
     const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
@@ -555,7 +555,7 @@ void sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(
   long k = (*res_ptr)->num_offsets;
   long ln_idx = 0;
   long grp_idx = 0;
-  off_t *resized_offsets = NULL;
+  off_t* resized_offsets = NULL;
 
   for (offset_idx = 0; offset_idx < in_mmap->size; ++offset_idx) {
     if (in_mmap->map[offset_idx] == '\n') {
@@ -589,7 +589,7 @@ void sample_reservoir_offsets_without_replacement_via_mmap_with_unspecified_k(
 }
 
 void sample_reservoir_offsets_with_replacement_via_mmap_with_fixed_k(
-    offset_reservoir **res_ptr, const int sample_size) {
+    offset_reservoir** res_ptr, const int sample_size) {
 #ifdef DEBUG
   fprintf(
       stderr,
@@ -608,7 +608,7 @@ void sample_reservoir_offsets_with_replacement_via_mmap_with_fixed_k(
 }
 
 void sample_reservoir_offsets_with_replacement_via_mmap_with_unspecified_k(
-    offset_reservoir **res_ptr) {
+    offset_reservoir** res_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "sample_reservoir_offsets_with_replacement_via_mmap_with_"
@@ -631,14 +631,14 @@ void sample_reservoir_offsets_with_replacement_via_mmap_with_unspecified_k(
 }
 
 void sample_reservoir_offsets_with_replacement_with_fixed_k(
-    offset_reservoir **res_ptr, const int sample_size) {
+    offset_reservoir** res_ptr, const int sample_size) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "sample_reservoir_offsets_with_replacement_with_fixed_k()\n");
 #endif
 
-  offset_reservoir *original_offset_reservoir_ptr = *res_ptr;
-  offset_reservoir *sample_offset_reservoir_ptr = NULL;
+  offset_reservoir* original_offset_reservoir_ptr = *res_ptr;
+  offset_reservoir* sample_offset_reservoir_ptr = NULL;
   long original_sample_size = original_offset_reservoir_ptr->num_offsets;
   long sample_offset_idx = 0;
   long original_random_idx = 0;
@@ -671,7 +671,7 @@ void sample_reservoir_offsets_with_replacement_with_fixed_k(
 #endif
 }
 
-void shuffle_reservoir_offsets_via_fisher_yates(offset_reservoir **res_ptr) {
+void shuffle_reservoir_offsets_via_fisher_yates(offset_reservoir** res_ptr) {
 #ifdef DEBUG
   fprintf(stderr,
           "Debug: Entering --> shuffle_reservoir_offsets_via_fisher_yates()\n");
@@ -697,7 +697,7 @@ void shuffle_reservoir_offsets_via_fisher_yates(offset_reservoir **res_ptr) {
 #endif
 }
 
-void sort_offset_reservoir_ptr_offsets(offset_reservoir **res_ptr) {
+void sort_offset_reservoir_ptr_offsets(offset_reservoir** res_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> sort_offset_reservoir_ptr_offsets()\n");
 #endif
@@ -710,14 +710,14 @@ void sort_offset_reservoir_ptr_offsets(offset_reservoir **res_ptr) {
 #endif
 }
 
-int offset_compare(const void *off1, const void *off2) {
+int offset_compare(const void* off1, const void* off2) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> offset_compare()\n");
   fprintf(stderr, "Debug: Comparing: %012lld and %012lld\n",
-          (long long int)*(off_t *)off1, (long long int)*(off_t *)off2);
+          (long long int)*(off_t*)off1, (long long int)*(off_t*)off2);
 #endif
 
-  long long int off_diff = (long long int)((*(off_t *)off1) - (*(off_t *)off2));
+  long long int off_diff = (long long int)((*(off_t*)off1) - (*(off_t*)off2));
 
 #ifdef DEBUG
   fprintf(stderr, "Debug: Leaving  --> offset_compare()\n");
@@ -726,8 +726,8 @@ int offset_compare(const void *off1, const void *off2) {
   return (off_diff > 0) ? 1 : -1;
 }
 
-void print_offset_reservoir_sample_via_mmap(const file_mmap *in_mmap,
-                                            offset_reservoir *res_ptr,
+void print_offset_reservoir_sample_via_mmap(const file_mmap* in_mmap,
+                                            offset_reservoir* res_ptr,
                                             const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr,
@@ -757,7 +757,7 @@ void print_offset_reservoir_sample_via_mmap(const file_mmap *in_mmap,
 }
 
 void print_sorted_offset_reservoir_sample_via_cstdio(
-    FILE *in_file_ptr, offset_reservoir *res_ptr, const int lines_per_offset) {
+    FILE* in_file_ptr, offset_reservoir* res_ptr, const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> "
                   "print_sorted_offset_reservoir_sample_via_cstdio()\n");
@@ -805,7 +805,7 @@ void print_sorted_offset_reservoir_sample_via_cstdio(
 }
 
 void print_unsorted_offset_reservoir_sample_via_cstdio(
-    FILE *in_file_ptr, offset_reservoir *res_ptr, const int lines_per_offset) {
+    FILE* in_file_ptr, offset_reservoir* res_ptr, const int lines_per_offset) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering KLEE --> "
                   "print_unsorted_offset_reservoir_sample_via_cstdio()\n");
@@ -846,12 +846,12 @@ void print_unsorted_offset_reservoir_sample_via_cstdio(
 #endif
 }
 
-FILE *new_file_ptr(const char *in_fn) {
+FILE* new_file_ptr(const char* in_fn) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> new_file_ptr()\n");
 #endif
 
-  FILE *file_ptr = NULL;
+  FILE* file_ptr = NULL;
   boolean not_stdin = kTrue;
 
   not_stdin = strcmp(in_fn, "-");
@@ -868,7 +868,7 @@ FILE *new_file_ptr(const char *in_fn) {
   return file_ptr;
 }
 
-void delete_file_ptr(FILE **file_ptr) {
+void delete_file_ptr(FILE** file_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> delete_file_ptr()\n");
 #endif
@@ -881,12 +881,12 @@ void delete_file_ptr(FILE **file_ptr) {
 #endif
 }
 
-file_mmap *new_file_mmap(const char *in_fn) {
+file_mmap* new_file_mmap(const char* in_fn) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> new_file_mmap()\n");
 #endif
 
-  file_mmap *mmap_ptr = NULL;
+  file_mmap* mmap_ptr = NULL;
   boolean not_stdin = kTrue;
 
   mmap_ptr = malloc(sizeof(file_mmap));
@@ -913,8 +913,8 @@ file_mmap *new_file_mmap(const char *in_fn) {
   mmap_ptr->fd = open(mmap_ptr->fn, O_RDONLY);
   mmap_ptr->status = fstat(mmap_ptr->fd, &(mmap_ptr->s));
   mmap_ptr->size = mmap_ptr->s.st_size;
-  mmap_ptr->map = (char *)mmap(NULL, mmap_ptr->size, PROT_READ, MAP_SHARED,
-                               mmap_ptr->fd, 0);
+  mmap_ptr->map =
+      (char*)mmap(NULL, mmap_ptr->size, PROT_READ, MAP_SHARED, mmap_ptr->fd, 0);
   if (mmap_ptr->map == MAP_FAILED) {
     fprintf(stderr, "Error: Mmap pointer map failed\n");
     // exit(EXIT_FAILURE);
@@ -927,7 +927,7 @@ file_mmap *new_file_mmap(const char *in_fn) {
   return mmap_ptr;
 }
 
-void delete_file_mmap(file_mmap **mmap_ptr) {
+void delete_file_mmap(file_mmap** mmap_ptr) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> delete_file_mmap()\n");
 #endif
@@ -968,7 +968,7 @@ void initialize_globals() {
 #endif
 }
 
-void parse_command_line_options(int argc, char **argv) {
+void parse_command_line_options(int argc, char** argv) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> parse_command_line_options()\n");
 #endif
@@ -1089,7 +1089,7 @@ void parse_command_line_options(int argc, char **argv) {
 #endif
 }
 
-void print_usage(FILE *stream) {
+void print_usage(FILE* stream) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> print_usage()\n");
 #endif
@@ -1106,7 +1106,7 @@ void print_usage(FILE *stream) {
 #endif
 }
 
-void print_version(FILE *stream) {
+void print_version(FILE* stream) {
 #ifdef DEBUG
   fprintf(stderr, "Debug: Entering --> print_version()\n");
 #endif

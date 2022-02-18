@@ -21,7 +21,7 @@ namespace llvm {
 
 class BBProfilerPass : public PassInfoMixin<BBProfilerPass> {
 public:
-  PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM);
+  PreservedAnalyses run(Module& M, ModuleAnalysisManager& AM);
 };
 
 } // namespace llvm

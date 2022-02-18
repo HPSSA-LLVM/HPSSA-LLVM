@@ -86,25 +86,25 @@ class BLInstrumentationDag;
 class BLInstrumentationNode : public BallLarusNode {
 public:
   // Creates a new BLInstrumentationNode from a BasicBlock.
-  BLInstrumentationNode(BasicBlock *BB);
+  BLInstrumentationNode(BasicBlock* BB);
 
   // Get/sets the Value corresponding to the pathNumber register,
   // constant or phinode.  Used by the instrumentation code to remember
   // path number Values.
-  Value *getStartingPathNumber();
-  void setStartingPathNumber(Value *pathNumber);
+  Value* getStartingPathNumber();
+  void setStartingPathNumber(Value* pathNumber);
 
-  Value *getEndingPathNumber();
-  void setEndingPathNumber(Value *pathNumber);
+  Value* getEndingPathNumber();
+  void setEndingPathNumber(Value* pathNumber);
 
   // Get/set the PHINode Instruction for this node.
-  PHINode *getPathPHI();
-  void setPathPHI(PHINode *pathPHI);
+  PHINode* getPathPHI();
+  void setPathPHI(PHINode* pathPHI);
 
 private:
-  Value *_startingPathNumber; // The Value for the current pathNumber.
-  Value *_endingPathNumber;   // The Value for the current pathNumber.
-  PHINode *_pathPHI;          // The PHINode for current pathNumber.
+  Value* _startingPathNumber; // The Value for the current pathNumber.
+  Value* _endingPathNumber;   // The Value for the current pathNumber.
+  PHINode* _pathPHI;          // The PHINode for current pathNumber.
 };
 
 // --------------------------------------------------------------------------
@@ -113,11 +113,11 @@ private:
 // --------------------------------------------------------------------------
 class BLInstrumentationEdge : public BallLarusEdge {
 public:
-  BLInstrumentationEdge(BLInstrumentationNode *source,
-                        BLInstrumentationNode *target);
+  BLInstrumentationEdge(BLInstrumentationNode* source,
+                        BLInstrumentationNode* target);
 
   // Sets the target node of this edge.  Required to split edges.
-  void setTarget(BallLarusNode *node);
+  void setTarget(BallLarusNode* node);
 
   // Get/set whether edge is in the spanning tree.
   bool isInSpanningTree() const;
@@ -173,20 +173,20 @@ private:
 // ---------------------------------------------------------------------------
 class BLInstrumentationDag : public BallLarusDag {
 public:
-  BLInstrumentationDag(Function &F);
+  BLInstrumentationDag(Function& F);
 
   // Returns the Exit->Root edge. This edge is required for creating
   // directed cycles in the algorithm for moving instrumentation off of
   // the spanning tree
-  BallLarusEdge *getExitRootEdge();
+  BallLarusEdge* getExitRootEdge();
 
   // Returns an array of phony edges which mark those nodes
   // with function calls
   BLEdgeVector getCallPhonyEdges();
 
   // Gets/sets the path counter array
-  GlobalVariable *getCounterArray();
-  void setCounterArray(GlobalVariable *c);
+  GlobalVariable* getCounterArray();
+  void setCounterArray(GlobalVariable* c);
 
   // Calculates the increments for the chords, thereby removing
   // instrumentation from the spanning tree edges. Implementation is based
@@ -194,7 +194,7 @@ public:
   void calculateChordIncrements();
 
   // Updates the state when an edge has been split
-  void splitUpdate(BLInstrumentationEdge *formerEdge, BasicBlock *newBlock);
+  void splitUpdate(BLInstrumentationEdge* formerEdge, BasicBlock* newBlock);
 
   // Calculates a spanning tree of the DAG ignoring cycles.  Whichever
   // edges are in the spanning tree will not be instrumented, but this
@@ -224,7 +224,7 @@ protected:
   // Allows subclasses to determine which type of Node is created.
   // Override this method to produce subclasses of BallLarusNode if
   // necessary.
-  virtual BallLarusNode *createNode(BasicBlock *BB);
+  virtual BallLarusNode* createNode(BasicBlock* BB);
 
   // BLInstrumentationDag create BLInstrumentationEdges.
   //
@@ -233,32 +233,32 @@ protected:
   // necessary.  Parameters source and target will have been created by
   // createNode and can be cast to the subclass of BallLarusNode*
   // returned by createNode.
-  virtual BallLarusEdge *createEdge(BallLarusNode *source,
-                                    BallLarusNode *target, unsigned edgeNumber);
+  virtual BallLarusEdge* createEdge(BallLarusNode* source,
+                                    BallLarusNode* target, unsigned edgeNumber);
 
 private:
   BLEdgeVector _treeEdges;       // All edges in the spanning tree.
   BLEdgeVector _chordEdges;      // All edges not in the spanning tree.
-  GlobalVariable *_counterArray; // Array to store path counters
+  GlobalVariable* _counterArray; // Array to store path counters
 
   // Removes the edge from the appropriate predecessor and successor lists.
-  void unlinkEdge(BallLarusEdge *edge);
+  void unlinkEdge(BallLarusEdge* edge);
 
   // Makes an edge part of the spanning tree.
-  void makeEdgeSpanning(BLInstrumentationEdge *edge);
+  void makeEdgeSpanning(BLInstrumentationEdge* edge);
 
   // Pushes initialization and calls itself recursively.
-  void pushInitializationFromEdge(BLInstrumentationEdge *edge);
+  void pushInitializationFromEdge(BLInstrumentationEdge* edge);
 
   // Pushes path counter increments up recursively.
-  void pushCountersFromEdge(BLInstrumentationEdge *edge);
+  void pushCountersFromEdge(BLInstrumentationEdge* edge);
 
   // Depth first algorithm for determining the chord increments.f
-  void calculateChordIncrementsDfs(long weight, BallLarusNode *v,
-                                   BallLarusEdge *e);
+  void calculateChordIncrementsDfs(long weight, BallLarusNode* v,
+                                   BallLarusEdge* e);
 
   // Determines the relative direction of two edges.
-  int calculateChordIncrementsDir(BallLarusEdge *e, BallLarusEdge *f);
+  int calculateChordIncrementsDir(BallLarusEdge* e, BallLarusEdge* f);
 };
 
 // ---------------------------------------------------------------------------
@@ -267,7 +267,7 @@ private:
 class PathProfiler : public PassInfoMixin<PathProfiler> {
 private:
   // Current context for multi threading support.
-  LLVMContext *Context;
+  LLVMContext* Context;
 
   // Which function are we currently instrumenting
   unsigned currentFunctionNumber;
@@ -279,45 +279,45 @@ private:
 
   // Instruments each function with path profiling.  'main' is instrumented
   // with code to save the profile to disk.
-  bool runOnModule(Module &M);
+  bool runOnModule(Module& M);
 
   // Analyzes the function for Ball-Larus path profiling, and inserts code.
-  void runOnFunction(std::vector<Constant *> &ftInit, Function &F, Module &M);
+  void runOnFunction(std::vector<Constant*>& ftInit, Function& F, Module& M);
 
   // Creates an increment constant representing incr.
-  ConstantInt *createIncrementConstant(long incr, int bitsize);
+  ConstantInt* createIncrementConstant(long incr, int bitsize);
 
   // Creates an increment constant representing the value in
   // edge->getIncrement().
-  ConstantInt *createIncrementConstant(BLInstrumentationEdge *edge);
+  ConstantInt* createIncrementConstant(BLInstrumentationEdge* edge);
 
   // Finds the insertion point after pathNumber in block.  PathNumber may
   // be NULL.
-  BasicBlock::iterator getInsertionPoint(BasicBlock *block, Value *pathNumber);
+  BasicBlock::iterator getInsertionPoint(BasicBlock* block, Value* pathNumber);
 
   // Inserts source's pathNumber Value* into target.  Target may or may not
   // have multiple predecessors, and may or may not have its phiNode
   // initalized.
-  void pushValueIntoNode(BLInstrumentationNode *source,
-                         BLInstrumentationNode *target);
+  void pushValueIntoNode(BLInstrumentationNode* source,
+                         BLInstrumentationNode* target);
 
   // Inserts source's pathNumber Value* into the appropriate slot of
   // target's phiNode.
-  void pushValueIntoPHI(BLInstrumentationNode *target,
-                        BLInstrumentationNode *source);
+  void pushValueIntoPHI(BLInstrumentationNode* target,
+                        BLInstrumentationNode* source);
 
   // The Value* in node, oldVal,  is updated with a Value* correspodning to
   // oldVal + addition.
-  void insertNumberIncrement(BLInstrumentationNode *node, Value *addition,
+  void insertNumberIncrement(BLInstrumentationNode* node, Value* addition,
                              bool atBeginning);
 
   // Creates a counter increment in the given node.  The Value* in node is
   // taken as the index into a hash table.
-  void insertCounterIncrement(Value *incValue, BasicBlock::iterator insertPoint,
-                              BLInstrumentationDag *dag, bool increment = true);
+  void insertCounterIncrement(Value* incValue, BasicBlock::iterator insertPoint,
+                              BLInstrumentationDag* dag, bool increment = true);
 
   // A PHINode is created in the node, and its values initialized to -1U.
-  void preparePHI(BLInstrumentationNode *node);
+  void preparePHI(BLInstrumentationNode* node);
 
   // Inserts instrumentation for the given edge
   //
@@ -327,12 +327,12 @@ private:
   // Post: Edge's target node has a pathNumber set to the path number Value
   // corresponding to the value of the path register after edge's
   // execution.
-  void insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
-                                       BLInstrumentationDag *dag);
+  void insertInstrumentationStartingAt(BLInstrumentationEdge* edge,
+                                       BLInstrumentationDag* dag);
 
   // If this edge is a critical edge, then inserts a node at this edge.
   // This edge becomes the first edge, and a new BallLarusEdge is created.
-  bool splitCritical(BLInstrumentationEdge *edge, BLInstrumentationDag *dag);
+  bool splitCritical(BLInstrumentationEdge* edge, BLInstrumentationDag* dag);
 
   // Inserts instrumentation according to the marked edges in dag.  Phony
   // edges must be unlinked from the DAG, but accessible from the
@@ -340,7 +340,7 @@ private:
   // counter increments present.
   //
   // Counter storage is created here.
-  void insertInstrumentation(BLInstrumentationDag &dag, Module &M);
+  void insertInstrumentation(BLInstrumentationDag& dag, Module& M);
 
   // public:
   //     PathProfiler();
@@ -354,9 +354,9 @@ private:
   //   }
 };
 llvm::PassPluginLibraryInfo getPathProfilerPluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "PathProfiler", "v0.1", [](PassBuilder &PB) {
+  return {LLVM_PLUGIN_API_VERSION, "PathProfiler", "v0.1", [](PassBuilder& PB) {
             PB.registerPipelineParsingCallback(
-                [](StringRef Name, ModulePassManager &MPM,
+                [](StringRef Name, ModulePassManager& MPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "PathProfiler") {
                     MPM.addPass(PathProfiler());
@@ -394,11 +394,11 @@ class PathProfilingFunctionTable {};
 template <bool xcompile>
 class TypeBuilder<PathProfilingFunctionTable, xcompile> {
 public:
-  static StructType *get(LLVMContext &C) {
+  static StructType* get(LLVMContext& C) {
     return (StructType::get(
-        TypeBuilder<types::i<32>, xcompile>::get(C),  // type
-        TypeBuilder<types::i<32>, xcompile>::get(C),  // array size
-        TypeBuilder<types::i<8> *, xcompile>::get(C), // array/hash ptr
+        TypeBuilder<types::i<32>, xcompile>::get(C), // type
+        TypeBuilder<types::i<32>, xcompile>::get(C), // array size
+        TypeBuilder<types::i<8>*, xcompile>::get(C), // array/hash ptr
         NULL));
   }
 };
@@ -406,9 +406,9 @@ public:
 typedef TypeBuilder<PathProfilingFunctionTable, true> ftEntryTypeBuilder;
 
 // BallLarusEdge << operator overloading
-raw_ostream &operator<<(raw_ostream &os,
-                        const BLInstrumentationEdge &edge) LLVM_ATTRIBUTE_USED;
-raw_ostream &operator<<(raw_ostream &os, const BLInstrumentationEdge &edge) {
+raw_ostream& operator<<(raw_ostream& os,
+                        const BLInstrumentationEdge& edge) LLVM_ATTRIBUTE_USED;
+raw_ostream& operator<<(raw_ostream& os, const BLInstrumentationEdge& edge) {
   os << "[" << edge.getSource()->getName() << " -> "
      << edge.getTarget()->getName()
      << "] init: " << (edge.isInitialization() ? "yes" : "no")
@@ -419,19 +419,19 @@ raw_ostream &operator<<(raw_ostream &os, const BLInstrumentationEdge &edge) {
 } // namespace llvm
 
 // Creates a new BLInstrumentationNode from a BasicBlock.
-BLInstrumentationNode::BLInstrumentationNode(BasicBlock *BB)
+BLInstrumentationNode::BLInstrumentationNode(BasicBlock* BB)
     : BallLarusNode(BB), _startingPathNumber(NULL), _endingPathNumber(NULL),
       _pathPHI(NULL) {}
 
 // Constructor for BLInstrumentationEdge.
-BLInstrumentationEdge::BLInstrumentationEdge(BLInstrumentationNode *source,
-                                             BLInstrumentationNode *target)
+BLInstrumentationEdge::BLInstrumentationEdge(BLInstrumentationNode* source,
+                                             BLInstrumentationNode* target)
     : BallLarusEdge(source, target, 0), _increment(0), _isInSpanningTree(false),
       _isInitialization(false), _isCounterIncrement(false),
       _hasInstrumentation(false) {}
 
 // Sets the target node of this edge.  Required to split edges.
-void BLInstrumentationEdge::setTarget(BallLarusNode *node) { _target = node; }
+void BLInstrumentationEdge::setTarget(BallLarusNode* node) { _target = node; }
 
 // Returns whether this edge is in the spanning tree.
 bool BLInstrumentationEdge::isInSpanningTree() const {
@@ -494,15 +494,15 @@ void BLInstrumentationEdge::setHasInstrumentation(bool hasInstrumentation) {
 
 // Returns the successor number of this edge in the source.
 unsigned BLInstrumentationEdge::getSuccessorNumber() {
-  BallLarusNode *sourceNode = getSource();
-  BallLarusNode *targetNode = getTarget();
-  BasicBlock *source = sourceNode->getBlock();
-  BasicBlock *target = targetNode->getBlock();
+  BallLarusNode* sourceNode = getSource();
+  BallLarusNode* targetNode = getTarget();
+  BasicBlock* source = sourceNode->getBlock();
+  BasicBlock* target = targetNode->getBlock();
 
   if (source == NULL || target == NULL)
     return (0);
 
-  Instruction *terminator = source->getTerminator();
+  Instruction* terminator = source->getTerminator();
 
   unsigned i;
   for (i = 0; i < terminator->getNumSuccessors(); i++) {
@@ -514,13 +514,13 @@ unsigned BLInstrumentationEdge::getSuccessorNumber() {
 }
 
 // BLInstrumentationDag constructor initializes a DAG for the given Function.
-BLInstrumentationDag::BLInstrumentationDag(Function &F)
+BLInstrumentationDag::BLInstrumentationDag(Function& F)
     : BallLarusDag(F), _counterArray(0) {}
 
 // Returns the Exit->Root edge. This edge is required for creating
 // directed cycles in the algorithm for moving instrumentation off of
 // the spanning tree
-BallLarusEdge *BLInstrumentationDag::getExitRootEdge() {
+BallLarusEdge* BLInstrumentationDag::getExitRootEdge() {
   BLEdgeIterator erEdge = getExit()->succBegin();
   return (*erEdge);
 }
@@ -538,11 +538,11 @@ BLEdgeVector BLInstrumentationDag::getCallPhonyEdges() {
 }
 
 // Gets the path counter array
-GlobalVariable *BLInstrumentationDag::getCounterArray() {
+GlobalVariable* BLInstrumentationDag::getCounterArray() {
   return _counterArray;
 }
 
-void BLInstrumentationDag::setCounterArray(GlobalVariable *c) {
+void BLInstrumentationDag::setCounterArray(GlobalVariable* c) {
   _counterArray = c;
 }
 
@@ -552,26 +552,26 @@ void BLInstrumentationDag::setCounterArray(GlobalVariable *c) {
 void BLInstrumentationDag::calculateChordIncrements() {
   calculateChordIncrementsDfs(0, getRoot(), NULL);
 
-  BLInstrumentationEdge *chord;
+  BLInstrumentationEdge* chord;
   for (BLEdgeIterator chordEdge = _chordEdges.begin(), end = _chordEdges.end();
        chordEdge != end; chordEdge++) {
-    chord = (BLInstrumentationEdge *)*chordEdge;
+    chord = (BLInstrumentationEdge*)*chordEdge;
     chord->setIncrement(chord->getIncrement() + chord->getWeight());
   }
 }
 
 // Updates the state when an edge has been split
-void BLInstrumentationDag::splitUpdate(BLInstrumentationEdge *formerEdge,
-                                       BasicBlock *newBlock) {
-  BallLarusNode *oldTarget = formerEdge->getTarget();
-  BallLarusNode *newNode = addNode(newBlock);
+void BLInstrumentationDag::splitUpdate(BLInstrumentationEdge* formerEdge,
+                                       BasicBlock* newBlock) {
+  BallLarusNode* oldTarget = formerEdge->getTarget();
+  BallLarusNode* newNode = addNode(newBlock);
   formerEdge->setTarget(newNode);
   newNode->addPredEdge(formerEdge);
 
   // LLVM_//LLVM_DEBUG(dbgs() << "  Edge split: " << *formerEdge << "\n");
 
   oldTarget->removePredEdge(formerEdge);
-  BallLarusEdge *newEdge = addEdge(newNode, oldTarget, 0);
+  BallLarusEdge* newEdge = addEdge(newNode, oldTarget, 0);
 
   if (formerEdge->getType() == BallLarusEdge::BACKEDGE ||
       formerEdge->getType() == BallLarusEdge::SPLITEDGE) {
@@ -589,7 +589,7 @@ void BLInstrumentationDag::splitUpdate(BLInstrumentationEdge *formerEdge,
 // implementation does not try to minimize the instrumentation overhead
 // by trying to find hot edges.
 void BLInstrumentationDag::calculateSpanningTree() {
-  std::stack<BallLarusNode *> dfsStack;
+  std::stack<BallLarusNode*> dfsStack;
 
   for (BLNodeIterator nodeIt = _nodes.begin(), end = _nodes.end();
        nodeIt != end; nodeIt++) {
@@ -598,13 +598,13 @@ void BLInstrumentationDag::calculateSpanningTree() {
 
   dfsStack.push(getRoot());
   while (dfsStack.size() > 0) {
-    BallLarusNode *node = dfsStack.top();
+    BallLarusNode* node = dfsStack.top();
     dfsStack.pop();
 
     if (node->getColor() == BallLarusNode::WHITE)
       continue;
 
-    BallLarusNode *nextNode;
+    BallLarusNode* nextNode;
     bool forward = true;
     BLEdgeIterator succEnd = node->succEnd();
 
@@ -624,14 +624,14 @@ void BLInstrumentationDag::calculateSpanningTree() {
       nextNode = forward ? (*edge)->getTarget() : (*edge)->getSource();
       if (nextNode->getColor() != BallLarusNode::WHITE) {
         nextNode->setColor(BallLarusNode::WHITE);
-        makeEdgeSpanning((BLInstrumentationEdge *)(*edge));
+        makeEdgeSpanning((BLInstrumentationEdge*)(*edge));
       }
     }
   }
 
   for (BLEdgeIterator edge = _edges.begin(), end = _edges.end(); edge != end;
        edge++) {
-    BLInstrumentationEdge *instEdge = (BLInstrumentationEdge *)(*edge);
+    BLInstrumentationEdge* instEdge = (BLInstrumentationEdge*)(*edge);
     // safe since createEdge is overriden
     if (!instEdge->isInSpanningTree() &&
         (*edge)->getType() != BallLarusEdge::SPLITEDGE)
@@ -642,8 +642,8 @@ void BLInstrumentationDag::calculateSpanningTree() {
 // Pushes initialization further down in order to group the first
 // increment and initialization.
 void BLInstrumentationDag::pushInitialization() {
-  BLInstrumentationEdge *exitRootEdge =
-      (BLInstrumentationEdge *)getExitRootEdge();
+  BLInstrumentationEdge* exitRootEdge =
+      (BLInstrumentationEdge*)getExitRootEdge();
   exitRootEdge->setIsInitialization(true);
   pushInitializationFromEdge(exitRootEdge);
 }
@@ -651,8 +651,8 @@ void BLInstrumentationDag::pushInitialization() {
 // Pushes the path counter increments up in order to group the last path
 // number increment.
 void BLInstrumentationDag::pushCounters() {
-  BLInstrumentationEdge *exitRootEdge =
-      (BLInstrumentationEdge *)getExitRootEdge();
+  BLInstrumentationEdge* exitRootEdge =
+      (BLInstrumentationEdge*)getExitRootEdge();
   exitRootEdge->setIsCounterIncrement(true);
   pushCountersFromEdge(exitRootEdge);
 }
@@ -660,7 +660,7 @@ void BLInstrumentationDag::pushCounters() {
 // Removes phony edges from the successor list of the source, and the
 // predecessor list of the target.
 void BLInstrumentationDag::unlinkPhony() {
-  BallLarusEdge *edge;
+  BallLarusEdge* edge;
 
   for (BLEdgeIterator next = _edges.begin(), end = _edges.end(); next != end;
        next++) {
@@ -701,7 +701,7 @@ void BLInstrumentationDag::generateDotGraph() {
     dotFile << "\t\"" << sourceName.c_str() << "\" -> \"" << targetName.c_str()
             << "\" ";
 
-    long inc = ((BLInstrumentationEdge *)(*edge))->getIncrement();
+    long inc = ((BLInstrumentationEdge*)(*edge))->getIncrement();
 
     switch ((*edge)->getType()) {
     case BallLarusEdge::NORMAL:
@@ -737,7 +737,7 @@ void BLInstrumentationDag::generateDotGraph() {
 // Override this method to produce subclasses of BallLarusNode if
 // necessary. The destructor of BallLarusDag will call free on each pointer
 // created.
-BallLarusNode *BLInstrumentationDag::createNode(BasicBlock *BB) {
+BallLarusNode* BLInstrumentationDag::createNode(BasicBlock* BB) {
   return (new BLInstrumentationNode(BB));
 }
 
@@ -745,35 +745,35 @@ BallLarusNode *BLInstrumentationDag::createNode(BasicBlock *BB) {
 // Override this method to produce subclasses of BallLarusEdge if
 // necessary. The destructor of BallLarusDag will call free on each pointer
 // created.
-BallLarusEdge *BLInstrumentationDag::createEdge(BallLarusNode *source,
-                                                BallLarusNode *target,
+BallLarusEdge* BLInstrumentationDag::createEdge(BallLarusNode* source,
+                                                BallLarusNode* target,
                                                 unsigned edgeNumber) {
   // One can cast from BallLarusNode to BLInstrumentationNode since createNode
   // is overriden to produce BLInstrumentationNode.
-  return (new BLInstrumentationEdge((BLInstrumentationNode *)source,
-                                    (BLInstrumentationNode *)target));
+  return (new BLInstrumentationEdge((BLInstrumentationNode*)source,
+                                    (BLInstrumentationNode*)target));
 }
 
 // Sets the Value corresponding to the pathNumber register, constant,
 // or phinode.  Used by the instrumentation code to remember path
 // number Values.
-Value *BLInstrumentationNode::getStartingPathNumber() {
+Value* BLInstrumentationNode::getStartingPathNumber() {
   return (_startingPathNumber);
 }
 
 // Sets the Value of the pathNumber.  Used by the instrumentation code.
-void BLInstrumentationNode::setStartingPathNumber(Value *pathNumber) {
+void BLInstrumentationNode::setStartingPathNumber(Value* pathNumber) {
   // LLVM_DEBUG(dbgs() << "  SPN-" << getName() << " <-- " << (pathNumber ?
   //   pathNumber->getName() :
   //   "unused") << "\n");
   _startingPathNumber = pathNumber;
 }
 
-Value *BLInstrumentationNode::getEndingPathNumber() {
+Value* BLInstrumentationNode::getEndingPathNumber() {
   return (_endingPathNumber);
 }
 
-void BLInstrumentationNode::setEndingPathNumber(Value *pathNumber) {
+void BLInstrumentationNode::setEndingPathNumber(Value* pathNumber) {
   // LLVM_DEBUG(dbgs() << "  EPN-" << getName() << " <-- "
   //   << (pathNumber ? pathNumber->getName() : "unused") << "\n");
   _endingPathNumber = pathNumber;
@@ -781,15 +781,15 @@ void BLInstrumentationNode::setEndingPathNumber(Value *pathNumber) {
 
 // Get the PHINode Instruction for this node.  Used by instrumentation
 // code.
-PHINode *BLInstrumentationNode::getPathPHI() { return (_pathPHI); }
+PHINode* BLInstrumentationNode::getPathPHI() { return (_pathPHI); }
 
 // Set the PHINode Instruction for this node.  Used by instrumentation
 // code.
-void BLInstrumentationNode::setPathPHI(PHINode *pathPHI) { _pathPHI = pathPHI; }
+void BLInstrumentationNode::setPathPHI(PHINode* pathPHI) { _pathPHI = pathPHI; }
 
 // Removes the edge from the appropriate predecessor and successor
 // lists.
-void BLInstrumentationDag::unlinkEdge(BallLarusEdge *edge) {
+void BLInstrumentationDag::unlinkEdge(BallLarusEdge* edge) {
   if (edge == getExitRootEdge())
     // LLVM_DEBUG(dbgs() << " Removing exit->root edge\n");
 
@@ -798,15 +798,15 @@ void BLInstrumentationDag::unlinkEdge(BallLarusEdge *edge) {
 }
 
 // Makes an edge part of the spanning tree.
-void BLInstrumentationDag::makeEdgeSpanning(BLInstrumentationEdge *edge) {
+void BLInstrumentationDag::makeEdgeSpanning(BLInstrumentationEdge* edge) {
   edge->setIsInSpanningTree(true);
   _treeEdges.push_back(edge);
 }
 
 // Pushes initialization and calls itself recursively.
 void BLInstrumentationDag::pushInitializationFromEdge(
-    BLInstrumentationEdge *edge) {
-  BallLarusNode *target;
+    BLInstrumentationEdge* edge) {
+  BallLarusNode* target;
 
   target = edge->getTarget();
   if (target->getNumberPredEdges() > 1 || target == getExit()) {
@@ -814,7 +814,7 @@ void BLInstrumentationDag::pushInitializationFromEdge(
   } else {
     for (BLEdgeIterator next = target->succBegin(), end = target->succEnd();
          next != end; next++) {
-      BLInstrumentationEdge *intoEdge = (BLInstrumentationEdge *)*next;
+      BLInstrumentationEdge* intoEdge = (BLInstrumentationEdge*)*next;
 
       // Skip split edges
       if (intoEdge->getType() == BallLarusEdge::SPLITEDGE)
@@ -831,8 +831,8 @@ void BLInstrumentationDag::pushInitializationFromEdge(
 }
 
 // Pushes path counter increments up recursively.
-void BLInstrumentationDag::pushCountersFromEdge(BLInstrumentationEdge *edge) {
-  BallLarusNode *source;
+void BLInstrumentationDag::pushCountersFromEdge(BLInstrumentationEdge* edge) {
+  BallLarusNode* source;
 
   source = edge->getSource();
   if (source->getNumberSuccEdges() > 1 || source == getRoot() ||
@@ -841,7 +841,7 @@ void BLInstrumentationDag::pushCountersFromEdge(BLInstrumentationEdge *edge) {
   } else {
     for (BLEdgeIterator previous = source->predBegin(), end = source->predEnd();
          previous != end; previous++) {
-      BLInstrumentationEdge *fromEdge = (BLInstrumentationEdge *)*previous;
+      BLInstrumentationEdge* fromEdge = (BLInstrumentationEdge*)*previous;
 
       // Skip split edges
       if (fromEdge->getType() == BallLarusEdge::SPLITEDGE)
@@ -859,13 +859,13 @@ void BLInstrumentationDag::pushCountersFromEdge(BLInstrumentationEdge *edge) {
 
 // Depth first algorithm for determining the chord increments.
 void BLInstrumentationDag::calculateChordIncrementsDfs(long weight,
-                                                       BallLarusNode *v,
-                                                       BallLarusEdge *e) {
-  BLInstrumentationEdge *f;
+                                                       BallLarusNode* v,
+                                                       BallLarusEdge* e) {
+  BLInstrumentationEdge* f;
 
   for (BLEdgeIterator treeEdge = _treeEdges.begin(), end = _treeEdges.end();
        treeEdge != end; treeEdge++) {
-    f = (BLInstrumentationEdge *)*treeEdge;
+    f = (BLInstrumentationEdge*)*treeEdge;
     if (e != f && v == f->getTarget()) {
       calculateChordIncrementsDfs(calculateChordIncrementsDir(e, f) * (weight) +
                                       f->getWeight(),
@@ -880,7 +880,7 @@ void BLInstrumentationDag::calculateChordIncrementsDfs(long weight,
 
   for (BLEdgeIterator chordEdge = _chordEdges.begin(), end = _chordEdges.end();
        chordEdge != end; chordEdge++) {
-    f = (BLInstrumentationEdge *)*chordEdge;
+    f = (BLInstrumentationEdge*)*chordEdge;
     if (v == f->getSource() || v == f->getTarget()) {
       f->setIncrement(f->getIncrement() +
                       calculateChordIncrementsDir(e, f) * weight);
@@ -889,8 +889,8 @@ void BLInstrumentationDag::calculateChordIncrementsDfs(long weight,
 }
 
 // Determines the relative direction of two edges.
-int BLInstrumentationDag::calculateChordIncrementsDir(BallLarusEdge *e,
-                                                      BallLarusEdge *f) {
+int BLInstrumentationDag::calculateChordIncrementsDir(BallLarusEdge* e,
+                                                      BallLarusEdge* f) {
   if (e == NULL)
     return (1);
   else if (e->getSource() == f->getTarget() || e->getTarget() == f->getSource())
@@ -900,31 +900,31 @@ int BLInstrumentationDag::calculateChordIncrementsDir(BallLarusEdge *e,
 }
 
 // Creates an increment constant representing incr.
-ConstantInt *PathProfiler::createIncrementConstant(long incr, int bitsize) {
+ConstantInt* PathProfiler::createIncrementConstant(long incr, int bitsize) {
   return (ConstantInt::get(IntegerType::get(*Context, 32), incr));
 }
 
 // Creates an increment constant representing the value in
 // edge->getIncrement().
-ConstantInt *
-PathProfiler::createIncrementConstant(BLInstrumentationEdge *edge) {
+ConstantInt*
+PathProfiler::createIncrementConstant(BLInstrumentationEdge* edge) {
   return (createIncrementConstant(edge->getIncrement(), 32));
 }
 
 // Finds the insertion point after pathNumber in block.  PathNumber may
 // be NULL.
-BasicBlock::iterator PathProfiler::getInsertionPoint(BasicBlock *block,
-                                                     Value *pathNumber) {
+BasicBlock::iterator PathProfiler::getInsertionPoint(BasicBlock* block,
+                                                     Value* pathNumber) {
   if (pathNumber == NULL || isa<ConstantInt>(pathNumber) ||
-      (((Instruction *)(pathNumber))->getParent()) != block) {
+      (((Instruction*)(pathNumber))->getParent()) != block) {
     return (block->getFirstInsertionPt());
   } else {
-    Instruction *pathNumberInst = (Instruction *)(pathNumber);
+    Instruction* pathNumberInst = (Instruction*)(pathNumber);
     BasicBlock::iterator insertPoint;
     BasicBlock::iterator end = block->end();
 
     for (insertPoint = block->begin(); insertPoint != end; insertPoint++) {
-      Instruction *insertInst = &(*insertPoint);
+      Instruction* insertInst = &(*insertPoint);
 
       if (insertInst == pathNumberInst)
         return (++insertPoint);
@@ -935,12 +935,12 @@ BasicBlock::iterator PathProfiler::getInsertionPoint(BasicBlock *block,
 }
 
 // A PHINode is created in the node, and its values initialized to -1U.
-void PathProfiler::preparePHI(BLInstrumentationNode *node) {
-  BasicBlock *block = node->getBlock();
+void PathProfiler::preparePHI(BLInstrumentationNode* node) {
+  BasicBlock* block = node->getBlock();
   BasicBlock::iterator insertPoint = block->getFirstInsertionPt();
   pred_iterator PB = pred_begin(node->getBlock()),
                 PE = pred_end(node->getBlock());
-  PHINode *phi = PHINode::Create(Type::getInt32Ty(Context),
+  PHINode* phi = PHINode::Create(Type::getInt32Ty(Context),
                                  (unsigned)std::distance(PB, PE), "pathNumber",
                                  insertPoint);
   node->setPathPHI(phi);
@@ -948,7 +948,7 @@ void PathProfiler::preparePHI(BLInstrumentationNode *node) {
   node->setEndingPathNumber(phi);
 
   for (pred_iterator predIt = PB; predIt != PE; predIt++) {
-    BasicBlock *pred = (*predIt);
+    BasicBlock* pred = (*predIt);
 
     if (pred != NULL)
       phi->addIncoming(createIncrementConstant((long)-1, 32), pred);
@@ -958,8 +958,8 @@ void PathProfiler::preparePHI(BLInstrumentationNode *node) {
 // Inserts source's pathNumber Value* into target.  Target may or may not
 // have multiple predecessors, and may or may not have its phiNode
 // initalized.
-void PathProfiler::pushValueIntoNode(BLInstrumentationNode *source,
-                                     BLInstrumentationNode *target) {
+void PathProfiler::pushValueIntoNode(BLInstrumentationNode* source,
+                                     BLInstrumentationNode* target) {
   if (target->getBlock() == NULL)
     return;
 
@@ -985,9 +985,9 @@ void PathProfiler::pushValueIntoNode(BLInstrumentationNode *source,
 
 // Inserts source's pathNumber Value* into the appropriate slot of
 // target's phiNode.
-void PathProfiler::pushValueIntoPHI(BLInstrumentationNode *target,
-                                    BLInstrumentationNode *source) {
-  PHINode *phi = target->getPathPHI();
+void PathProfiler::pushValueIntoPHI(BLInstrumentationNode* target,
+                                    BLInstrumentationNode* source) {
+  PHINode* phi = target->getPathPHI();
   assert(phi != NULL && "  Tried to push value into node with PHI, but node"
                         " actually had no PHI.");
   phi->removeIncomingValue(source->getBlock(), false);
@@ -996,9 +996,9 @@ void PathProfiler::pushValueIntoPHI(BLInstrumentationNode *target,
 
 // The Value* in node, oldVal,  is updated with a Value* correspodning to
 // oldVal + addition.
-void PathProfiler::insertNumberIncrement(BLInstrumentationNode *node,
-                                         Value *addition, bool atBeginning) {
-  BasicBlock *block = node->getBlock();
+void PathProfiler::insertNumberIncrement(BLInstrumentationNode* node,
+                                         Value* addition, bool atBeginning) {
+  BasicBlock* block = node->getBlock();
   assert(node->getStartingPathNumber() != NULL);
   assert(node->getEndingPathNumber() != NULL);
 
@@ -1010,7 +1010,7 @@ void PathProfiler::insertNumberIncrement(BLInstrumentationNode *node,
     insertPoint = BasicBlock::iterator(block->getTerminator());
 
   // LLVM_DEBUG(errs() << "  Creating addition instruction.\n");
-  Value *newpn =
+  Value* newpn =
       BinaryOperator::Create(Instruction::Add, node->getStartingPathNumber(),
                              addition, "pathNumber", insertPoint);
 
@@ -1023,41 +1023,41 @@ void PathProfiler::insertNumberIncrement(BLInstrumentationNode *node,
 // Creates a counter increment in the given node.  The Value* in node is
 // taken as the index into an array or hash table.  The hash table access
 // is a call to the runtime.
-void PathProfiler::insertCounterIncrement(Value *incValue,
-                                          Instruction *insertPoint,
-                                          BLInstrumentationDag *dag,
+void PathProfiler::insertCounterIncrement(Value* incValue,
+                                          Instruction* insertPoint,
+                                          BLInstrumentationDag* dag,
                                           bool increment) {
   // Counter increment for array
   if (dag->getNumberOfPaths() <= HASH_THRESHHOLD) {
     // Get pointer to the array location
-    std::vector<Value *> gepIndices(2);
+    std::vector<Value*> gepIndices(2);
     gepIndices[0] = Constant::getNullValue(Type::getInt32Ty(*Context));
     gepIndices[1] = incValue;
 
-    GetElementPtrInst *pcPointer = GetElementPtrInst::Create(
+    GetElementPtrInst* pcPointer = GetElementPtrInst::Create(
         dag->getCounterArray(), gepIndices, "counterInc", insertPoint);
 
     // Load from the array - call it oldPC
-    LoadInst *oldPc = new LoadInst(pcPointer, "oldPC", insertPoint);
+    LoadInst* oldPc = new LoadInst(pcPointer, "oldPC", insertPoint);
 
     // Test to see whether adding 1 will overflow the counter
-    ICmpInst *isMax =
+    ICmpInst* isMax =
         new ICmpInst(insertPoint, CmpInst::ICMP_ULT, oldPc,
                      createIncrementConstant(0xffffffff, 32), "isMax");
 
     // Select increment for the path counter based on overflow
-    SelectInst *inc = SelectInst::Create(
+    SelectInst* inc = SelectInst::Create(
         isMax, createIncrementConstant(increment ? 1 : -1, 32),
         createIncrementConstant(0, 32), "pathInc", insertPoint);
 
     // newPc = oldPc + inc
-    BinaryOperator *newPc = BinaryOperator::Create(Instruction::Add, oldPc, inc,
+    BinaryOperator* newPc = BinaryOperator::Create(Instruction::Add, oldPc, inc,
                                                    "newPC", insertPoint);
 
     // Store back in to the array
     new StoreInst(newPc, pcPointer, insertPoint);
   } else { // Counter increment for hash
-    std::vector<Value *> args(2);
+    std::vector<Value*> args(2);
     args[0] =
         ConstantInt::get(Type::getInt32Ty(*Context), currentFunctionNumber);
     args[1] = incValue;
@@ -1078,8 +1078,8 @@ void PathProfiler::insertCounterIncrement(Value *incValue,
 // execution.
 //
 // FIXME: This should be reworked so it's not recursive.
-void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
-                                                   BLInstrumentationDag *dag) {
+void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge* edge,
+                                                   BLInstrumentationDag* dag) {
   // Mark the edge as instrumented
   edge->setHasInstrumentation(true);
   // LLVM_DEBUG(dbgs() << "\nInstrumenting edge: " << (*edge) << "\n");
@@ -1087,12 +1087,10 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
   // create a new node for this edge's instrumentation
   splitCritical(edge, dag);
 
-  BLInstrumentationNode *sourceNode =
-      (BLInstrumentationNode *)edge->getSource();
-  BLInstrumentationNode *targetNode =
-      (BLInstrumentationNode *)edge->getTarget();
-  BLInstrumentationNode *instrumentNode;
-  BLInstrumentationNode *nextSourceNode;
+  BLInstrumentationNode* sourceNode = (BLInstrumentationNode*)edge->getSource();
+  BLInstrumentationNode* targetNode = (BLInstrumentationNode*)edge->getTarget();
+  BLInstrumentationNode* instrumentNode;
+  BLInstrumentationNode* nextSourceNode;
 
   bool atBeginning = false;
 
@@ -1127,9 +1125,9 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
   // Insert instrumentation if this is a back or split edge
   if (edge->getType() == BallLarusEdge::BACKEDGE ||
       edge->getType() == BallLarusEdge::SPLITEDGE) {
-    BLInstrumentationEdge *top = (BLInstrumentationEdge *)edge->getPhonyRoot();
-    BLInstrumentationEdge *bottom =
-        (BLInstrumentationEdge *)edge->getPhonyExit();
+    BLInstrumentationEdge* top = (BLInstrumentationEdge*)edge->getPhonyRoot();
+    BLInstrumentationEdge* bottom =
+        (BLInstrumentationEdge*)edge->getPhonyExit();
 
     assert(top->isInitialization() && " Top phony edge did not"
                                       " contain a path number initialization.");
@@ -1149,7 +1147,7 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
 
     // add information from the bottom edge, if it exists
     if (bottom->getIncrement()) {
-      Value *newpn = BinaryOperator::Create(
+      Value* newpn = BinaryOperator::Create(
           Instruction::Add, instrumentNode->getStartingPathNumber(),
           createIncrementConstant(bottom), "pathNumber", insertPoint);
       instrumentNode->setEndingPathNumber(newpn);
@@ -1180,7 +1178,7 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
     if (edge->isInitialization()) { // initialize path number
       instrumentNode->setEndingPathNumber(createIncrementConstant(edge));
     } else if (edge->getIncrement()) { // increment path number
-      Value *newpn = BinaryOperator::Create(
+      Value* newpn = BinaryOperator::Create(
           Instruction::Add, instrumentNode->getStartingPathNumber(),
           createIncrementConstant(edge), "pathNumber", insertPoint);
       instrumentNode->setEndingPathNumber(newpn);
@@ -1206,8 +1204,8 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
                       end = targetNode->succEnd();
        next != end; next++) {
     // So long as it is un-instrumented, add it to the list
-    if (!((BLInstrumentationEdge *)(*next))->hasInstrumentation())
-      insertInstrumentationStartingAt((BLInstrumentationEdge *)*next, dag);
+    if (!((BLInstrumentationEdge*)(*next))->hasInstrumentation())
+      insertInstrumentationStartingAt((BLInstrumentationEdge*)*next, dag);
     // else
     // LLVM_DEBUG(dbgs() << "  Edge " << *(BLInstrumentationEdge*)(*next)
     // << " already instrumented.\n");
@@ -1220,10 +1218,10 @@ void PathProfiler::insertInstrumentationStartingAt(BLInstrumentationEdge *edge,
 // present.
 //
 // Counter storage is created here.
-void PathProfiler::insertInstrumentation(BLInstrumentationDag &dag, Module &M) {
+void PathProfiler::insertInstrumentation(BLInstrumentationDag& dag, Module& M) {
 
-  BLInstrumentationEdge *exitRootEdge =
-      (BLInstrumentationEdge *)dag.getExitRootEdge();
+  BLInstrumentationEdge* exitRootEdge =
+      (BLInstrumentationEdge*)dag.getExitRootEdge();
   insertInstrumentationStartingAt(exitRootEdge, &dag);
 
   // Iterate through each call edge and apply the appropriate hash increment
@@ -1231,11 +1229,11 @@ void PathProfiler::insertInstrumentation(BLInstrumentationDag &dag, Module &M) {
   BLEdgeVector callEdges = dag.getCallPhonyEdges();
   for (BLEdgeIterator edge = callEdges.begin(), end = callEdges.end();
        edge != end; edge++) {
-    BLInstrumentationNode *node = (BLInstrumentationNode *)(*edge)->getSource();
+    BLInstrumentationNode* node = (BLInstrumentationNode*)(*edge)->getSource();
     BasicBlock::iterator insertPoint = node->getBlock()->getFirstInsertionPt();
 
     // Find the first function call
-    while (((Instruction &)(*insertPoint)).getOpcode() != Instruction::Call)
+    while (((Instruction&)(*insertPoint)).getOpcode() != Instruction::Call)
       insertPoint++;
 
     // LLVM_DEBUG(dbgs() << "\nInstrumenting method call block '"
@@ -1243,9 +1241,9 @@ void PathProfiler::insertInstrumentation(BLInstrumentationDag &dag, Module &M) {
     // LLVM_DEBUG(dbgs() << "   Path number initialized: "
     //   << ((node->getStartingPathNumber()) ? "yes" : "no") << "\n");
 
-    Value *newpn;
+    Value* newpn;
     if (node->getStartingPathNumber()) {
-      long inc = ((BLInstrumentationEdge *)(*edge))->getIncrement();
+      long inc = ((BLInstrumentationEdge*)(*edge))->getIncrement();
       if (inc)
         newpn = BinaryOperator::Create(
             Instruction::Add, node->getStartingPathNumber(),
@@ -1253,8 +1251,8 @@ void PathProfiler::insertInstrumentation(BLInstrumentationDag &dag, Module &M) {
       else
         newpn = node->getStartingPathNumber();
     } else {
-      newpn = (Value *)createIncrementConstant(
-          ((BLInstrumentationEdge *)(*edge))->getIncrement(), 32);
+      newpn = (Value*)createIncrementConstant(
+          ((BLInstrumentationEdge*)(*edge))->getIncrement(), 32);
     }
 
     insertCounterIncrement(newpn, insertPoint, &dag);
@@ -1264,8 +1262,8 @@ void PathProfiler::insertInstrumentation(BLInstrumentationDag &dag, Module &M) {
 }
 
 // Entry point of the module
-void PathProfiler::runOnFunction(std::vector<Constant *> &ftInit, Function &F,
-                                 Module &M) {
+void PathProfiler::runOnFunction(std::vector<Constant*>& ftInit, Function& F,
+                                 Module& M) {
   // Build DAG from CFG
   BLInstrumentationDag dag = BLInstrumentationDag(F);
   dag.init();
@@ -1287,7 +1285,7 @@ void PathProfiler::runOnFunction(std::vector<Constant *> &ftInit, Function &F,
 
   // Should we store the information in an array or hash
   if (dag.getNumberOfPaths() <= HASH_THRESHHOLD) {
-    Type *t =
+    Type* t =
         ArrayType::get(Type::getInt32Ty(*Context), dag.getNumberOfPaths());
 
     dag.setCounterArray(new GlobalVariable(M, t, false,
@@ -1299,23 +1297,23 @@ void PathProfiler::runOnFunction(std::vector<Constant *> &ftInit, Function &F,
 
   // Add to global function reference table
   unsigned type;
-  Type *voidPtr = TypeBuilder<types::i<8> *, true>::get(*Context);
+  Type* voidPtr = TypeBuilder<types::i<8>*, true>::get(*Context);
 
   if (dag.getNumberOfPaths() <= HASH_THRESHHOLD)
     type = ProfilingArray;
   else
     type = ProfilingHash;
 
-  std::vector<Constant *> entryArray(3);
+  std::vector<Constant*> entryArray(3);
   entryArray[0] = createIncrementConstant(type, 32);
   entryArray[1] = createIncrementConstant(dag.getNumberOfPaths(), 32);
   entryArray[2] = dag.getCounterArray()
                       ? ConstantExpr::getBitCast(dag.getCounterArray(), voidPtr)
                       : Constant::getNullValue(voidPtr);
 
-  StructType *at = ftEntryTypeBuilder::get(*Context);
-  ConstantStruct *functionEntry =
-      (ConstantStruct *)ConstantStruct::get(at, entryArray);
+  StructType* at = ftEntryTypeBuilder::get(*Context);
+  ConstantStruct* functionEntry =
+      (ConstantStruct*)ConstantStruct::get(at, entryArray);
   ftInit.push_back(functionEntry);
 }
 
@@ -1324,7 +1322,7 @@ void PathProfiler::runOnFunction(std::vector<Constant *> &ftInit, Function &F,
   dbgs() << "\n\n============= MODULE BEGIN ===============\n"                 \
          << M << "\n============== MODULE END ================\n"
 
-bool PathProfiler::runOnModule(Module &M) {
+bool PathProfiler::runOnModule(Module& M) {
   Context = &M.getContext();
 
   // //LLVM_DEBUG(dbgs()
@@ -1337,7 +1335,7 @@ bool PathProfiler::runOnModule(Module &M) {
   //       << "****************************************\n");
 
   // No main, no instrumentation!
-  Function *Main = M.getFunction("main");
+  Function* Main = M.getFunction("main");
 
   // Using fortran? ... this kind of works
   if (!Main)
@@ -1363,7 +1361,7 @@ bool PathProfiler::runOnModule(Module &M) {
                             Type::getInt32Ty(*Context), // path number
                             NULL);
 
-  std::vector<Constant *> ftInit;
+  std::vector<Constant*> ftInit;
   unsigned functionNumber = 0;
   for (Module::iterator F = M.begin(), E = M.end(); F != E; F++) {
     if (F->isDeclaration())
@@ -1377,16 +1375,16 @@ bool PathProfiler::runOnModule(Module &M) {
     runOnFunction(ftInit, *F, M);
   }
 
-  Type *t = ftEntryTypeBuilder::get(*Context);
-  ArrayType *ftArrayType = ArrayType::get(t, ftInit.size());
-  Constant *ftInitConstant = ConstantArray::get(ftArrayType, ftInit);
+  Type* t = ftEntryTypeBuilder::get(*Context);
+  ArrayType* ftArrayType = ArrayType::get(t, ftInit.size());
+  Constant* ftInitConstant = ConstantArray::get(ftArrayType, ftInit);
 
   // LLVM_DEBUG(dbgs() << " ftArrayType:" << *ftArrayType << "\n");
 
-  GlobalVariable *functionTable =
+  GlobalVariable* functionTable =
       new GlobalVariable(M, ftArrayType, false, GlobalValue::InternalLinkage,
                          ftInitConstant, "functionPathTable");
-  Type *eltType = ftArrayType->getTypeAtIndex((unsigned)0);
+  Type* eltType = ftArrayType->getTypeAtIndex((unsigned)0);
   InsertProfilingInitCall(Main, "llvm_start_path_profiling", functionTable,
                           PointerType::getUnqual(eltType));
 
@@ -1398,13 +1396,13 @@ bool PathProfiler::runOnModule(Module &M) {
 // If this edge is a critical edge, then inserts a node at this edge.
 // This edge becomes the first edge, and a new BallLarusEdge is created.
 // Returns true if the edge was split
-bool PathProfiler::splitCritical(BLInstrumentationEdge *edge,
-                                 BLInstrumentationDag *dag) {
+bool PathProfiler::splitCritical(BLInstrumentationEdge* edge,
+                                 BLInstrumentationDag* dag) {
   unsigned succNum = edge->getSuccessorNumber();
-  BallLarusNode *sourceNode = edge->getSource();
-  BallLarusNode *targetNode = edge->getTarget();
-  BasicBlock *sourceBlock = sourceNode->getBlock();
-  BasicBlock *targetBlock = targetNode->getBlock();
+  BallLarusNode* sourceNode = edge->getSource();
+  BallLarusNode* targetNode = edge->getTarget();
+  BasicBlock* sourceBlock = sourceNode->getBlock();
+  BasicBlock* targetBlock = targetNode->getBlock();
 
   if (sourceBlock == NULL || targetBlock == NULL ||
       sourceNode->getNumberSuccEdges() <= 1 ||
@@ -1412,10 +1410,10 @@ bool PathProfiler::splitCritical(BLInstrumentationEdge *edge,
     return (false);
   }
 
-  Instruction *terminator = sourceBlock->getTerminator();
+  Instruction* terminator = sourceBlock->getTerminator();
 
   if (SplitCriticalEdge(terminator, succNum, this, false)) {
-    BasicBlock *newBlock = terminator->getSuccessor(succNum);
+    BasicBlock* newBlock = terminator->getSuccessor(succNum);
     dag->splitUpdate(edge, newBlock);
     return (true);
   } else

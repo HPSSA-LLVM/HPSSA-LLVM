@@ -2,14 +2,14 @@
 using namespace llvm;
 // using namespace std;
 
-PreservedAnalyses TConditionalPass::run(Function &F,
-                                        FunctionAnalysisManager &AM) {
-  DominatorTree &DT = AM.getResult<DominatorTreeAnalysis>(F);
-  vector<vector<Value *>> allTauArgs;
-  ReversePostOrderTraversal<Function *> RPOT(&F);
-  Instruction *lastTau = nullptr;
-  for (auto &BB : F) {
-    for (auto &phi : BB.phis()) {
+PreservedAnalyses TConditionalPass::run(Function& F,
+                                        FunctionAnalysisManager& AM) {
+  DominatorTree& DT = AM.getResult<DominatorTreeAnalysis>(F);
+  vector<vector<Value*>> allTauArgs;
+  ReversePostOrderTraversal<Function*> RPOT(&F);
+  Instruction* lastTau = nullptr;
+  for (auto& BB : F) {
+    for (auto& phi : BB.phis()) {
       auto phiBr = PHINode::Create(Type::getInt32Ty(BB.getContext()), 0,
                                    phi.getName() + ".hpssa");
       // vector<Value *> phiArgs;
@@ -18,11 +18,11 @@ PreservedAnalyses TConditionalPass::run(Function &F,
         auto predBlock = phi.getIncomingBlock(i);
         auto operand = phi.getIncomingValue(i);
         IRBuilder<> builder(predBlock);
-        Value *first =
+        Value* first =
             ConstantInt::get(Type::getInt32Ty(predBlock->getContext()), i + 1);
-        Value *second =
+        Value* second =
             ConstantInt::get(Type::getInt32Ty(predBlock->getContext()), 0);
-        Value *newInst =
+        Value* newInst =
             builder.CreateAdd(first, second, operand->getName() + ".hpssa");
         newInst->dump();
         // phiArgs.push_back(newInst);
@@ -75,9 +75,9 @@ PreservedAnalyses TConditionalPass::run(Function &F,
 }
 
 llvm::PassPluginLibraryInfo getTConditionalPluginInfo() {
-  return {LLVM_PLUGIN_API_VERSION, "TConditional", "v0.1", [](PassBuilder &PB) {
+  return {LLVM_PLUGIN_API_VERSION, "TConditional", "v0.1", [](PassBuilder& PB) {
             PB.registerPipelineParsingCallback(
-                [](StringRef Name, FunctionPassManager &FPM,
+                [](StringRef Name, FunctionPassManager& FPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "tcond") {
                     FPM.addPass(TConditionalPass());

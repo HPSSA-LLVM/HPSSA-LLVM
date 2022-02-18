@@ -18,13 +18,13 @@ using namespace std;
 namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
-  map<BasicBlock *, BitVector> getProfileInfo(Function &F);
-  map<BasicBlock *, bool> getCaloricConnector(Function &F);
-  void Search(BasicBlock &X, DomTreeNode &DTN);
-
+  map<BasicBlock*, BitVector> getProfileInfo(Function& F);
+  map<BasicBlock*, bool> getCaloricConnector(Function& F);
+  void Search(BasicBlock& X, DomTreeNode& DTN);
   // Dominator tree.Probably virtual so that it gets overriden
 public:
-  PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
+  PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
+  std::vector<Instruction*> getAllTauInstrunctions(Function& F);
   // virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 };
 

@@ -89,7 +89,7 @@ void tcas_init(void) {
   }
 }
 
-void parseTcasResolve(uint8_t *buf) {
+void parseTcasResolve(uint8_t* buf) {
   if (DL_TCAS_RESOLVE_ac_id(buf) == AC_ID) {
     uint8_t ac_id_conflict = DL_TCAS_RESOLVE_ac_id_conflict(buf);
     tcas_acs_status[ti_acs_id[ac_id_conflict]].resolve =
@@ -97,7 +97,7 @@ void parseTcasResolve(uint8_t *buf) {
   }
 }
 
-void parseTcasRA(uint8_t *buf) {
+void parseTcasRA(uint8_t* buf) {
   if (DL_TCAS_RA_ac_id(buf) == AC_ID && SenderIdOfPprzMsg(buf) != AC_ID) {
     uint8_t ac_id_conflict = SenderIdOfPprzMsg(dl_buffer);
     tcas_acs_status[ti_acs_id[ac_id_conflict]].resolve =
@@ -106,7 +106,7 @@ void parseTcasRA(uint8_t *buf) {
 }
 
 static inline enum tcas_resolve tcas_test_direction(uint8_t id) {
-  struct EnuCoor_f *ac = acInfoGetPositionEnu_f(id);
+  struct EnuCoor_f* ac = acInfoGetPositionEnu_f(id);
   float dz = ac->z - stateGetPositionEnu_f()->z;
   if (dz > tcas_alim / 2) {
     return RA_DESCEND;
@@ -281,7 +281,7 @@ void tcas_periodic_task_4Hz(void) {
   // set alt setpoint
   if (stateGetPositionUtm_f()->alt > ground_alt + SECURITY_HEIGHT &&
       tcas_status == TCAS_RA) {
-    struct EnuCoor_f *ac = acInfoGetPositionEnu_f(tcas_ac_RA);
+    struct EnuCoor_f* ac = acInfoGetPositionEnu_f(tcas_ac_RA);
     switch (tcas_resolve) {
     case RA_CLIMB:
       tcas_alt_setpoint = Max(nav_altitude, ac->z + tcas_alim);

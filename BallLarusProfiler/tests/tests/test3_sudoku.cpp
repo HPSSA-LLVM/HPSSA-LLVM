@@ -345,7 +345,7 @@ void SudokuPuzzle::printTracerTryingValue(int x_cord, int y_cord) {
  * print the solution. If unsolvable, will display
  * message.
  */
-int main(int argc, char *const argv[]) {
+int main(int argc, char* const argv[]) {
 
   SudokuPuzzle puzzle;
 

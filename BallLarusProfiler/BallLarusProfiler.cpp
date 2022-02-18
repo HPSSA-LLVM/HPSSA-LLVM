@@ -3,21 +3,21 @@
 using namespace llvm;
 using namespace std;
 
-void BallLarusProfilerPass::convertToDAG(Function &F) {
-  SmallVector<std::pair<const BasicBlock *, const BasicBlock *>> result;
+void BallLarusProfilerPass::convertToDAG(Function& F) {
+  SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
   FindFunctionBackedges(F, result); // backedges in this function
 }
 
-void BallLarusProfilerPass::getAnalysisUsage(AnalysisUsage &Info) {
+void BallLarusProfilerPass::getAnalysisUsage(AnalysisUsage& Info) {
   Info.addRequired<UnifyFunctionExitNodesLegacyPass>();
   // Used legacy pass for now, will change to new pass
 }
 
-PreservedAnalyses BallLarusProfilerPass::run(Module &M,
-                                             ModuleAnalysisManager &AM) {
+PreservedAnalyses BallLarusProfilerPass::run(Module& M,
+                                             ModuleAnalysisManager& AM) {
   // ! Assuming the function to be a DAG for now
   // ! Not optmized as of now
-  for (auto &F : M) {
+  for (auto& F : M) {
     if (F.isDeclaration())
       continue;
 
@@ -32,26 +32,26 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
     // Create a global counter
     string counterName = "counter";
     M.getOrInsertGlobal(counterName, Builder.getInt32Ty());
-    GlobalVariable *gVar = M.getNamedGlobal(counterName);
+    GlobalVariable* gVar = M.getNamedGlobal(counterName);
     gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M.getContext()),
                                           0)); // initialize r to 0
     // Printf function
-    vector<Type *> Params{Type::getInt32Ty(M.getContext())};
-    FunctionType *fccType =
+    vector<Type*> Params{Type::getInt32Ty(M.getContext())};
+    FunctionType* fccType =
         FunctionType::get(Type::getVoidTy(M.getContext()), Params, false);
-    Function *sampleFun = Function::Create(
+    Function* sampleFun = Function::Create(
         fccType, GlobalValue::ExternalLinkage, "_Z7counteri", &M);
 
-    map<BasicBlock *, int32_t> NumPaths;
+    map<BasicBlock*, int32_t> NumPaths;
 
     for (auto it = po_begin(&F); it != po_end(&F);
          ++it) { // Post Order Traversal--Reverse Topologiacl
-      BasicBlock *BB = *it;
+      BasicBlock* BB = *it;
       if (succ_empty(BB)) { // Leaf Node
         NumPaths[BB] = 1;
-        std::vector<Value *> Args;
+        std::vector<Value*> Args;
         Builder.SetInsertPoint(BB->getTerminator());
-        Value *load =
+        Value* load =
             Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
         Args.push_back(load);
         // inserting in the end of the basic block
@@ -59,16 +59,16 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
       } else {
         NumPaths[BB] = 0;
         for (auto Succ : successors(BB)) {
-          BasicBlock *from = const_cast<BasicBlock *>(BB);
-          BasicBlock *to = const_cast<BasicBlock *>(
+          BasicBlock* from = const_cast<BasicBlock*>(BB);
+          BasicBlock* to = const_cast<BasicBlock*>(
               Succ); // ! Will this cast cause error in future?
-          BasicBlock *instrument = SplitEdge(from, to);
+          BasicBlock* instrument = SplitEdge(from, to);
           Builder.SetInsertPoint(instrument->getTerminator());
-          Value *load = Builder.CreateLoad(
+          Value* load = Builder.CreateLoad(
               Type::getInt32Ty(instrument->getContext()), gVar);
-          Value *newInst =
+          Value* newInst =
               Builder.CreateAdd(load, Builder.getInt32(NumPaths[BB]));
-          Value *store = Builder.CreateStore(newInst, gVar);
+          Value* store = Builder.CreateStore(newInst, gVar);
 
           NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
         }
@@ -80,9 +80,9 @@ PreservedAnalyses BallLarusProfilerPass::run(Module &M,
 
 llvm::PassPluginLibraryInfo getBallLarusProfilerPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "BallLarusProfiler", "v0.1",
-          [](PassBuilder &PB) {
+          [](PassBuilder& PB) {
             PB.registerPipelineParsingCallback(
-                [](StringRef Name, ModulePassManager &MPM,
+                [](StringRef Name, ModulePassManager& MPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "blprofiler") {
                     MPM.addPass(BallLarusProfilerPass());

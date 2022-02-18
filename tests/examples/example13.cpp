@@ -3,7 +3,7 @@
 #include <thread>
 using namespace std;
 
-void ComputeSum(std::future<pair<int, int>> &_future_value) {
+void ComputeSum(std::future<pair<int, int>>& _future_value) {
   // Thread gets to use a promise value using a future object.
   auto p = _future_value.get();
   cout << p.first + p.second << endl;

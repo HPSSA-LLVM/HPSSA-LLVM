@@ -24,9 +24,9 @@ namespace llvm {
 
 class BallLarusProfilerPass : public PassInfoMixin<BallLarusProfilerPass> {
 public:
-  void getAnalysisUsage(AnalysisUsage &Info);
-  void convertToDAG(Function &F);
-  PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM);
+  void getAnalysisUsage(AnalysisUsage& Info);
+  void convertToDAG(Function& F);
+  PreservedAnalyses run(Module& M, ModuleAnalysisManager& AM);
 };
 
 } // namespace llvm
