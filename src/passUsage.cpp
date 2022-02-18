@@ -1,5 +1,4 @@
 #include "llvm/Analysis/CFG.h"
-#include "llvm/IR/Dominators.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/InstIterator.h"
@@ -11,7 +10,6 @@
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "../include/HPSSA.h"
 #include <bits/stdc++.h>
 using namespace std;
@@ -24,9 +22,11 @@ public:
 
 PreservedAnalyses ExamplePass::run(Function& F, FunctionAnalysisManager& AM) {
   HPSSAPass hpssaUtil;
-  hpssaUtil.run(F, AM);
-  std::vector<Instruction *> TauInsts = hpssaUtil.getAllTauInstrunctions(F);
-  std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
+  if (F.getName() == "main") {
+    hpssaUtil.run(F, AM);
+    std::vector<Instruction *> TauInsts = hpssaUtil.getAllTauInstrunctions(F);
+    std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
+  }
   return PreservedAnalyses::none();
 }
 
@@ -44,9 +44,6 @@ llvm::PassPluginLibraryInfo getExampleUseHPSSAInfo() {
           }};
 }
 
-// This is the core interface for pass plugins. It guarantees that 'opt' will
-// be able to recognize TConditional Pass when added to the pass pipeline on
-// the command line, i.e. via '-passes=tcond'
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
   return getExampleUseHPSSAInfo();
