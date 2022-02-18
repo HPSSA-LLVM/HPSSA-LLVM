@@ -10,7 +10,7 @@ CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
 # CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
-ifndef VERBOSE
+ifdef SILENT
 .SILENT:
 endif
 
@@ -18,9 +18,9 @@ endif
 
 all: build test cfg_before cfg_after
 
-build: HPSSA_new.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
+build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
 	@mkdir -p build
-	$(CXX) -c HPSSA_new.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
+	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
 	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
@@ -32,7 +32,7 @@ test: build BBProfiler/profileInfo.txt
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa_new -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
 	# $(BUILD_PATH)/opt -load-pass-plugin=build/TConditional.cpp.so -passes=tcond -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tcond.ll -f 2> output/custom_tcond.log
 	$(BUILD_PATH)/opt -load-pass-plugin=build/TDestruction.cpp.so -passes=tdstr -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tdstr.ll -f 2> output/custom_tdstr.log
 	# Handle exit code of diff(1 if changes found).

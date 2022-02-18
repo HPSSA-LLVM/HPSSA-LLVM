@@ -1,11 +1,5 @@
+2
 5
-7
-entry _ZSt13__check_facetISt5ctypeIcEERKT_PS3_.exit.i.i if.end.i.i.i _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit if.else14 if.then18 if.then.i.i.i92 
-4
-entry if.then if.end end_label 
-9
-entry if.else if.end if.else10 if.then12 if.end17 if.else22 if.end27 end_label 
-9
-entry if.then if.end if.else10 if.then12 if.end17 if.else22 if.end27 end_label 
-4
-entry if.else if.end end_label 
+entry if.else13 if.then20 if.end23 if.end25
+5
+entry if.then if.else if.end if.end25

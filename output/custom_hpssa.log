@@ -1,25 +1,971 @@
-Caloric Connector and BuddySet Information
-entry: _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit is a Caloric Connector
+----------===Caloric Connector and BuddySet Information===----------
+entry: {1 1 } 
+if.else13: { 1 0 } 
+if.then18: 
+if.else20: 
+if.end23 is a Caloric Connector
+if.end23: 
+if.then: { 0 1 } 
+if.then8: 
+if.else: { 0 1 } 
+if.end is a Caloric Connector
+if.end: { 0 1 } 
+if.end25: { 0 1 } 
+----------===Initiating Tau Insertion Algroithm===----------
+Reached the Dominance frontier while visiting from: if.then
+Reached the Dominance frontier while visiting from: if.then
+Inserted Tau at : if.end
+Reached the Dominance frontier while visiting from: if.end25
+Inserted Tau at : if.end
+Reached the Dominance frontier while visiting from: if.end25
+-- BB: entry
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.then
+-------- Succ: if.else13
+------ Recurse over Child 
+-------- Parent: entry | Child: if.then
+-- BB: if.then
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.else
+-------- Succ: if.then8
+------ Recurse over Child 
+-------- Parent: if.then | Child: if.else
+-- BB: if.else
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end
+---------- phi: x.0
+---------- V: sub10
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: y.0
+---------- V: add11
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- Parent: if.then | Child: if.end
+-- BB: if.end
+---- I: ---- attempt to renaming uses in I
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ tau1
+------ mrd: tau1
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ tau
+------ mrd: tau
+------ phi: y.0
+------ tau1
+------ mrd: tau1
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ tau
+------ mrd: tau
+------ phi: y.0
+------ tau1
+------ mrd: tau1
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end25
+---------- phi: storemerge
+---------- V: add12
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.2
+---------- V: x.0
+---------- a phi operand
+---------- Not a tau operand
+---------- phi: y.2
+---------- V: y.0
+---------- a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: tau
+---------- mrd changed
+-------- phi: y.0 mrd: tau1
+---------- mrd changed
+-------- Parent: if.then | Child: if.then8
+-- BB: if.then8
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end
+---------- phi: x.0
+---------- V: add9
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: y.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- Parent: entry | Child: if.end25
+-- BB: if.end25
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
+-------- Parent: entry | Child: if.else13
+-- BB: if.else13
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.else20
+-------- Succ: if.then18
+------ Recurse over Child 
+-------- Parent: if.else13 | Child: if.else20
+-- BB: if.else20
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end23
+---------- phi: x.1
+---------- V: add21
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: y.1
+---------- V: add22
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
+-------- Parent: if.else13 | Child: if.end23
+-- BB: if.end23
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end25
+---------- phi: storemerge
+---------- V: add24
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.2
+---------- V: x.1
+---------- a phi operand
+---------- Not a tau operand
+---------- phi: y.2
+---------- V: y.1
+---------- a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: x.1 mrd: x.1
+---------- mrd not changed
+-------- phi: y.1 mrd: y.1
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
+-------- Parent: if.else13 | Child: if.then18
+-- BB: if.then18
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ phi: y.0
+------ y.0
+------ mrd: y.0
+------ phi: x.1
+------ x.1
+------ mrd: x.1
+------ phi: y.1
+------ y.1
+------ mrd: y.1
+------ phi: storemerge
+------ storemerge
+------ mrd: storemerge
+------ phi: x.2
+------ x.2
+------ mrd: x.2
+------ phi: y.2
+------ y.2
+------ mrd: y.2
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end23
+---------- phi: x.1
+---------- V: add19
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: y.1
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: x.1 mrd: x.1
+---------- mrd not changed
+-------- phi: y.1 mrd: y.1
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: x.1 mrd: x.1
+---------- mrd not changed
+-------- phi: y.1 mrd: y.1
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- phi: y.0 mrd: y.0
+---------- mrd not changed
+-------- phi: x.1 mrd: x.1
+---------- mrd not changed
+-------- phi: y.1 mrd: y.1
+---------- mrd not changed
+-------- phi: storemerge mrd: storemerge
+---------- mrd not changed
+-------- phi: x.2 mrd: x.2
+---------- mrd not changed
+-------- phi: y.2 mrd: y.2
+---------- mrd not changed
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0094 seconds (0.0095 wall clock)
+  Total Execution Time: 0.0130 seconds (0.0135 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0028 ( 29.9%)   0.0028 ( 29.9%)   0.0028 ( 29.9%)  VerifierPass
-   0.0028 ( 29.4%)   0.0028 ( 29.4%)   0.0028 ( 29.3%)  VerifierAnalysis
-   0.0021 ( 22.5%)   0.0021 ( 22.5%)   0.0021 ( 22.7%)  PrintModulePass
-   0.0015 ( 15.7%)   0.0015 ( 15.7%)   0.0015 ( 15.6%)  HPSSAPass
-   0.0001 (  1.3%)   0.0001 (  1.3%)   0.0001 (  1.2%)  PreservedCFGCheckerAnalysis
-   0.0001 (  1.2%)   0.0001 (  1.2%)   0.0001 (  1.2%)  DominatorTreeAnalysis
-   0.0094 (100.0%)   0.0094 (100.0%)   0.0095 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0001 (  1.5%)   0.0072 ( 91.3%)   0.0073 ( 56.0%)   0.0074 ( 54.5%)  HPSSAPass
+   0.0017 ( 33.2%)   0.0003 (  4.4%)   0.0020 ( 15.7%)   0.0021 ( 15.7%)  VerifierPass
+   0.0017 ( 32.4%)   0.0003 (  4.2%)   0.0020 ( 15.3%)   0.0021 ( 15.3%)  VerifierAnalysis
+   0.0016 ( 30.8%)   0.0000 (  0.0%)   0.0016 ( 12.1%)   0.0018 ( 13.7%)  PrintModulePass
+   0.0001 (  1.2%)   0.0000 (  0.1%)   0.0001 (  0.5%)   0.0001 (  0.5%)  PreservedCFGCheckerAnalysis
+   0.0000 (  1.0%)   0.0000 (  0.0%)   0.0000 (  0.4%)   0.0000 (  0.4%)  DominatorTreeAnalysis
+   0.0051 (100.0%)   0.0079 (100.0%)   0.0130 (100.0%)   0.0135 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0093 seconds (0.0093 wall clock)
+  Total Execution Time: 0.0061 seconds (0.0065 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0092 (100.0%)   0.0001 (100.0%)   0.0093 (100.0%)   0.0093 (100.0%)  Parse IR
-   0.0092 (100.0%)   0.0001 (100.0%)   0.0093 (100.0%)   0.0093 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0061 (100.0%)   0.0061 (100.0%)   0.0065 (100.0%)  Parse IR
+   0.0061 (100.0%)   0.0061 (100.0%)   0.0065 (100.0%)  Total
 

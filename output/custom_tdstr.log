@@ -1,24 +1,26 @@
-Tau to be removed : llvm.tau.i8	
-Replacing variable tau with retval.0.i.i.i.
+Tau to be removed : llvm.tau.i32	
+Replacing variable tau1 with y.0.
+Tau to be removed : llvm.tau.i32	
+Replacing variable tau with x.0.
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0081 seconds (0.0082 wall clock)
+  Total Execution Time: 0.0056 seconds (0.0059 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0013 ( 38.5%)   0.0015 ( 32.5%)   0.0028 ( 35.0%)   0.0029 ( 35.2%)  VerifierPass
-   0.0013 ( 37.9%)   0.0015 ( 32.1%)   0.0028 ( 34.4%)   0.0028 ( 34.7%)  VerifierAnalysis
-   0.0008 ( 23.6%)   0.0015 ( 30.5%)   0.0022 ( 27.7%)   0.0022 ( 27.3%)  PrintModulePass
-   0.0000 (  0.0%)   0.0001 (  3.0%)   0.0001 (  1.7%)   0.0001 (  1.7%)  TDSTRPass
-   0.0000 (  0.0%)   0.0001 (  2.0%)   0.0001 (  1.2%)   0.0001 (  1.2%)  PreservedCFGCheckerAnalysis
-   0.0033 (100.0%)   0.0048 (100.0%)   0.0081 (100.0%)   0.0082 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0021 ( 37.2%)   0.0021 ( 37.2%)   0.0022 ( 37.9%)  VerifierPass
+   0.0020 ( 36.0%)   0.0020 ( 36.0%)   0.0021 ( 36.6%)  VerifierAnalysis
+   0.0012 ( 21.4%)   0.0012 ( 21.4%)   0.0012 ( 20.4%)  PrintModulePass
+   0.0002 (  3.9%)   0.0002 (  3.9%)   0.0002 (  3.7%)  TDSTRPass
+   0.0001 (  1.5%)   0.0001 (  1.5%)   0.0001 (  1.4%)  PreservedCFGCheckerAnalysis
+   0.0056 (100.0%)   0.0056 (100.0%)   0.0059 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0091 seconds (0.0092 wall clock)
+  Total Execution Time: 0.0061 seconds (0.0061 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0091 (100.0%)   0.0091 (100.0%)   0.0092 (100.0%)  Parse IR
-   0.0091 (100.0%)   0.0091 (100.0%)   0.0092 (100.0%)  Total
+   0.0061 (100.0%)   0.0061 (100.0%)   0.0061 (100.0%)  Parse IR
+   0.0061 (100.0%)   0.0061 (100.0%)   0.0061 (100.0%)  Total
 

@@ -1,45 +1,32 @@
-#include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include <bits/stdc++.h>
 
 int main() {
-
-  int a, b, c, d;
-  srand(time(NULL));
-
-  if (a + b > c + d) {
-    a = b;
-  } else {
-    a = c;
-  }
-
-  std::cout << a << std::endl;
-
-  if (rand() % 10 == 5) {
-    if (c > d) {
-      a = b;
-      d = c;
+  int a, b, c, d, x, y, z = 0;
+  std::cin >> a >> b >> c >> d; 
+  if (rand() % 100 >= 90) {
+    x = a + b;
+    y = 90;
+    if (rand() % a >= b) {
+      x = a - b + 9;
+      z = 90;
     } else {
-      d = a;
-      a = c;
-      std::cout << a << b << std::endl;
+      x = 90 - c;
+      y = b + c;
     }
+    a = x + 90;
   } else {
-    if (rand() % 100 == 10) {
-      a = b + 1;
-      c = d - 1;
-      std::cout << c << d << std::endl;
+    x = c + d;
+    y = 80;
+    if (rand() % 70 >= 2 * a) {
+      x = a + b;
+      b = 90;
     } else {
-      if (c < d) {
-        c = c - 1;
-        d = d - 1;
-        std::cout << c << d << std::endl;
-      }
+      x = 90 + c;
+      y = b + c;
     }
+    a = x + 80;
   }
-
-  c = a;
-  std::cout << c << std::endl;
-
+  y = y + x + a;
+  std::cout << y;
   return 0;
 }

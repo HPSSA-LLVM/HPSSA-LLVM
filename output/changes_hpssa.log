@@ -2,75 +2,62 @@
 < ; ModuleID = 'IR/BC/test.bc'
 ---
 > ; ModuleID = 'IR/LL/test_mem2reg.ll'
-39c39
-<   %call = call i64 @time(i64* null) #6
+46c46
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
 ---
->   %call = call i64 @time(i64* null) #7
-41c41
-<   call void @srand(i32 %conv) #6
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #7
+48c48
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
 ---
->   call void @srand(i32 %conv) #7
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #7
+50c50
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i2) #6
+---
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i2) #7
+52c52
+<   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #6
+---
+>   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #7
 57c57
-<   call void @_ZSt16__throw_bad_castv() #7
----
->   call void @_ZSt16__throw_bad_castv() #8
-80c80
-< _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit: ; preds = %if.then.i4.i.i, %if.end.i.i.i
----
-> _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit: ; preds = %if.end.i.i.i, %if.then.i4.i.i
-82c82,83
-<   %call1.i = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call2, i8 signext %retval.0.i.i.i)
----
->   %tau = call i8 (...) @llvm.tau.i8(i8 %retval.0.i.i.i)
->   %call1.i = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSo3putEc(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call2, i8 signext %tau)
-84c85
 <   %call4 = call i32 @rand() #6
 ---
 >   %call4 = call i32 @rand() #7
-106c107
-<   call void @_ZSt16__throw_bad_castv() #7
+60c60
+<   %call5 = call i32 @rand() #6
 ---
->   call void @_ZSt16__throw_bad_castv() #8
-129c130
-< _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit85: ; preds = %if.then.i4.i.i77, %if.end.i.i.i81
+>   %call5 = call i32 @rand() #7
+84c84,86
+<   %add12 = add nsw i32 %x.0, 90
 ---
-> _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit85: ; preds = %if.end.i.i.i81, %if.then.i4.i.i77
-135c136
-<   %call15 = call i32 @rand() #6
+>   %tau1 = call i32 (...) @llvm.tau.i32(i32 %y.0, i32 %add11)
+>   %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %sub10)
+>   %add12 = add nsw i32 %tau, 90
+115,116c117,118
+<   %x.2 = phi i32 [ %x.1, %if.end23 ], [ %x.0, %if.end ]
+<   %y.2 = phi i32 [ %y.1, %if.end23 ], [ %y.0, %if.end ]
 ---
->   %call15 = call i32 @rand() #7
-157c158
-<   call void @_ZSt16__throw_bad_castv() #7
+>   %x.2 = phi i32 [ %x.1, %if.end23 ], [ %tau, %if.end ]
+>   %y.2 = phi i32 [ %y.1, %if.end23 ], [ %tau1, %if.end ]
+121,124c123,126
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #6
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i2) #6
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
+<   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
 ---
->   call void @_ZSt16__throw_bad_castv() #8
-180c181
-< _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit105: ; preds = %if.then.i4.i.i97, %if.end.i.i.i101
----
-> _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit105: ; preds = %if.end.i.i.i101, %if.then.i4.i.i97
-185c186
-< if.end33.sink.split:                              ; preds = %_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit85, %_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit105
----
-> if.end33.sink.split:                              ; preds = %_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit105, %_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit85
-206c207
-<   call void @_ZSt16__throw_bad_castv() #7
----
->   call void @_ZSt16__throw_bad_castv() #8
-229c230
-< _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit125: ; preds = %if.then.i4.i.i117, %if.end.i.i.i121
----
-> _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit125: ; preds = %if.end.i.i.i121, %if.then.i4.i.i117
-260c261
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #7
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i2) #7
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #7
+>   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #7
+145c147
 <   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
 ---
 >   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #7
-263a265,267
+148a151,153
 > ; Function Attrs: nofree nosync nounwind willreturn
-> declare i8 @llvm.tau.i8(...) #6
+> declare i32 @llvm.tau.i32(...) #6
 > 
-270,271c274,276
+155c160,161
 < attributes #6 = { nounwind }
-< attributes #7 = { noreturn }
 ---
 > attributes #6 = { nofree nosync nounwind willreturn }
 > attributes #7 = { nounwind }
-> attributes #8 = { noreturn }
