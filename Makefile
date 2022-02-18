@@ -3,7 +3,7 @@
 
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
-CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
+CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1 -I include
 # CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
 # removed -g flag, add if needed
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
@@ -18,11 +18,11 @@ endif
 
 all: build test cfg_before cfg_after
 
-build: HPSSA.cpp headers/HPSSA.h TDestruction.cpp headers/TDestruction.h
+build: src/HPSSA.cpp include/HPSSA.h src/TDestruction.cpp include/TDestruction.h
 	@mkdir -p build
-	$(CXX) -c HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
+	$(CXX) -c src/HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
-	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
+	$(CXX) -c src/TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
 
 test: build BBProfiler/profileInfo.txt 
@@ -41,9 +41,11 @@ test: build BBProfiler/profileInfo.txt
 	$(BUILD_PATH)/opt -dot-cfg-only -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot stripped.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -disable-output -enable-new-pm=0 
-	mv .main.dot main1.dot
+	mv .main.dot withHPSSA.dot
+	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_tdstr.ll -disable-output -enable-new-pm=0 
+	mv .main.dot removeHPSSA.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
-	mv .main.dot main2.dot
+	mv .main.dot baseline.dot
 	rm -rf .dot
 	
 cfg_before: test

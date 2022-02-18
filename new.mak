@@ -18,10 +18,10 @@ endif
 
 all: build test cfg_before cfg_after
 
-build: HPSSA_new.cpp headers/HPSSA_new.h TDestruction.cpp headers/TDestruction.h
+build: src/HPSSA_new.cpp headers/HPSSA_new.h src/TDestruction.cpp headers/TDestruction.h
 	$(CXX) -v
 	@mkdir -p build
-	$(CXX) -c HPSSA_new.cpp -o build/HPSSA_new.cpp.o $(CXXFLAGS)
+	$(CXX) -c src/HPSSA_new.cpp -o build/HPSSA_new.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA_new.cpp.o -o build/HPSSA_new.cpp.so $(LDFLAGS)
 #	$(CXX) -c TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 #	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
