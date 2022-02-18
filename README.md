@@ -25,3 +25,11 @@ $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all
 ```
 $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make -f Makefile_new
 ```
+
+## Importing and using the pass.
+
+Check `passUsage.cpp` file in [src](./src) folder. 
+
+```
+$ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all -f usage.mak
+```
