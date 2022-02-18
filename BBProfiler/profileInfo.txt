@@ -1,5 +1,7 @@
-2
+3
 5
 entry if.else13 if.then20 if.end23 if.end25
 5
 entry if.then if.else if.end if.end25
+5
+entry if.else13 if.else18 if.end23 if.end25

@@ -448,6 +448,7 @@ PreservedAnalyses HPSSAPass::run(Function& F, FunctionAnalysisManager& AM) {
 
         // ! Not sure why we need to explicitily check whether the given
         // ! block is current block
+        // A block dominates itself. 
         if (curr != BB && !DT.dominates(&phi, curr)) {
           errs() << "Reached the Dominance frontier while visiting from: "
                  << curr->getName() << "\n";

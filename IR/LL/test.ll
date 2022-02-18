@@ -57,67 +57,82 @@ entry:
   %call4 = call i32 @rand() #6
   %rem = srem i32 %call4, 100
   %cmp = icmp sgt i32 %rem, 89
-  %call5 = call i32 @rand() #6
-  br i1 %cmp, label %if.then, label %if.else13
+  br i1 %cmp, label %if.then, label %if.else12
 
 if.then:                                          ; preds = %entry
+  %call5 = call i32 @rand() #6
+  %rem6 = srem i32 %call5, 50
   %4 = load i32, i32* %a, align 4, !tbaa !4
-  %rem6 = srem i32 %call5, %4
-  %5 = load i32, i32* %b, align 4, !tbaa !4
-  %cmp7.not = icmp slt i32 %rem6, %5
+  %mul = shl nsw i32 %4, 1
+  %cmp7.not = icmp slt i32 %rem6, %mul
   br i1 %cmp7.not, label %if.else, label %if.then8
 
 if.then8:                                         ; preds = %if.then
-  %sub = add i32 %4, 9
-  %add9 = sub i32 %sub, %5
+  %5 = load i32, i32* %b, align 4, !tbaa !4
+  %sub = sub nsw i32 %4, %5
+  store i32 137, i32* %b, align 4, !tbaa !4
   br label %if.end
 
 if.else:                                          ; preds = %if.then
   %6 = load i32, i32* %c, align 4, !tbaa !4
-  %sub10 = sub nsw i32 90, %6
-  %add11 = add nsw i32 %6, %5
+  %sub9 = sub nsw i32 111, %6
+  %7 = load i32, i32* %b, align 4, !tbaa !4
+  %sub10 = sub nsw i32 %7, %6
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then8
-  %x.0 = phi i32 [ %add9, %if.then8 ], [ %sub10, %if.else ]
-  %y.0 = phi i32 [ 90, %if.then8 ], [ %add11, %if.else ]
-  %add12 = add nsw i32 %x.0, 90
-  br label %if.end25
+  %y.0 = phi i32 [ 63, %if.then8 ], [ %sub10, %if.else ]
+  %x.0 = phi i32 [ %sub, %if.then8 ], [ %sub9, %if.else ]
+  %add11 = add nsw i32 %x.0, 9354
+  br label %if.end26
 
-if.else13:                                        ; preds = %entry
-  %rem16 = srem i32 %call5, 70
-  %7 = load i32, i32* %a, align 4, !tbaa !4
-  %mul = shl nsw i32 %7, 1
-  %cmp17.not = icmp slt i32 %rem16, %mul
-  br i1 %cmp17.not, label %if.else20, label %if.then18
+if.else12:                                        ; preds = %entry
+  %8 = load i32, i32* %a, align 4, !tbaa !4
+  %call15 = call i32 @rand() #6
+  %rem16 = srem i32 %call15, 70
+  %9 = load i32, i32* %a, align 4, !tbaa !4
+  %mul17 = shl nsw i32 %9, 1
+  %cmp18.not = icmp slt i32 %rem16, %mul17
+  br i1 %cmp18.not, label %if.else21, label %if.then19
 
-if.then18:                                        ; preds = %if.else13
-  %8 = load i32, i32* %b, align 4, !tbaa !4
-  %add19 = add nsw i32 %8, %7
-  store i32 90, i32* %b, align 4, !tbaa !4
-  br label %if.end23
-
-if.else20:                                        ; preds = %if.else13
-  %9 = load i32, i32* %c, align 4, !tbaa !4
-  %add21 = add nsw i32 %9, 90
+if.then19:                                        ; preds = %if.else12
+  %add14 = add nsw i32 %8, 887
   %10 = load i32, i32* %b, align 4, !tbaa !4
-  %add22 = add nsw i32 %10, %9
-  br label %if.end23
+  %add20 = add nsw i32 %10, %9
+  store i32 8568, i32* %b, align 4, !tbaa !4
+  br label %if.end24
 
-if.end23:                                         ; preds = %if.else20, %if.then18
-  %x.1 = phi i32 [ %add19, %if.then18 ], [ %add21, %if.else20 ]
-  %y.1 = phi i32 [ 80, %if.then18 ], [ %add22, %if.else20 ]
-  %add24 = add nsw i32 %x.1, 80
-  br label %if.end25
+if.else21:                                        ; preds = %if.else12
+  %11 = load i32, i32* %c, align 4, !tbaa !4
+  %add22 = add nsw i32 %11, 932
+  %12 = load i32, i32* %b, align 4, !tbaa !4
+  %add23 = add nsw i32 %12, %11
+  br label %if.end24
 
-if.end25:                                         ; preds = %if.end23, %if.end
-  %storemerge = phi i32 [ %add24, %if.end23 ], [ %add12, %if.end ]
-  %x.2 = phi i32 [ %x.1, %if.end23 ], [ %x.0, %if.end ]
-  %y.2 = phi i32 [ %y.1, %if.end23 ], [ %y.0, %if.end ]
+if.end24:                                         ; preds = %if.else21, %if.then19
+  %y.1 = phi i32 [ %add14, %if.then19 ], [ %add23, %if.else21 ]
+  %x.1 = phi i32 [ %add20, %if.then19 ], [ %add22, %if.else21 ]
+  %add25 = add nsw i32 %x.1, 1145
+  br label %if.end26
+
+if.end26:                                         ; preds = %if.end24, %if.end
+  %storemerge = phi i32 [ %add25, %if.end24 ], [ %add11, %if.end ]
+  %y.2 = phi i32 [ %y.1, %if.end24 ], [ %y.0, %if.end ]
+  %x.2 = phi i32 [ %x.1, %if.end24 ], [ %x.0, %if.end ]
   store i32 %storemerge, i32* %a, align 4, !tbaa !4
-  %add26 = add i32 %x.2, %storemerge
-  %add27 = add i32 %add26, %y.2
-  %call28 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %add27)
+  %13 = load i32, i32* %d, align 4, !tbaa !4
+  %add29 = add nsw i32 %13, %storemerge
+  %call30 = call i32 @rand() #6
+  %rem31 = srem i32 %call30, 60
+  %cmp32 = icmp sgt i32 %add29, %rem31
+  %14 = load i32, i32* %a, align 4, !tbaa !4
+  %add27 = add i32 %y.2, %storemerge
+  %add28 = select i1 %cmp32, i32 %add27, i32 0
+  %y.3.v = add i32 %x.2, %add28
+  %y.3 = add i32 %14, %y.3.v
+  %add38 = add i32 %y.3, %x.2
+  %add39 = add i32 %add38, %14
+  %call40 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %add39)
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %3) #6
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %2) #6
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %1) #6
