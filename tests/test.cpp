@@ -1,40 +1,45 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <stdio.h>
+#include <time.h>
 
 int main() {
-  int a, b, c, d, x, y, z = 0;
-  std::cin >> a >> b >> c >> d;
-  if (rand() % 100 >= 90) {
-    x = a + b;
-    y = 63;
-    if (rand() % 50 >= 2 * a) {
-      x = a - b;
-      b = 137;
-    } else {
-      x = 111 - c;
-      y = b - c;
-    }
-    a = x + 9354;
+
+  int a, b, c, d;
+  srand(time(NULL));
+
+  if (a + b > c + d) {
+    a = b;
   } else {
-    x = c + d;
-    y = a + 887;
-    if (rand() % 70 >= 2 * a) {
-      x = a + b;
-      b = 8568;
+    a = c;
+  }
+
+  std::cout << a << std::endl;
+
+  if (rand() % 10 == 5) {
+    if (c > d) {
+      a = b;
+      d = c;
     } else {
-      x = 932 + c;
-      y = b + c;
+      d = a;
+      a = c;
+      std::cout << a << b << std::endl;
     }
-    a = x + 1145;
-  }
-  y += x + a;
-  
-  if (d + a > rand() % 60) {
-    y = y + a;
   } else {
-    y = x + a;
+    if (rand() % 100 == 10) {
+      a = b + 1;
+      c = d - 1;
+      std::cout << c << d << std::endl;
+    } else {
+      if (c < d) {
+        c = c - 1;
+        d = d - 1;
+        std::cout << c << d << std::endl;
+      }
+    }
   }
-  y += x + a;
-  
-  std::cout << y;
+
+  c = a;
+  std::cout << c << std::endl;
+
   return 0;
 }

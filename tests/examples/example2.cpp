@@ -1,45 +1,27 @@
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
+
+// Profile Info
+// 1
+// 6
+// entry for.body for.body7.lr.ph for.body7 for.cond.cleanup6 for.cond.cleanup: 
+
 
 int main() {
-
-  int a, b, c, d;
-  srand(time(NULL));
-
-  if (a + b > c + d) {
-    a = b;
-  } else {
-    a = c;
-  }
-
-  std::cout << a << std::endl;
-
-  if (rand() % 10 == 5) {
-    if (c > d) {
-      a = b;
-      d = c;
+  int a, b, c, d, x, y, z = 0;
+  std::cin >> a >> b >> c >> d;
+  for (auto i = 0; i <= a; i++) {
+    x = x + i;
+    if (i + x > 90) {
+      x = x - 100;
     } else {
-      d = a;
-      a = c;
-      std::cout << a << b << std::endl;
+      x = x + 3 * i;
     }
-  } else {
-    if (rand() % 100 == 10) {
-      a = b + 1;
-      c = d - 1;
-      std::cout << c << d << std::endl;
-    } else {
-      if (c < d) {
-        c = c - 1;
-        d = d - 1;
-        std::cout << c << d << std::endl;
-      }
+    for(auto j = 0; j < b; j++) {
+      x = x * j;
+      c = b - i;
     }
   }
-
-  c = a;
-  std::cout << c << std::endl;
-
+  b = x + c;
+  std::cout << b << x << a;
   return 0;
 }
