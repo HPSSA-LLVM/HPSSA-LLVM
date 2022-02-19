@@ -15,15 +15,16 @@ int main() {
 
   std::cout << a << std::endl;
 
-  if (rand() % 10 == 5) {
+  if (1 >= 2) {
     if (c > d) {
       a = b;
       d = c;
     } else {
       d = a;
       a = c;
-      std::cout << a << b << std::endl;
     }
+    c = a + d;
+    std::cout << c << std::endl;
   } else {
     if (rand() % 100 == 10) {
       a = b + 1;

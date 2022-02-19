@@ -6,6 +6,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/Instruction.h"
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
@@ -14,6 +15,7 @@
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
 #include <bits/stdc++.h>
+#include <llvm/IR/Value.h>
 using namespace std;
 namespace llvm {
 
@@ -27,6 +29,9 @@ public:
   std::vector<Instruction*> getAllTauInstrunctions(Function& F);
   // virtual void getAnalysisUsage(AnalysisUsage &AU) const;
 };
+
+bool isTauInstruction(llvm::Instruction *I);
+std::vector<Value *> getTauOperands(llvm::Instruction *I);
 
 } // namespace llvm
 

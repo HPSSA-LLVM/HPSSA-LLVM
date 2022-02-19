@@ -10,7 +10,7 @@ endif
 
 .PHONY: test 
 
-all: build test
+all: build test runpass
 
 build: build/* src/passUsage.cpp
 	@mkdir -p build
@@ -20,10 +20,12 @@ build: build/* src/passUsage.cpp
 test: build/* BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
 	cp BBProfiler/tests/test.cpp tests/test.cpp
-	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
-	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
+	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
+	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
-	$(BUILD_PATH)/opt -load-pass-plugin=build/passUsage.cpp.so -load-pass-plugin=build/HPSSA.cpp.so -passes="usehpssa" \
+
+runpass: build/passUsage.cpp.so
+	$(BUILD_PATH)/opt -load-pass-plugin=build/passUsage.cpp.so -load-pass-plugin=build/HPSSA.cpp.so -passes="specdce" \
 		-time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_usage.ll 
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_usage.ll -enable-new-pm=0 -disable-output
 	mv .main.dot afterHPSSA.dot

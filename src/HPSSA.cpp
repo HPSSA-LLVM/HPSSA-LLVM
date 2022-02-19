@@ -1,4 +1,7 @@
 #include "../include/HPSSA.h"
+#include "llvm/IR/Value.h"
+#include "llvm/IR/Instruction.h"
+
 using namespace llvm;
 using namespace std;
 
@@ -331,7 +334,7 @@ public:
 };
 
 std::vector<Instruction*> HPSSAPass::getAllTauInstrunctions(Function& F) {
-  vector<Instruction*> allTauInsts;
+  std::vector<Instruction*> allTauInsts;
   for (auto& BB : F) {
     for (auto& I : BB) {
       CallInst* CI = dyn_cast<CallInst>(&I);
@@ -345,6 +348,27 @@ std::vector<Instruction*> HPSSAPass::getAllTauInstrunctions(Function& F) {
     }
   }
   return allTauInsts;
+}
+
+std::vector<Value*> getTauOperands(llvm::Instruction *I) {
+  std::vector<Value*> allTauOps;
+  for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) { 
+    Value *OpV = I->getOperand(i);
+    allTauOps.emplace_back(OpV);
+  }
+  return allTauOps;
+}
+
+bool isTauInstruction(llvm::Instruction *I) {
+  CallInst* CI = dyn_cast<CallInst>(&(*I));
+  if (CI == NULL)
+    return false;
+  Function* CF = CI->getCalledFunction();
+  if (CF == NULL ||
+      CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+    return true;
+  else
+    return false;
 }
 
 //================= Argument Allocation ====================//
