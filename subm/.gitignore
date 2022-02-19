@@ -1,0 +1,8 @@
+*.log
+*.a
+*.aux
+*.gz
+*.nav
+*.auv
+_minted*/
+*.code
