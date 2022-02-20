@@ -5,6 +5,7 @@
 // Speculative Dead Code Elimination. 
 // -----------------------------------------------------------
 
+#include "llvm/ADT/BreadthFirstIterator.h"
 #include "llvm/Analysis/CFG.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
@@ -32,6 +33,7 @@
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/Transforms/Utils/Local.h"
 #include <bits/stdc++.h>
+#include <llvm/ADT/GraphTraits.h>
 using namespace std;
 using namespace llvm;
 
@@ -89,13 +91,19 @@ SpecRedundantDbgInstElimination::run(Function &F, FunctionAnalysisManager &AM) {
 //===--------------------------------------------------------------------===//
 // DeadCodeElimination pass implementation
 //
+std::vector<Value*> speculativeOperands;
+void printSPECOps() { 
+  llvm::errs() << "Speculative Operands : \n";
+  for (auto a : speculativeOperands)
+    llvm::errs() << a->getName() << ", ";
+  llvm::errs() << "\n";
+}
 
 static bool SpecDCEInstruction(Instruction *I,
                            SmallSetVector<Instruction *, 16> &WorkList,
                            const TargetLibraryInfo *TLI) {
 
   CallInst* CI = dyn_cast<CallInst>(&(*I));
-  std::vector<Value*> speculativeOperands;
 
   if (CI != NULL) {
     Function* CF = CI->getCalledFunction();
@@ -104,7 +112,8 @@ static bool SpecDCEInstruction(Instruction *I,
         Value *op = I->getOperand(i);
         speculativeOperands.emplace_back(op);
       }
-    } 
+      printSPECOps();
+    }
   }
 
   if (isInstructionTriviallyDead(I, TLI)) {
@@ -116,6 +125,7 @@ static bool SpecDCEInstruction(Instruction *I,
 
     // Null out all of the instruction's operands to see if any operand becomes
     // dead as we go.
+    Value *first = I->getOperand(0);
     for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) {
 
       Value *OpV = I->getOperand(i);
@@ -134,7 +144,7 @@ static bool SpecDCEInstruction(Instruction *I,
     }
 
     I->eraseFromParent();
-    llvm::errs() << "\t\tInstruction Eliminated : " << I->getOpcode() << "\n";
+    llvm::errs() << "\t\tInstruction Eliminated : " << I->getOpcodeName() << ", " << first->getNameOrAsOperand() << "\n";
     ++SpecDCEEliminated;
     return true;
   } else {

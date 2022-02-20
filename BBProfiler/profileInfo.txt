@@ -1,4 +1,3 @@
 1
-14
-entry _ZSt13__check_facetISt5ctypeIcEERKT_PS3_.exit.i.i if.then.i4.i.i _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit if.else14 if.then18 _ZSt13__check_facetISt5ctypeIcEERKT_PS3_.exit.i.i95 if.end.i.i.i101 _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit105
-if.end33.sink.split if.end33 _ZSt13__check_facetISt5ctypeIcEERKT_PS3_.exit.i.i115 if.end.i.i.i121 _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_.exit125
+7
+entry if.then if.else if.end if.end29 if.then37 if.end41 

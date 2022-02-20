@@ -1,46 +1,49 @@
-#include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include <bits/stdc++.h>
+
+// profileInfo
+// 1
+// 7
+// entry if.then if.else if.end if.end29 if.then37 if.end41 
 
 int main() {
-
-  int a, b, c, d;
-  srand(time(NULL));
-
-  if (a + b > c + d) {
-    a = b;
-  } else {
-    a = c;
-  }
-
-  std::cout << a << std::endl;
-
-  if (1 >= 2) {
-    if (c > d) {
-      a = b;
-      d = c;
+  int a, b, c, d, x, y, e, f, z = 0;
+  std::cin >> a >> b >> c >> d;
+  if (rand() % 181 >= 991) {
+    x = a + b; // dead
+    y = 63;
+    e = 90 + x; // dead
+    if (rand() % 50 >= 2 * a) {
+      x = a - b;
+      b = 137;
     } else {
-      d = a;
-      a = c;
+      x = 111 - c;
+      y = b - c;
     }
-    c = a + d;
-    std::cout << c << std::endl;
+    f += 8;
+    a = x + 9354;
   } else {
-    if (rand() % 100 == 10) {
-      a = b + 1;
-      c = d - 1;
-      std::cout << c << d << std::endl;
+    f = e + 762; // dead
+    x = c + d; // dead
+    y = a + 887;
+    if (rand() % 70 >= 2 * a) {
+      x = a + b;
+      b = 8568;
     } else {
-      if (c < d) {
-        c = c - 1;
-        d = d - 1;
-        std::cout << c << d << std::endl;
-      }
+      e = (int)(99 / 8);
+      x = 932 + c;
+      y = b + c;
     }
+    a = x + 1145;
   }
-
-  c = a;
-  std::cout << c << std::endl;
-
+  y += x + a;
+  f = y + 1;
+  if (d + a > rand() % 60) {
+    y = y + a;
+  } else {
+    y = x + a;
+  }
+  y += x + a;
+  
+  std::cout << y;
   return 0;
 }
