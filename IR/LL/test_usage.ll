@@ -56,42 +56,25 @@ entry:
   %call3 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call2, i32* nonnull align 4 dereferenceable(4) %d)
   %call4 = call i32 @rand() #3
   %rem = srem i32 %call4, 181
-  %cmp = icmp sge i32 %rem, 991
-  br i1 %cmp, label %if.then, label %if.else14
+  br i1 false, label %if.then, label %if.else14
 
 if.then:                                          ; preds = %entry
-  %call6 = call i32 @rand() #3
-  %rem7 = srem i32 %call6, 50
-  %i3 = load i32, i32* %a, align 4
-  %mul = mul nsw i32 2, %i3
-  %cmp8 = icmp sge i32 %rem7, %mul
-  br i1 %cmp8, label %if.then9, label %if.else
+  br i1 undef, label %if.then9, label %if.else
 
 if.then9:                                         ; preds = %if.then
-  %i4 = load i32, i32* %a, align 4
-  %i5 = load i32, i32* %b, align 4
-  %sub = sub nsw i32 %i4, %i5
-  store i32 137, i32* %b, align 4
   br label %if.end
 
 if.else:                                          ; preds = %if.then
-  %i6 = load i32, i32* %c, align 4
-  %sub10 = sub nsw i32 111, %i6
-  %i7 = load i32, i32* %b, align 4
-  %i8 = load i32, i32* %c, align 4
-  %sub11 = sub nsw i32 %i7, %i8
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then9
-  %y.0 = phi i32 [ 63, %if.then9 ], [ %sub11, %if.else ]
-  %x.0 = phi i32 [ %sub, %if.then9 ], [ %sub10, %if.else ]
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %sub10)
-  %tau = call i32 (...) @llvm.tau.i32(i32 %y.0, i32 %sub11)
-  %add13 = add nsw i32 %tau1, 9354
-  store i32 %add13, i32* %a, align 4
   br label %if.end29
 
 if.else14:                                        ; preds = %entry
+  %add15 = add nsw i32 undef, 762
+  %i12 = load i32, i32* %c, align 4
+  %i13 = load i32, i32* %d, align 4
+  %add16 = add nsw i32 %i12, %i13
   %i14 = load i32, i32* %a, align 4
   %add17 = add nsw i32 %i14, 887
   %call18 = call i32 @rand() #3
@@ -124,13 +107,12 @@ if.end27:                                         ; preds = %if.else24, %if.then
   br label %if.end29
 
 if.end29:                                         ; preds = %if.end27, %if.end
-  %y.2 = phi i32 [ %tau, %if.end ], [ %y.1, %if.end27 ]
-  %x.2 = phi i32 [ %tau1, %if.end ], [ %x.1, %if.end27 ]
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.2, i32 %x.0)
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %y.2, i32 %y.0)
+  %y.2 = phi i32 [ undef, %if.end ], [ %y.1, %if.end27 ]
+  %x.2 = phi i32 [ undef, %if.end ], [ %x.1, %if.end27 ]
   %i23 = load i32, i32* %a, align 4
-  %add30 = add nsw i32 %tau4, %i23
-  %add31 = add nsw i32 %tau2, %add30
+  %add30 = add nsw i32 %x.2, %i23
+  %add31 = add nsw i32 %y.2, %add30
+  %add32 = add nsw i32 %add31, 1
   %i26 = load i32, i32* %d, align 4
   %i27 = load i32, i32* %a, align 4
   %add33 = add nsw i32 %i26, %i27
@@ -146,17 +128,14 @@ if.then37:                                        ; preds = %if.end29
 
 if.else39:                                        ; preds = %if.end29
   %i31 = load i32, i32* %a, align 4
-  %add40 = add nsw i32 %tau4, %i31
+  %add40 = add nsw i32 %x.2, %i31
   br label %if.end41
 
 if.end41:                                         ; preds = %if.else39, %if.then37
   %y.3 = phi i32 [ %add38, %if.then37 ], [ %add40, %if.else39 ]
-  %tau6 = call i32 (...) @llvm.tau.i32(i32 %y.3, i32 %add38)
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %x.0)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau2, i32 %y.0)
   %i33 = load i32, i32* %a, align 4
-  %add42 = add nsw i32 %tau5, %i33
-  %add43 = add nsw i32 %tau6, %add42
+  %add42 = add nsw i32 %x.2, %i33
+  %add43 = add nsw i32 %y.3, %add42
   %call44 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %add43)
   ret i32 0
 }
@@ -175,15 +154,11 @@ entry:
   ret void
 }
 
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #5
-
 attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
 attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #5 = { nofree nosync nounwind willreturn }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

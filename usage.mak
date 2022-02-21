@@ -12,10 +12,10 @@ endif
 
 all: build test runpass cfg
 
-build: build/* src/passUsage.cpp
+build: build/* src/SCCPSolverTau.cpp src/SCCPTau.cpp
 	@mkdir -p build
-	$(CXX) $(CXXFLAGS) -c src/passUsage.cpp -o build/passUsage.cpp.o 
-	$(CXX) $(CXXFLAGS) -shared build/passUsage.cpp.o -o build/passUsage.cpp.so $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
 
 test: build/* BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
@@ -24,10 +24,10 @@ test: build/* BBProfiler/profileInfo.txt
 	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
-runpass: build/passUsage.cpp.so
-	$(BUILD_PATH)/opt -load-pass-plugin=build/passUsage.cpp.so -load-pass-plugin=build/HPSSA.cpp.so -passes="specdce" \
-		-time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_usage.ll 
-	$(BUILD_PATH)/opt --livevars -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_livevars.ll 
+runpass: build/*
+	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
+		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_usage.ll 
+	
 cfg:
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_usage.ll -enable-new-pm=0 -disable-output
 	mv .main.dot afterHPSSA.dot
