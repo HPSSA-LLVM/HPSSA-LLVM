@@ -582,18 +582,20 @@ bool SCCPTauInstVisitor::markEdgeExecutable(BasicBlock *Source, BasicBlock *Dest
     LLVM_DEBUG(dbgs() << "Marking Edge Executable: " << Source->getName()
                       << " -> " << Dest->getName() << '\n');
 
-    for (PHINode &PN : Dest->phis())
-      visitPHINode(PN);
-    
     for (auto& I : *&(*(Dest))) {
       CallInst* CI = dyn_cast<CallInst>(&I);
       if (CI == NULL)
         continue;
       Function* CF = CI->getCalledFunction();
       if (CF != NULL &&
-          CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+          CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
         visitTauNode(I);
+      }
     }
+
+    for (PHINode &PN : Dest->phis())
+      visitPHINode(PN);
+    
   }
   return true;
 }
@@ -729,6 +731,7 @@ bool SCCPTauInstVisitor::isEdgeFeasible(BasicBlock *From, BasicBlock *To) const 
 // 7. If a conditional branch has a value that is overdefined, make all
 //    successors executable.
 void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
+  LLVM_DEBUG(dbgs() << "Marking PHINode exec.\n");
   // If this PN returns a struct, just mark the result overdefined.
   // TODO: We could do a lot better than this if code actually uses this.
   if (PN.getType()->isStructTy())
@@ -776,7 +779,55 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
 
 // Handle Tau nodes Instuctions 
 void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
-  LLVM_DEBUG(Tau.dump());
+  #ifdef NOTAU
+    return;
+  #endif
+
+  LLVM_DEBUG(dbgs() << "\t\tVisiting Tau Instruction\n");
+  // If this PN returns a struct, just mark the result overdefined.
+  // TODO: We could do a lot better than this if code actually uses this.
+
+  // if (Tau.getType()->isStructTy())
+  //   return (void)markOverdefined(&Tau);
+
+  // if (getValueState(&Tau).isOverdefined())
+  //   return; // Quick exit
+
+  // // Super-extra-high-degree PHI nodes are unlikely to ever be marked constant,
+  // // and slow us down a lot.  Just mark them overdefined.
+  // if (Tau.getNumOperands() > 64)
+  //   return (void)markOverdefined(&Tau);
+
+  unsigned NumActiveIncoming = 0;
+
+  // Look at all of the executable operands of the PHI node.  If any of them
+  // are overdefined, the PHI becomes overdefined as well.  If they are all
+  // constant, and they agree with each other, the PHI becomes the identical
+  // constant.  If they are constant and don't agree, the PHI is a constant
+  // range. If there are no executable operands, the PHI remains unknown.
+  ValueLatticeElement TauState = getValueState(&Tau);
+  for (unsigned i = 1, e = Tau.getNumOperands(); i != e; ++i) {
+    // if (!isEdgeFeasible(Tau.getOperand(i), Tau.getParent()))
+    //   continue;
+    LLVM_DEBUG(dbgs() << "\t\t Tau Val : " << Tau.getOperand(i)->getName() << "\n");
+    ValueLatticeElement IV = getValueState(Tau.getOperand(i));
+    TauState.mergeIn(IV);
+    NumActiveIncoming++;
+    if (TauState.isOverdefined())
+      break;
+  }
+
+  // We allow up to 1 range extension per active incoming value and one
+  // additional extension. Note that we manually adjust the number of range
+  // extensions to match the number of active incoming values. This helps to
+  // limit multiple extensions caused by the same incoming value, if other
+  // incoming values are equal.
+  mergeInValue(&Tau, TauState,
+               ValueLatticeElement::MergeOptions().setMaxWidenSteps(
+                   NumActiveIncoming + 1));
+  ValueLatticeElement &TauStateRefElem = getValueState(&Tau);
+  TauStateRefElem.setNumRangeExtensions(
+      std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
@@ -1200,6 +1251,8 @@ void SCCPTauInstVisitor::visitCallBase(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
   Function *F = CB.getCalledFunction();
+  // if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //   return;
 
   // Void return and not tracking callee, just bail.
   if (CB.getType()->isVoidTy())
@@ -1245,6 +1298,9 @@ void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
   Function *F = CB.getCalledFunction();
+  if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+    return;
+    
   // If this is a local function that doesn't have its address taken, mark its
   // entry block executable and merge in the actual arguments to the call into
   // the formal arguments of the function.
@@ -1277,7 +1333,9 @@ void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-
+  // if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //   return;
+    
   if (auto *II = dyn_cast<IntrinsicInst>(&CB)) {
     if (II->getIntrinsicID() == Intrinsic::ssa_copy) {
       if (ValueState[&CB].isOverdefined())
@@ -1490,10 +1548,12 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
 
         // Tracked calls must never be marked overdefined in resolvedUndefsIn.
         if (auto *CB = dyn_cast<CallBase>(&I))
-          if (Function *F = CB->getCalledFunction())
+          if (Function *F = CB->getCalledFunction()) {
+            if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+              continue;
             if (MRVFunctionsTracked.count(F))
               continue;
-
+          }
         // extractvalue and insertvalue don't need to be marked; they are
         // tracked as precisely as their operands.
         if (isa<ExtractValueInst>(I) || isa<InsertValueInst>(I))
@@ -1520,10 +1580,12 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
       // Because of the way we solve return values, tracked calls must
       // never be marked overdefined in resolvedUndefsIn.
       if (auto *CB = dyn_cast<CallBase>(&I))
-        if (Function *F = CB->getCalledFunction())
+        if (Function *F = CB->getCalledFunction()) {
+          if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+              continue;
           if (TrackedRetVals.count(F))
             continue;
-
+        }
       if (isa<LoadInst>(I)) {
         // A load here means one of two things: a load of undef from a global,
         // a load from an unknown pointer.  Either way, having it return undef

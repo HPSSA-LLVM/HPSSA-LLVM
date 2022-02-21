@@ -25,7 +25,8 @@ test: build/* BBProfiler/profileInfo.txt
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 runpass: build/*
-	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
+	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
+	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
 		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_usage.ll 
 	
 cfg:
