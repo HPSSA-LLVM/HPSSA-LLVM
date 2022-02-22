@@ -779,10 +779,7 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
 
 // Handle Tau nodes Instuctions 
 void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
-  #ifdef NOTAU
-    return;
-  #endif
-
+  return;
   LLVM_DEBUG(dbgs() << "\t\tVisiting Tau Instruction\n");
   // If this PN returns a struct, just mark the result overdefined.
   // TODO: We could do a lot better than this if code actually uses this.
@@ -795,8 +792,8 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
 
   // // Super-extra-high-degree PHI nodes are unlikely to ever be marked constant,
   // // and slow us down a lot.  Just mark them overdefined.
-  // if (Tau.getNumOperands() > 64)
-  //   return (void)markOverdefined(&Tau);
+  if (Tau.getNumOperands() > 64)
+    return (void)markOverdefined(&Tau);
 
   unsigned NumActiveIncoming = 0;
 
@@ -1245,14 +1242,16 @@ void SCCPTauInstVisitor::visitLoadInst(LoadInst &I) {
 }
 
 void SCCPTauInstVisitor::visitCallBase(CallBase &CB) {
+  Function *F = CB.getCalledFunction();
+  if (F != NULL && 
+    F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+      return;
   handleCallResult(CB);
   handleCallArguments(CB);
 }
 
 void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-  // if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
-  //   return;
 
   // Void return and not tracking callee, just bail.
   if (CB.getType()->isVoidTy())
@@ -1333,9 +1332,7 @@ void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-  // if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
-  //   return;
-    
+
   if (auto *II = dyn_cast<IntrinsicInst>(&CB)) {
     if (II->getIntrinsicID() == Intrinsic::ssa_copy) {
       if (ValueState[&CB].isOverdefined())

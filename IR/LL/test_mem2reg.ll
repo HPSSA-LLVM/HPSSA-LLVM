@@ -24,7 +24,6 @@ target triple = "x86_64-unknown-linux-gnu"
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
 @_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
-@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -47,129 +46,114 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 define dso_local i32 @main() #4 {
 entry:
   %a = alloca i32, align 4
-  %b = alloca i32, align 4
   %c = alloca i32, align 4
-  %d = alloca i32, align 4
+  br label %start
+
+start:                                            ; preds = %entry
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
-  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %b)
-  %call2 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call1, i32* nonnull align 4 dereferenceable(4) %c)
-  %call3 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call2, i32* nonnull align 4 dereferenceable(4) %d)
-  %call4 = call i32 @rand() #3
-  %rem = srem i32 %call4, 181
-  %cmp = icmp sge i32 %rem, 991
-  br i1 %cmp, label %if.then, label %if.else14
+  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %c)
+  %i = load i32, i32* %c, align 4
+  switch i32 %i, label %sw.default [
+    i32 1, label %sw.bb
+    i32 2, label %sw.bb2
+    i32 3, label %sw.bb3
+    i32 4, label %sw.bb4
+    i32 5, label %sw.bb5
+    i32 6, label %sw.bb6
+  ]
 
-if.then:                                          ; preds = %entry
-  %i = load i32, i32* %a, align 4
-  %i1 = load i32, i32* %b, align 4
-  %add = add nsw i32 %i, %i1
-  %add5 = add nsw i32 90, %add
-  %call6 = call i32 @rand() #3
-  %rem7 = srem i32 %call6, 50
+sw.bb:                                            ; preds = %start
+  br label %label_1
+
+sw.bb2:                                           ; preds = %start
+  br label %label_2
+
+sw.bb3:                                           ; preds = %start
+  br label %label_3
+
+sw.bb4:                                           ; preds = %start
+  br label %label_4
+
+sw.bb5:                                           ; preds = %start
+  br label %label_5
+
+sw.bb6:                                           ; preds = %start
+  br label %label_8
+
+sw.default:                                       ; preds = %start
+  br label %label_6
+
+label_1:                                          ; preds = %sw.bb
+  store i32 30, i32* %a, align 4
+  br label %end
+
+label_2:                                          ; preds = %sw.bb2
+  store i32 40, i32* %a, align 4
+  br label %end
+
+label_3:                                          ; preds = %sw.bb3
+  store i32 50, i32* %a, align 4
+  br label %end
+
+label_4:                                          ; preds = %sw.bb4
+  store i32 10, i32* %a, align 4
+  %i1 = load i32, i32* %a, align 4
+  %add = add nsw i32 %i1, 30
+  br label %label_7
+
+label_5:                                          ; preds = %sw.bb5
+  store i32 86, i32* %a, align 4
+  %i2 = load i32, i32* %a, align 4
+  %add7 = add nsw i32 %i2, 1
+  store i32 %add7, i32* %a, align 4
+  br label %label_7
+
+label_8:                                          ; preds = %sw.bb6
+  store i32 110, i32* %a, align 4
   %i3 = load i32, i32* %a, align 4
-  %mul = mul nsw i32 2, %i3
-  %cmp8 = icmp sge i32 %rem7, %mul
-  br i1 %cmp8, label %if.then9, label %if.else
+  %add8 = add nsw i32 %i3, 1
+  store i32 %add8, i32* %a, align 4
+  br label %label_7
 
-if.then9:                                         ; preds = %if.then
+label_7:                                          ; preds = %label_8, %label_5, %label_4
+  %e.0 = phi i32 [ 0, %label_8 ], [ 0, %label_5 ], [ %add, %label_4 ]
+  %b.0 = phi i32 [ -11, %label_8 ], [ 13, %label_5 ], [ 90, %label_4 ]
   %i4 = load i32, i32* %a, align 4
-  %i5 = load i32, i32* %b, align 4
-  %sub = sub nsw i32 %i4, %i5
-  store i32 137, i32* %b, align 4
+  %add9 = add nsw i32 %i4, %e.0
+  br label %end
+
+label_6:                                          ; preds = %sw.default
+  store i32 23, i32* %a, align 4
+  br label %end
+
+end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
+  %e.1 = phi i32 [ 0, %label_6 ], [ %e.0, %label_7 ], [ 0, %label_3 ], [ 0, %label_2 ], [ 90, %label_1 ]
+  %b.1 = phi i32 [ 77, %label_6 ], [ %b.0, %label_7 ], [ 50, %label_3 ], [ 60, %label_2 ], [ 70, %label_1 ]
+  %add10 = add nsw i32 %e.1, 10
+  %i7 = load i32, i32* %a, align 4
+  %add11 = add nsw i32 %i7, %b.1
+  %cmp = icmp sge i32 %add11, 100
+  br i1 %cmp, label %if.then, label %if.else
+
+if.then:                                          ; preds = %end
+  %i10 = load i32, i32* %a, align 4
+  %add12 = add nsw i32 %i10, 190
+  store i32 %add12, i32* %a, align 4
   br label %if.end
 
-if.else:                                          ; preds = %if.then
-  %i6 = load i32, i32* %c, align 4
-  %sub10 = sub nsw i32 111, %i6
-  %i7 = load i32, i32* %b, align 4
-  %i8 = load i32, i32* %c, align 4
-  %sub11 = sub nsw i32 %i7, %i8
+if.else:                                          ; preds = %end
+  %i11 = load i32, i32* %a, align 4
+  %sub = sub nsw i32 %i11, 100
+  store i32 %sub, i32* %a, align 4
   br label %if.end
 
-if.end:                                           ; preds = %if.else, %if.then9
-  %y.0 = phi i32 [ 63, %if.then9 ], [ %sub11, %if.else ]
-  %x.0 = phi i32 [ %sub, %if.then9 ], [ %sub10, %if.else ]
-  %add12 = add nsw i32 undef, 8
-  %add13 = add nsw i32 %x.0, 9354
-  store i32 %add13, i32* %a, align 4
-  br label %if.end29
-
-if.else14:                                        ; preds = %entry
-  %add15 = add nsw i32 undef, 762
-  %i12 = load i32, i32* %c, align 4
-  %i13 = load i32, i32* %d, align 4
-  %add16 = add nsw i32 %i12, %i13
-  %i14 = load i32, i32* %a, align 4
-  %add17 = add nsw i32 %i14, 887
-  %call18 = call i32 @rand() #3
-  %rem19 = srem i32 %call18, 70
-  %i15 = load i32, i32* %a, align 4
-  %mul20 = mul nsw i32 2, %i15
-  %cmp21 = icmp sge i32 %rem19, %mul20
-  br i1 %cmp21, label %if.then22, label %if.else24
-
-if.then22:                                        ; preds = %if.else14
-  %i16 = load i32, i32* %a, align 4
-  %i17 = load i32, i32* %b, align 4
-  %add23 = add nsw i32 %i16, %i17
-  store i32 8568, i32* %b, align 4
-  br label %if.end27
-
-if.else24:                                        ; preds = %if.else14
-  %i18 = load i32, i32* %c, align 4
-  %add25 = add nsw i32 932, %i18
-  %i19 = load i32, i32* %b, align 4
-  %i20 = load i32, i32* %c, align 4
-  %add26 = add nsw i32 %i19, %i20
-  br label %if.end27
-
-if.end27:                                         ; preds = %if.else24, %if.then22
-  %y.1 = phi i32 [ %add17, %if.then22 ], [ %add26, %if.else24 ]
-  %x.1 = phi i32 [ %add23, %if.then22 ], [ %add25, %if.else24 ]
-  %add28 = add nsw i32 %x.1, 1145
-  store i32 %add28, i32* %a, align 4
-  br label %if.end29
-
-if.end29:                                         ; preds = %if.end27, %if.end
-  %y.2 = phi i32 [ %y.0, %if.end ], [ %y.1, %if.end27 ]
-  %x.2 = phi i32 [ %x.0, %if.end ], [ %x.1, %if.end27 ]
-  %i23 = load i32, i32* %a, align 4
-  %add30 = add nsw i32 %x.2, %i23
-  %add31 = add nsw i32 %y.2, %add30
-  %add32 = add nsw i32 %add31, 1
-  %i26 = load i32, i32* %d, align 4
-  %i27 = load i32, i32* %a, align 4
-  %add33 = add nsw i32 %i26, %i27
-  %call34 = call i32 @rand() #3
-  %rem35 = srem i32 %call34, 60
-  %cmp36 = icmp sgt i32 %add33, %rem35
-  br i1 %cmp36, label %if.then37, label %if.else39
-
-if.then37:                                        ; preds = %if.end29
-  %i29 = load i32, i32* %a, align 4
-  %add38 = add nsw i32 %add31, %i29
-  br label %if.end41
-
-if.else39:                                        ; preds = %if.end29
-  %i31 = load i32, i32* %a, align 4
-  %add40 = add nsw i32 %x.2, %i31
-  br label %if.end41
-
-if.end41:                                         ; preds = %if.else39, %if.then37
-  %y.3 = phi i32 [ %add38, %if.then37 ], [ %add40, %if.else39 ]
-  %i33 = load i32, i32* %a, align 4
-  %add42 = add nsw i32 %x.2, %i33
-  %add43 = add nsw i32 %y.3, %add42
-  %call44 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %add43)
+if.end:                                           ; preds = %if.else, %if.then
+  %i12 = load i32, i32* %a, align 4
+  %add13 = add nsw i32 %add11, %i12
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
-
-; Function Attrs: nounwind
-declare dso_local i32 @rand() #2
-
-declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {

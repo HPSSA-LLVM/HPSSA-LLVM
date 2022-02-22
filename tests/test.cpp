@@ -1,49 +1,71 @@
 #include <bits/stdc++.h>
 
-// profileInfo
-// 1
-// 7
-// entry if.then if.else if.end if.end29 if.then37 if.end41 
-
 int main() {
-  int a, b, c, d, x, y, e, f, z = 0;
-  std::cin >> a >> b >> c >> d;
-  if (rand() % 181 >= 991) {
-    x = a + b; // dead
-    y = 63;
-    e = 90 + x; // dead
-    if (rand() % 50 >= 2 * a) {
-      x = a - b;
-      b = 137;
-    } else {
-      x = 111 - c;
-      y = b - c;
+  start:
+    int a, b, c, d, e = 0;
+    std::cin >> a >> c;
+    switch(c) {
+      case 1 : goto label_1; break;
+      case 2 : goto label_2; break;
+      case 3 : goto label_3; break;
+      case 4 : goto label_4; break;
+      case 5 : goto label_5; break;
+      case 6 : goto label_8; break;
+      default : goto label_6;
     }
-    f += 8;
-    a = x + 9354;
-  } else {
-    f = e + 762; // dead
-    x = c + d; // dead
-    y = a + 887;
-    if (rand() % 70 >= 2 * a) {
-      x = a + b;
-      b = 8568;
-    } else {
-      e = (int)(99 / 8);
-      x = 932 + c;
-      y = b + c;
-    }
-    a = x + 1145;
-  }
-  y += x + a;
-  f = y + 1;
-  if (d + a > rand() % 60) {
-    y = y + a;
-  } else {
-    y = x + a;
-  }
-  y += x + a;
   
-  std::cout << y;
+  label_1:
+    a = 30;
+    b = 70;
+    e = 90;
+    goto end;
+  
+  label_2:
+    b = 60;
+    a = 40;
+    goto end;
+  
+  label_3:
+    a = 50;
+    b = 50;
+    goto end;
+  
+  label_4:
+    a = 10;
+    b = 90;
+    e = a + 30;
+    goto label_7;
+
+  label_5:
+    a = 86;
+    a += 1;
+    b = 13;
+    goto label_7;
+
+  label_8:
+    a = 110;
+    a += 1;
+    b = -11;
+    goto label_7;
+
+  label_7:
+    d = a + e;
+    goto end;
+
+  label_6:
+    a = 23;
+    b = 77;
+    goto end;
+
+  end:
+    e = e + 10;
+    int z = a + b;
+    if (z >= 100) {
+      a = a + 190;
+    } else {
+      a = a - 100;
+    }
+    
+  z += a;
   return 0;
 }

@@ -28,8 +28,10 @@ runpass: build/*
 	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
 	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
 		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_usage.ll 
-	
+
 cfg:
+	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
+	mv .main.dot baseline.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_usage.ll -enable-new-pm=0 -disable-output
 	mv .main.dot afterHPSSA.dot
 	mv *.dot IR/cfg/

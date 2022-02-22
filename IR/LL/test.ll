@@ -24,7 +24,6 @@ target triple = "x86_64-unknown-linux-gnu"
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
 @_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
-@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -51,158 +50,131 @@ entry:
   %b = alloca i32, align 4
   %c = alloca i32, align 4
   %d = alloca i32, align 4
-  %x = alloca i32, align 4
-  %y = alloca i32, align 4
   %e = alloca i32, align 4
-  %f = alloca i32, align 4
   %z = alloca i32, align 4
   store i32 0, i32* %retval, align 4
-  store i32 0, i32* %z, align 4
+  br label %start
+
+start:                                            ; preds = %entry
+  store i32 0, i32* %e, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
-  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %b)
-  %call2 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call1, i32* nonnull align 4 dereferenceable(4) %c)
-  %call3 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call2, i32* nonnull align 4 dereferenceable(4) %d)
-  %call4 = call i32 @rand() #3
-  %rem = srem i32 %call4, 181
-  %cmp = icmp sge i32 %rem, 991
-  br i1 %cmp, label %if.then, label %if.else14
+  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %c)
+  %0 = load i32, i32* %c, align 4
+  switch i32 %0, label %sw.default [
+    i32 1, label %sw.bb
+    i32 2, label %sw.bb2
+    i32 3, label %sw.bb3
+    i32 4, label %sw.bb4
+    i32 5, label %sw.bb5
+    i32 6, label %sw.bb6
+  ]
 
-if.then:                                          ; preds = %entry
-  %0 = load i32, i32* %a, align 4
-  %1 = load i32, i32* %b, align 4
-  %add = add nsw i32 %0, %1
-  store i32 %add, i32* %x, align 4
-  store i32 63, i32* %y, align 4
-  %2 = load i32, i32* %x, align 4
-  %add5 = add nsw i32 90, %2
-  store i32 %add5, i32* %e, align 4
-  %call6 = call i32 @rand() #3
-  %rem7 = srem i32 %call6, 50
+sw.bb:                                            ; preds = %start
+  br label %label_1
+
+sw.bb2:                                           ; preds = %start
+  br label %label_2
+
+sw.bb3:                                           ; preds = %start
+  br label %label_3
+
+sw.bb4:                                           ; preds = %start
+  br label %label_4
+
+sw.bb5:                                           ; preds = %start
+  br label %label_5
+
+sw.bb6:                                           ; preds = %start
+  br label %label_8
+
+sw.default:                                       ; preds = %start
+  br label %label_6
+
+label_1:                                          ; preds = %sw.bb
+  store i32 30, i32* %a, align 4
+  store i32 70, i32* %b, align 4
+  store i32 90, i32* %e, align 4
+  br label %end
+
+label_2:                                          ; preds = %sw.bb2
+  store i32 60, i32* %b, align 4
+  store i32 40, i32* %a, align 4
+  br label %end
+
+label_3:                                          ; preds = %sw.bb3
+  store i32 50, i32* %a, align 4
+  store i32 50, i32* %b, align 4
+  br label %end
+
+label_4:                                          ; preds = %sw.bb4
+  store i32 10, i32* %a, align 4
+  store i32 90, i32* %b, align 4
+  %1 = load i32, i32* %a, align 4
+  %add = add nsw i32 %1, 30
+  store i32 %add, i32* %e, align 4
+  br label %label_7
+
+label_5:                                          ; preds = %sw.bb5
+  store i32 86, i32* %a, align 4
+  %2 = load i32, i32* %a, align 4
+  %add7 = add nsw i32 %2, 1
+  store i32 %add7, i32* %a, align 4
+  store i32 13, i32* %b, align 4
+  br label %label_7
+
+label_8:                                          ; preds = %sw.bb6
+  store i32 110, i32* %a, align 4
   %3 = load i32, i32* %a, align 4
-  %mul = mul nsw i32 2, %3
-  %cmp8 = icmp sge i32 %rem7, %mul
-  br i1 %cmp8, label %if.then9, label %if.else
+  %add8 = add nsw i32 %3, 1
+  store i32 %add8, i32* %a, align 4
+  store i32 -11, i32* %b, align 4
+  br label %label_7
 
-if.then9:                                         ; preds = %if.then
+label_7:                                          ; preds = %label_8, %label_5, %label_4
   %4 = load i32, i32* %a, align 4
-  %5 = load i32, i32* %b, align 4
-  %sub = sub nsw i32 %4, %5
-  store i32 %sub, i32* %x, align 4
-  store i32 137, i32* %b, align 4
+  %5 = load i32, i32* %e, align 4
+  %add9 = add nsw i32 %4, %5
+  store i32 %add9, i32* %d, align 4
+  br label %end
+
+label_6:                                          ; preds = %sw.default
+  store i32 23, i32* %a, align 4
+  store i32 77, i32* %b, align 4
+  br label %end
+
+end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
+  %6 = load i32, i32* %e, align 4
+  %add10 = add nsw i32 %6, 10
+  store i32 %add10, i32* %e, align 4
+  %7 = load i32, i32* %a, align 4
+  %8 = load i32, i32* %b, align 4
+  %add11 = add nsw i32 %7, %8
+  store i32 %add11, i32* %z, align 4
+  %9 = load i32, i32* %z, align 4
+  %cmp = icmp sge i32 %9, 100
+  br i1 %cmp, label %if.then, label %if.else
+
+if.then:                                          ; preds = %end
+  %10 = load i32, i32* %a, align 4
+  %add12 = add nsw i32 %10, 190
+  store i32 %add12, i32* %a, align 4
   br label %if.end
 
-if.else:                                          ; preds = %if.then
-  %6 = load i32, i32* %c, align 4
-  %sub10 = sub nsw i32 111, %6
-  store i32 %sub10, i32* %x, align 4
-  %7 = load i32, i32* %b, align 4
-  %8 = load i32, i32* %c, align 4
-  %sub11 = sub nsw i32 %7, %8
-  store i32 %sub11, i32* %y, align 4
+if.else:                                          ; preds = %end
+  %11 = load i32, i32* %a, align 4
+  %sub = sub nsw i32 %11, 100
+  store i32 %sub, i32* %a, align 4
   br label %if.end
 
-if.end:                                           ; preds = %if.else, %if.then9
-  %9 = load i32, i32* %f, align 4
-  %add12 = add nsw i32 %9, 8
-  store i32 %add12, i32* %f, align 4
-  %10 = load i32, i32* %x, align 4
-  %add13 = add nsw i32 %10, 9354
-  store i32 %add13, i32* %a, align 4
-  br label %if.end29
-
-if.else14:                                        ; preds = %entry
-  %11 = load i32, i32* %e, align 4
-  %add15 = add nsw i32 %11, 762
-  store i32 %add15, i32* %f, align 4
-  %12 = load i32, i32* %c, align 4
-  %13 = load i32, i32* %d, align 4
-  %add16 = add nsw i32 %12, %13
-  store i32 %add16, i32* %x, align 4
-  %14 = load i32, i32* %a, align 4
-  %add17 = add nsw i32 %14, 887
-  store i32 %add17, i32* %y, align 4
-  %call18 = call i32 @rand() #3
-  %rem19 = srem i32 %call18, 70
-  %15 = load i32, i32* %a, align 4
-  %mul20 = mul nsw i32 2, %15
-  %cmp21 = icmp sge i32 %rem19, %mul20
-  br i1 %cmp21, label %if.then22, label %if.else24
-
-if.then22:                                        ; preds = %if.else14
-  %16 = load i32, i32* %a, align 4
-  %17 = load i32, i32* %b, align 4
-  %add23 = add nsw i32 %16, %17
-  store i32 %add23, i32* %x, align 4
-  store i32 8568, i32* %b, align 4
-  br label %if.end27
-
-if.else24:                                        ; preds = %if.else14
-  store i32 12, i32* %e, align 4
-  %18 = load i32, i32* %c, align 4
-  %add25 = add nsw i32 932, %18
-  store i32 %add25, i32* %x, align 4
-  %19 = load i32, i32* %b, align 4
-  %20 = load i32, i32* %c, align 4
-  %add26 = add nsw i32 %19, %20
-  store i32 %add26, i32* %y, align 4
-  br label %if.end27
-
-if.end27:                                         ; preds = %if.else24, %if.then22
-  %21 = load i32, i32* %x, align 4
-  %add28 = add nsw i32 %21, 1145
-  store i32 %add28, i32* %a, align 4
-  br label %if.end29
-
-if.end29:                                         ; preds = %if.end27, %if.end
-  %22 = load i32, i32* %x, align 4
-  %23 = load i32, i32* %a, align 4
-  %add30 = add nsw i32 %22, %23
-  %24 = load i32, i32* %y, align 4
-  %add31 = add nsw i32 %24, %add30
-  store i32 %add31, i32* %y, align 4
-  %25 = load i32, i32* %y, align 4
-  %add32 = add nsw i32 %25, 1
-  store i32 %add32, i32* %f, align 4
-  %26 = load i32, i32* %d, align 4
-  %27 = load i32, i32* %a, align 4
-  %add33 = add nsw i32 %26, %27
-  %call34 = call i32 @rand() #3
-  %rem35 = srem i32 %call34, 60
-  %cmp36 = icmp sgt i32 %add33, %rem35
-  br i1 %cmp36, label %if.then37, label %if.else39
-
-if.then37:                                        ; preds = %if.end29
-  %28 = load i32, i32* %y, align 4
-  %29 = load i32, i32* %a, align 4
-  %add38 = add nsw i32 %28, %29
-  store i32 %add38, i32* %y, align 4
-  br label %if.end41
-
-if.else39:                                        ; preds = %if.end29
-  %30 = load i32, i32* %x, align 4
-  %31 = load i32, i32* %a, align 4
-  %add40 = add nsw i32 %30, %31
-  store i32 %add40, i32* %y, align 4
-  br label %if.end41
-
-if.end41:                                         ; preds = %if.else39, %if.then37
-  %32 = load i32, i32* %x, align 4
-  %33 = load i32, i32* %a, align 4
-  %add42 = add nsw i32 %32, %33
-  %34 = load i32, i32* %y, align 4
-  %add43 = add nsw i32 %34, %add42
-  store i32 %add43, i32* %y, align 4
-  %35 = load i32, i32* %y, align 4
-  %call44 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %35)
+if.end:                                           ; preds = %if.else, %if.then
+  %12 = load i32, i32* %a, align 4
+  %13 = load i32, i32* %z, align 4
+  %add13 = add nsw i32 %13, %12
+  store i32 %add13, i32* %z, align 4
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
-
-; Function Attrs: nounwind
-declare dso_local i32 @rand() #2
-
-declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
