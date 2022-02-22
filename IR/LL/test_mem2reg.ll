@@ -132,7 +132,7 @@ end:                                              ; preds = %label_6, %label_7, 
   %add10 = add nsw i32 %e.1, 10
   %i7 = load i32, i32* %a, align 4
   %add11 = add nsw i32 %i7, %b.1
-  %cmp = icmp sge i32 %add11, 100
+  %cmp = icmp sge i32 %add11, 150
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end

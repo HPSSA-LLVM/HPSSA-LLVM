@@ -60,7 +60,7 @@ int main() {
   end:
     e = e + 10;
     int z = a + b;
-    if (z >= 100) {
+    if (z >= 150) {
       a = a + 190;
     } else {
       a = a - 100;

@@ -17,7 +17,7 @@
 #include "llvm/ADT/MapVector.h"
 #include "llvm/Analysis/DomTreeUpdater.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
-#include "llvm/Analysis/ValueLattice.h"
+#include "../include/SpecValueLattice.h"
 #include "llvm/Analysis/ValueLatticeUtils.h"
 #include "llvm/IR/InstVisitor.h"
 #include "llvm/Transforms/Utils/PredicateInfo.h"
@@ -101,18 +101,18 @@ public:
   // block to the 'To' basic block is currently feasible.
   bool isEdgeFeasible(BasicBlock *From, BasicBlock *To) const;
 
-  std::vector<ValueLatticeElement> getStructLatticeValueFor(Value *V) const;
+  std::vector<SpecValueLatticeElement> getStructLatticeValueFor(Value *V) const;
 
   void removeLatticeValueFor(Value *V);
 
-  const ValueLatticeElement &getLatticeValueFor(Value *V) const;
+  const SpecValueLatticeElement &getLatticeValueFor(Value *V) const;
 
   /// getTrackedRetVals - Get the inferred return value map.
-  const MapVector<Function *, ValueLatticeElement> &getTrackedRetVals();
+  const MapVector<Function *, SpecValueLatticeElement> &getTrackedRetVals();
 
   /// getTrackedGlobals - Get and return the set of inferred initializers for
   /// global variables.
-  const DenseMap<GlobalVariable *, ValueLatticeElement> &getTrackedGlobals();
+  const DenseMap<GlobalVariable *, SpecValueLatticeElement> &getTrackedGlobals();
 
   /// getMRVFunctionsTracked - Get the set of functions which return multiple
   /// values tracked by the pass.
@@ -122,6 +122,10 @@ public:
   /// works with both scalars and structs.
   void markOverdefined(Value *V);
 
+  /// markOverdefined - Mark the specified value overdefined.  This
+  /// works with both scalars and structs.
+  // void markSpeculativeConstant(Value *V);
+
   // isStructLatticeConstant - Return true if all the lattice values
   // corresponding to elements of the structure are constants,
   // false otherwise.
@@ -129,7 +133,7 @@ public:
 
   /// Helper to return a Constant if \p LV is either a constant or a constant
   /// range with a single element.
-  Constant *getConstant(const ValueLatticeElement &LV) const;
+  Constant *getConstant(const SpecValueLatticeElement &LV) const;
 
   /// Return a reference to the set of argument tracked functions.
   SmallPtrSetImpl<Function *> &getArgumentTrackedFunctions();

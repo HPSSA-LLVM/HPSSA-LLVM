@@ -33,7 +33,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include <bits/stdc++.h>
 #include <llvm/IR/Value.h>
-
+#include "../include/SpecValueLattice.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseSet.h"
@@ -49,7 +49,6 @@
 #include "llvm/Analysis/GlobalsModRef.h"
 #include "llvm/Analysis/InstructionSimplify.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
-#include "llvm/Analysis/ValueLattice.h"
 #include "llvm/Analysis/ValueLatticeUtils.h"
 #include "llvm/Analysis/ValueTracking.h"
 #include "llvm/IR/BasicBlock.h"
@@ -101,7 +100,7 @@ STATISTIC(
 // range with a single element. This should cover exactly the same cases as the
 // old ValueLatticeElement::isConstant() and is intended to be used in the
 // transition to ValueLatticeElement.
-static bool isConstant(const ValueLatticeElement &LV) {
+static bool isConstant(const SpecValueLatticeElement &LV) {
   return LV.isConstant() ||
          (LV.isConstantRange() && LV.getConstantRange().isSingleElement());
 }
@@ -110,28 +109,28 @@ static bool isConstant(const ValueLatticeElement &LV) {
 // than a single element. This should cover exactly the same cases as the old
 // ValueLatticeElement::isOverdefined() and is intended to be used in the
 // transition to ValueLatticeElement.
-static bool isOverdefined(const ValueLatticeElement &LV) {
+static bool isOverdefined(const SpecValueLatticeElement &LV) {
   return !LV.isUnknownOrUndef() && !isConstant(LV);
 }
 
 static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
   Constant *Const = nullptr;
   if (V->getType()->isStructTy()) {
-    std::vector<ValueLatticeElement> IVs = Solver.getStructLatticeValueFor(V);
+    std::vector<SpecValueLatticeElement> IVs = Solver.getStructLatticeValueFor(V);
     if (any_of(IVs,
-               [](const ValueLatticeElement &LV) { return isOverdefined(LV); }))
+               [](const SpecValueLatticeElement &LV) { return isOverdefined(LV); }))
       return false;
     std::vector<Constant *> ConstVals;
     auto *ST = cast<StructType>(V->getType());
     for (unsigned i = 0, e = ST->getNumElements(); i != e; ++i) {
-      ValueLatticeElement V = IVs[i];
+      SpecValueLatticeElement V = IVs[i];
       ConstVals.push_back(isConstant(V)
                               ? Solver.getConstant(V)
                               : UndefValue::get(ST->getElementType(i)));
     }
     Const = ConstantStruct::get(ST, ConstVals);
   } else {
-    const ValueLatticeElement &IV = Solver.getLatticeValueFor(V);
+    const SpecValueLatticeElement &IV = Solver.getLatticeValueFor(V);
     if (isOverdefined(IV))
       return false;
 
@@ -184,7 +183,7 @@ static bool simplifyInstsInBlock(SCCPTauSolver &Solver, BasicBlock &BB,
       Value *ExtOp = Inst.getOperand(0);
       if (isa<Constant>(ExtOp) || InsertedValues.count(ExtOp))
         continue;
-      const ValueLatticeElement &IV = Solver.getLatticeValueFor(ExtOp);
+      const SpecValueLatticeElement &IV = Solver.getLatticeValueFor(ExtOp);
       if (!IV.isConstantRange(/*UndefAllowed=*/false))
         continue;
       if (IV.getConstantRange().isAllNonNegative()) {

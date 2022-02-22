@@ -1,4 +1,4 @@
-; ModuleID = 'tests/test.cpp'
+; ModuleID = 'IR/LL/test_mem2reg.ll'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -30,7 +30,7 @@ target triple = "x86_64-unknown-linux-gnu"
 define internal void @__cxx_global_var_init() #0 section ".text.startup" {
 entry:
   call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
-  %0 = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3
   ret void
 }
 
@@ -45,22 +45,15 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 ; Function Attrs: mustprogress noinline norecurse uwtable
 define dso_local i32 @main() #4 {
 entry:
-  %retval = alloca i32, align 4
   %a = alloca i32, align 4
-  %b = alloca i32, align 4
   %c = alloca i32, align 4
-  %d = alloca i32, align 4
-  %e = alloca i32, align 4
-  %z = alloca i32, align 4
-  store i32 0, i32* %retval, align 4
   br label %start
 
 start:                                            ; preds = %entry
-  store i32 0, i32* %e, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
   %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %c)
-  %0 = load i32, i32* %c, align 4
-  switch i32 %0, label %sw.default [
+  %i = load i32, i32* %c, align 4
+  switch i32 %i, label %sw.default [
     i32 1, label %sw.bb
     i32 2, label %sw.bb2
     i32 3, label %sw.bb3
@@ -92,85 +85,71 @@ sw.default:                                       ; preds = %start
 
 label_1:                                          ; preds = %sw.bb
   store i32 30, i32* %a, align 4
-  store i32 70, i32* %b, align 4
-  store i32 90, i32* %e, align 4
   br label %end
 
 label_2:                                          ; preds = %sw.bb2
-  store i32 60, i32* %b, align 4
   store i32 40, i32* %a, align 4
   br label %end
 
 label_3:                                          ; preds = %sw.bb3
   store i32 50, i32* %a, align 4
-  store i32 50, i32* %b, align 4
   br label %end
 
 label_4:                                          ; preds = %sw.bb4
   store i32 10, i32* %a, align 4
-  store i32 90, i32* %b, align 4
-  %1 = load i32, i32* %a, align 4
-  %add = add nsw i32 %1, 30
-  store i32 %add, i32* %e, align 4
+  %i1 = load i32, i32* %a, align 4
+  %add = add nsw i32 %i1, 30
   br label %label_7
 
 label_5:                                          ; preds = %sw.bb5
   store i32 86, i32* %a, align 4
-  %2 = load i32, i32* %a, align 4
-  %add7 = add nsw i32 %2, 1
+  %i2 = load i32, i32* %a, align 4
+  %add7 = add nsw i32 %i2, 1
   store i32 %add7, i32* %a, align 4
-  store i32 13, i32* %b, align 4
   br label %label_7
 
 label_8:                                          ; preds = %sw.bb6
   store i32 110, i32* %a, align 4
-  %3 = load i32, i32* %a, align 4
-  %add8 = add nsw i32 %3, 1
+  %i3 = load i32, i32* %a, align 4
+  %add8 = add nsw i32 %i3, 1
   store i32 %add8, i32* %a, align 4
-  store i32 -11, i32* %b, align 4
   br label %label_7
 
 label_7:                                          ; preds = %label_8, %label_5, %label_4
-  %4 = load i32, i32* %a, align 4
-  %5 = load i32, i32* %e, align 4
-  %add9 = add nsw i32 %4, %5
-  store i32 %add9, i32* %d, align 4
+  %e.0 = phi i32 [ 0, %label_8 ], [ 0, %label_5 ], [ %add, %label_4 ]
+  %b.0 = phi i32 [ -11, %label_8 ], [ 13, %label_5 ], [ 90, %label_4 ]
+  %i4 = load i32, i32* %a, align 4
+  %add9 = add nsw i32 %i4, %e.0
   br label %end
 
 label_6:                                          ; preds = %sw.default
   store i32 23, i32* %a, align 4
-  store i32 77, i32* %b, align 4
   br label %end
 
 end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
-  %6 = load i32, i32* %e, align 4
-  %add10 = add nsw i32 %6, 10
-  store i32 %add10, i32* %e, align 4
-  %7 = load i32, i32* %a, align 4
-  %8 = load i32, i32* %b, align 4
-  %add11 = add nsw i32 %7, %8
-  store i32 %add11, i32* %z, align 4
-  %9 = load i32, i32* %z, align 4
-  %cmp = icmp sge i32 %9, 150
+  %e.1 = phi i32 [ 0, %label_6 ], [ %e.0, %label_7 ], [ 0, %label_3 ], [ 0, %label_2 ], [ 90, %label_1 ]
+  %b.1 = phi i32 [ 77, %label_6 ], [ %b.0, %label_7 ], [ 50, %label_3 ], [ 60, %label_2 ], [ 70, %label_1 ]
+  %add10 = add nsw i32 %e.1, 10
+  %i7 = load i32, i32* %a, align 4
+  %add11 = add nsw i32 %i7, %b.1
+  %cmp = icmp sge i32 %add11, 150
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %10 = load i32, i32* %a, align 4
-  %add12 = add nsw i32 %10, 190
+  %i10 = load i32, i32* %a, align 4
+  %add12 = add nsw i32 %i10, 190
   store i32 %add12, i32* %a, align 4
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %11 = load i32, i32* %a, align 4
-  %sub = sub nsw i32 %11, 100
+  %i11 = load i32, i32* %a, align 4
+  %sub = sub nsw i32 %i11, 100
   store i32 %sub, i32* %a, align 4
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %12 = load i32, i32* %a, align 4
-  %13 = load i32, i32* %z, align 4
-  %add13 = add nsw i32 %13, %12
-  store i32 %add13, i32* %z, align 4
+  %i12 = load i32, i32* %a, align 4
+  %add13 = add nsw i32 %add11, %i12
   ret i32 0
 }
 

@@ -13,6 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "../include/SCCPSolverTau.h"
+#include "../include/SpecValueLattice.h"
 #include "llvm/Analysis/ConstantFolding.h"
 #include "llvm/Analysis/InstructionSimplify.h"
 #include "llvm/Analysis/ValueTracking.h"
@@ -37,8 +38,8 @@ using namespace llvm;
 static const unsigned MaxNumRangeExtensions = 10;
 
 /// Returns MergeOptions with MaxWidenSteps set to MaxNumRangeExtensions.
-static ValueLatticeElement::MergeOptions getMaxWidenStepsOpts() {
-  return ValueLatticeElement::MergeOptions().setMaxWidenSteps(
+static SpecValueLatticeElement::MergeOptions getMaxWidenStepsOpts() {
+  return SpecValueLatticeElement::MergeOptions().setMaxWidenSteps(
       MaxNumRangeExtensions);
 }
 
@@ -46,18 +47,18 @@ namespace {
 
 // Helper to check if \p LV is either a constant or a constant
 // range with a single element. This should cover exactly the same cases as the
-// old ValueLatticeElement::isConstant() and is intended to be used in the
-// transition to ValueLatticeElement.
-bool isConstant(const ValueLatticeElement &LV) {
+// old SpecValueLatticeElement::isConstant() and is intended to be used in the
+// transition to SpecValueLatticeElement.
+bool isConstant(const SpecValueLatticeElement &LV) {
   return LV.isConstant() ||
          (LV.isConstantRange() && LV.getConstantRange().isSingleElement());
 }
 
 // Helper to check if \p LV is either overdefined or a constant range with more
 // than a single element. This should cover exactly the same cases as the old
-// ValueLatticeElement::isOverdefined() and is intended to be used in the
-// transition to ValueLatticeElement.
-bool isOverdefined(const ValueLatticeElement &LV) {
+// SpecValueLatticeElement::isOverdefined() and is intended to be used in the
+// transition to SpecValueLatticeElement.
+bool isOverdefined(const SpecValueLatticeElement &LV) {
   return !LV.isUnknownOrUndef() && !isConstant(LV);
 }
 
@@ -71,29 +72,29 @@ class SCCPTauInstVisitor : public InstVisitor<SCCPTauInstVisitor> {
   const DataLayout &DL;
   std::function<const TargetLibraryInfo &(Function &)> GetTLI;
   SmallPtrSet<BasicBlock *, 8> BBExecutable; // The BBs that are executable.
-  DenseMap<Value *, ValueLatticeElement>
+  DenseMap<Value *, SpecValueLatticeElement>
       ValueState; // The state each value is in.
 
   DenseMap<llvm::Instruction*, llvm::BasicBlock*> TauNodesMap;
 
   /// StructValueState - This maintains ValueState for values that have
   /// StructType, for example for formal arguments, calls, insertelement, etc.
-  DenseMap<std::pair<Value *, unsigned>, ValueLatticeElement> StructValueState;
+  DenseMap<std::pair<Value *, unsigned>, SpecValueLatticeElement> StructValueState;
 
   /// GlobalValue - If we are tracking any values for the contents of a global
   /// variable, we keep a mapping from the constant accessor to the element of
   /// the global, to the currently known value.  If the value becomes
   /// overdefined, it's entry is simply removed from this map.
-  DenseMap<GlobalVariable *, ValueLatticeElement> TrackedGlobals;
+  DenseMap<GlobalVariable *, SpecValueLatticeElement> TrackedGlobals;
 
   /// TrackedRetVals - If we are tracking arguments into and the return
   /// value out of a function, it will have an entry in this map, indicating
   /// what the known return value for the function is.
-  MapVector<Function *, ValueLatticeElement> TrackedRetVals;
+  MapVector<Function *, SpecValueLatticeElement> TrackedRetVals;
 
   /// TrackedMultipleRetVals - Same as TrackedRetVals, but used for functions
   /// that return multiple values.
-  MapVector<std::pair<Function *, unsigned>, ValueLatticeElement>
+  MapVector<std::pair<Function *, unsigned>, SpecValueLatticeElement>
       TrackedMultipleRetVals;
 
   /// MRVFunctionsTracked - Each function in TrackedMultipleRetVals is
@@ -132,21 +133,21 @@ class SCCPTauInstVisitor : public InstVisitor<SCCPTauInstVisitor> {
   LLVMContext &Ctx;
 
 private:
-  ConstantInt *getConstantInt(const ValueLatticeElement &IV) const {
+  ConstantInt *getConstantInt(const SpecValueLatticeElement &IV) const {
     return dyn_cast_or_null<ConstantInt>(getConstant(IV));
   }
 
   // pushToWorkList - Helper for markConstant/markOverdefined
-  void pushToWorkList(ValueLatticeElement &IV, Value *V);
+  void pushToWorkList(SpecValueLatticeElement &IV, Value *V);
 
   // Helper to push \p V to the worklist, after updating it to \p IV. Also
   // prints a debug message with the updated value.
-  void pushToWorkListMsg(ValueLatticeElement &IV, Value *V);
+  void pushToWorkListMsg(SpecValueLatticeElement &IV, Value *V);
 
   // markConstant - Make a value be marked as "constant".  If the value
   // is not already a constant, add it to the instruction work list so that
   // the users of the instruction are updated later.
-  bool markConstant(ValueLatticeElement &IV, Value *V, Constant *C,
+  bool markConstant(SpecValueLatticeElement &IV, Value *V, Constant *C,
                     bool MayIncludeUndef = false);
 
   bool markConstant(Value *V, Constant *C) {
@@ -157,31 +158,36 @@ private:
   // markOverdefined - Make a value be marked as "overdefined". If the
   // value is not already overdefined, add it to the overdefined instruction
   // work list so that the users of the instruction are updated later.
-  bool markOverdefined(ValueLatticeElement &IV, Value *V);
+  bool markOverdefined(SpecValueLatticeElement &IV, Value *V);
+
+  // markOverdefined - Make a value be marked as "overdefined". If the
+  // value is not already overdefined, add it to the overdefined instruction
+  // work list so that the users of the instruction are updated later.
+  bool markSpeculativeConstant(SpecValueLatticeElement &IV, Value *V);
 
   /// Merge \p MergeWithV into \p IV and push \p V to the worklist, if \p IV
   /// changes.
-  bool mergeInValue(ValueLatticeElement &IV, Value *V,
-                    ValueLatticeElement MergeWithV,
-                    ValueLatticeElement::MergeOptions Opts = {
+  bool mergeInValue(SpecValueLatticeElement &IV, Value *V,
+                    SpecValueLatticeElement MergeWithV,
+                    SpecValueLatticeElement::MergeOptions Opts = {
                         /*MayIncludeUndef=*/false, /*CheckWiden=*/false});
 
-  bool mergeInValue(Value *V, ValueLatticeElement MergeWithV,
-                    ValueLatticeElement::MergeOptions Opts = {
+  bool mergeInValue(Value *V, SpecValueLatticeElement MergeWithV,
+                    SpecValueLatticeElement::MergeOptions Opts = {
                         /*MayIncludeUndef=*/false, /*CheckWiden=*/false}) {
     assert(!V->getType()->isStructTy() &&
            "non-structs should use markConstant");
     return mergeInValue(ValueState[V], V, MergeWithV, Opts);
   }
 
-  /// getValueState - Return the ValueLatticeElement object that corresponds to
+  /// getValueState - Return the SpecValueLatticeElement object that corresponds to
   /// the value.  This function handles the case when the value hasn't been seen
   /// yet by properly seeding constants etc.
-  ValueLatticeElement &getValueState(Value *V) {
+  SpecValueLatticeElement &getValueState(Value *V) {
     assert(!V->getType()->isStructTy() && "Should use getStructValueState");
 
-    auto I = ValueState.insert(std::make_pair(V, ValueLatticeElement()));
-    ValueLatticeElement &LV = I.first->second;
+    auto I = ValueState.insert(std::make_pair(V, SpecValueLatticeElement()));
+    SpecValueLatticeElement &LV = I.first->second;
 
     if (!I.second)
       return LV; // Common case, already in the map.
@@ -193,17 +199,17 @@ private:
     return LV;
   }
 
-  /// getStructValueState - Return the ValueLatticeElement object that
+  /// getStructValueState - Return the SpecValueLatticeElement object that
   /// corresponds to the value/field pair.  This function handles the case when
   /// the value hasn't been seen yet by properly seeding constants etc.
-  ValueLatticeElement &getStructValueState(Value *V, unsigned i) {
+  SpecValueLatticeElement &getStructValueState(Value *V, unsigned i) {
     assert(V->getType()->isStructTy() && "Should use getValueState");
     assert(i < cast<StructType>(V->getType())->getNumElements() &&
            "Invalid element #");
 
     auto I = StructValueState.insert(
-        std::make_pair(std::make_pair(V, i), ValueLatticeElement()));
-    ValueLatticeElement &LV = I.first->second;
+        std::make_pair(std::make_pair(V, i), SpecValueLatticeElement()));
+    SpecValueLatticeElement &LV = I.first->second;
 
     if (!I.second)
       return LV; // Common case, already in the map.
@@ -361,7 +367,7 @@ public:
   void trackValueOfGlobalVariable(GlobalVariable *GV) {
     // We only track the contents of scalar globals.
     if (GV->getValueType()->isSingleValueType()) {
-      ValueLatticeElement &IV = TrackedGlobals[GV];
+      SpecValueLatticeElement &IV = TrackedGlobals[GV];
       if (!isa<UndefValue>(GV->getInitializer()))
         IV.markConstant(GV->getInitializer());
     }
@@ -373,9 +379,9 @@ public:
       MRVFunctionsTracked.insert(F);
       for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i)
         TrackedMultipleRetVals.insert(
-            std::make_pair(std::make_pair(F, i), ValueLatticeElement()));
+            std::make_pair(std::make_pair(F, i), SpecValueLatticeElement()));
     } else if (!F->getReturnType()->isVoidTy())
-      TrackedRetVals.insert(std::make_pair(F, ValueLatticeElement()));
+      TrackedRetVals.insert(std::make_pair(F, SpecValueLatticeElement()));
   }
 
   void addToMustPreserveReturnsInFunctions(Function *F) {
@@ -404,8 +410,8 @@ public:
 
   bool isEdgeFeasible(BasicBlock *From, BasicBlock *To) const;
 
-  std::vector<ValueLatticeElement> getStructLatticeValueFor(Value *V) const {
-    std::vector<ValueLatticeElement> StructValues;
+  std::vector<SpecValueLatticeElement> getStructLatticeValueFor(Value *V) const {
+    std::vector<SpecValueLatticeElement> StructValues;
     auto *STy = dyn_cast<StructType>(V->getType());
     assert(STy && "getStructLatticeValueFor() can be called only on structs");
     for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i) {
@@ -418,21 +424,21 @@ public:
 
   void removeLatticeValueFor(Value *V) { ValueState.erase(V); }
 
-  const ValueLatticeElement &getLatticeValueFor(Value *V) const {
+  const SpecValueLatticeElement &getLatticeValueFor(Value *V) const {
     assert(!V->getType()->isStructTy() &&
            "Should use getStructLatticeValueFor");
-    DenseMap<Value *, ValueLatticeElement>::const_iterator I =
+    DenseMap<Value *, SpecValueLatticeElement>::const_iterator I =
         ValueState.find(V);
     assert(I != ValueState.end() &&
            "V not found in ValueState nor Paramstate map!");
     return I->second;
   }
 
-  const MapVector<Function *, ValueLatticeElement> &getTrackedRetVals() {
+  const MapVector<Function *, SpecValueLatticeElement> &getTrackedRetVals() {
     return TrackedRetVals;
   }
 
-  const DenseMap<GlobalVariable *, ValueLatticeElement> &getTrackedGlobals() {
+  const DenseMap<GlobalVariable *, SpecValueLatticeElement> &getTrackedGlobals() {
     return TrackedGlobals;
   }
 
@@ -448,9 +454,19 @@ public:
       markOverdefined(ValueState[V], V);
   }
 
+  void markSpeculativeConstant(Value *V) {
+    LLVM_DEBUG(dbgs() << "Marking Speculative Constant : " 
+      << V->getValueName() << "\n");
+    if (auto *STy = dyn_cast<StructType>(V->getType()))
+      for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i)
+        markSpeculativeConstant(getStructValueState(V, i), V);
+    else
+      markSpeculativeConstant(ValueState[V], V);
+  }
+
   bool isStructLatticeConstant(Function *F, StructType *STy);
 
-  Constant *getConstant(const ValueLatticeElement &LV) const;
+  Constant *getConstant(const SpecValueLatticeElement &LV) const;
 
   SmallPtrSetImpl<Function *> &getArgumentTrackedFunctions() {
     return TrackingIncomingArguments;
@@ -474,18 +490,18 @@ bool SCCPTauInstVisitor::markBlockExecutable(BasicBlock *BB) {
   return true;
 }
 
-void SCCPTauInstVisitor::pushToWorkList(ValueLatticeElement &IV, Value *V) {
+void SCCPTauInstVisitor::pushToWorkList(SpecValueLatticeElement &IV, Value *V) {
   if (IV.isOverdefined())
     return OverdefinedInstWorkList.push_back(V);
   InstWorkList.push_back(V);
 }
 
-void SCCPTauInstVisitor::pushToWorkListMsg(ValueLatticeElement &IV, Value *V) {
+void SCCPTauInstVisitor::pushToWorkListMsg(SpecValueLatticeElement &IV, Value *V) {
   LLVM_DEBUG(dbgs() << "updated " << IV << ": " << *V << '\n');
   pushToWorkList(IV, V);
 }
 
-bool SCCPTauInstVisitor::markConstant(ValueLatticeElement &IV, Value *V,
+bool SCCPTauInstVisitor::markConstant(SpecValueLatticeElement &IV, Value *V,
                                    Constant *C, bool MayIncludeUndef) {
   if (!IV.markConstant(C, MayIncludeUndef))
     return false;
@@ -494,7 +510,7 @@ bool SCCPTauInstVisitor::markConstant(ValueLatticeElement &IV, Value *V,
   return true;
 }
 
-bool SCCPTauInstVisitor::markOverdefined(ValueLatticeElement &IV, Value *V) {
+bool SCCPTauInstVisitor::markOverdefined(SpecValueLatticeElement &IV, Value *V) {
   if (!IV.markOverdefined())
     return false;
 
@@ -507,18 +523,31 @@ bool SCCPTauInstVisitor::markOverdefined(ValueLatticeElement &IV, Value *V) {
   return true;
 }
 
+bool SCCPTauInstVisitor::markSpeculativeConstant(SpecValueLatticeElement &IV, Value *V) {
+  if (!IV.markSpeculativeConstant())
+    return false;
+
+  LLVM_DEBUG(dbgs() << "markSpeculativeConstant: ";
+             if (auto *F = dyn_cast<Function>(V)) dbgs()
+             << "Function '" << F->getName() << "'\n";
+             else dbgs() << *V << '\n');
+  // Only instructions go on the work list
+  pushToWorkList(IV, V);
+  return true;
+}
+
 bool SCCPTauInstVisitor::isStructLatticeConstant(Function *F, StructType *STy) {
   for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i) {
     const auto &It = TrackedMultipleRetVals.find(std::make_pair(F, i));
     assert(It != TrackedMultipleRetVals.end());
-    ValueLatticeElement LV = It->second;
+    SpecValueLatticeElement LV = It->second;
     if (!isConstant(LV))
       return false;
   }
   return true;
 }
 
-Constant *SCCPTauInstVisitor::getConstant(const ValueLatticeElement &LV) const {
+Constant *SCCPTauInstVisitor::getConstant(const SpecValueLatticeElement &LV) const {
   if (LV.isConstant())
     return LV.getConstant();
 
@@ -562,9 +591,9 @@ void SCCPTauInstVisitor::visitInstruction(Instruction &I) {
   markOverdefined(&I);
 }
 
-bool SCCPTauInstVisitor::mergeInValue(ValueLatticeElement &IV, Value *V,
-                                   ValueLatticeElement MergeWithV,
-                                   ValueLatticeElement::MergeOptions Opts) {
+bool SCCPTauInstVisitor::mergeInValue(SpecValueLatticeElement &IV, Value *V,
+                                   SpecValueLatticeElement MergeWithV,
+                                   SpecValueLatticeElement::MergeOptions Opts) {
   if (IV.mergeIn(MergeWithV, Opts)) {
     pushToWorkList(IV, V);
     LLVM_DEBUG(dbgs() << "Merged " << MergeWithV << " into " << *V << " : "
@@ -614,7 +643,7 @@ void SCCPTauInstVisitor::getFeasibleSuccessors(Instruction &TI,
       return;
     }
 
-    ValueLatticeElement BCValue = getValueState(BI->getCondition());
+    SpecValueLatticeElement BCValue = getValueState(BI->getCondition());
     ConstantInt *CI = getConstantInt(BCValue);
     if (!CI) {
       // Overdefined condition variables, and branches on unfoldable constant
@@ -640,7 +669,7 @@ void SCCPTauInstVisitor::getFeasibleSuccessors(Instruction &TI,
       Succs[0] = true;
       return;
     }
-    const ValueLatticeElement &SCValue = getValueState(SI->getCondition());
+    const SpecValueLatticeElement &SCValue = getValueState(SI->getCondition());
     if (ConstantInt *CI = getConstantInt(SCValue)) {
       Succs[SI->findCaseValue(CI)->getSuccessorIndex()] = true;
       return;
@@ -671,7 +700,7 @@ void SCCPTauInstVisitor::getFeasibleSuccessors(Instruction &TI,
   // the target as executable.
   if (auto *IBR = dyn_cast<IndirectBrInst>(&TI)) {
     // Casts are folded by visitCastInst.
-    ValueLatticeElement IBRValue = getValueState(IBR->getAddress());
+    SpecValueLatticeElement IBRValue = getValueState(IBR->getAddress());
     BlockAddress *Addr = dyn_cast_or_null<BlockAddress>(getConstant(IBRValue));
     if (!Addr) { // Overdefined or unknown condition?
       // All destinations are executable!
@@ -755,12 +784,12 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
   // constant, and they agree with each other, the PHI becomes the identical
   // constant.  If they are constant and don't agree, the PHI is a constant
   // range. If there are no executable operands, the PHI remains unknown.
-  ValueLatticeElement PhiState = getValueState(&PN);
+  SpecValueLatticeElement PhiState = getValueState(&PN);
   for (unsigned i = 0, e = PN.getNumIncomingValues(); i != e; ++i) {
     if (!isEdgeFeasible(PN.getIncomingBlock(i), PN.getParent()))
       continue;
 
-    ValueLatticeElement IV = getValueState(PN.getIncomingValue(i));
+    SpecValueLatticeElement IV = getValueState(PN.getIncomingValue(i));
     PhiState.mergeIn(IV);
     NumActiveIncoming++;
     if (PhiState.isOverdefined())
@@ -773,9 +802,9 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
   // limit multiple extensions caused by the same incoming value, if other
   // incoming values are equal.
   mergeInValue(&PN, PhiState,
-               ValueLatticeElement::MergeOptions().setMaxWidenSteps(
+               SpecValueLatticeElement::MergeOptions().setMaxWidenSteps(
                    NumActiveIncoming + 1));
-  ValueLatticeElement &PhiStateRef = getValueState(&PN);
+  SpecValueLatticeElement &PhiStateRef = getValueState(&PN);
   PhiStateRef.setNumRangeExtensions(
       std::max(NumActiveIncoming, PhiStateRef.getNumRangeExtensions()));
 }
@@ -805,11 +834,14 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // constant, and they agree with each other, the PHI becomes the identical
   // constant.  If they are constant and don't agree, the PHI is a constant
   // range. If there are no executable operands, the PHI remains unknown.
-  ValueLatticeElement TauState = getValueState(&Tau);
+  SpecValueLatticeElement TauState = getValueState(&Tau);
   for (unsigned i = 1, e = Tau.getNumOperands(); i != e; ++i) {
     // if (!isEdgeFeasible(Tau.getOperand(i), Tau.getParent()))
     //   continue;
-    ValueLatticeElement IV = getValueState(Tau.getOperand(i));
+    SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
+    // markSpeculativeConstant(Tau.getOperand(i));
+    if (IV.isUndef() || IV.isUnknown())
+      IV.markSpeculativeConstant();
     LLVM_DEBUG(dbgs() << "\t\tSpeculative Operand : " 
           << Tau.getOperand(i)->getName() << ", " << IV <<"\n");
     TauState.mergeIn(IV);
@@ -824,9 +856,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // limit multiple extensions caused by the same incoming value, if other
   // incoming values are equal.
   mergeInValue(&Tau, TauState,
-               ValueLatticeElement::MergeOptions().setMaxWidenSteps(
+               SpecValueLatticeElement::MergeOptions().setMaxWidenSteps(
                    NumActiveIncoming + 1));
-  ValueLatticeElement &TauStateRefElem = getValueState(&Tau);
+  SpecValueLatticeElement &TauStateRefElem = getValueState(&Tau);
   TauStateRefElem.setNumRangeExtensions(
       std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) : " << TauState << "\n");
@@ -876,7 +908,7 @@ void SCCPTauInstVisitor::visitCastInst(CastInst &I) {
   if (ValueState[&I].isOverdefined())
     return;
 
-  ValueLatticeElement OpSt = getValueState(I.getOperand(0));
+  SpecValueLatticeElement OpSt = getValueState(I.getOperand(0));
   if (OpSt.isUnknownOrUndef())
     return;
 
@@ -908,7 +940,7 @@ void SCCPTauInstVisitor::visitCastInst(CastInst &I) {
 
     ConstantRange Res =
         OpRange.castOp(I.getOpcode(), DL.getTypeSizeInBits(DestTy));
-    mergeInValue(LV, &I, ValueLatticeElement::getRange(Res));
+    mergeInValue(LV, &I, SpecValueLatticeElement::getRange(Res));
   } else
     markOverdefined(&I);
 }
@@ -931,7 +963,7 @@ void SCCPTauInstVisitor::visitExtractValueInst(ExtractValueInst &EVI) {
   Value *AggVal = EVI.getAggregateOperand();
   if (AggVal->getType()->isStructTy()) {
     unsigned i = *EVI.idx_begin();
-    ValueLatticeElement EltVal = getStructValueState(AggVal, i);
+    SpecValueLatticeElement EltVal = getStructValueState(AggVal, i);
     mergeInValue(getValueState(&EVI), &EVI, EltVal);
   } else {
     // Otherwise, must be extracting from an array.
@@ -961,7 +993,7 @@ void SCCPTauInstVisitor::visitInsertValueInst(InsertValueInst &IVI) {
   for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i) {
     // This passes through all values that aren't the inserted element.
     if (i != Idx) {
-      ValueLatticeElement EltVal = getStructValueState(Aggr, i);
+      SpecValueLatticeElement EltVal = getStructValueState(Aggr, i);
       mergeInValue(getStructValueState(&IVI, i), &IVI, EltVal);
       continue;
     }
@@ -971,7 +1003,7 @@ void SCCPTauInstVisitor::visitInsertValueInst(InsertValueInst &IVI) {
       // We don't track structs in structs.
       markOverdefined(getStructValueState(&IVI, i), &IVI);
     else {
-      ValueLatticeElement InVal = getValueState(Val);
+      SpecValueLatticeElement InVal = getValueState(Val);
       mergeInValue(getStructValueState(&IVI, i), &IVI, InVal);
     }
   }
@@ -988,7 +1020,7 @@ void SCCPTauInstVisitor::visitSelectInst(SelectInst &I) {
   if (ValueState[&I].isOverdefined())
     return (void)markOverdefined(&I);
 
-  ValueLatticeElement CondValue = getValueState(I.getCondition());
+  SpecValueLatticeElement CondValue = getValueState(I.getCondition());
   if (CondValue.isUnknownOrUndef())
     return;
 
@@ -1001,8 +1033,8 @@ void SCCPTauInstVisitor::visitSelectInst(SelectInst &I) {
   // Otherwise, the condition is overdefined or a constant we can't evaluate.
   // See if we can produce something better than overdefined based on the T/F
   // value.
-  ValueLatticeElement TVal = getValueState(I.getTrueValue());
-  ValueLatticeElement FVal = getValueState(I.getFalseValue());
+  SpecValueLatticeElement TVal = getValueState(I.getTrueValue());
+  SpecValueLatticeElement FVal = getValueState(I.getFalseValue());
 
   bool Changed = ValueState[&I].mergeIn(TVal);
   Changed |= ValueState[&I].mergeIn(FVal);
@@ -1012,9 +1044,9 @@ void SCCPTauInstVisitor::visitSelectInst(SelectInst &I) {
 
 // Handle Unary Operators.
 void SCCPTauInstVisitor::visitUnaryOperator(Instruction &I) {
-  ValueLatticeElement V0State = getValueState(I.getOperand(0));
+  SpecValueLatticeElement V0State = getValueState(I.getOperand(0));
 
-  ValueLatticeElement &IV = ValueState[&I];
+  SpecValueLatticeElement &IV = ValueState[&I];
   // resolvedUndefsIn might mark I as overdefined. Bail out, even if we would
   // discover a concrete value later.
   if (isOverdefined(IV))
@@ -1038,10 +1070,10 @@ void SCCPTauInstVisitor::visitUnaryOperator(Instruction &I) {
 
 // Handle Binary Operators.
 void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
-  ValueLatticeElement V1State = getValueState(I.getOperand(0));
-  ValueLatticeElement V2State = getValueState(I.getOperand(1));
+  SpecValueLatticeElement V1State = getValueState(I.getOperand(0));
+  SpecValueLatticeElement V2State = getValueState(I.getOperand(1));
 
-  ValueLatticeElement &IV = ValueState[&I];
+  SpecValueLatticeElement &IV = ValueState[&I];
   if (IV.isOverdefined())
     return;
 
@@ -1068,7 +1100,7 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
       // the existing lattice value for I, as different constants might be found
       // after one of the operands go to overdefined, e.g. due to one operand
       // being a special floating value.
-      ValueLatticeElement NewV;
+      SpecValueLatticeElement NewV;
       NewV.markConstant(C, /*MayIncludeUndef=*/true);
       return (void)mergeInValue(&I, NewV);
     }
@@ -1087,7 +1119,7 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
     B = V2State.getConstantRange();
 
   ConstantRange R = A.binaryOp(cast<BinaryOperator>(&I)->getOpcode(), B);
-  mergeInValue(&I, ValueLatticeElement::getRange(R));
+  mergeInValue(&I, SpecValueLatticeElement::getRange(R));
 
   // TODO: Currently we do not exploit special values that produce something
   // better than overdefined with an overdefined operand for vector or floating
@@ -1113,7 +1145,7 @@ void SCCPTauInstVisitor::visitCmpInst(CmpInst &I) {
   if (C) {
     if (isa<UndefValue>(C))
       return;
-    ValueLatticeElement CV;
+    SpecValueLatticeElement CV;
     CV.markConstant(C);
     mergeInValue(&I, CV);
     return;
@@ -1137,7 +1169,7 @@ void SCCPTauInstVisitor::visitGetElementPtrInst(GetElementPtrInst &I) {
   Operands.reserve(I.getNumOperands());
 
   for (unsigned i = 0, e = I.getNumOperands(); i != e; ++i) {
-    ValueLatticeElement State = getValueState(I.getOperand(i));
+    SpecValueLatticeElement State = getValueState(I.getOperand(i));
     if (State.isUnknownOrUndef())
       return; // Operands are not resolved yet.
 
@@ -1176,20 +1208,20 @@ void SCCPTauInstVisitor::visitStoreInst(StoreInst &SI) {
 
   // Get the value we are storing into the global, then merge it.
   mergeInValue(I->second, GV, getValueState(SI.getOperand(0)),
-               ValueLatticeElement::MergeOptions().setCheckWiden(false));
+               SpecValueLatticeElement::MergeOptions().setCheckWiden(false));
   if (I->second.isOverdefined())
     TrackedGlobals.erase(I); // No need to keep tracking this!
 }
 
-static ValueLatticeElement getValueFromMetadata(const Instruction *I) {
+static SpecValueLatticeElement getValueFromMetadata(const Instruction *I) {
   if (MDNode *Ranges = I->getMetadata(LLVMContext::MD_range))
     if (I->getType()->isIntegerTy())
-      return ValueLatticeElement::getRange(
+      return SpecValueLatticeElement::getRange(
           getConstantRangeFromMetadata(*Ranges));
   if (I->hasMetadata(LLVMContext::MD_nonnull))
-    return ValueLatticeElement::getNot(
+    return SpecValueLatticeElement::getNot(
         ConstantPointerNull::get(cast<PointerType>(I->getType())));
-  return ValueLatticeElement::getOverdefined();
+  return SpecValueLatticeElement::getOverdefined();
 }
 
 // Handle load instructions.  If the operand is a constant pointer to a constant
@@ -1205,11 +1237,11 @@ void SCCPTauInstVisitor::visitLoadInst(LoadInst &I) {
   if (ValueState[&I].isOverdefined())
     return (void)markOverdefined(&I);
 
-  ValueLatticeElement PtrVal = getValueState(I.getOperand(0));
+  SpecValueLatticeElement PtrVal = getValueState(I.getOperand(0));
   if (PtrVal.isUnknownOrUndef())
     return; // The pointer is not resolved yet!
 
-  ValueLatticeElement &IV = ValueState[&I];
+  SpecValueLatticeElement &IV = ValueState[&I];
 
   if (isConstant(PtrVal)) {
     Constant *Ptr = getConstant(PtrVal);
@@ -1273,7 +1305,7 @@ void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
     for (const Use &A : CB.args()) {
       if (A.get()->getType()->isStructTy())
         return markOverdefined(&CB); // Can't handle struct args.
-      ValueLatticeElement State = getValueState(A);
+      SpecValueLatticeElement State = getValueState(A);
 
       if (State.isUnknownOrUndef())
         return; // Operands are not resolved yet.
@@ -1326,7 +1358,7 @@ void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
 
       if (auto *STy = dyn_cast<StructType>(AI->getType())) {
         for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i) {
-          ValueLatticeElement CallArg = getStructValueState(*CAI, i);
+          SpecValueLatticeElement CallArg = getStructValueState(*CAI, i);
           mergeInValue(getStructValueState(&*AI, i), &*AI, CallArg,
                        getMaxWidenStepsOpts());
         }
@@ -1345,7 +1377,7 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
         return;
 
       Value *CopyOf = CB.getOperand(0);
-      ValueLatticeElement CopyOfVal = getValueState(CopyOf);
+      SpecValueLatticeElement CopyOfVal = getValueState(CopyOf);
       const auto *PI = getPredicateInfoFor(&CB);
       assert(PI && "Missing predicate info for ssa.copy");
 
@@ -1375,8 +1407,8 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
       // inferred, but the branch will get folded accordingly anyways.
       bool MayIncludeUndef = !isa<PredicateAssume>(PI);
 
-      ValueLatticeElement CondVal = getValueState(OtherOp);
-      ValueLatticeElement &IV = ValueState[&CB];
+      SpecValueLatticeElement CondVal = getValueState(OtherOp);
+      SpecValueLatticeElement &IV = ValueState[&CB];
       if (CondVal.isConstantRange() || CopyOfVal.isConstantRange()) {
         auto ImposedCR =
             ConstantRange::getFull(DL.getTypeSizeInBits(CopyOf->getType()));
@@ -1401,7 +1433,7 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
 
         addAdditionalUser(OtherOp, &CB);
         mergeInValue(IV, &CB,
-                     ValueLatticeElement::getRange(NewCR, MayIncludeUndef));
+                     SpecValueLatticeElement::getRange(NewCR, MayIncludeUndef));
         return;
       } else if (Pred == CmpInst::ICMP_EQ && CondVal.isConstant()) {
         // For non-integer values or integer constant expressions, only
@@ -1414,7 +1446,7 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
         // Propagate inequalities.
         addAdditionalUser(OtherOp, &CB);
         mergeInValue(IV, &CB,
-                     ValueLatticeElement::getNot(CondVal.getConstant()));
+                     SpecValueLatticeElement::getNot(CondVal.getConstant()));
         return;
       }
 
@@ -1427,7 +1459,7 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
       // still know something about the result range, e.g. of abs(x).
       SmallVector<ConstantRange, 2> OpRanges;
       for (Value *Op : II->args()) {
-        const ValueLatticeElement &State = getValueState(Op);
+        const SpecValueLatticeElement &State = getValueState(Op);
         if (State.isConstantRange())
           OpRanges.push_back(State.getConstantRange());
         else
@@ -1437,7 +1469,7 @@ void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
 
       ConstantRange Result =
           ConstantRange::intrinsic(II->getIntrinsicID(), OpRanges);
-      return (void)mergeInValue(II, ValueLatticeElement::getRange(Result));
+      return (void)mergeInValue(II, SpecValueLatticeElement::getRange(Result));
     }
   }
 
@@ -1565,7 +1597,7 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
         // Send the results of everything else to overdefined.  We could be
         // more precise than this but it isn't worth bothering.
         for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i) {
-          ValueLatticeElement &LV = getStructValueState(&I, i);
+          SpecValueLatticeElement &LV = getStructValueState(&I, i);
           if (LV.isUnknownOrUndef()) {
             markOverdefined(LV, &I);
             MadeChange = true;
@@ -1574,7 +1606,7 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
         continue;
       }
 
-      ValueLatticeElement &LV = getValueState(&I);
+      SpecValueLatticeElement &LV = getValueState(&I);
       if (!LV.isUnknownOrUndef())
         continue;
 
@@ -1755,7 +1787,7 @@ bool SCCPTauSolver::isEdgeFeasible(BasicBlock *From, BasicBlock *To) const {
   return Visitor->isEdgeFeasible(From, To);
 }
 
-std::vector<ValueLatticeElement>
+std::vector<SpecValueLatticeElement>
 SCCPTauSolver::getStructLatticeValueFor(Value *V) const {
   return Visitor->getStructLatticeValueFor(V);
 }
@@ -1764,16 +1796,16 @@ void SCCPTauSolver::removeLatticeValueFor(Value *V) {
   return Visitor->removeLatticeValueFor(V);
 }
 
-const ValueLatticeElement &SCCPTauSolver::getLatticeValueFor(Value *V) const {
+const SpecValueLatticeElement &SCCPTauSolver::getLatticeValueFor(Value *V) const {
   return Visitor->getLatticeValueFor(V);
 }
 
-const MapVector<Function *, ValueLatticeElement> &
+const MapVector<Function *, SpecValueLatticeElement> &
 SCCPTauSolver::getTrackedRetVals() {
   return Visitor->getTrackedRetVals();
 }
 
-const DenseMap<GlobalVariable *, ValueLatticeElement> &
+const DenseMap<GlobalVariable *, SpecValueLatticeElement> &
 SCCPTauSolver::getTrackedGlobals() {
   return Visitor->getTrackedGlobals();
 }
@@ -1784,11 +1816,13 @@ const SmallPtrSet<Function *, 16> SCCPTauSolver::getMRVFunctionsTracked() {
 
 void SCCPTauSolver::markOverdefined(Value *V) { Visitor->markOverdefined(V); }
 
+// void SCCPTauSolver::markSpeculativeConstant(Value *V) { Visitor->markSpeculativeConstant(V); }
+
 bool SCCPTauSolver::isStructLatticeConstant(Function *F, StructType *STy) {
   return Visitor->isStructLatticeConstant(F, STy);
 }
 
-Constant *SCCPTauSolver::getConstant(const ValueLatticeElement &LV) const {
+Constant *SCCPTauSolver::getConstant(const SpecValueLatticeElement &LV) const {
   return Visitor->getConstant(LV);
 }
 

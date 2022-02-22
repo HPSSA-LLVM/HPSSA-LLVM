@@ -28,6 +28,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Transforms/Utils/PredicateInfo.h"
+#include "../include/SpecValueLattice.h"
 #include "../include/SCCPSolverTau.h"
 
 namespace llvm {
