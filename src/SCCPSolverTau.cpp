@@ -24,6 +24,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/Local.h"
 #include <cassert>
+#include <llvm/IR/BasicBlock.h>
 #include <utility>
 #include <vector>
 
@@ -72,6 +73,8 @@ class SCCPTauInstVisitor : public InstVisitor<SCCPTauInstVisitor> {
   SmallPtrSet<BasicBlock *, 8> BBExecutable; // The BBs that are executable.
   DenseMap<Value *, ValueLatticeElement>
       ValueState; // The state each value is in.
+
+  DenseMap<llvm::Instruction*, llvm::BasicBlock*> TauNodesMap;
 
   /// StructValueState - This maintains ValueState for values that have
   /// StructType, for example for formal arguments, calls, insertelement, etc.
@@ -779,7 +782,7 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
 
 // Handle Tau nodes Instuctions 
 void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
-  return;
+ 
   LLVM_DEBUG(dbgs() << "\t\tVisiting Tau Instruction\n");
   // If this PN returns a struct, just mark the result overdefined.
   // TODO: We could do a lot better than this if code actually uses this.
@@ -806,8 +809,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   for (unsigned i = 1, e = Tau.getNumOperands(); i != e; ++i) {
     // if (!isEdgeFeasible(Tau.getOperand(i), Tau.getParent()))
     //   continue;
-    LLVM_DEBUG(dbgs() << "\t\t Tau Val : " << Tau.getOperand(i)->getName() << "\n");
     ValueLatticeElement IV = getValueState(Tau.getOperand(i));
+    LLVM_DEBUG(dbgs() << "\t\tSpeculative Operand : " 
+          << Tau.getOperand(i)->getName() << ", " << IV <<"\n");
     TauState.mergeIn(IV);
     NumActiveIncoming++;
     if (TauState.isOverdefined())
@@ -825,6 +829,7 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   ValueLatticeElement &TauStateRefElem = getValueState(&Tau);
   TauStateRefElem.setNumRangeExtensions(
       std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
+  LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) : " << TauState << "\n");
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
@@ -1297,7 +1302,8 @@ void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-  if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  if (F != NULL && 
+      F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
     return;
     
   // If this is a local function that doesn't have its address taken, mark its
@@ -1546,7 +1552,8 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
         // Tracked calls must never be marked overdefined in resolvedUndefsIn.
         if (auto *CB = dyn_cast<CallBase>(&I))
           if (Function *F = CB->getCalledFunction()) {
-            if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+            if (F != NULL
+                && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
               continue;
             if (MRVFunctionsTracked.count(F))
               continue;
@@ -1578,7 +1585,8 @@ bool SCCPTauInstVisitor::resolvedUndefsIn(Function &F) {
       // never be marked overdefined in resolvedUndefsIn.
       if (auto *CB = dyn_cast<CallBase>(&I))
         if (Function *F = CB->getCalledFunction()) {
-          if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+          if (F != NULL 
+            && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
               continue;
           if (TrackedRetVals.count(F))
             continue;

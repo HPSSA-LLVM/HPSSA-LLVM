@@ -121,7 +121,7 @@ label_7:                                          ; preds = %label_8, %label_5, 
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90)
   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add)
   %i4 = load i32, i32* %a, align 4
-  %add9 = add nsw i32 %i4, undef
+  %add9 = add nsw i32 %i4, %tau
   br label %end
 
 label_6:                                          ; preds = %sw.default
@@ -129,13 +129,13 @@ label_6:                                          ; preds = %sw.default
   br label %end
 
 end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
-  %e.1 = phi i32 [ 0, %label_6 ], [ undef, %label_7 ], [ 0, %label_3 ], [ 0, %label_2 ], [ 90, %label_1 ]
-  %b.1 = phi i32 [ 77, %label_6 ], [ undef, %label_7 ], [ 50, %label_3 ], [ 60, %label_2 ], [ 70, %label_1 ]
+  %e.1 = phi i32 [ 0, %label_6 ], [ %tau, %label_7 ], [ 0, %label_3 ], [ 0, %label_2 ], [ 90, %label_1 ]
+  %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ], [ 50, %label_3 ], [ 60, %label_2 ], [ 70, %label_1 ]
   %tau4 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0)
   %tau2 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 %e.0)
-  %add10 = add nsw i32 undef, 10
+  %add10 = add nsw i32 %tau2, 10
   %i7 = load i32, i32* %a, align 4
-  %add11 = add nsw i32 %i7, undef
+  %add11 = add nsw i32 %i7, %tau4
   %cmp = icmp sge i32 %add11, 100
   br i1 %cmp, label %if.then, label %if.else
 
@@ -152,8 +152,8 @@ if.else:                                          ; preds = %end
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 undef, i32 %b.0)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 undef, i32 %e.0)
+  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %b.0)
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau2, i32 %e.0)
   %i12 = load i32, i32* %a, align 4
   %add13 = add nsw i32 %add11, %i12
   ret i32 0
