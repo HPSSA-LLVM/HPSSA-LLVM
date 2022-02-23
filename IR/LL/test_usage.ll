@@ -98,7 +98,7 @@ label_3:                                          ; preds = %sw.bb3
 label_4:                                          ; preds = %sw.bb4
   store i32 10, i32* %a, align 4
   %i1 = load i32, i32* %a, align 4
-  %add = add nsw i32 %i1, 30
+  %add = add nsw i32 %i1, 80
   br label %label_7
 
 label_5:                                          ; preds = %sw.bb5
@@ -106,56 +106,60 @@ label_5:                                          ; preds = %sw.bb5
   %i2 = load i32, i32* %a, align 4
   %add7 = add nsw i32 %i2, 1
   store i32 %add7, i32* %a, align 4
+  %i3 = load i32, i32* %a, align 4
+  %add8 = add nsw i32 %i3, 3
   br label %label_7
 
 label_8:                                          ; preds = %sw.bb6
   store i32 110, i32* %a, align 4
-  %i3 = load i32, i32* %a, align 4
-  %add8 = add nsw i32 %i3, 1
-  store i32 %add8, i32* %a, align 4
+  %i4 = load i32, i32* %a, align 4
+  %add9 = add nsw i32 %i4, 1
+  store i32 %add9, i32* %a, align 4
   br label %label_7
 
 label_7:                                          ; preds = %label_8, %label_5, %label_4
-  %e.0 = phi i32 [ 0, %label_8 ], [ 0, %label_5 ], [ %add, %label_4 ]
+  %e.0 = phi i32 [ 90, %label_8 ], [ %add8, %label_5 ], [ %add, %label_4 ]
   %b.0 = phi i32 [ -11, %label_8 ], [ 13, %label_5 ], [ 90, %label_4 ]
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90)
   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add)
-  %i4 = load i32, i32* %a, align 4
-  %add9 = add nsw i32 %i4, %tau
+  %i5 = load i32, i32* %a, align 4
+  %add10 = add nsw i32 %i5, %tau
   br label %end
 
 label_6:                                          ; preds = %sw.default
   store i32 23, i32* %a, align 4
+  %i7 = load i32, i32* %a, align 4
+  %add11 = add nsw i32 %i7, 77
+  %sub = sub nsw i32 %add11, 10
   br label %end
 
 end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
-  %e.1 = phi i32 [ 0, %label_6 ], [ %tau, %label_7 ], [ 0, %label_3 ], [ 0, %label_2 ], [ 90, %label_1 ]
+  %e.1 = phi i32 [ %sub, %label_6 ], [ 90, %label_7 ], [ 90, %label_3 ], [ 90, %label_2 ], [ 90, %label_1 ]
   %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ], [ 50, %label_3 ], [ 60, %label_2 ], [ 70, %label_1 ]
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0)
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 %e.0)
-  %add10 = add nsw i32 %tau2, 10
-  %i7 = load i32, i32* %a, align 4
-  %add11 = add nsw i32 %i7, %tau4
-  %cmp = icmp sge i32 %add11, 150
+  %tau4 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0, i32 70)
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 90)
+  %i9 = load i32, i32* %a, align 4
+  %add12 = add nsw i32 %i9, %tau4
+  %cmp = icmp sge i32 %tau2, 150
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %i10 = load i32, i32* %a, align 4
-  %add12 = add nsw i32 %i10, 190
-  store i32 %add12, i32* %a, align 4
+  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 70)
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau2, i32 90)
+  %i12 = load i32, i32* %a, align 4
+  %add13 = add nsw i32 %i12, 190
+  store i32 %add13, i32* %a, align 4
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %i11 = load i32, i32* %a, align 4
-  %sub = sub nsw i32 %i11, 100
-  store i32 %sub, i32* %a, align 4
+  %i13 = load i32, i32* %a, align 4
+  %sub14 = sub nsw i32 %i13, 100
+  store i32 %sub14, i32* %a, align 4
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %b.0)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau2, i32 %e.0)
-  %i12 = load i32, i32* %a, align 4
-  %add13 = add nsw i32 %add11, %i12
+  %i14 = load i32, i32* %a, align 4
+  %add15 = add nsw i32 %add12, %i14
   ret i32 0
 }
 

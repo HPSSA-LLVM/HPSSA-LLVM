@@ -99,18 +99,20 @@ label_1:                                          ; preds = %sw.bb
 label_2:                                          ; preds = %sw.bb2
   store i32 60, i32* %b, align 4
   store i32 40, i32* %a, align 4
+  store i32 90, i32* %e, align 4
   br label %end
 
 label_3:                                          ; preds = %sw.bb3
   store i32 50, i32* %a, align 4
   store i32 50, i32* %b, align 4
+  store i32 90, i32* %e, align 4
   br label %end
 
 label_4:                                          ; preds = %sw.bb4
   store i32 10, i32* %a, align 4
   store i32 90, i32* %b, align 4
   %1 = load i32, i32* %a, align 4
-  %add = add nsw i32 %1, 30
+  %add = add nsw i32 %1, 80
   store i32 %add, i32* %e, align 4
   br label %label_7
 
@@ -120,57 +122,64 @@ label_5:                                          ; preds = %sw.bb5
   %add7 = add nsw i32 %2, 1
   store i32 %add7, i32* %a, align 4
   store i32 13, i32* %b, align 4
+  %3 = load i32, i32* %a, align 4
+  %add8 = add nsw i32 %3, 3
+  store i32 %add8, i32* %e, align 4
   br label %label_7
 
 label_8:                                          ; preds = %sw.bb6
   store i32 110, i32* %a, align 4
-  %3 = load i32, i32* %a, align 4
-  %add8 = add nsw i32 %3, 1
-  store i32 %add8, i32* %a, align 4
+  %4 = load i32, i32* %a, align 4
+  %add9 = add nsw i32 %4, 1
+  store i32 %add9, i32* %a, align 4
   store i32 -11, i32* %b, align 4
+  store i32 90, i32* %e, align 4
   br label %label_7
 
 label_7:                                          ; preds = %label_8, %label_5, %label_4
-  %4 = load i32, i32* %a, align 4
-  %5 = load i32, i32* %e, align 4
-  %add9 = add nsw i32 %4, %5
-  store i32 %add9, i32* %d, align 4
+  %5 = load i32, i32* %a, align 4
+  %6 = load i32, i32* %e, align 4
+  %add10 = add nsw i32 %5, %6
+  store i32 %add10, i32* %d, align 4
+  store i32 90, i32* %e, align 4
   br label %end
 
 label_6:                                          ; preds = %sw.default
   store i32 23, i32* %a, align 4
   store i32 77, i32* %b, align 4
-  br label %end
-
-end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
-  %6 = load i32, i32* %e, align 4
-  %add10 = add nsw i32 %6, 10
-  store i32 %add10, i32* %e, align 4
   %7 = load i32, i32* %a, align 4
   %8 = load i32, i32* %b, align 4
   %add11 = add nsw i32 %7, %8
-  store i32 %add11, i32* %z, align 4
-  %9 = load i32, i32* %z, align 4
-  %cmp = icmp sge i32 %9, 150
+  %sub = sub nsw i32 %add11, 10
+  store i32 %sub, i32* %e, align 4
+  br label %end
+
+end:                                              ; preds = %label_6, %label_7, %label_3, %label_2, %label_1
+  %9 = load i32, i32* %a, align 4
+  %10 = load i32, i32* %b, align 4
+  %add12 = add nsw i32 %9, %10
+  store i32 %add12, i32* %z, align 4
+  %11 = load i32, i32* %e, align 4
+  %cmp = icmp sge i32 %11, 150
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %10 = load i32, i32* %a, align 4
-  %add12 = add nsw i32 %10, 190
-  store i32 %add12, i32* %a, align 4
+  %12 = load i32, i32* %a, align 4
+  %add13 = add nsw i32 %12, 190
+  store i32 %add13, i32* %a, align 4
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %11 = load i32, i32* %a, align 4
-  %sub = sub nsw i32 %11, 100
-  store i32 %sub, i32* %a, align 4
+  %13 = load i32, i32* %a, align 4
+  %sub14 = sub nsw i32 %13, 100
+  store i32 %sub14, i32* %a, align 4
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %12 = load i32, i32* %a, align 4
-  %13 = load i32, i32* %z, align 4
-  %add13 = add nsw i32 %13, %12
-  store i32 %add13, i32* %z, align 4
+  %14 = load i32, i32* %a, align 4
+  %15 = load i32, i32* %z, align 4
+  %add15 = add nsw i32 %15, %14
+  store i32 %add15, i32* %z, align 4
   ret i32 0
 }
 

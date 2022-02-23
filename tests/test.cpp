@@ -23,44 +23,49 @@ int main() {
   label_2:
     b = 60;
     a = 40;
+    e = 90;
     goto end;
   
   label_3:
     a = 50;
     b = 50;
+    e = 90;
     goto end;
   
   label_4:
     a = 10;
     b = 90;
-    e = a + 30;
+    e = a + 80;
     goto label_7;
 
   label_5:
     a = 86;
     a += 1;
     b = 13;
+    e = a + 3;
     goto label_7;
 
   label_8:
     a = 110;
     a += 1;
     b = -11;
+    e = 90;
     goto label_7;
 
   label_7:
     d = a + e;
+    e = 90;
     goto end;
 
   label_6:
     a = 23;
     b = 77;
+    e = a + b - 10;
     goto end;
 
   end:
-    e = e + 10;
     int z = a + b;
-    if (z >= 150) {
+    if (e >= 150) {
       a = a + 190;
     } else {
       a = a - 100;

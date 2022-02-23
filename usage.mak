@@ -11,6 +11,7 @@ endif
 .PHONY: test 
 
 all: build test runpass cfg
+runtest : test runpass cfg 
 
 build: build/* src/SCCPSolverTau.cpp src/SCCPTau.cpp
 	@mkdir -p build

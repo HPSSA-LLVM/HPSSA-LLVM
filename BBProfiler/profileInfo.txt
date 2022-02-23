@@ -1,4 +1,4 @@
-1
+2
 8
 entry start sw.bb4 label_4 label_7 end if.else if.end
 7

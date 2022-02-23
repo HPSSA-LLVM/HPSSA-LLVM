@@ -840,8 +840,8 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     //   continue;
     SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
     // markSpeculativeConstant(Tau.getOperand(i));
-    if (IV.isUndef() || IV.isUnknown())
-      IV.markSpeculativeConstant();
+    // if (IV.isUndef() || IV.isUnknown())
+    IV.markSpeculativeConstant();
     LLVM_DEBUG(dbgs() << "\t\tSpeculative Operand : " 
           << Tau.getOperand(i)->getName() << ", " << IV <<"\n");
     TauState.mergeIn(IV);
