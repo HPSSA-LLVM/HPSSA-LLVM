@@ -40,12 +40,21 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}
+	\frametitle{What we modified in LLVM?}
+	\begin{itemize}
+		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"}.
+		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
+	\end{itemize}
+\end{frame}
+
+
 \section{LLVM : HPSSA Pass}
 
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Overview}
 	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::HPSSAPass} pass using the new Pass Manager.
+		\item New \mintinline[]{css}{llvm::HPSSAPass} pass using the new Pass Manager. 
 		\item Pass runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments.
 	\end{itemize}
 	Key HPSSA Data Structures :  
