@@ -22,6 +22,7 @@
 #include "llvm/IR/InstVisitor.h"
 #include "llvm/Transforms/Utils/PredicateInfo.h"
 #include <cassert>
+#include <llvm/IR/Value.h>
 #include <utility>
 #include <vector>
 
@@ -124,7 +125,11 @@ public:
 
   /// markOverdefined - Mark the specified value overdefined.  This
   /// works with both scalars and structs.
-  // void markSpeculativeConstant(Value *V);
+  void markSpeculativeConstant(Value *V);
+
+  /// markOverdefined - Mark the specified value overdefined.  This
+  /// works with both scalars and structs.
+  void ProcessTauInstruction(llvm::Instruction *V);
 
   // isStructLatticeConstant - Return true if all the lattice values
   // corresponding to elements of the structure are constants,

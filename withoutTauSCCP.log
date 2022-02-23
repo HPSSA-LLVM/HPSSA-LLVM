@@ -1,2 +1,0 @@
-/bin/sh: 1: /clang++: not found
-make: *** [usage.mak:17: build] Error 127

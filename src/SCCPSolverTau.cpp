@@ -26,6 +26,7 @@
 #include "llvm/Transforms/Utils/Local.h"
 #include <cassert>
 #include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/Instruction.h>
 #include <utility>
 #include <vector>
 
@@ -257,6 +258,7 @@ private:
     // values mean that the result of the function changed. We only need to
     // update the call sites with the new function result and do not have to
     // propagate the call arguments.
+    // COMMENT : TAU Handling??
     if (isa<Function>(I)) {
       for (User *U : I->users()) {
         if (auto *CB = dyn_cast<CallBase>(U))
@@ -464,6 +466,10 @@ public:
       markSpeculativeConstant(ValueState[V], V);
   }
 
+  void visitPublicTauNode(Instruction *V) {
+    visitTauNode(*V);
+  }
+
   bool isStructLatticeConstant(Function *F, StructType *STy);
 
   Constant *getConstant(const SpecValueLatticeElement &LV) const;
@@ -524,6 +530,7 @@ bool SCCPTauInstVisitor::markOverdefined(SpecValueLatticeElement &IV, Value *V) 
 }
 
 bool SCCPTauInstVisitor::markSpeculativeConstant(SpecValueLatticeElement &IV, Value *V) {
+  LLVM_DEBUG(dbgs() << "Marking Spec Value* " << *V << "\n");
   if (!IV.markSpeculativeConstant())
     return false;
 
@@ -587,6 +594,14 @@ void SCCPTauInstVisitor::markArgInFuncSpecialization(Function *F, Argument *A,
 void SCCPTauInstVisitor::visitInstruction(Instruction &I) {
   // All the instructions we don't do any special handling for just
   // go to overdefined.
+  CallInst* CI = dyn_cast<CallInst>(&I);
+  if (CI != NULL) {
+    Function* CF = CI->getCalledFunction();
+    if (CF != NULL &&
+        CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
+      markSpeculativeConstant(&I);
+    }
+  }
   LLVM_DEBUG(dbgs() << "SCCP: Don't know how to handle: " << I << '\n');
   markOverdefined(&I);
 }
@@ -763,7 +778,7 @@ bool SCCPTauInstVisitor::isEdgeFeasible(BasicBlock *From, BasicBlock *To) const 
 // 7. If a conditional branch has a value that is overdefined, make all
 //    successors executable.
 void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
-  LLVM_DEBUG(dbgs() << "Marking PHINode exec.\n");
+  LLVM_DEBUG(dbgs() << "Marking Spec PHINode exec.\n");
   // If this PN returns a struct, just mark the result overdefined.
   // TODO: We could do a lot better than this if code actually uses this.
   if (PN.getType()->isStructTy())
@@ -1279,16 +1294,20 @@ void SCCPTauInstVisitor::visitLoadInst(LoadInst &I) {
 }
 
 void SCCPTauInstVisitor::visitCallBase(CallBase &CB) {
-  Function *F = CB.getCalledFunction();
-  if (F != NULL && 
-    F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
-      return;
+  // Function *F = CB.getCalledFunction();
+  // if (F != NULL && 
+  //   F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //     return;
   handleCallResult(CB);
   handleCallArguments(CB);
 }
 
 void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
   Function *F = CB.getCalledFunction();
+
+  // if (F != NULL && 
+  //   F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //     return;
 
   // Void return and not tracking callee, just bail.
   if (CB.getType()->isVoidTy())
@@ -1334,9 +1353,9 @@ void SCCPTauInstVisitor::handleCallOverdefined(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-  if (F != NULL && 
-      F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
-    return;
+  // if (F != NULL && 
+  //     F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //   return;
     
   // If this is a local function that doesn't have its address taken, mark its
   // entry block executable and merge in the actual arguments to the call into
@@ -1370,7 +1389,9 @@ void SCCPTauInstVisitor::handleCallArguments(CallBase &CB) {
 
 void SCCPTauInstVisitor::handleCallResult(CallBase &CB) {
   Function *F = CB.getCalledFunction();
-
+  // if (F != NULL && 
+  //     F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
+  //       return;
   if (auto *II = dyn_cast<IntrinsicInst>(&CB)) {
     if (II->getIntrinsicID() == Intrinsic::ssa_copy) {
       if (ValueState[&CB].isOverdefined())
@@ -1816,7 +1837,9 @@ const SmallPtrSet<Function *, 16> SCCPTauSolver::getMRVFunctionsTracked() {
 
 void SCCPTauSolver::markOverdefined(Value *V) { Visitor->markOverdefined(V); }
 
-// void SCCPTauSolver::markSpeculativeConstant(Value *V) { Visitor->markSpeculativeConstant(V); }
+void SCCPTauSolver::markSpeculativeConstant(Value *V) { Visitor->markSpeculativeConstant(V); }
+
+void SCCPTauSolver::ProcessTauInstruction(llvm::Instruction *V) { Visitor->visitPublicTauNode(V); }
 
 bool SCCPTauSolver::isStructLatticeConstant(Function *F, StructType *STy) {
   return Visitor->isStructLatticeConstant(F, STy);
@@ -1839,6 +1862,27 @@ void SCCPTauSolver::markFunctionUnreachable(Function *F) {
   Visitor->markFunctionUnreachable(F);
 }
 
-void SCCPTauSolver::visit(Instruction *I) { Visitor->visit(I); }
+/// COMMENT : Visits PHINode as well.
+void SCCPTauSolver::visit(Instruction *I) {
+  CallInst* CI = dyn_cast<CallInst>(I);
+  if (CI != NULL) {
+    Function* CF = CI->getCalledFunction();
+    if (CF != NULL &&
+        CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
+      ProcessTauInstruction(I);
+    }
+  } else 
+  Visitor->visit(I); 
+}
 
-void SCCPTauSolver::visitCall(CallInst &I) { Visitor->visitCall(I); }
+void SCCPTauSolver::visitCall(CallInst &I) { 
+  CallInst* CI = dyn_cast<CallInst>(&I);
+  if (CI != NULL) {
+    Function* CF = CI->getCalledFunction();
+    if (CF != NULL &&
+        CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
+      ProcessTauInstruction(&I);
+    }
+  } else 
+  Visitor->visitCall(I); 
+}

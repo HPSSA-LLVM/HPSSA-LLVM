@@ -1,16 +1,10 @@
-# FIX: Results not properly updating
-# ! UPDATE ACCORDING TO YOUR LLVM PATH
-
 BUILD_PATH=${LLVM_BIN_PATH}
-LLVM_CONFIG=$(BUILD_PATH)/llvm-config
-CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
-# CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
-# removed -g flag, add if needed
-CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -fsanitize=address
-# CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
+LLVM_CONFIG=llvm-config
+CXX=$(BUILD_PATH)/clang++ -std=c++17 -I include -Xclang -disable-O0-optnone
+CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
-ifndef VERBOSE
+ifdef SILENT
 .SILENT:
 endif
 

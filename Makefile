@@ -1,13 +1,7 @@
-# FIX: Results not properly updating
-# ! UPDATE ACCORDING TO YOUR LLVM PATH
-
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
-CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1 -I include
-# CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
-# removed -g flag, add if needed
+CXX=$(BUILD_PATH)/clang++ -std=c++17 -I include -Xclang -disable-O0-optnone
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
-# CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
 ifdef SILENT
@@ -16,7 +10,8 @@ endif
 
 .PHONY: test 
 
-all: build test cfg_before cfg_after
+all: build test dot2png
+runpass : test dot2png
 
 build: src/HPSSA.cpp include/HPSSA.h src/TDestruction.cpp include/TDestruction.h
 	@mkdir -p build
@@ -71,6 +66,9 @@ dom_after: test
 
 dot2png: 
 	mv *.dot IR/cfg/
+	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
+
+topng: 
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 

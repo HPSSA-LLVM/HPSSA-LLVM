@@ -1,0 +1,32 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x559cfbbdf790 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry:\l  br label %start\l}"];
+	Node0x559cfbbdf790 -> Node0x559cfbbdf8c0;
+	Node0x559cfbbdf8c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{start:                                            \l  switch i32 2, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l  ]\l|{<s0>def|<s1>2|<s2>4}}"];
+	Node0x559cfbbdf8c0:s0 -> Node0x559cfbbdf9a0;
+	Node0x559cfbbdf8c0:s1 -> Node0x559cfbbdfa20;
+	Node0x559cfbbdf8c0:s2 -> Node0x559cfbbdfac0;
+	Node0x559cfbbdfa20 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{sw.bb:                                            \l  br label %label_3\l}"];
+	Node0x559cfbbdfa20 -> Node0x559cfbbdfc50;
+	Node0x559cfbbdfac0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{sw.bb1:                                           \l  br label %label_4\l}"];
+	Node0x559cfbbdfac0 -> Node0x559cfbbdfd30;
+	Node0x559cfbbdf9a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{sw.default:                                       \l  br label %label_6\l}"];
+	Node0x559cfbbdf9a0 -> Node0x559cfbbdfe10;
+	Node0x559cfbbdfc50 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{label_3:                                          \l  br label %label_7\l}"];
+	Node0x559cfbbdfc50 -> Node0x559cfbbdfef0;
+	Node0x559cfbbdfd30 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{label_4:                                          \l  br label %label_7\l}"];
+	Node0x559cfbbdfd30 -> Node0x559cfbbdfef0;
+	Node0x559cfbbdfef0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#e1675170",label="{label_7:                                          \l  br label %end\l}"];
+	Node0x559cfbbdfef0 -> Node0x559cfbbe0040;
+	Node0x559cfbbdfe10 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{label_6:                                          \l  br label %end\l}"];
+	Node0x559cfbbdfe10 -> Node0x559cfbbe0040;
+	Node0x559cfbbe0040 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{end:                                              \l  br i1 false, label %if.then, label %if.else\l|{<s0>T|<s1>F}}"];
+	Node0x559cfbbe0040:s0 -> Node0x559cfbbe01c0;
+	Node0x559cfbbe0040:s1 -> Node0x559cfbbe0230;
+	Node0x559cfbbe01c0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f2907270",label="{if.then:                                          \l  br label %if.end\l}"];
+	Node0x559cfbbe01c0 -> Node0x559cfbbe0350;
+	Node0x559cfbbe0230 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f2907270",label="{if.else:                                          \l  br label %if.end\l}"];
+	Node0x559cfbbe0230 -> Node0x559cfbbe0350;
+	Node0x559cfbbe0350 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{if.end:                                           \l  ret i32 0\l}"];
+}

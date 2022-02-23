@@ -204,7 +204,7 @@ static bool simplifyInstsInBlock(SCCPTauSolver &Solver, BasicBlock &BB,
 // and return true if the function was modified.
 static bool runSCCP(Function &F, const DataLayout &DL,
                     const TargetLibraryInfo *TLI) {
-  LLVM_DEBUG(dbgs() << "SCCP on function '" << F.getName() << "'\n");
+  LLVM_DEBUG(dbgs() << "Speculative SCCP on function '" << F.getName() << "'\n");
   SCCPTauSolver Solver(
       DL, [TLI](Function &F) -> const TargetLibraryInfo & { return *TLI; },
       F.getContext());

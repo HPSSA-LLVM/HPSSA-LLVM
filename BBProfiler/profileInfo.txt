@@ -1,5 +1,5 @@
 2
 8
-entry start sw.bb4 label_4 label_7 end if.else if.end
+entry start sw.bb1 label_4 label_7 end if.else if.end
 7
-entry start sw.default label_1 end if.then if.end
+entry start sw.default label_6 end if.then if.end
