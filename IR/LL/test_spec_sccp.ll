@@ -64,6 +64,7 @@ if.else:                                          ; preds = %end
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 90)
   ret i32 0
 }
 

@@ -1,19 +1,20 @@
 ----------===Caloric Connector and BuddySet Information===----------
-entry: {1 1 } 
-sw.bb1: { 1 0 } 
-label_4: { 1 0 } 
+entry: {1 } 
+sw.bb1: { 1 } 
+label_4: { 1 } 
 sw.bb: 
 label_3: 
-sw.default: { 0 1 } 
+sw.default: 
 label_7 is a Caloric Connector
-label_7: { 1 0 } 
-end: { 1 0 } 
-if.else: { 1 0 } 
-if.then is a Caloric Connector
+label_7: { 1 } 
+end: { 1 } 
+if.else: { 1 } 
 if.then: 
-if.end: { 1 0 } 
+if.end is a Caloric Connector
+if.end: { 1 } 
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : label_7
+Inserted Tau at : if.end
 -- BB: entry
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
@@ -107,12 +108,18 @@ Inserted Tau at : label_7
 ------ tau
 ------ mrd: tau
 ------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ tau1
+------ mrd: tau1
+------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.0 mrd: tau
----------- mrd not changed
+-------- phi: e.0 mrd: tau1
+---------- mrd changed
 -------- Parent: end | Child: if.else
 -- BB: if.else
 ---- I: ---- attempt to renaming uses in I
@@ -209,23 +216,23 @@ Inserted Tau at : label_7
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0056 seconds (0.0058 wall clock)
+  Total Execution Time: 0.0095 seconds (0.0349 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0002 (  7.6%)   0.0029 ( 82.3%)   0.0030 ( 54.3%)   0.0031 ( 53.1%)  HPSSAPass
-   0.0007 ( 35.0%)   0.0002 (  5.3%)   0.0009 ( 16.5%)   0.0010 ( 16.9%)  VerifierPass
-   0.0007 ( 33.2%)   0.0002 (  5.1%)   0.0009 ( 15.7%)   0.0009 ( 16.1%)  VerifierAnalysis
-   0.0004 ( 19.1%)   0.0002 (  6.8%)   0.0006 ( 11.4%)   0.0007 ( 11.9%)  PrintModulePass
-   0.0001 (  2.5%)   0.0000 (  0.4%)   0.0001 (  1.2%)   0.0001 (  1.1%)  PreservedCFGCheckerAnalysis
-   0.0001 (  2.6%)   0.0000 (  0.0%)   0.0001 (  1.0%)   0.0001 (  0.9%)  DominatorTreeAnalysis
-   0.0021 (100.0%)   0.0035 (100.0%)   0.0056 (100.0%)   0.0058 (100.0%)  Total
+   0.0026 ( 54.5%)   0.0044 ( 92.1%)   0.0070 ( 73.2%)   0.0323 ( 92.7%)  HPSSAPass
+   0.0008 ( 17.7%)   0.0001 (  2.5%)   0.0010 ( 10.1%)   0.0010 (  2.8%)  VerifierPass
+   0.0008 ( 16.9%)   0.0001 (  2.4%)   0.0009 (  9.7%)   0.0009 (  2.7%)  VerifierAnalysis
+   0.0004 (  8.5%)   0.0001 (  2.9%)   0.0005 (  5.7%)   0.0005 (  1.6%)  PrintModulePass
+   0.0001 (  1.3%)   0.0000 (  0.1%)   0.0001 (  0.7%)   0.0001 (  0.2%)  PreservedCFGCheckerAnalysis
+   0.0000 (  1.0%)   0.0000 (  0.0%)   0.0000 (  0.5%)   0.0001 (  0.1%)  DominatorTreeAnalysis
+   0.0048 (100.0%)   0.0047 (100.0%)   0.0095 (100.0%)   0.0349 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0025 seconds (0.0025 wall clock)
+  Total Execution Time: 0.0029 seconds (0.0040 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0017 (100.0%)   0.0008 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Parse IR
-   0.0017 (100.0%)   0.0008 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0029 (100.0%)   0.0029 (100.0%)   0.0040 (100.0%)  Parse IR
+   0.0029 (100.0%)   0.0029 (100.0%)   0.0040 (100.0%)  Total
 
