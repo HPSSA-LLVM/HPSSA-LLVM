@@ -1,11 +1,11 @@
-\begin{minted}[fontsize=\footnotesize]{cpp}
+\begin{minted}[fontsize=\footnotesize, tabsize=2, linenos, highlightcolor=yellow, highlightlines={14,17}]{cpp}
+// Example for SSCCP Pass
 int main() {
 	int a = 1000, z, c, e = 0;
 	switch(c) {
 		case 2 : goto label_3; break;
 		case 4 : goto label_4; break;
-		default : goto label_7;
-	}
+		default : goto label_7; }
 	label_3:
 		e = 90;
 		goto label_7;
@@ -20,7 +20,5 @@ int main() {
 			a = a + 777;
 		} else {
 			a = a - 888;
-		}
-	return 0;
-}
+		} return 0; }
 \end{minted}

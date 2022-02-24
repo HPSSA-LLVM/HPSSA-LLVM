@@ -1,5 +1,5 @@
 digraph "CFG for 'main' function" {
-	label="CFG for 'main' function";
+	label="CFG for 'main' function after HPSSA Pass";
 
 	Node0x55d9e0c25840 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry:\l  switch i32 undef, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l  ]\l|{<s0>def|<s1>2|<s2>4}}"];
 	Node0x55d9e0c25840:s0 -> Node0x55d9e0c25da0;
@@ -15,7 +15,7 @@ digraph "CFG for 'main' function" {
 	Node0x55d9e0c26050 -> Node0x55d9e0c26210;
 	Node0x55d9e0c26130 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{label_4:                                          \l  br label %label_7\l}"];
 	Node0x55d9e0c26130 -> Node0x55d9e0c26210;
-	Node0x55d9e0c26210 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{label_7:                                          \l  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]\l  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)\l  %add = add nsw i32 %tau, 70\l  br label %end\l}"];
+	Node0x55d9e0c26210 [shape=record,color="#7EC8E3", style=filled, fillcolor="#7EC8E3",label="{label_7:                                          \l  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]\l  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)\l  %add = add nsw i32 %tau, 70\l  br label %end\l}"];
 	Node0x55d9e0c26210 -> Node0x55d9e0c267c0;
 	Node0x55d9e0c267c0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{end:                                              \l  %cmp = icmp sge i32 %add, 100\l  br i1 %cmp, label %if.then, label %if.else\l|{<s0>T|<s1>F}}"];
 	Node0x55d9e0c267c0:s0 -> Node0x55d9e0c26980;

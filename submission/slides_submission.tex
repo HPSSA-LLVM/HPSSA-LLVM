@@ -30,7 +30,7 @@
 \begin{document}
 \frame{\titlepage}
 \footnotesize
-\section{LLVM Modifications}
+\section{LLVM Source Modifications}
 
 \begin{frame}[fragile]
 	\frametitle{What we modified in LLVM Source?}
@@ -50,17 +50,17 @@
 \begin{itemize}
 	\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
 \end{itemize}
-\begin{minted}{python}
+\begin{minted}[fontsize=\footnotesize, tabsize=2, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
 + //===---------- Changes for tau.intrinsic ---------------=====//
 void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
   Instruction *Op = cast<Instruction>(I.getOperand(i));
-  +  if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-  +    Function *CallFunction = CI->getCalledFunction();
-  +    if (CallFunction != NULL && CallFunction->getIntrinsicID() ==
-  +        Function::lookupIntrinsicID("llvm.tau")) {
-  +      return;
-  +    }
-  +  }
+  +	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
+  +	Function *CallFunction = CI->getCalledFunction();
+  +	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
+  +		Function::lookupIntrinsicID("llvm.tau")) {
+  +			return;
+  +		}
+  +	}
 	\end{minted}
 \end{frame}
 
@@ -69,14 +69,20 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Overview}
 	\begin{itemize}
-		\item Implemented \mintinline[]{css}{llvm::HPSSAPass} pass using the new LLVM Pass Manager. 
-		\item Pass \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function \&F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR as described in the previous slides.
-	\end{itemize}
-	Key HPSSA Data Structures :  
-	\begin{itemize}
-		\item Hot Path Set using \mintinline[]{css}{llvm::BitVector}.
-		\item Definition Accumalator, \texttt{defAccumalate} as a map  \mintinline[]{python}{std::map<{PHINode*,BasicBlock*}, {Value*,BitVector}>}.
-		\item Variable Renaming Stack as a map, \mintinline[]{python}{std::map<Value*,Value*>}
+		\item \mintinline[]{css}{class HPSSAPass : public PassInfoMixin<HPSSAPass>}
+		\begin{itemize}
+			\footnotesize
+			\item Implemented \mintinline[]{css}{llvm::HPSSAPass} pass using the new LLVM Pass Manager. 
+			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function \&F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR and handles argument allocation for  \mintinline[]{css}{"llvm.tau"} intrinsic calls as described in the previous slides.
+		\end{itemize}
+		\item Key HPSSA Data Structures :  
+		\begin{itemize}
+			\footnotesize
+			\item Hot Path Set using \mintinline[]{css}{llvm::BitVector} for maintaining \color{red} hot paths \color{black} in the program.
+			\item Definition Accumalator, \mintinline[]{css}{defAccumulator(op, currBB)} function. %\mintinline[]{python}{std::map<{PHINode*,BasicBlock*}, {Value*,BitVector}>}. 
+			The argument "op" is a phi argument that reaches basic-block "currBB" via \color{red} hot path \color{black}. 
+			\item A stack of map values \mintinline[]{css}{std::map<Value*,Value*>} to store the most "recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming. 
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -86,24 +92,56 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 \end{frame}
 
 \begin{frame}
-	\frametitle{\texttt{HPSSAPass} : Main \& Destruction Pass}
+	\frametitle{\texttt{HPSSAPass} : Main Pass}
 	\begin{itemize}
 		\item \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function \&F, FunctionAnalysisManager \&AM)} 
-		\item \mintinline[fontsize=\footnotesize]{css}{llvm::Function::RPOT()}.
-		\item \mintinline[fontsize=\footnotesize]{css}{llvm::successors()}.
-		\item \mintinline[fontsize=\footnotesize]{css}{llvm::DominatorTreeAnalysis} and \mintinline[fontsize=\footnotesize]{css}{llvm::dominates()}.
-		\item Replace use of \mintinline[]{css}{phi's} with \mintinline[]{css}{tau} variables using \texttt{renaming} stack.
-		\item Out of HPSSA Form. 
+		\begin{itemize}
+			\footnotesize
+			\item Invoke \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getProfileInfo(Function \&F)} function to get a compact representation of all the \color{red} hot paths \color{black} in the program and then call \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getCaloricConnector(Function \&F)} to get all the caloric connectors from the \color{red} hot path \color{black} information. This is a precursor to finding strategic positions to place \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR.
+			\item Runs over each basic block in the function "F" in topological order using iterator returned from \mintinline[fontsize=\footnotesize]{css}{llvm::Function::RPOT()} call.
+			\item Uses the \mintinline[fontsize=\footnotesize]{css}{llvm::dominates()} function from \mintinline[fontsize=\footnotesize]{css}{llvm::DominatorTreeAnalysis} to check for dominance frontier while processing the child nodes of the current basic block. This step is a part of correctly placing \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR. 
+			\item Uses the renaming stack and \mintinline[]{css}{HPSSAPass::Search(BasicBlock \&BB, DomTreeNode \&DTN)} function to search and replace all use of PHI result operand with that returned by the \mintinline[]{css}{"llvm.tau"} intrinsic call.
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{\texttt{HPSSAPass} : Auxilliary Functions}
+	\frametitle{\texttt{HPSSAPass} : Destruction Pass}
 	\begin{itemize}
-		\item \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getProfileInfo(Function \&F)}
-		\item \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getCaloricConnector(Function \&F)}
-		\item \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::Search(BasicBlock \&BB, DomTreeNode \&DTN})
+		\item Out of HPSSA Form. 
+		\begin{itemize}
+			\item A seperate pass using the new LLVM Pass Manager. \mintinline[]{css}{class TDSTRPass : public PassInfoMixin<TDSTRPass>}
+			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function \&F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR.
+			\item The LLVM IR becomes identical to what it was before running the HPSSA Pass. 
+		\end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{\texttt{HPSSAPass} : Usage [It is easy!]}
+	\begin{itemize}
+		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
+		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
+	\end{itemize}
+	\begin{minted}[fontsize=\footnotesize, tabsize=2, highlightlines={1,11,12}, linenos]{cpp}
+	#include <HPSSA.h> // import the header.
+	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
+		public: PreservedAnalyses run(Function &F, 
+			FunctionAnalysisManager &AM);
+	};
+	...
+	PreservedAnalyses MyExamplePass::run(Function &F, 
+		FunctionAnalysisManager &AM) {
+		if (F.getName() != "main")
+			return PreservedAnalyses::all();
+		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
+		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
+		std::vector<Instruction *> TauInsts // Calling utility function.
+			= hpssaUtil.getAllTauInstrunctions(F);
+		...
+	}
+	/// [output] Total Tau Instructions : 7 
+	\end{minted}
 \end{frame}
 
 \section{SSCCP Pass in LLVM}
@@ -124,27 +162,28 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 		\item Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic which is essentially an \mintinline[fontsize=\footnotesize]{css}{llvm:CallInst} type, we modified all appropriate visit and marking functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor, SCCPSolver} and \mintinline[fontsize=\footnotesize]{css}{SCCPPass} to handle this case separately by calling \mintinline[fontsize=\footnotesize]{css}{visitTauNode()}.
 		\item Modified utility functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to print marking of speculative constants and related operations for debugging purpose.
 	\end{itemize}
-\begin{minted}[fontsize=\footnotesize]{css}
-...
+\begin{minted}[fontsize=\footnotesize, tabsize=2, highlightcolor=lime, linenos, highlightlines={4,5,8}]{css}
+... // logs
 [BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
-Visiting Tau Instruction
-Speculative Operand : , speculative constant
-Speculative Operand : llvm.tau.i32, speculative constant
-Merged speculative constant into   %tau = call i32 (...) 
-	@llvm.tau.i32(i32 %e.0, i32 90) : speculative constant
-ValueLattice (TauState) : speculative constant
+	Visiting Tau Instruction
+		Speculative Operand : , speculative constant
+		Speculative Operand : llvm.tau.i32, speculative constant
+	Merged speculative constant into   %tau = call i32 (...) 
+		@llvm.tau.i32(i32 %e.0, i32 90) : speculative constant
+	ValueLattice (TauState) : speculative constant
+...
 \end{minted}
 \end{frame}
-
+\footnotesize
 \begin{frame}[fragile]
-\begin{minted}[fontsize=\footnotesize]{cpp}
+\begin{minted}[fontsize=\footnotesize, tabsize=2, linenos, highlightcolor=yellow, highlightlines={14,17}]{cpp}
+// Example for SSCCP Pass
 int main() {
 	int a = 1000, z, c, e = 0;
 	switch(c) {   
 		case 2 : goto label_3; break;
 		case 4 : goto label_4; break;
-		default : goto label_7;
-	}
+		default : goto label_7; }
 	label_3:
 		e = 90;
 		goto label_7;
@@ -159,9 +198,7 @@ int main() {
 			a = a + 777;
 		} else {
 			a = a - 888;
-		}
-	return 0;
-}
+		} return 0; }
 \end{minted}
 \end{frame}
 

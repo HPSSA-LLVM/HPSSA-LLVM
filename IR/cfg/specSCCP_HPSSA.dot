@@ -15,9 +15,9 @@ digraph "CFG for 'main' function" {
 	Node0x559c40debb90 -> Node0x559c40debd50;
 	Node0x559c40debc70 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{label_4:                                          \l  br label %label_7\l}"];
 	Node0x559c40debc70 -> Node0x559c40debd50;
-	Node0x559c40debd50 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{label_7:                                          \l  %tau = call i32 (...) @llvm.tau.i32(i32 90, i32 90)\l  %add = add nsw i32 %tau, 70\l  br label %end\l}"];
+	Node0x559c40debd50 [shape=record,color="#7EC8E3", style=filled, fillcolor="#7EC8E3",label="{label_7:                                          \l  %tau = call i32 (...) @llvm.tau.i32(i32 90, i32 90)\l  %add = add nsw i32 %tau, 70\l  br label %end\l}"];
 	Node0x559c40debd50 -> Node0x559c40dec210;
-	Node0x559c40dec210 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{end:                                              \l  %cmp = icmp sge i32 %add, 100\l  br i1 %cmp, label %if.then, label %if.else\l|{<s0>T|<s1>F}}"];
+	Node0x559c40dec210 [shape=record,color="#7EC8E3", style=filled, fillcolor="#7EC8E3",label="{end:                                              \l  %cmp = icmp sge i32 %add, 100\l  br i1 %cmp, label %if.then, label %if.else\l|{<s0>T|<s1>F}}"];
 	Node0x559c40dec210:s0 -> Node0x559c40dec3d0;
 	Node0x559c40dec210:s1 -> Node0x559c40dec440;
 	Node0x559c40dec3d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f2907270",label="{if.then:                                          \l  br label %if.end\l}"];
