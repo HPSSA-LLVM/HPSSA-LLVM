@@ -1,42 +1,20 @@
 ----------===Caloric Connector and BuddySet Information===----------
 entry: {1 1 } 
-start: { 1 1 } 
 sw.bb1: { 1 0 } 
 label_4: { 1 0 } 
 sw.bb: 
 label_3: 
+sw.default: { 0 1 } 
 label_7 is a Caloric Connector
 label_7: { 1 0 } 
-sw.default: { 0 1 } 
-label_6: { 0 1 } 
-end: { 0 1 } { 1 0 } 
-if.else is a Caloric Connector
+end: { 1 0 } 
 if.else: { 1 0 } 
 if.then is a Caloric Connector
-if.then: { 0 1 } 
-if.end: { 1 0 } { 0 1 } 
+if.then: 
+if.end: { 1 0 } 
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : if.else
-Inserted Tau at : if.then
-Inserted Tau at : if.else
-Inserted Tau at : if.then
-Inserted Tau at : if.else
-Inserted Tau at : if.then
 -- BB: entry
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: start
------- Recurse over Child 
--------- Parent: entry | Child: start
--- BB: start
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
 ------ Not a tau instruction
@@ -45,96 +23,57 @@ Inserted Tau at : if.then
 -------- Succ: sw.bb
 -------- Succ: sw.bb1
 ------ Recurse over Child 
--------- Parent: start | Child: sw.default
+-------- Parent: entry | Child: sw.default
 -- BB: sw.default
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
--------- Succ: label_6
+-------- Succ: label_7
+---------- phi: e.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
--------- Parent: sw.default | Child: label_6
--- BB: label_6
+------ Remove definitions if needed
+-------- Parent: entry | Child: label_7
+-- BB: label_7
 ---- I: ---- attempt to renaming uses in I
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ e.0
+------ mrd: e.0
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end
----------- phi: e.1
----------- V: sub
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
------- Remove definitions if needed
------- Remove definitions if needed
--------- Parent: start | Child: end
+-------- Parent: label_7 | Child: end
 -- BB: end
 ---- I: ---- attempt to renaming uses in I
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -144,251 +83,68 @@ Inserted Tau at : if.then
 -------- Parent: end | Child: if.then
 -- BB: if.then
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- tau8
------- mrd: tau8
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau4
------- mrd: tau4
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau4
------- mrd: tau4
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
----------- phi: a.2
----------- V: add7
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: tau4
----------- mrd changed
--------- phi: b.1 mrd: tau6
----------- mrd changed
--------- phi: a.1 mrd: tau8
----------- mrd changed
+-------- phi: e.0 mrd: tau
+---------- mrd not changed
 -------- Parent: end | Child: if.end
 -- BB: if.end
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
 -------- Parent: end | Child: if.else
 -- BB: if.else
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau3
------- mrd: tau3
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau3
------- mrd: tau3
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
----------- phi: a.2
----------- V: sub8
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: tau3
----------- mrd changed
--------- phi: b.1 mrd: tau5
----------- mrd changed
--------- phi: a.1 mrd: tau7
----------- mrd changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: sw.bb
+------ Remove definitions if needed
+-------- phi: e.0 mrd: tau
+---------- mrd changed
+-------- Parent: entry | Child: sw.bb
 -- BB: sw.bb
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ e.0
+------ mrd: e.0
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -397,48 +153,9 @@ Inserted Tau at : if.then
 -------- Parent: sw.bb | Child: label_3
 -- BB: label_3
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ e.0
+------ mrd: e.0
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -447,263 +164,19 @@ Inserted Tau at : if.then
 ---------- V: 
 ---------- Not a phi operand
 ---------- Not a tau operand
----------- phi: b.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: e.0
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
+-------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: label_7
--- BB: label_7
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: end
----------- phi: e.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.1
----------- V: b.0
----------- a phi operand
----------- Not a tau operand
----------- phi: a.1
----------- V: a.0
----------- a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: tau
----------- mrd changed
--------- phi: b.0 mrd: tau1
----------- mrd changed
--------- phi: a.0 mrd: tau2
----------- mrd changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: sw.bb1
+-------- Parent: entry | Child: sw.bb1
 -- BB: sw.bb1
 ---- I: ---- attempt to renaming uses in I
 ------ phi: e.0
 ------ e.0
 ------ mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -715,61 +188,11 @@ Inserted Tau at : if.then
 ------ phi: e.0
 ------ e.0
 ------ mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: label_7
 ---------- phi: e.0
----------- V: add3
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.0
 ---------- V: 
 ---------- Not a phi operand
 ---------- Not a tau operand
@@ -777,74 +200,17 @@ Inserted Tau at : if.then
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
 ---------- mrd not changed
 Speculative SCCP on function 'main'
 Marking Block Executable: entry
 
 Popped off BBWL: 
 entry:
-  br label %start
-
-Marking Block Executable: start
-
-Popped off BBWL: 
-start:                                            ; preds = %entry
   switch i32 undef, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
@@ -854,180 +220,110 @@ RESOLVING UNDEFs
 Marking Block Executable: sw.bb
 
 Popped off BBWL: 
-sw.bb:                                            ; preds = %start
+sw.bb:                                            ; preds = %entry
   br label %label_3
 
 Marking Block Executable: label_3
 
 Popped off BBWL: 
 label_3:                                          ; preds = %sw.bb
-  %add = add nsw i32 50, 50
-  %add2 = add nsw i32 %add, 90
   br label %label_7
 
-Merged constantrange<100, 101> into   %add = add nsw i32 50, 50 : constantrange<100, 101>
-Merged constantrange<190, 191> into   %add2 = add nsw i32 %add, 90 : constantrange<190, 191>
 Marking Block Executable: label_7
 
 Popped off BBWL: 
-label_7:                                          ; preds = %label_4, %label_3
-  %e.0 = phi i32 [ %add3, %label_4 ], [ 90, %label_3 ]
-  %b.0 = phi i32 [ 90, %label_4 ], [ 50, %label_3 ]
-  %a.0 = phi i32 [ 10, %label_4 ], [ 50, %label_3 ]
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 10)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90)
-  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add3)
-  %add4 = add nsw i32 %tau2, %tau
+label_7:                                          ; preds = %label_4, %label_3, %sw.default
+  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
+  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)
+  %add = add nsw i32 %tau, 70
   br label %end
 
+[BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
+		Visiting Tau Instruction
+		Speculative Operand : , speculative constant
+		Speculative Operand : llvm.tau.i32, speculative constant
+Merged speculative constant into   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90) : speculative constant
+		ValueLattice (TauState) : speculative constant
 Marking Spec PHINode exec.
-Merged constantrange<90, 91> into   %e.0 = phi i32 [ %add3, %label_4 ], [ 90, %label_3 ] : constantrange<90, 91>
-Marking Spec PHINode exec.
-Merged constantrange<50, 51> into   %b.0 = phi i32 [ 90, %label_4 ], [ 50, %label_3 ] : constantrange<50, 51>
-Marking Spec PHINode exec.
-Merged constantrange<50, 51> into   %a.0 = phi i32 [ 10, %label_4 ], [ 50, %label_3 ] : constantrange<50, 51>
-Merged overdefined into   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 10) : overdefined
-Merged overdefined into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90) : overdefined
-Merged overdefined into   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add3) : overdefined
-markOverdefined:   %add4 = add nsw i32 %tau2, %tau
+Merged constantrange<90, 91> into   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ] : constantrange<90, 91>
+Merged overdefined into   %add = add nsw i32 %tau, 70 : overdefined
 Marking Block Executable: end
 
 Popped off BBWL: 
-end:                                              ; preds = %label_6, %label_7
-  %e.1 = phi i32 [ %sub, %label_6 ], [ 90, %label_7 ]
-  %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ]
-  %a.1 = phi i32 [ 23, %label_6 ], [ %tau2, %label_7 ]
-  %add6 = add nsw i32 %a.1, %b.1
-  %cmp = icmp sge i32 %e.1, 150
+end:                                              ; preds = %label_7
+  %cmp = icmp sge i32 %add, 100
   br i1 %cmp, label %if.then, label %if.else
 
-Marking Spec PHINode exec.
-Merged constantrange<90, 91> into   %e.1 = phi i32 [ %sub, %label_6 ], [ 90, %label_7 ] : constantrange<90, 91>
-Marking Spec PHINode exec.
-Merged overdefined into   %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ] : overdefined
-Marking Spec PHINode exec.
-Merged overdefined into   %a.1 = phi i32 [ 23, %label_6 ], [ %tau2, %label_7 ] : overdefined
-markOverdefined:   %add6 = add nsw i32 %a.1, %b.1
-Merged constantrange<0, -1> into   %cmp = icmp sge i32 %e.1, 150 : constantrange<0, -1>
+markOverdefined:   %cmp = icmp sge i32 %add, 100
+Marking Block Executable: if.then
 Marking Block Executable: if.else
 
 Popped off BBWL: 
 if.else:                                          ; preds = %end
-  %tau7 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %a.0)
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 90)
-  %sub8 = sub nsw i32 %tau7, 100
+  %sub = sub nsw i32 1000, 888
   br label %if.end
 
-Merged overdefined into   %tau7 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %a.0) : overdefined
-Merged overdefined into   %tau5 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0) : overdefined
-Merged overdefined into   %tau3 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 90) : overdefined
-Merged overdefined into   %sub8 = sub nsw i32 %tau7, 100 : overdefined
+Merged constantrange<112, 113> into   %sub = sub nsw i32 1000, 888 : constantrange<112, 113>
 Marking Block Executable: if.end
 
 Popped off BBWL: 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.2 = phi i32 [ %add7, %if.then ], [ %sub8, %if.else ]
-  %add9 = add nsw i32 %add6, %a.2
   ret i32 0
 
-Marking Spec PHINode exec.
-Merged overdefined into   %a.2 = phi i32 [ %add7, %if.then ], [ %sub8, %if.else ] : overdefined
-markOverdefined:   %add9 = add nsw i32 %add6, %a.2
 
-Popped off OI-WL:   %add9 = add nsw i32 %add6, %a.2
+Popped off BBWL: 
+if.then:                                          ; preds = %end
+  %add2 = add nsw i32 1000, 777
+  br label %if.end
 
-Popped off OI-WL:   %a.2 = phi i32 [ %add7, %if.then ], [ %sub8, %if.else ]
+Merged constantrange<1777, 1778> into   %add2 = add nsw i32 1000, 777 : constantrange<1777, 1778>
+Marking Edge Executable: if.then -> if.end
 
-Popped off OI-WL:   %sub8 = sub nsw i32 %tau7, 100
-Marking Spec PHINode exec.
+Popped off OI-WL:   %cmp = icmp sge i32 %add, 100
 
-Popped off OI-WL:   %tau3 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 90)
+Popped off OI-WL:   %add = add nsw i32 %tau, 70
 
-Popped off OI-WL:   %tau5 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0)
+Popped off I-WL:   %add2 = add nsw i32 1000, 777
 
-Popped off OI-WL:   %tau7 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %a.0)
+Popped off I-WL:   %sub = sub nsw i32 1000, 888
 
-Popped off OI-WL:   %add6 = add nsw i32 %a.1, %b.1
+Popped off I-WL:   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
 
-Popped off OI-WL:   %a.1 = phi i32 [ 23, %label_6 ], [ %tau2, %label_7 ]
-
-Popped off OI-WL:   %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ]
-
-Popped off OI-WL:   %add4 = add nsw i32 %tau2, %tau
-
-Popped off OI-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add3)
-
-Popped off OI-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90)
-Marking Spec PHINode exec.
-
-Popped off OI-WL:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 10)
-Marking Spec PHINode exec.
-
-Popped off I-WL:   %cmp = icmp sge i32 %e.1, 150
-
-Popped off I-WL:   %e.1 = phi i32 [ %sub, %label_6 ], [ 90, %label_7 ]
-
-Popped off I-WL:   %a.0 = phi i32 [ 10, %label_4 ], [ 50, %label_3 ]
-
-Popped off I-WL:   %b.0 = phi i32 [ 90, %label_4 ], [ 50, %label_3 ]
-
-Popped off I-WL:   %e.0 = phi i32 [ %add3, %label_4 ], [ 90, %label_3 ]
-
-Popped off I-WL:   %add2 = add nsw i32 %add, 90
-
-Popped off I-WL:   %add = add nsw i32 50, 50
+Popped off I-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)
 RESOLVING UNDEFs
   BasicBlock Dead:
-sw.bb1:                                           ; preds = %start
+sw.bb1:                                           ; preds = %entry
   br label %label_4
   BasicBlock Dead:
-sw.default:                                       ; preds = %start
-  br label %label_6
-  Constant: i32 100 =   %add = add nsw i32 50, 50
-  Constant: i32 190 =   %add2 = add nsw i32 100, 90
+sw.default:                                       ; preds = %entry
+  br label %label_7
   BasicBlock Dead:
 label_4:                                          ; preds = %sw.bb1
-  %add3 = add nsw i32 10, 80
   br label %label_7
-  Constant: i32 90 =   %e.0 = phi i32 [ undef, %label_4 ], [ 90, %label_3 ]
-  Constant: i32 50 =   %b.0 = phi i32 [ 90, %label_4 ], [ 50, %label_3 ]
-  Constant: i32 50 =   %a.0 = phi i32 [ 10, %label_4 ], [ 50, %label_3 ]
-  BasicBlock Dead:
-label_6:                                          ; preds = %sw.default
-  %add5 = add nsw i32 23, 77
-  %sub = sub nsw i32 %add5, 10
-  br label %end
-  Constant: i32 90 =   %e.1 = phi i32 [ undef, %label_6 ], [ 90, %label_7 ]
-  Constant: i1 false =   %cmp = icmp sge i32 90, 150
-  BasicBlock Dead:
-if.then:                                          ; preds = %end
-  %tau8 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 23)
-  %tau6 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 77)
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 90, i32 undef)
-  %add7 = add nsw i32 %tau8, 190
-  br label %if.end
+  Constant: i32 90 =   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
+  Constant: i32 1777 =   %add2 = add nsw i32 1000, 777
+  Constant: i32 112 =   %sub = sub nsw i32 1000, 888
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0190 seconds (0.0189 wall clock)
+  Total Execution Time: 0.0095 seconds (0.0095 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0040 ( 64.3%)   0.0125 ( 97.6%)   0.0164 ( 86.8%)   0.0164 ( 86.8%)  SCCPTauPass
-   0.0008 ( 12.5%)   0.0001 (  1.0%)   0.0009 (  4.7%)   0.0009 (  4.7%)  VerifierPass
-   0.0007 ( 12.0%)   0.0001 (  0.9%)   0.0009 (  4.5%)   0.0009 (  4.5%)  VerifierAnalysis
-   0.0006 (  9.9%)   0.0000 (  0.0%)   0.0006 (  3.2%)   0.0006 (  3.2%)  PrintModulePass
-   0.0000 (  0.7%)   0.0000 (  0.2%)   0.0001 (  0.3%)   0.0001 (  0.3%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.6%)   0.0000 (  0.1%)   0.0001 (  0.3%)   0.0001 (  0.3%)  DominatorTreeAnalysis
-   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  TargetLibraryAnalysis
-   0.0062 (100.0%)   0.0128 (100.0%)   0.0190 (100.0%)   0.0189 (100.0%)  Total
+   0.0035 ( 69.5%)   0.0034 ( 76.6%)   0.0069 ( 72.8%)   0.0070 ( 73.0%)  SCCPTauPass
+   0.0006 ( 10.9%)   0.0004 (  9.4%)   0.0010 ( 10.2%)   0.0010 ( 10.1%)  VerifierPass
+   0.0005 ( 10.4%)   0.0004 (  8.9%)   0.0009 (  9.7%)   0.0009 (  9.7%)  VerifierAnalysis
+   0.0003 (  6.8%)   0.0002 (  3.9%)   0.0005 (  5.5%)   0.0005 (  5.4%)  PrintModulePass
+   0.0001 (  1.2%)   0.0000 (  0.8%)   0.0001 (  1.0%)   0.0001 (  1.0%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.8%)   0.0000 (  0.4%)   0.0001 (  0.6%)   0.0001 (  0.6%)  DominatorTreeAnalysis
+   0.0000 (  0.4%)   0.0000 (  0.0%)   0.0000 (  0.2%)   0.0000 (  0.2%)  TargetLibraryAnalysis
+   0.0051 (100.0%)   0.0044 (100.0%)   0.0095 (100.0%)   0.0095 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0027 seconds (0.0027 wall clock)
+  Total Execution Time: 0.0028 seconds (0.0028 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Parse IR
-   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Total
+   0.0028 (100.0%)   0.0028 (100.0%)   0.0028 (100.0%)  Parse IR
+   0.0028 (100.0%)   0.0028 (100.0%)   0.0028 (100.0%)  Total
 

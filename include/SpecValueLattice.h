@@ -42,7 +42,7 @@ class SpecValueLatticeElement {
     ///  overdefined
     undef,
 
-    /// This Value has a specific constant value.  The constant cannot be undef.
+    /// This Value has a speculative constant value.  The constant cannot be undef.
     /// (For constant integers, constantrange is used instead. Integer typed
     /// constantexprs can appear as constant.) Note that the constant state
     /// can be reached by merging undef & constant states.
@@ -406,13 +406,7 @@ public:
   /// true if this object has been changed.
   bool mergeIn(const SpecValueLatticeElement &RHS,
                MergeOptions Opts = MergeOptions()) {
-    if (RHS.isUnknown() || isOverdefined())
-      return false;
-    if (RHS.isOverdefined()) {
-      markOverdefined();
-      return true;
-    }
-
+    
     if(isSpeculativeConstant()) {
       assert(!RHS.isUnknown());
       if (RHS.isUndef())
@@ -423,6 +417,13 @@ public:
         return markConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
       return markSpeculativeConstant();
+    }
+
+    if (RHS.isUnknown() || isOverdefined())
+      return false;
+    if (RHS.isOverdefined()) {
+      markOverdefined();
+      return true;
     }
 
     if (isUndef()) {

@@ -28,22 +28,19 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 ; Function Attrs: mustprogress noinline norecurse nounwind uwtable
 define dso_local i32 @main() #4 {
 entry:
-  br label %start
-
-start:                                            ; preds = %entry
   switch i32 2, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
   ]
 
-sw.bb:                                            ; preds = %start
+sw.bb:                                            ; preds = %entry
   br label %label_3
 
-sw.bb1:                                           ; preds = %start
+sw.bb1:                                           ; preds = %entry
   br label %label_4
 
-sw.default:                                       ; preds = %start
-  br label %label_6
+sw.default:                                       ; preds = %entry
+  br label %label_7
 
 label_3:                                          ; preds = %sw.bb
   br label %label_7
@@ -51,35 +48,22 @@ label_3:                                          ; preds = %sw.bb
 label_4:                                          ; preds = %sw.bb1
   br label %label_7
 
-label_7:                                          ; preds = %label_4, %label_3
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 50, i32 10)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 50, i32 90)
-  %tau = call i32 (...) @llvm.tau.i32(i32 90, i32 undef)
-  %add4 = add nsw i32 %tau2, %tau
+label_7:                                          ; preds = %label_4, %label_3, %sw.default
+  %tau = call i32 (...) @llvm.tau.i32(i32 90, i32 90)
+  %add = add nsw i32 %tau, 70
   br label %end
 
-label_6:                                          ; preds = %sw.default
-  br label %end
-
-end:                                              ; preds = %label_6, %label_7
-  %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ]
-  %a.1 = phi i32 [ 23, %label_6 ], [ %tau2, %label_7 ]
-  %add6 = add nsw i32 %a.1, %b.1
-  br i1 false, label %if.then, label %if.else
+end:                                              ; preds = %label_7
+  %cmp = icmp sge i32 %add, 100
+  br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %tau7 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 50)
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 50)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 90, i32 90)
-  %sub8 = sub nsw i32 %tau7, 100
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.2 = phi i32 [ undef, %if.then ], [ %sub8, %if.else ]
-  %add9 = add nsw i32 %add6, %a.2
   ret i32 0
 }
 

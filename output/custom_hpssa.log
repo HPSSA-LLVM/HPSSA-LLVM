@@ -1,42 +1,20 @@
 ----------===Caloric Connector and BuddySet Information===----------
 entry: {1 1 } 
-start: { 1 1 } 
 sw.bb1: { 1 0 } 
 label_4: { 1 0 } 
 sw.bb: 
 label_3: 
+sw.default: { 0 1 } 
 label_7 is a Caloric Connector
 label_7: { 1 0 } 
-sw.default: { 0 1 } 
-label_6: { 0 1 } 
-end: { 0 1 } { 1 0 } 
-if.else is a Caloric Connector
+end: { 1 0 } 
 if.else: { 1 0 } 
 if.then is a Caloric Connector
-if.then: { 0 1 } 
-if.end: { 1 0 } { 0 1 } 
+if.then: 
+if.end: { 1 0 } 
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : label_7
-Reached the Dominance frontier while visiting from: sw.default
-Inserted Tau at : if.else
-Inserted Tau at : if.then
-Inserted Tau at : if.else
-Inserted Tau at : if.then
-Inserted Tau at : if.else
-Inserted Tau at : if.then
 -- BB: entry
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: start
------- Recurse over Child 
--------- Parent: entry | Child: start
--- BB: start
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
 ------ Not a tau instruction
@@ -45,96 +23,57 @@ Inserted Tau at : if.then
 -------- Succ: sw.bb
 -------- Succ: sw.bb1
 ------ Recurse over Child 
--------- Parent: start | Child: sw.default
+-------- Parent: entry | Child: sw.default
 -- BB: sw.default
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
--------- Succ: label_6
+-------- Succ: label_7
+---------- phi: e.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
--------- Parent: sw.default | Child: label_6
--- BB: label_6
+------ Remove definitions if needed
+-------- Parent: entry | Child: label_7
+-- BB: label_7
 ---- I: ---- attempt to renaming uses in I
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ e.0
+------ mrd: e.0
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end
----------- phi: e.1
----------- V: sub
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
------- Remove definitions if needed
------- Remove definitions if needed
--------- Parent: start | Child: end
+-------- Parent: label_7 | Child: end
 -- BB: end
 ---- I: ---- attempt to renaming uses in I
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -144,251 +83,68 @@ Inserted Tau at : if.then
 -------- Parent: end | Child: if.then
 -- BB: if.then
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- tau8
------- mrd: tau8
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau4
------- mrd: tau4
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau4
------- mrd: tau4
------- phi: b.1
------- tau6
------- mrd: tau6
------- phi: a.1
------- tau8
------- mrd: tau8
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
----------- phi: a.2
----------- V: add7
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: tau4
----------- mrd changed
--------- phi: b.1 mrd: tau6
----------- mrd changed
--------- phi: a.1 mrd: tau8
----------- mrd changed
+-------- phi: e.0 mrd: tau
+---------- mrd not changed
 -------- Parent: end | Child: if.end
 -- BB: if.end
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
 -------- Parent: end | Child: if.else
 -- BB: if.else
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau3
------- mrd: tau3
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- tau3
------- mrd: tau3
------- phi: b.1
------- tau5
------- mrd: tau5
------- phi: a.1
------- tau7
------- mrd: tau7
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ tau
+------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
----------- phi: a.2
----------- V: sub8
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: tau3
----------- mrd changed
--------- phi: b.1 mrd: tau5
----------- mrd changed
--------- phi: a.1 mrd: tau7
----------- mrd changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
+-------- phi: e.0 mrd: tau
 ---------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: sw.bb
+------ Remove definitions if needed
+-------- phi: e.0 mrd: tau
+---------- mrd changed
+-------- Parent: entry | Child: sw.bb
 -- BB: sw.bb
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ e.0
+------ mrd: e.0
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -397,48 +153,9 @@ Inserted Tau at : if.then
 -------- Parent: sw.bb | Child: label_3
 -- BB: label_3
 ---- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
+------ phi: e.0
+------ e.0
+------ mrd: e.0
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -447,263 +164,19 @@ Inserted Tau at : if.then
 ---------- V: 
 ---------- Not a phi operand
 ---------- Not a tau operand
----------- phi: b.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
+-------- phi: e.0 mrd: e.0
 ---------- mrd not changed
 ------ Remove definitions if needed
--------- phi: e.1 mrd: e.1
+-------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: label_7
--- BB: label_7
----- I: ---- attempt to renaming uses in I
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: b.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- tau2
------- mrd: tau2
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: end
----------- phi: e.1
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.1
----------- V: b.0
----------- a phi operand
----------- Not a tau operand
----------- phi: a.1
----------- V: a.0
----------- a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: tau
----------- mrd changed
--------- phi: b.0 mrd: tau1
----------- mrd changed
--------- phi: a.0 mrd: tau2
----------- mrd changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
--------- Parent: start | Child: sw.bb1
+-------- Parent: entry | Child: sw.bb1
 -- BB: sw.bb1
 ---- I: ---- attempt to renaming uses in I
 ------ phi: e.0
 ------ e.0
 ------ mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -715,61 +188,11 @@ Inserted Tau at : if.then
 ------ phi: e.0
 ------ e.0
 ------ mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: b.0
------- b.0
------- mrd: b.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- phi: e.1
------- e.1
------- mrd: e.1
------- phi: b.1
------- b.1
------- mrd: b.1
------- phi: a.1
------- a.1
------- mrd: a.1
------- phi: a.2
------- a.2
------- mrd: a.2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: label_7
 ---------- phi: e.0
----------- V: add3
----------- Not a phi operand
----------- Not a tau operand
----------- phi: b.0
----------- V: 
----------- Not a phi operand
----------- Not a tau operand
----------- phi: a.0
 ---------- V: 
 ---------- Not a phi operand
 ---------- Not a tau operand
@@ -777,83 +200,32 @@ Inserted Tau at : if.then
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
 ---------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: b.0 mrd: b.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- phi: e.1 mrd: e.1
----------- mrd not changed
--------- phi: b.1 mrd: b.1
----------- mrd not changed
--------- phi: a.1 mrd: a.1
----------- mrd not changed
--------- phi: a.2 mrd: a.2
 ---------- mrd not changed
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0109 seconds (0.0109 wall clock)
+  Total Execution Time: 0.0056 seconds (0.0058 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0001 (  6.3%)   0.0078 ( 83.9%)   0.0079 ( 72.5%)   0.0079 ( 72.5%)  HPSSAPass
-   0.0003 ( 17.3%)   0.0007 (  7.9%)   0.0010 (  9.3%)   0.0010 (  9.3%)  VerifierPass
-   0.0003 ( 16.4%)   0.0007 (  7.7%)   0.0010 (  9.0%)   0.0010 (  8.9%)  VerifierAnalysis
-   0.0009 ( 54.9%)   0.0000 (  0.0%)   0.0009 (  8.1%)   0.0009 (  8.1%)  PrintModulePass
-   0.0000 (  2.6%)   0.0000 (  0.3%)   0.0001 (  0.7%)   0.0001 (  0.7%)  PreservedCFGCheckerAnalysis
-   0.0000 (  2.5%)   0.0000 (  0.2%)   0.0001 (  0.6%)   0.0001 (  0.6%)  DominatorTreeAnalysis
-   0.0016 (100.0%)   0.0093 (100.0%)   0.0109 (100.0%)   0.0109 (100.0%)  Total
+   0.0002 (  7.6%)   0.0029 ( 82.3%)   0.0030 ( 54.3%)   0.0031 ( 53.1%)  HPSSAPass
+   0.0007 ( 35.0%)   0.0002 (  5.3%)   0.0009 ( 16.5%)   0.0010 ( 16.9%)  VerifierPass
+   0.0007 ( 33.2%)   0.0002 (  5.1%)   0.0009 ( 15.7%)   0.0009 ( 16.1%)  VerifierAnalysis
+   0.0004 ( 19.1%)   0.0002 (  6.8%)   0.0006 ( 11.4%)   0.0007 ( 11.9%)  PrintModulePass
+   0.0001 (  2.5%)   0.0000 (  0.4%)   0.0001 (  1.2%)   0.0001 (  1.1%)  PreservedCFGCheckerAnalysis
+   0.0001 (  2.6%)   0.0000 (  0.0%)   0.0001 (  1.0%)   0.0001 (  0.9%)  DominatorTreeAnalysis
+   0.0021 (100.0%)   0.0035 (100.0%)   0.0056 (100.0%)   0.0058 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0027 seconds (0.0027 wall clock)
+  Total Execution Time: 0.0025 seconds (0.0025 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Parse IR
-   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0017 (100.0%)   0.0008 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Parse IR
+   0.0017 (100.0%)   0.0008 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Total
 

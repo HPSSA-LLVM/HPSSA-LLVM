@@ -28,63 +28,44 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 ; Function Attrs: mustprogress noinline norecurse nounwind uwtable
 define dso_local i32 @main() #4 {
 entry:
-  br label %start
-
-start:                                            ; preds = %entry
   switch i32 undef, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
   ]
 
-sw.bb:                                            ; preds = %start
+sw.bb:                                            ; preds = %entry
   br label %label_3
 
-sw.bb1:                                           ; preds = %start
+sw.bb1:                                           ; preds = %entry
   br label %label_4
 
-sw.default:                                       ; preds = %start
-  br label %label_6
+sw.default:                                       ; preds = %entry
+  br label %label_7
 
 label_3:                                          ; preds = %sw.bb
-  %add = add nsw i32 50, 50
-  %add2 = add nsw i32 %add, 90
   br label %label_7
 
 label_4:                                          ; preds = %sw.bb1
-  %add3 = add nsw i32 10, 80
   br label %label_7
 
-label_7:                                          ; preds = %label_4, %label_3
-  %e.0 = phi i32 [ %add3, %label_4 ], [ 90, %label_3 ]
-  %b.0 = phi i32 [ 90, %label_4 ], [ 50, %label_3 ]
-  %a.0 = phi i32 [ 10, %label_4 ], [ 50, %label_3 ]
-  %add4 = add nsw i32 %a.0, %e.0
+label_7:                                          ; preds = %label_4, %label_3, %sw.default
+  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
+  %add = add nsw i32 %e.0, 70
   br label %end
 
-label_6:                                          ; preds = %sw.default
-  %add5 = add nsw i32 23, 77
-  %sub = sub nsw i32 %add5, 10
-  br label %end
-
-end:                                              ; preds = %label_6, %label_7
-  %e.1 = phi i32 [ %sub, %label_6 ], [ 90, %label_7 ]
-  %b.1 = phi i32 [ 77, %label_6 ], [ %b.0, %label_7 ]
-  %a.1 = phi i32 [ 23, %label_6 ], [ %a.0, %label_7 ]
-  %add6 = add nsw i32 %a.1, %b.1
-  %cmp = icmp sge i32 %e.1, 150
+end:                                              ; preds = %label_7
+  %cmp = icmp sge i32 %add, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %add7 = add nsw i32 %a.1, 190
+  %add2 = add nsw i32 1000, 777
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %sub8 = sub nsw i32 %a.1, 100
+  %sub = sub nsw i32 1000, 888
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.2 = phi i32 [ %add7, %if.then ], [ %sub8, %if.else ]
-  %add9 = add nsw i32 %add6, %a.2
   ret i32 0
 }
 

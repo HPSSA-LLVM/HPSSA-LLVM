@@ -28,22 +28,19 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 ; Function Attrs: mustprogress noinline norecurse nounwind uwtable
 define dso_local i32 @main() #4 {
 entry:
-  br label %start
-
-start:                                            ; preds = %entry
   switch i32 2, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
   ]
 
-sw.bb:                                            ; preds = %start
+sw.bb:                                            ; preds = %entry
   br label %label_3
 
-sw.bb1:                                           ; preds = %start
+sw.bb1:                                           ; preds = %entry
   br label %label_4
 
-sw.default:                                       ; preds = %start
-  br label %label_6
+sw.default:                                       ; preds = %entry
+  br label %label_7
 
 label_3:                                          ; preds = %sw.bb
   br label %label_7
@@ -51,14 +48,11 @@ label_3:                                          ; preds = %sw.bb
 label_4:                                          ; preds = %sw.bb1
   br label %label_7
 
-label_7:                                          ; preds = %label_4, %label_3
+label_7:                                          ; preds = %label_4, %label_3, %sw.default
   br label %end
 
-label_6:                                          ; preds = %sw.default
-  br label %end
-
-end:                                              ; preds = %label_6, %label_7
-  br i1 false, label %if.then, label %if.else
+end:                                              ; preds = %label_7
+  br i1 true, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
   br label %if.end
