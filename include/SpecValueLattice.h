@@ -315,12 +315,14 @@ public:
     return true;
   }
 
+  // COMMENT : Added marking of Spec Const.
   bool markSpeculativeConstant() {
     if (isSpeculativeConstant())
       return false;
 
     // assert(isUnknown());
     Tag = spec_constant;
+    // ConstVal = V;
     return true;
   }
 
@@ -410,7 +412,20 @@ public:
   /// true if this object has been changed.
   bool mergeIn(const SpecValueLatticeElement &RHS,
                MergeOptions Opts = MergeOptions()) {
+
+    // COMMENT : Meet. 
+    if (RHS.isUnknown() || isOverdefined())
+      return false;
     
+    // if (RHS.isSpeculativeConstant())
+    //   return markSpeculativeConstant();
+
+    if (RHS.isOverdefined()) {
+      markOverdefined();
+      return true;
+    }
+
+    // COMMENT : LHS meet RHS 
     if(isSpeculativeConstant()) {
       if(RHS.isUnknown())
         return false;
@@ -424,23 +439,15 @@ public:
       return markSpeculativeConstant();
     }
 
-    if (RHS.isUnknown() || isOverdefined())
-      return false;
-    
-    if (RHS.isSpeculativeConstant())
-      return markSpeculativeConstant();
-
-    if (RHS.isOverdefined()) {
-      markOverdefined();
-      return true;
-    }
-
     if (isUndef()) {
       assert(!RHS.isUnknown());
       if (RHS.isUndef())
         return false;
       if (RHS.isConstant())
         return markConstant(RHS.getConstant(), true);
+      // COMMENT : Move down the lattice since Top meet SpecC is SpecC
+      if (RHS.isSpeculativeConstant())
+        return markSpeculativeConstant();
       if (RHS.isConstantRange())
         return markConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
@@ -454,6 +461,11 @@ public:
     }
 
     if (isConstant()) {
+      // COMMENT : Constant meet SPEC is SPEC.
+      if (RHS.isSpeculativeConstant()) {
+        markSpeculativeConstant();
+        return true;
+      }
       if (RHS.isConstant() && getConstant() == RHS.getConstant())
         return false;
       if (RHS.isUndef())

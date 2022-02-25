@@ -60,7 +60,7 @@ bool isConstant(const SpecValueLatticeElement &LV) {
 // SpecValueLatticeElement::isOverdefined() and is intended to be used in the
 // transition to SpecValueLatticeElement.
 bool isOverdefined(const SpecValueLatticeElement &LV) {
-  return !LV.isUnknownOrUndef() && !isConstant(LV);
+  return !LV.isUnknownOrUndef() && !isConstant(LV) && !LV.isSpeculativeConstant();
 }
 
 } // namespace
@@ -161,7 +161,7 @@ private:
   // work list so that the users of the instruction are updated later.
   bool markOverdefined(SpecValueLatticeElement &IV, Value *V);
 
-  // markOverdefined - Make a value be marked as "overdefined". If the
+  // markSpeculative - Make a value be marked as "speculative". If the
   // value is not already overdefined, add it to the overdefined instruction
   // work list so that the users of the instruction are updated later.
   bool markSpeculativeConstant(SpecValueLatticeElement &IV, Value *V);
@@ -457,7 +457,7 @@ public:
   }
 
   void markSpeculativeConstant(Value *V) {
-    LLVM_DEBUG(dbgs() << "Marking Speculative Constant : " 
+    LLVM_DEBUG(dbgs() << "[Taulog] Marking Speculative Constant : " 
       << V->getValueName() << "\n");
     if (auto *STy = dyn_cast<StructType>(V->getType()))
       for (unsigned i = 0, e = STy->getNumElements(); i != e; ++i)
@@ -604,7 +604,7 @@ void SCCPTauInstVisitor::visitInstruction(Instruction &I) {
       visitTauNode(I);
     }
   }
-  LLVM_DEBUG(dbgs() << "SCCP: Don't know how to handle: " << I << '\n');
+  LLVM_DEBUG(dbgs() << "Spec SCCP: Don't know how to handle: " << I << '\n');
   markOverdefined(&I);
 }
 
@@ -829,20 +829,19 @@ void SCCPTauInstVisitor::visitPHINode(PHINode &PN) {
 // Handle Tau nodes Instuctions 
 void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
  
-  LLVM_DEBUG(dbgs() << "\t\tVisiting Tau Instruction\n");
   // If this PN returns a struct, just mark the result overdefined.
   // TODO: We could do a lot better than this if code actually uses this.
 
   if (Tau.getType()->isStructTy())
-    return (void)markSpeculativeConstant(&Tau);
+    return (void)markOverdefined(&Tau);
 
   // if (getValueState(&Tau).isOverdefined())
   //   return; // Quick exit
 
   // // Super-extra-high-degree PHI nodes are unlikely to ever be marked constant,
   // // and slow us down a lot.  Just mark them overdefined.
-  if (Tau.getNumOperands() > 64)
-    return (void)markSpeculativeConstant(&Tau);
+  // if (Tau.getNumOperands() > 64)
+  //   return (void)markOverdefined(&Tau);
 
   unsigned NumActiveIncoming = 0;
 
@@ -852,23 +851,26 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // constant.  If they are constant and don't agree, the PHI is a constant
   // range. If there are no executable operands, the PHI remains unknown.
   SpecValueLatticeElement TauState = getValueState(&Tau); // Beta
-  llvm::Value* phiOperand = Tau.getOperand(0);
-  SpecValueLatticeElement x0 = getValueState(phiOperand); // x0
+  SpecValueLatticeElement x0 = getValueState(Tau.getOperand(0)), 
+    beta = getValueState(Tau.getOperand(1)); // x0
+  
+  LLVM_DEBUG(dbgs() << "\t\tTau Operand (1) : " 
+    << Tau.getOperand(1)->getNameOrAsOperand() << ", " << beta <<"\n");
 
-  for (unsigned i = 1, e = Tau.getNumOperands(); i != e; ++i) {
+  for (unsigned i = 2, e = Tau.getNumOperands(); i != e; ++i) {
     // if (!isEdgeFeasible(Tau.getOperand(i), Tau.getParent()))
     //   continue;
     SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
     // markSpeculativeConstant(Tau.getOperand(i));
     // if (IV.isConstant())
     //   IV.markSpeculativeConstant();
-    // LLVM_DEBUG(dbgs() << "\t\tSpeculative Operand : " 
-    //       << Tau.getOperand(i)->getNameOrAsOperand() << ", " << IV <<"\n");
     // Beta = Beta meet opnext
-    TauState.mergeIn(IV);
+    beta.mergeIn(IV);
     NumActiveIncoming++;
-    if (TauState.isOverdefined())
+    if (beta.isOverdefined())
       break;
+    LLVM_DEBUG(dbgs() << "\t\tTau Operand (L) : " 
+      << Tau.getOperand(i)->getNameOrAsOperand() << ", " << beta <<"\n");
   }
 
   // We allow up to 1 range extension per active incoming value and one
@@ -876,17 +878,30 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // extensions to match the number of active incoming values. This helps to
   // limit multiple extensions caused by the same incoming value, if other
   // incoming values are equal.
-  TauState.mergeIn(x0);
-  if (TauState.isConstant())
-    TauState.markSpeculativeConstant();
-    
+  // Beta = x1 meet x2 meet x3 ....
+  if (beta.isConstant() || beta.isConstantRange()) {
+    // COMMENT : Beta is a safe constant. 
+    LLVM_DEBUG(dbgs() << "\t\t [Taulog] Meet over Tau operands are constants.\n" 
+      << TauState << "\n");
+    beta.markSpeculativeConstant();
+    TauState.mergeIn(beta);
+  } 
+
+  // COMMENT : Beta is not a safe constant here
+  // phi "safe" operand is x0.
+  x0.mergeIn(beta); // x0 <- x0 meet Beta
+  if (!x0.isOverdefined()) // not bot
+    TauState.mergeIn(x0);
+  else 
+    TauState.mergeIn(beta);
+  
   mergeInValue(&Tau, TauState,
                SpecValueLatticeElement::MergeOptions().setMaxWidenSteps(
                    NumActiveIncoming + 1));
   SpecValueLatticeElement &TauStateRefElem = getValueState(&Tau);
   TauStateRefElem.setNumRangeExtensions(
       std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
-  LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) : " << TauState << "\n");
+  LLVM_DEBUG(dbgs() << "\t\t [Taulog] ValueLattice (TauState) : " << TauState << "\n");
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
@@ -1108,6 +1123,10 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
 
   if (V1State.isOverdefined() && V2State.isOverdefined())
     return (void)markOverdefined(&I);
+
+  // COMMENT : Handle operation on speculative constants.
+  if (V1State.isSpeculativeConstant() || V2State.isSpeculativeConstant())
+    return (void)markSpeculativeConstant(&I);
 
   // If either of the operands is a constant, try to fold it to a constant.
   // TODO: Use information from notconstant better.
@@ -1574,21 +1593,23 @@ void SCCPTauInstVisitor::solve() {
       BasicBlock *BB = BBWorkList.pop_back_val();
 
       LLVM_DEBUG(dbgs() << "\nPopped off BBWL: " << *BB << '\n');
+      visit(BB);
 
       // Notify all instructions in this basic block that they are newly
       // executable.
+      // COMMENT : Visit Tau nodes as well and not just the basic blocks.
       for (auto& I : *&(*(BB))) {
-      CallInst* CI = dyn_cast<CallInst>(&I);
-      if (CI == NULL)
-        continue;
-      Function* CF = CI->getCalledFunction();
-      if (CF != NULL &&
-          CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
-          LLVM_DEBUG(dbgs() << "[BBWorkList] Visiting LLVM Instrinsic : llvm.tau (" << I.getOpcodeName() << ")\n");
-          visitTauNode(I);
-        }
+        CallInst* CI = dyn_cast<CallInst>(&I);
+        if (CI == NULL)
+          continue;
+        Function* CF = CI->getCalledFunction();
+        if (CF != NULL &&
+            CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
+            LLVM_DEBUG(dbgs() << "[Taulog] Visiting LLVM Instrinsic : llvm.tau (" 
+              << I.getOpcodeName() << ")\n");
+            visitTauNode(I);
+          }
       }
-      visit(BB);
     }
   }
 }
@@ -1858,10 +1879,10 @@ const SmallPtrSet<Function *, 16> SCCPTauSolver::getMRVFunctionsTracked() {
 
 void SCCPTauSolver::markOverdefined(Value *V) { Visitor->markOverdefined(V); }
 
-// COMMENT : Added
+// COMMENT : Solver handle spec_const
 void SCCPTauSolver::markSpeculativeConstant(Value *V) { Visitor->markSpeculativeConstant(V); }
 
-// COMMENT : Added
+// COMMENT : Solver handle tau intrinsic.
 void SCCPTauSolver::ProcessTauInstruction(llvm::Instruction *V) { Visitor->visitPublicTauNode(V); }
 
 bool SCCPTauSolver::isStructLatticeConstant(Function *F, StructType *STy) {
@@ -1887,7 +1908,7 @@ void SCCPTauSolver::markFunctionUnreachable(Function *F) {
 
 /// COMMENT : Visits PHINode as well.
 void SCCPTauSolver::visit(Instruction *I) {
-  LLVM_DEBUG(dbgs() << "[visitI] Visiting LLVM Instrinsic : llvm.tau (" 
+  LLVM_DEBUG(dbgs() << "[taulog] visitI() Visiting LLVM Instrinsic : llvm.tau (" 
     << I->getOpcodeName() << ")\n");
   CallInst* CI = dyn_cast<CallInst>(I);
   if (CI != NULL) {
@@ -1900,8 +1921,9 @@ void SCCPTauSolver::visit(Instruction *I) {
   Visitor->visit(I); 
 }
 
+/// COMMENT : Handle processing of Tau Inst for SSCCP Solver class
 void SCCPTauSolver::visitCall(CallInst &I) { 
-  LLVM_DEBUG(dbgs() << "[visitCall] Visiting LLVM Instrinsic : llvm.tau (" 
+  LLVM_DEBUG(dbgs() << "[taulog] visitCall() Visiting LLVM Instrinsic : llvm.tau (" 
     << I.getOpcodeName() << ")\n");
   CallInst* CI = dyn_cast<CallInst>(&I);
   if (CI != NULL) {

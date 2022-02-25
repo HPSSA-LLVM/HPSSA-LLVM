@@ -2,6 +2,7 @@
 \usetheme{Frankfurt}
 \usepackage{tikz}
 \usepackage{minted}
+\usepackage{pdfpages}
 \usefonttheme{professionalfonts}
 \usecolortheme{sidebartab}
 \usepackage{xcolor}
@@ -46,36 +47,77 @@
 \footnotesize
 \section{HPSSA : Why another SSA Form?}
 
-\begin{frame}[fragile]
-	\frametitle{What we modified in LLVM Source?}
-	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
-	\end{itemize}
-	\begin{minted}{python}
-    + //===---------- intrinsic for tau ---------------=====//
-    + def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
-    +                   [llvm_vararg_ty],
-    +                   []>;
-	\end{minted}
+\begin{frame}
+	\frametitle{Doing Speculative Analysis is Hard !}
+	Importance of speculative analysis. It is hard to do. Whole research papers dedicated to 
+	single speculative analysis. But with HPSSA form it's a breeze.
 \end{frame}
-\footnotesize
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={3,4,5}]{summary.pdf}
+}
+\begin{frame}
+	\frametitle{Case Study : Speculative SCCP Pass}
+	\begin{itemize}
+		\item We implement a speculative version of the SCCP to demonstrate the usefulness of the HPSSA Form.
+		\item Modified the existing SCCP Pass to add in a function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions. \color{blue} (8 lines extra of code only!) \color{black}
+		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. \color{blue} (5 lines extra of code only!) \color{black} 
+		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()} function. \color{blue} (5 lines extra of code only!) \color{black}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]
-\frametitle{What we modified in LLVM Source?}
-\begin{itemize}
-	\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
-\end{itemize}
-\begin{minted}[fontsize=\footnotesize, tabsize=2, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
-+ //===---------- Changes for tau.intrinsic ---------------=====//
-void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
-  Instruction *Op = cast<Instruction>(I.getOperand(i));
-  +	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-  +	Function *CallFunction = CI->getCalledFunction();
-  +	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
-  +		Function::lookupIntrinsicID("llvm.tau")) {
-  +			return;
-  +		}
-  +	}
-	\end{minted}
+	\frametitle{SSCCP with an Example}
+	We run the speculative SCCP on the example below. \color{red} Mark the different types of variables. Make the CFG look pretty and add hot path. \color{black}.
+	\begin{columns}
+		\begin{column}{0.2\textwidth}
+			\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
+int main() {
+	int a = 1000, z, c, e = 0;
+	switch(c) {   
+		case 2 : goto label_3; break;
+		case 4 : goto label_4; break;
+		default : goto label_7; 
+	}
+	label_3:
+		e = 90;
+		goto label_7;
+	label_4:
+		e = 100 - 10;
+		goto label_7;
+	label_7:
+		// e in rhs is 90.
+		e = e + 70;  
+		goto end;
+	end:
+		// e is greater than 100 always
+		if (e >= 100) {  
+			a = a + 777;
+		} else {
+			a = a - 888;
+		} 
+	return 0; 
+}
+			\end{minted}
+		\end{column}
+		\begin{column}{0.5\textwidth}  
+			\begin{center}
+				\includegraphics[width=4.5cm,height=6.5cm]{afterHPSSA.dot.png}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{HPSSA Transformation}
+	\frametitle{TODO : SCCP pass running on Example.}
+	\centering
+	\includegraphics[width=5.5cm,height=7.5cm]{baseline.dot.png}
+\end{frame}
+
+\begin{frame}{HPSSA Transformation}
+	\frametitle{TODO : Speculative SCCP pass running on Example.}
+	\centering
+	\includegraphics[width=5.5cm,height=7.5cm]{afterHPSSA.dot.png}
 \end{frame}
 
 \section{What is HPSSA form?}
@@ -131,51 +173,7 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{\texttt{HPSSAPass} : Usage [It is easy!]}
-	\begin{itemize}
-		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
-		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
-	\end{itemize}
-	\begin{minted}[fontsize=\tiny, tabsize=2, highlightlines={1,14,15,18}, linenos]{cpp}
-	#include <HPSSA.h> // import the header.
-	
-	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
-		public: PreservedAnalyses run(Function &F, 
-			FunctionAnalysisManager &AM);
-	};
-	...
-	
-	PreservedAnalyses MyExamplePass::run(Function &F, 
-		FunctionAnalysisManager &AM) {
-		if (F.getName() != "main")
-			return PreservedAnalyses::all();
-	
-		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
-		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
-	
-		std::vector<Instruction *> TauInsts 
-			= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
-			
-		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
-		...
-	}
-	
-	/// [output] Total Tau Instructions : 7 
-	\end{minted}
-\end{frame}
-
 \section{How is HPSSA Used?}
-
-\begin{frame}
-	\frametitle{New Additions to SCCP Pass}
-	\begin{itemize}
-		\item We implement a speculative version of the SCCP to demonstrate the usefulness of the HPSSA Form.
-		\item Modified the existing SCCP Pass to add in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::visitTauNode()} function similar to \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::visitPHINode()}, which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions added for $\tau$-functions.
-		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. 
-		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()} function.
-	\end{itemize}
-\end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Further Modifications}
@@ -197,46 +195,6 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 \end{minted}
 \end{frame}
 \footnotesize
-\begin{frame}[fragile]
-	\frametitle{SSCCP with an Example}
-We run the speculative SCCP on the example below.
-\begin{columns}
-	\begin{column}{0.2\textwidth}
-\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-int main() {
-	int a = 1000, z, c, e = 0;
-	switch(c) {   
-		case 2 : goto label_3; break;
-		case 4 : goto label_4; break;
-		default : goto label_7; 
-	}
-	label_3:
-		e = 90;
-		goto label_7;
-	label_4:
-		e = 100 - 10;
-		goto label_7;
-	label_7:
-	// e in rhs is 90.
-		e = e + 70;  
-		goto end;
-	end:
-	// e is greater than 100 always
-		if (e >= 100) {  
-			a = a + 777;
-		} else {
-			a = a - 888;
-		} return 0; 
-}
-\end{minted}
-	\end{column}
-	\begin{column}{0.5\textwidth}  
-		\begin{center}
-			\includegraphics[width=4.5cm,height=6.5cm]{afterHPSSA.dot.png}
-		\end{center}
-	\end{column}
-\end{columns}
-\end{frame}
 
 \begin{frame}
 	\frametitle{SSCCP with an Example}
@@ -249,5 +207,70 @@ int main() {
 	\includegraphics[width=4.6cm,height=6.1cm]{specSCCP_HPSSA.dot.png}
 \end{frame}
 
+\begin{frame}[fragile]
+	\frametitle{\texttt{HPSSAPass} : Usage [It is easy!]}
+	\begin{itemize}
+		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
+		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, tabsize=2, highlightlines={1,14,15,18}, linenos]{cpp}
+	#include <HPSSA.h> // import the header.
+	
+	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
+		public: PreservedAnalyses run(Function &F, 
+		FunctionAnalysisManager &AM);
+	};
+	...
+	
+	PreservedAnalyses MyExamplePass::run(Function &F, 
+	FunctionAnalysisManager &AM) {
+		if (F.getName() != "main")
+		return PreservedAnalyses::all();
+		
+		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
+		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
+		
+		std::vector<Instruction *> TauInsts 
+		= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
+		
+		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
+		...
+	}
+	
+	/// [output] Total Tau Instructions : 7 
+	\end{minted}
+\end{frame}
+
 \section{Conclusion}
+
+\footnotesize
+\begin{frame}[fragile]
+\frametitle{What we modified in LLVM Source?}
+\begin{itemize}
+	\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
+\end{itemize}
+\begin{minted}[fontsize=\tiny, tabsize=4, linenos]{python}
+	+ //===---------- intrinsic for tau ---------------=====//
+	+ def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
+	+                   [llvm_vararg_ty],
+	+                   []>;
+\end{minted}
+\begin{itemize}
+	\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
+\end{itemize}
+\begin{minted}[fontsize=\tiny, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
+	+ //===---------- Changes for tau.intrinsic ---------------=====//
+	void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
+		Instruction *Op = cast<Instruction>(I.getOperand(i));
+		+	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
+		+	Function *CallFunction = CI->getCalledFunction();
+		+	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
+		+		Function::lookupIntrinsicID("llvm.tau")) {
+		+			return;
+		+		}
+		+	}
+	...
+	\end{minted}
+\end{frame}
+
 \end{document}

@@ -1,38 +1,26 @@
-\frametitle{SSCCP with an Example}
-We run the speculative SCCP on the example below.
-\begin{columns}
-	\begin{column}{0.2\textwidth}
-\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-int main() {
-	int a = 1000, z, c, e = 0;
-	switch(c) {
-		case 2 : goto label_3; break;
-		case 4 : goto label_4; break;
-		default : goto label_7;
-	}
-	label_3:
-		e = 90;
-		goto label_7;
-	label_4:
-		e = 100 - 10;
-		goto label_7;
-	label_7:
-	// e in rhs is 90.
-		e = e + 70;
-		goto end;
-	end:
-	// e is greater than 100 always
-		if (e >= 100) {
-			a = a + 777;
-		} else {
-			a = a - 888;
-		} return 0;
-}
+\frametitle{What we modified in LLVM Source?}
+\begin{itemize}
+	\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation.
+\end{itemize}
+\begin{minted}[fontsize=\tiny, tabsize=4, linenos]{python}
+	+ //===---------- intrinsic for tau ---------------=====//
+	+ def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
+	+                   [llvm_vararg_ty],
+	+                   []>;
 \end{minted}
-	\end{column}
-	\begin{column}{0.5\textwidth}
-		\begin{center}
-			\includegraphics[width=4.5cm,height=6.5cm]{afterHPSSA.dot.png}
-		\end{center}
-	\end{column}
-\end{columns}
+\begin{itemize}
+	\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.
+\end{itemize}
+\begin{minted}[fontsize=\tiny, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
+	+ //===---------- Changes for tau.intrinsic ---------------=====//
+	void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
+		Instruction *Op = cast<Instruction>(I.getOperand(i));
+		+	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
+		+	Function *CallFunction = CI->getCalledFunction();
+		+	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
+		+		Function::lookupIntrinsicID("llvm.tau")) {
+		+			return;
+		+		}
+		+	}
+	...
+	\end{minted}

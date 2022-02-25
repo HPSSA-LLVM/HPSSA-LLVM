@@ -1,40 +1,28 @@
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau2 with a.0.
+Replacing variable tau with a.0.
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau1 with b.0.
+Replacing variable tau2 with a.1.
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau with e.0.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau8 with a.1.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau6 with b.1.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau4 with e.1.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau7 with a.1.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau5 with b.1.
-Tau to be removed : llvm.tau.i32	
-Replacing variable tau3 with e.1.
+Replacing variable tau1 with a.0.
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0037 seconds (0.0048 wall clock)
+  Total Execution Time: 0.0025 seconds (0.0025 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0011 ( 29.2%)   0.0000 (100.0%)   0.0011 ( 29.2%)   0.0014 ( 29.8%)  VerifierPass
-   0.0010 ( 28.4%)   0.0000 (  0.0%)   0.0010 ( 28.4%)   0.0014 ( 29.1%)  VerifierAnalysis
-   0.0007 ( 18.0%)   0.0000 (  0.0%)   0.0007 ( 18.0%)   0.0011 ( 22.4%)  TDSTRPass
-   0.0008 ( 22.7%)   0.0000 (  0.0%)   0.0008 ( 22.7%)   0.0008 ( 17.3%)  PrintModulePass
-   0.0001 (  1.7%)   0.0000 (  0.0%)   0.0001 (  1.7%)   0.0001 (  1.3%)  PreservedCFGCheckerAnalysis
-   0.0036 (100.0%)   0.0000 (100.0%)   0.0037 (100.0%)   0.0048 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0008 ( 33.7%)   0.0008 ( 33.7%)   0.0008 ( 33.7%)  VerifierPass
+   0.0008 ( 32.3%)   0.0008 ( 32.3%)   0.0008 ( 32.3%)  VerifierAnalysis
+   0.0005 ( 21.8%)   0.0005 ( 21.8%)   0.0005 ( 21.8%)  PrintModulePass
+   0.0002 (  9.8%)   0.0002 (  9.8%)   0.0002 (  9.8%)  TDSTRPass
+   0.0001 (  2.4%)   0.0001 (  2.4%)   0.0001 (  2.4%)  PreservedCFGCheckerAnalysis
+   0.0025 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0042 seconds (0.0045 wall clock)
+  Total Execution Time: 0.0028 seconds (0.0030 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0041 (100.0%)   0.0001 (100.0%)   0.0042 (100.0%)   0.0045 (100.0%)  Parse IR
-   0.0041 (100.0%)   0.0001 (100.0%)   0.0042 (100.0%)   0.0045 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0028 (100.0%)   0.0028 (100.0%)   0.0030 (100.0%)  Parse IR
+   0.0028 (100.0%)   0.0028 (100.0%)   0.0030 (100.0%)  Total
 

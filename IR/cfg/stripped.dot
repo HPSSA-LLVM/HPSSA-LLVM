@@ -1,0 +1,28 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x562c58474800 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{entry|{<s0>def|<s1>2|<s2>4}}"];
+	Node0x562c58474800:s0 -> Node0x562c58474d60;
+	Node0x562c58474800:s1 -> Node0x562c58474de0;
+	Node0x562c58474800:s2 -> Node0x562c58474e80;
+	Node0x562c58474de0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{sw.bb}"];
+	Node0x562c58474de0 -> Node0x562c58475010;
+	Node0x562c58474e80 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{sw.bb1}"];
+	Node0x562c58474e80 -> Node0x562c584750f0;
+	Node0x562c58474d60 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{sw.default}"];
+	Node0x562c58474d60 -> Node0x562c584751d0;
+	Node0x562c58475010 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{label_3}"];
+	Node0x562c58475010 -> Node0x562c584752b0;
+	Node0x562c584750f0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f7bca170",label="{label_4}"];
+	Node0x562c584750f0 -> Node0x562c584752b0;
+	Node0x562c584751d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f3c7b170",label="{label_5}"];
+	Node0x562c584751d0 -> Node0x562c584752b0;
+	Node0x562c584752b0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{end|{<s0>T|<s1>F}}"];
+	Node0x562c584752b0:s0 -> Node0x562c58475b60;
+	Node0x562c584752b0:s1 -> Node0x562c58475bd0;
+	Node0x562c58475b60 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f2907270",label="{if.then}"];
+	Node0x562c58475b60 -> Node0x562c58475dd0;
+	Node0x562c58475bd0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f2907270",label="{if.else}"];
+	Node0x562c58475bd0 -> Node0x562c58475dd0;
+	Node0x562c58475dd0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{if.end}"];
+}

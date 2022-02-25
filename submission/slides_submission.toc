@@ -1,4 +1,4 @@
 \beamer@sectionintoc {1}{HPSSA : Why another SSA Form?}{2}{0}{1}
-\beamer@sectionintoc {2}{What is HPSSA form?}{5}{0}{2}
-\beamer@sectionintoc {3}{How is HPSSA Used?}{11}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{16}{0}{4}
+\beamer@sectionintoc {2}{What is HPSSA form?}{11}{0}{2}
+\beamer@sectionintoc {3}{How is HPSSA Used?}{16}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{20}{0}{4}

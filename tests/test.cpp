@@ -16,22 +16,21 @@ int main() {
   
   label_3:
     e = 45 * 2;
-    a = e + 21;
+    a = 111;
     goto end;
   
   label_4:
     e = 10 * 9;
-    a = z + 37;
+    a = 111;
     goto end;
 
   label_5:
     e = 5 * 9 + 45;
-    a = z - 87;
+    a = e - 87;
     goto end;
 
   end:
-    z = e + 30;
-    int b = a + z + n; 
+    int b = a + e + n; 
     if (b >= 100) {
       a = e + 777;
     } else {

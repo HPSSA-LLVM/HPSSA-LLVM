@@ -18,7 +18,7 @@ build: src/SCCPSolverTau.cpp src/SCCPTau.cpp include/SpecValueLattice.h
 	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
 	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
 
-test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
+test: build BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	# use the same test case which was profiled 
 	cp BBProfiler/tests/test.cpp tests/test.cpp
 	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc

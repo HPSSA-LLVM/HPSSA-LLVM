@@ -32,62 +32,54 @@ Marking Block Executable: label_3
 
 Popped off BBWL: 
 label_3:                                          ; preds = %sw.bb
-  %add = add nsw i32 90, 21
   br label %end
 
-Merged constantrange<111, 112> into   %add = add nsw i32 90, 21 : constantrange<111, 112>
 Marking Block Executable: end
 
 Popped off BBWL: 
 end:                                              ; preds = %label_5, %label_4, %label_3
-  %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
-  %add3 = add nsw i32 90, 30
-  %add4 = add nsw i32 %a.0, %add3
-  %add5 = add nsw i32 %add4, 100
-  %cmp = icmp sge i32 %add5, 100
+  %a.0 = phi i32 [ %sub, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ]
+  %add = add nsw i32 %a.0, 90
+  %add2 = add nsw i32 %add, 100
+  %cmp = icmp sge i32 %add2, 100
   br i1 %cmp, label %if.then, label %if.else
 
-Merged constantrange<111, 112> into   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ] : constantrange<111, 112>
-Merged constantrange<120, 121> into   %add3 = add nsw i32 90, 30 : constantrange<120, 121>
-Merged constantrange<231, 232> into   %add4 = add nsw i32 %a.0, %add3 : constantrange<231, 232>
-Merged constantrange<331, 332> into   %add5 = add nsw i32 %add4, 100 : constantrange<331, 332>
-Merged constantrange<-1, 0> into   %cmp = icmp sge i32 %add5, 100 : constantrange<-1, 0>
+Merged constantrange<111, 112> into   %a.0 = phi i32 [ %sub, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ] : constantrange<111, 112>
+Merged constantrange<201, 202> into   %add = add nsw i32 %a.0, 90 : constantrange<201, 202>
+Merged constantrange<301, 302> into   %add2 = add nsw i32 %add, 100 : constantrange<301, 302>
+Merged constantrange<-1, 0> into   %cmp = icmp sge i32 %add2, 100 : constantrange<-1, 0>
 Marking Block Executable: if.then
 
 Popped off BBWL: 
 if.then:                                          ; preds = %end
-  %add6 = add nsw i32 90, 777
+  %add3 = add nsw i32 90, 777
   br label %if.end
 
-Merged constantrange<867, 868> into   %add6 = add nsw i32 90, 777 : constantrange<867, 868>
+Merged constantrange<867, 868> into   %add3 = add nsw i32 90, 777 : constantrange<867, 868>
 Marking Block Executable: if.end
 
 Popped off BBWL: 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ]
-  %add7 = add nsw i32 %a.1, 1
+  %a.1 = phi i32 [ %add3, %if.then ], [ 3223, %if.else ]
+  %add4 = add nsw i32 %a.1, 1
   ret i32 0
 
-Merged constantrange<867, 868> into   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ] : constantrange<867, 868>
-Merged constantrange<868, 869> into   %add7 = add nsw i32 %a.1, 1 : constantrange<868, 869>
+Merged constantrange<867, 868> into   %a.1 = phi i32 [ %add3, %if.then ], [ 3223, %if.else ] : constantrange<867, 868>
+Merged constantrange<868, 869> into   %add4 = add nsw i32 %a.1, 1 : constantrange<868, 869>
 
-Popped off I-WL:   %add7 = add nsw i32 %a.1, 1
+Popped off I-WL:   %add4 = add nsw i32 %a.1, 1
 
-Popped off I-WL:   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ]
+Popped off I-WL:   %a.1 = phi i32 [ %add3, %if.then ], [ 3223, %if.else ]
 
-Popped off I-WL:   %add6 = add nsw i32 90, 777
+Popped off I-WL:   %add3 = add nsw i32 90, 777
 
-Popped off I-WL:   %cmp = icmp sge i32 %add5, 100
+Popped off I-WL:   %cmp = icmp sge i32 %add2, 100
 
-Popped off I-WL:   %add5 = add nsw i32 %add4, 100
+Popped off I-WL:   %add2 = add nsw i32 %add, 100
 
-Popped off I-WL:   %add4 = add nsw i32 %a.0, %add3
+Popped off I-WL:   %add = add nsw i32 %a.0, 90
 
-Popped off I-WL:   %add3 = add nsw i32 90, 30
-
-Popped off I-WL:   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
-
-Popped off I-WL:   %add = add nsw i32 90, 21
+Popped off I-WL:   %a.0 = phi i32 [ %sub, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ]
 RESOLVING UNDEFs
   BasicBlock Dead:
 sw.bb1:                                           ; preds = %entry
@@ -95,26 +87,23 @@ sw.bb1:                                           ; preds = %entry
   BasicBlock Dead:
 sw.default:                                       ; preds = %entry
   br label %label_5
-  Constant: i32 111 =   %add = add nsw i32 90, 21
   BasicBlock Dead:
 label_4:                                          ; preds = %sw.bb1
-  %add2 = add nsw i32 undef, 37
   br label %end
   BasicBlock Dead:
 label_5:                                          ; preds = %sw.default
-  %sub = sub nsw i32 undef, 87
+  %sub = sub nsw i32 90, 87
   br label %end
-  Constant: i32 111 =   %a.0 = phi i32 [ undef, %label_5 ], [ undef, %label_4 ], [ 111, %label_3 ]
-  Constant: i32 120 =   %add3 = add nsw i32 90, 30
-  Constant: i32 231 =   %add4 = add nsw i32 111, 120
-  Constant: i32 331 =   %add5 = add nsw i32 231, 100
-  Constant: i1 true =   %cmp = icmp sge i32 331, 100
-  Constant: i32 867 =   %add6 = add nsw i32 90, 777
+  Constant: i32 111 =   %a.0 = phi i32 [ undef, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ]
+  Constant: i32 201 =   %add = add nsw i32 111, 90
+  Constant: i32 301 =   %add2 = add nsw i32 201, 100
+  Constant: i1 true =   %cmp = icmp sge i32 301, 100
+  Constant: i32 867 =   %add3 = add nsw i32 90, 777
   BasicBlock Dead:
 if.else:                                          ; preds = %end
   br label %if.end
   Constant: i32 867 =   %a.1 = phi i32 [ 867, %if.then ], [ 3223, %if.else ]
-  Constant: i32 868 =   %add7 = add nsw i32 867, 1
+  Constant: i32 868 =   %add4 = add nsw i32 867, 1
 SCCP on function '_GLOBAL__sub_I_test.cpp'
 Marking Block Executable: entry
 
@@ -127,23 +116,23 @@ RESOLVING UNDEFs
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0075 seconds (0.0075 wall clock)
+  Total Execution Time: 0.0068 seconds (0.0068 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0056 ( 75.5%)   0.0000 (  0.0%)   0.0056 ( 75.0%)   0.0056 ( 75.1%)  SCCPPass
-   0.0007 (  9.5%)   0.0000 (  0.0%)   0.0007 (  9.4%)   0.0007 (  9.4%)  VerifierPass
-   0.0007 (  8.9%)   0.0000 (  0.0%)   0.0007 (  8.9%)   0.0007 (  8.8%)  VerifierAnalysis
-   0.0004 (  5.0%)   0.0001 (100.0%)   0.0004 (  5.6%)   0.0004 (  5.6%)  PrintModulePass
-   0.0001 (  0.8%)   0.0000 (  0.0%)   0.0001 (  0.8%)   0.0001 (  0.8%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.3%)   0.0000 (  0.0%)   0.0000 (  0.3%)   0.0000 (  0.3%)  TargetLibraryAnalysis
-   0.0074 (100.0%)   0.0001 (100.0%)   0.0075 (100.0%)   0.0075 (100.0%)  Total
+   0.0017 ( 52.4%)   0.0030 ( 87.4%)   0.0048 ( 70.3%)   0.0048 ( 70.3%)  SCCPPass
+   0.0006 ( 18.9%)   0.0001 (  4.0%)   0.0008 ( 11.3%)   0.0008 ( 11.3%)  VerifierPass
+   0.0006 ( 18.0%)   0.0001 (  3.7%)   0.0007 ( 10.7%)   0.0007 ( 10.6%)  VerifierAnalysis
+   0.0003 (  8.2%)   0.0002 (  4.7%)   0.0004 (  6.5%)   0.0004 (  6.5%)  PrintModulePass
+   0.0001 (  1.8%)   0.0000 (  0.1%)   0.0001 (  0.9%)   0.0001 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.7%)   0.0000 (  0.1%)   0.0000 (  0.4%)   0.0000 (  0.4%)  TargetLibraryAnalysis
+   0.0033 (100.0%)   0.0035 (100.0%)   0.0068 (100.0%)   0.0068 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0025 seconds (0.0025 wall clock)
+  Total Execution Time: 0.0024 seconds (0.0024 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0012 (100.0%)   0.0012 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Parse IR
-   0.0012 (100.0%)   0.0012 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Total
+   0.0016 (100.0%)   0.0008 (100.0%)   0.0024 (100.0%)   0.0024 (100.0%)  Parse IR
+   0.0016 (100.0%)   0.0008 (100.0%)   0.0024 (100.0%)   0.0024 (100.0%)  Total
 

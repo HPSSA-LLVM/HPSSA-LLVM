@@ -2,36 +2,21 @@
 < ; ModuleID = 'IR/BC/test.bc'
 ---
 > ; ModuleID = 'IR/LL/test_mem2reg.ll'
-61c61,64
-<   %add4 = add nsw i32 %a.0, %e.0
+56a57
+>   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 111)
+58c59
+<   %add2 = add nsw i32 %a.0, %add
 ---
->   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 10)
->   %tau1 = call i32 (...) @llvm.tau.i32(i32 %b.0, i32 90)
->   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %add3)
->   %add4 = add nsw i32 %tau2, %tau
-71,72c74,75
-<   %b.1 = phi i32 [ 77, %label_6 ], [ %b.0, %label_7 ]
-<   %a.1 = phi i32 [ 23, %label_6 ], [ %a.0, %label_7 ]
+>   %add2 = add nsw i32 %tau, %add
+72c73,75
+<   %add5 = add nsw i32 %a.1, 1
 ---
->   %b.1 = phi i32 [ 77, %label_6 ], [ %tau1, %label_7 ]
->   %a.1 = phi i32 [ 23, %label_6 ], [ %tau2, %label_7 ]
-78c81,84
-<   %add7 = add nsw i32 %a.1, 190
----
->   %tau8 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 23)
->   %tau6 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 77)
->   %tau4 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 %sub)
->   %add7 = add nsw i32 %tau8, 190
-82c88,91
-<   %sub8 = sub nsw i32 %a.1, 100
----
->   %tau7 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %a.0)
->   %tau5 = call i32 (...) @llvm.tau.i32(i32 %b.1, i32 %b.0)
->   %tau3 = call i32 (...) @llvm.tau.i32(i32 %e.1, i32 90)
->   %sub8 = sub nsw i32 %tau7, 100
-97a107,109
+>   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223)
+>   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 111)
+>   %add5 = add nsw i32 %tau2, 1
+82a86,88
 > ; Function Attrs: nofree nosync nounwind willreturn
 > declare i32 @llvm.tau.i32(...) #5
 > 
-102a115
+87a94
 > attributes #5 = { nofree nosync nounwind willreturn }
