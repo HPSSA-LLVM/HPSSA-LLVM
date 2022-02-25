@@ -40,31 +40,30 @@ sw.bb1:                                           ; preds = %entry
   br label %label_4
 
 sw.default:                                       ; preds = %entry
-  br label %label_7
+  br label %label_5
 
 label_3:                                          ; preds = %sw.bb
-  br label %label_7
-
-label_4:                                          ; preds = %sw.bb1
-  br label %label_7
-
-label_7:                                          ; preds = %label_4, %label_3, %sw.default
-  %tau = call i32 (...) @llvm.tau.i32(i32 90, i32 90)
-  %add = add nsw i32 %tau, 70
   br label %end
 
-end:                                              ; preds = %label_7
-  %cmp = icmp sge i32 %add, 100
-  br i1 %cmp, label %if.then, label %if.else
+label_4:                                          ; preds = %sw.bb1
+  br label %end
+
+label_5:                                          ; preds = %sw.default
+  br label %end
+
+end:                                              ; preds = %label_5, %label_4, %label_3
+  %tau = call i32 (...) @llvm.tau.i32(i32 110, i32 undef)
+  br i1 false, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
   br label %if.end
 
 if.else:                                          ; preds = %end
+  %sub4 = sub nsw i32 %tau, 888
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 90)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 undef)
   ret i32 0
 }
 

@@ -49,37 +49,44 @@ sw.bb1:                                           ; preds = %entry
   br label %label_4
 
 sw.default:                                       ; preds = %entry
-  br label %label_7
+  br label %label_5
 
 label_3:                                          ; preds = %sw.bb
   store i32 90, i32* %e, align 4
-  br label %label_7
+  %1 = load i32, i32* %e, align 4
+  %add = add nsw i32 %1, 20
+  store i32 %add, i32* %a, align 4
+  br label %end
 
 label_4:                                          ; preds = %sw.bb1
   store i32 90, i32* %e, align 4
-  br label %label_7
-
-label_7:                                          ; preds = %label_4, %label_3, %sw.default
-  %1 = load i32, i32* %e, align 4
-  %add = add nsw i32 %1, 70
-  store i32 %add, i32* %e, align 4
+  %2 = load i32, i32* %z, align 4
+  %add2 = add nsw i32 %2, 100
+  store i32 %add2, i32* %a, align 4
   br label %end
 
-end:                                              ; preds = %label_7
-  %2 = load i32, i32* %e, align 4
-  %cmp = icmp sge i32 %2, 100
+label_5:                                          ; preds = %sw.default
+  store i32 90, i32* %e, align 4
+  %3 = load i32, i32* %z, align 4
+  %sub = sub nsw i32 %3, 87
+  store i32 %sub, i32* %a, align 4
+  br label %end
+
+end:                                              ; preds = %label_5, %label_4, %label_3
+  %4 = load i32, i32* %e, align 4
+  %cmp = icmp sge i32 %4, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %3 = load i32, i32* %a, align 4
-  %add2 = add nsw i32 %3, 777
-  store i32 %add2, i32* %a, align 4
+  %5 = load i32, i32* %a, align 4
+  %add3 = add nsw i32 %5, 777
+  store i32 %add3, i32* %a, align 4
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %4 = load i32, i32* %a, align 4
-  %sub = sub nsw i32 %4, 888
-  store i32 %sub, i32* %a, align 4
+  %6 = load i32, i32* %a, align 4
+  %sub4 = sub nsw i32 %6, 888
+  store i32 %sub4, i32* %a, align 4
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then

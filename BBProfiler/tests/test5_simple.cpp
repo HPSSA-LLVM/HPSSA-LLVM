@@ -11,19 +11,22 @@ int main() {
   switch(c) {   
     case 2 : goto label_3; break;
     case 4 : goto label_4; break;
-    default : goto label_7;
+    default : goto label_5;
   }
   
   label_3:
-    e = 90;
-    goto label_7;
+    e = 45 * 2;
+    a = e + 20;
+    goto end;
   
   label_4:
-    e = 100 - 10;
-    goto label_7;
+    e = 10 * 9;
+    a = z + 100;
+    goto end;
 
-  label_7:
-    e = e + 70;
+  label_5:
+    e = 100 - 10;
+    a = z - 87;
     goto end;
 
   end:

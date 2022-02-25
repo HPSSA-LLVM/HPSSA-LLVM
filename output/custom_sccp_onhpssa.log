@@ -32,80 +32,72 @@ Marking Block Executable: label_3
 
 Popped off BBWL: 
 label_3:                                          ; preds = %sw.bb
-  br label %label_7
-
-Marking Block Executable: label_7
-
-Popped off BBWL: 
-label_7:                                          ; preds = %label_4, %label_3, %sw.default
-  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)
-  %add = add nsw i32 %tau, 70
+  %add = add nsw i32 90, 20
   br label %end
 
-Merged constantrange<90, 91> into   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ] : constantrange<90, 91>
-Merged overdefined into   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90) : overdefined
-Merged overdefined into   %add = add nsw i32 %tau, 70 : overdefined
+Merged constantrange<110, 111> into   %add = add nsw i32 90, 20 : constantrange<110, 111>
 Marking Block Executable: end
 
 Popped off BBWL: 
-end:                                              ; preds = %label_7
-  %cmp = icmp sge i32 %add, 100
+end:                                              ; preds = %label_5, %label_4, %label_3
+  %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
+  %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2)
+  %cmp = icmp sge i32 90, 100
   br i1 %cmp, label %if.then, label %if.else
 
-markOverdefined:   %cmp = icmp sge i32 %add, 100
-Marking Block Executable: if.then
+Merged constantrange<110, 111> into   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ] : constantrange<110, 111>
+Merged overdefined into   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2) : overdefined
+Merged constantrange<0, -1> into   %cmp = icmp sge i32 90, 100 : constantrange<0, -1>
 Marking Block Executable: if.else
 
 Popped off BBWL: 
 if.else:                                          ; preds = %end
-  %sub = sub nsw i32 1000, 888
+  %sub4 = sub nsw i32 %tau, 888
   br label %if.end
 
-Merged constantrange<112, 113> into   %sub = sub nsw i32 1000, 888 : constantrange<112, 113>
+Merged overdefined into   %sub4 = sub nsw i32 %tau, 888 : overdefined
 Marking Block Executable: if.end
 
 Popped off BBWL: 
 if.end:                                           ; preds = %if.else, %if.then
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 90)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2)
   ret i32 0
 
-Merged overdefined into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 90) : overdefined
+Merged overdefined into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2) : overdefined
 
-Popped off BBWL: 
-if.then:                                          ; preds = %end
-  %add2 = add nsw i32 1000, 777
-  br label %if.end
+Popped off OI-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2)
 
-Merged constantrange<1777, 1778> into   %add2 = add nsw i32 1000, 777 : constantrange<1777, 1778>
-Marking Edge Executable: if.then -> if.end
+Popped off OI-WL:   %sub4 = sub nsw i32 %tau, 888
 
-Popped off OI-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 90)
+Popped off OI-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2)
 
-Popped off OI-WL:   %cmp = icmp sge i32 %add, 100
+Popped off I-WL:   %cmp = icmp sge i32 90, 100
 
-Popped off OI-WL:   %add = add nsw i32 %tau, 70
+Popped off I-WL:   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
 
-Popped off OI-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 90)
-
-Popped off I-WL:   %add2 = add nsw i32 1000, 777
-
-Popped off I-WL:   %sub = sub nsw i32 1000, 888
-
-Popped off I-WL:   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
+Popped off I-WL:   %add = add nsw i32 90, 20
 RESOLVING UNDEFs
   BasicBlock Dead:
 sw.bb1:                                           ; preds = %entry
   br label %label_4
   BasicBlock Dead:
 sw.default:                                       ; preds = %entry
-  br label %label_7
+  br label %label_5
+  Constant: i32 110 =   %add = add nsw i32 90, 20
   BasicBlock Dead:
 label_4:                                          ; preds = %sw.bb1
-  br label %label_7
-  Constant: i32 90 =   %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
-  Constant: i32 1777 =   %add2 = add nsw i32 1000, 777
-  Constant: i32 112 =   %sub = sub nsw i32 1000, 888
+  %add2 = add nsw i32 undef, 100
+  br label %end
+  BasicBlock Dead:
+label_5:                                          ; preds = %sw.default
+  %sub = sub nsw i32 undef, 87
+  br label %end
+  Constant: i32 110 =   %a.0 = phi i32 [ undef, %label_5 ], [ undef, %label_4 ], [ 110, %label_3 ]
+  Constant: i1 false =   %cmp = icmp sge i32 90, 100
+  BasicBlock Dead:
+if.then:                                          ; preds = %end
+  %add3 = add nsw i32 %tau, 777
+  br label %if.end
 SCCP on function '_GLOBAL__sub_I_test.cpp'
 Marking Block Executable: entry
 
@@ -118,23 +110,23 @@ RESOLVING UNDEFs
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0069 seconds (0.0082 wall clock)
+  Total Execution Time: 0.0074 seconds (0.0085 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0013 ( 63.7%)   0.0036 ( 74.3%)   0.0049 ( 71.1%)   0.0062 ( 75.7%)  SCCPPass
-   0.0004 ( 17.5%)   0.0004 (  7.7%)   0.0007 ( 10.6%)   0.0007 (  8.9%)  VerifierPass
-   0.0003 ( 16.5%)   0.0004 (  7.3%)   0.0007 ( 10.1%)   0.0007 (  8.5%)  VerifierAnalysis
-   0.0000 (  0.0%)   0.0005 (  9.8%)   0.0005 (  6.8%)   0.0005 (  5.8%)  PrintModulePass
-   0.0000 (  1.8%)   0.0000 (  0.6%)   0.0001 (  1.0%)   0.0001 (  0.8%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.6%)   0.0000 (  0.3%)   0.0000 (  0.4%)   0.0000 (  0.3%)  TargetLibraryAnalysis
-   0.0021 (100.0%)   0.0048 (100.0%)   0.0069 (100.0%)   0.0082 (100.0%)  Total
+   0.0006 ( 19.1%)   0.0039 ( 94.3%)   0.0045 ( 61.5%)   0.0057 ( 66.6%)  SCCPPass
+   0.0011 ( 32.9%)   0.0001 (  2.0%)   0.0011 ( 15.4%)   0.0011 ( 13.4%)  VerifierPass
+   0.0010 ( 31.5%)   0.0001 (  1.8%)   0.0011 ( 14.7%)   0.0011 ( 12.8%)  VerifierAnalysis
+   0.0005 ( 15.0%)   0.0000 (  0.0%)   0.0005 (  6.6%)   0.0005 (  5.7%)  PrintModulePass
+   0.0000 (  0.6%)   0.0001 (  1.5%)   0.0001 (  1.1%)   0.0001 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.9%)   0.0000 (  0.5%)   0.0000 (  0.7%)   0.0000 (  0.6%)  TargetLibraryAnalysis
+   0.0032 (100.0%)   0.0042 (100.0%)   0.0074 (100.0%)   0.0085 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0026 seconds (0.0026 wall clock)
+  Total Execution Time: 0.0027 seconds (0.0027 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0026 (100.0%)   0.0026 (100.0%)   0.0026 (100.0%)  Parse IR
-   0.0026 (100.0%)   0.0026 (100.0%)   0.0026 (100.0%)  Total
+   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Parse IR
+   0.0027 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Total
 

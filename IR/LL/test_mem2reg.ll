@@ -40,29 +40,31 @@ sw.bb1:                                           ; preds = %entry
   br label %label_4
 
 sw.default:                                       ; preds = %entry
-  br label %label_7
+  br label %label_5
 
 label_3:                                          ; preds = %sw.bb
-  br label %label_7
-
-label_4:                                          ; preds = %sw.bb1
-  br label %label_7
-
-label_7:                                          ; preds = %label_4, %label_3, %sw.default
-  %e.0 = phi i32 [ 0, %sw.default ], [ 90, %label_4 ], [ 90, %label_3 ]
-  %add = add nsw i32 %e.0, 70
+  %add = add nsw i32 90, 20
   br label %end
 
-end:                                              ; preds = %label_7
-  %cmp = icmp sge i32 %add, 100
+label_4:                                          ; preds = %sw.bb1
+  %add2 = add nsw i32 undef, 100
+  br label %end
+
+label_5:                                          ; preds = %sw.default
+  %sub = sub nsw i32 undef, 87
+  br label %end
+
+end:                                              ; preds = %label_5, %label_4, %label_3
+  %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
+  %cmp = icmp sge i32 90, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %add2 = add nsw i32 1000, 777
+  %add3 = add nsw i32 %a.0, 777
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %sub = sub nsw i32 1000, 888
+  %sub4 = sub nsw i32 %a.0, 888
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then

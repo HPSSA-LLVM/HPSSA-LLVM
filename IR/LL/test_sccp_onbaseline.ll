@@ -40,19 +40,19 @@ sw.bb1:                                           ; preds = %entry
   br label %label_4
 
 sw.default:                                       ; preds = %entry
-  br label %label_7
+  br label %label_5
 
 label_3:                                          ; preds = %sw.bb
-  br label %label_7
-
-label_4:                                          ; preds = %sw.bb1
-  br label %label_7
-
-label_7:                                          ; preds = %label_4, %label_3, %sw.default
   br label %end
 
-end:                                              ; preds = %label_7
-  br i1 true, label %if.then, label %if.else
+label_4:                                          ; preds = %sw.bb1
+  br label %end
+
+label_5:                                          ; preds = %sw.default
+  br label %end
+
+end:                                              ; preds = %label_5, %label_4, %label_3
+  br i1 false, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
   br label %if.end
