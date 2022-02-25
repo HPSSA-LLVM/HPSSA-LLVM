@@ -1,3 +1,4 @@
-\beamer@sectionintoc {1}{LLVM Source Modifications}{2}{0}{1}
-\beamer@sectionintoc {2}{LLVM : HPSSA Pass}{4}{0}{2}
-\beamer@sectionintoc {3}{SSCCP Pass in LLVM}{9}{0}{3}
+\beamer@sectionintoc {1}{HPSSA : Why another SSA Form?}{2}{0}{1}
+\beamer@sectionintoc {2}{What is HPSSA form?}{5}{0}{2}
+\beamer@sectionintoc {3}{How is HPSSA Used?}{11}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{16}{0}{4}

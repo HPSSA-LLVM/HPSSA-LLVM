@@ -27,10 +27,24 @@
 \date[01/03/2022] % (optional)
 {Dr. Subhajit Roy, Dr. Awanish Pandey, Mr. Sumit Lahiri}
 
+\AtBeginSection[]
+{
+	\begin{frame}<beamer>
+		\frametitle{Section \thesection}
+		\tableofcontents[
+			currentsection,
+			hideothersubsections,
+			currentsubsection
+		]
+	\end{frame}
+}
+
+
 \begin{document}
 \frame{\titlepage}
+
 \footnotesize
-\section{LLVM Source Modifications}
+\section{HPSSA : Why another SSA Form?}
 
 \begin{frame}[fragile]
 	\frametitle{What we modified in LLVM Source?}
@@ -64,7 +78,7 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 	\end{minted}
 \end{frame}
 
-\section{LLVM : HPSSA Pass}
+\section{What is HPSSA form?}
 \footnotesize
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Overview}
@@ -151,7 +165,7 @@ void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
 	\end{minted}
 \end{frame}
 
-\section{SSCCP Pass in LLVM}
+\section{How is HPSSA Used?}
 
 \begin{frame}
 	\frametitle{New Additions to SCCP Pass}
@@ -235,4 +249,5 @@ int main() {
 	\includegraphics[width=4.6cm,height=6.1cm]{specSCCP_HPSSA.dot.png}
 \end{frame}
 
+\section{Conclusion}
 \end{document}

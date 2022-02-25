@@ -15,6 +15,7 @@ if.end: { 1 }
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : end
 Inserted Tau at : if.end
+Inserted Tau at : if.end
 -- BB: entry
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
@@ -72,6 +73,24 @@ Inserted Tau at : if.end
 ------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.then
 -------- Succ: if.else
@@ -92,6 +111,10 @@ Inserted Tau at : if.end
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
+---------- phi: a.1
+---------- V: add6
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
@@ -102,12 +125,42 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ tau
 ------ mrd: tau
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ phi: a.1
+------ a.1
+------ mrd: a.1
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ phi: a.1
+------ tau2
+------ mrd: tau2
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ tau1
 ------ mrd: tau1
+------ phi: a.1
+------ tau2
+------ mrd: tau2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau1
+------ mrd: tau1
+------ phi: a.1
+------ tau2
+------ mrd: tau2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -115,35 +168,45 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau1
 ---------- mrd changed
+-------- phi: a.1 mrd: tau2
+---------- mrd changed
 -------- Parent: end | Child: if.else
 -- BB: if.else
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ tau
 ------ mrd: tau
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: a.0
------- tau
------- mrd: tau
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
+---------- phi: a.1
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
 ---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
 ---------- mrd changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 -------- Parent: entry | Child: sw.bb
 -- BB: sw.bb
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -155,12 +218,18 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -173,8 +242,12 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
 ---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 -------- Parent: entry | Child: sw.bb1
 -- BB: sw.bb1
@@ -182,6 +255,9 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -193,12 +269,18 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -211,11 +293,17 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
 ---------- mrd not changed
------- Remove definitions if needed
--------- phi: a.0 mrd: a.0
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 Speculative SCCP on function 'main'
 Marking Block Executable: entry
@@ -238,61 +326,101 @@ Marking Block Executable: label_3
 
 Popped off BBWL: 
 label_3:                                          ; preds = %sw.bb
-  %add = add nsw i32 90, 20
+  %add = add nsw i32 90, 21
   br label %end
 
-Merged constantrange<110, 111> into   %add = add nsw i32 90, 20 : constantrange<110, 111>
+Merged constantrange<111, 112> into   %add = add nsw i32 90, 21 : constantrange<111, 112>
 Marking Block Executable: end
 
 Popped off BBWL: 
 end:                                              ; preds = %label_5, %label_4, %label_3
   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2)
-  %cmp = icmp sge i32 90, 100
+  %add3 = add nsw i32 90, 30
+  %add4 = add nsw i32 %tau, %add3
+  %add5 = add nsw i32 %add4, 100
+  %cmp = icmp sge i32 %add5, 100
   br i1 %cmp, label %if.then, label %if.else
 
 [BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
 		Visiting Tau Instruction
-		Speculative Operand : add2, speculative constant
-		Speculative Operand : llvm.tau.i32, speculative constant
 Merged speculative constant into   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2) : speculative constant
 		ValueLattice (TauState) : speculative constant
 Marking Spec PHINode exec.
-Merged constantrange<110, 111> into   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ] : constantrange<110, 111>
-Merged constantrange<0, -1> into   %cmp = icmp sge i32 90, 100 : constantrange<0, -1>
+Merged constantrange<111, 112> into   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ] : constantrange<111, 112>
+Merged constantrange<120, 121> into   %add3 = add nsw i32 90, 30 : constantrange<120, 121>
+Merged overdefined into   %add4 = add nsw i32 %tau, %add3 : overdefined
+Merged overdefined into   %add5 = add nsw i32 %add4, 100 : overdefined
+markOverdefined:   %cmp = icmp sge i32 %add5, 100
+Marking Block Executable: if.then
 Marking Block Executable: if.else
 
 Popped off BBWL: 
 if.else:                                          ; preds = %end
-  %sub4 = sub nsw i32 %tau, 888
   br label %if.end
 
-Merged overdefined into   %sub4 = sub nsw i32 %tau, 888 : overdefined
 Marking Block Executable: if.end
 
 Popped off BBWL: 
 if.end:                                           ; preds = %if.else, %if.then
+  %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ]
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223)
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2)
+  %add7 = add nsw i32 %tau2, 1
   ret i32 0
 
 [BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
 		Visiting Tau Instruction
-		Speculative Operand : add2, speculative constant
-		Speculative Operand : llvm.tau.i32, speculative constant
+Merged overdefined into   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223) : overdefined
+		ValueLattice (TauState) : overdefined
+[BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
+		Visiting Tau Instruction
 Merged speculative constant into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2) : speculative constant
 		ValueLattice (TauState) : speculative constant
+Marking Spec PHINode exec.
+Merged constantrange<3223, 3224> into   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ] : constantrange<3223, 3224>
+Merged overdefined into   %add7 = add nsw i32 %tau2, 1 : overdefined
 
-Popped off OI-WL:   %sub4 = sub nsw i32 %tau, 888
+Popped off BBWL: 
+if.then:                                          ; preds = %end
+  %add6 = add nsw i32 90, 777
+  br label %if.end
+
+Merged constantrange<867, 868> into   %add6 = add nsw i32 90, 777 : constantrange<867, 868>
+Marking Edge Executable: if.then -> if.end
+Marking Spec PHINode exec.
+Merged constantrange<867, 3224> into   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ] : constantrange<867, 3224>
+		Visiting Tau Instruction
+		ValueLattice (TauState) : overdefined
+		Visiting Tau Instruction
+		ValueLattice (TauState) : speculative constant
+
+Popped off OI-WL:   %add7 = add nsw i32 %tau2, 1
+
+Popped off OI-WL:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223)
+
+Popped off OI-WL:   %cmp = icmp sge i32 %add5, 100
+
+Popped off OI-WL:   %add5 = add nsw i32 %add4, 100
+
+Popped off OI-WL:   %add4 = add nsw i32 %tau, %add3
+
+Popped off I-WL:   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ]
+
+Popped off I-WL:   %add6 = add nsw i32 90, 777
+Marking Spec PHINode exec.
+
+Popped off I-WL:   %a.1 = phi i32 [ %add6, %if.then ], [ 3223, %if.else ]
 
 Popped off I-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add2)
 
-Popped off I-WL:   %cmp = icmp sge i32 90, 100
+Popped off I-WL:   %add3 = add nsw i32 90, 30
 
 Popped off I-WL:   %a.0 = phi i32 [ %sub, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
 
 Popped off I-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add2)
 
-Popped off I-WL:   %add = add nsw i32 90, 20
+Popped off I-WL:   %add = add nsw i32 90, 21
 Marking Spec PHINode exec.
 RESOLVING UNDEFs
   BasicBlock Dead:
@@ -301,42 +429,39 @@ sw.bb1:                                           ; preds = %entry
   BasicBlock Dead:
 sw.default:                                       ; preds = %entry
   br label %label_5
-  Constant: i32 110 =   %add = add nsw i32 90, 20
+  Constant: i32 111 =   %add = add nsw i32 90, 21
   BasicBlock Dead:
 label_4:                                          ; preds = %sw.bb1
-  %add2 = add nsw i32 undef, 100
+  %add2 = add nsw i32 undef, 37
   br label %end
   BasicBlock Dead:
 label_5:                                          ; preds = %sw.default
   %sub = sub nsw i32 undef, 87
   br label %end
-  Constant: i32 110 =   %a.0 = phi i32 [ undef, %label_5 ], [ undef, %label_4 ], [ 110, %label_3 ]
-  Constant: i1 false =   %cmp = icmp sge i32 90, 100
-  BasicBlock Dead:
-if.then:                                          ; preds = %end
-  %add3 = add nsw i32 %tau, 777
-  br label %if.end
+  Constant: i32 111 =   %a.0 = phi i32 [ undef, %label_5 ], [ undef, %label_4 ], [ 111, %label_3 ]
+  Constant: i32 120 =   %add3 = add nsw i32 90, 30
+  Constant: i32 867 =   %add6 = add nsw i32 90, 777
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0110 seconds (0.0223 wall clock)
+  Total Execution Time: 0.0109 seconds (0.0109 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0068 ( 78.4%)   0.0018 ( 76.0%)   0.0086 ( 77.9%)   0.0199 ( 89.1%)  SCCPTauPass
-   0.0007 (  8.5%)   0.0002 (  7.8%)   0.0009 (  8.3%)   0.0009 (  4.1%)  VerifierPass
-   0.0007 (  8.1%)   0.0002 (  7.5%)   0.0009 (  8.0%)   0.0009 (  3.9%)  VerifierAnalysis
-   0.0003 (  3.5%)   0.0002 (  8.5%)   0.0005 (  4.6%)   0.0005 (  2.2%)  PrintModulePass
-   0.0001 (  0.7%)   0.0000 (  0.2%)   0.0001 (  0.6%)   0.0001 (  0.3%)  PreservedCFGCheckerAnalysis
-   0.0001 (  0.6%)   0.0000 (  0.0%)   0.0001 (  0.5%)   0.0001 (  0.2%)  DominatorTreeAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)  TargetLibraryAnalysis
-   0.0086 (100.0%)   0.0023 (100.0%)   0.0110 (100.0%)   0.0223 (100.0%)  Total
+   0.0051 ( 73.0%)   0.0035 ( 87.7%)   0.0085 ( 78.3%)   0.0085 ( 78.3%)  SCCPTauPass
+   0.0007 ( 10.2%)   0.0001 (  3.8%)   0.0009 (  7.9%)   0.0009 (  7.9%)  VerifierPass
+   0.0007 (  9.7%)   0.0001 (  3.6%)   0.0008 (  7.5%)   0.0008 (  7.5%)  VerifierAnalysis
+   0.0004 (  5.2%)   0.0002 (  4.5%)   0.0005 (  4.9%)   0.0005 (  5.0%)  PrintModulePass
+   0.0001 (  0.9%)   0.0000 (  0.1%)   0.0001 (  0.6%)   0.0001 (  0.6%)  PreservedCFGCheckerAnalysis
+   0.0001 (  0.7%)   0.0000 (  0.0%)   0.0001 (  0.5%)   0.0001 (  0.5%)  DominatorTreeAnalysis
+   0.0000 (  0.2%)   0.0000 (  0.3%)   0.0000 (  0.2%)   0.0000 (  0.2%)  TargetLibraryAnalysis
+   0.0069 (100.0%)   0.0040 (100.0%)   0.0109 (100.0%)   0.0109 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0027 seconds (0.0027 wall clock)
+  Total Execution Time: 0.0024 seconds (0.0024 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0014 (100.0%)   0.0014 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Parse IR
-   0.0014 (100.0%)   0.0014 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Total
+   0.0016 (100.0%)   0.0008 (100.0%)   0.0024 (100.0%)   0.0024 (100.0%)  Parse IR
+   0.0016 (100.0%)   0.0008 (100.0%)   0.0024 (100.0%)   0.0024 (100.0%)  Total
 

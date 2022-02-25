@@ -32,11 +32,16 @@ entry:
   %a = alloca i32, align 4
   %z = alloca i32, align 4
   %c = alloca i32, align 4
+  %m = alloca i32, align 4
   %e = alloca i32, align 4
+  %n = alloca i32, align 4
+  %b = alloca i32, align 4
   store i32 0, i32* %retval, align 4
   store i32 1000, i32* %a, align 4
+  store i32 2, i32* %c, align 4
   store i32 0, i32* %e, align 4
-  %0 = load i32, i32* %c, align 4
+  store i32 100, i32* %n, align 4
+  %0 = load i32, i32* %m, align 4
   switch i32 %0, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
@@ -54,14 +59,14 @@ sw.default:                                       ; preds = %entry
 label_3:                                          ; preds = %sw.bb
   store i32 90, i32* %e, align 4
   %1 = load i32, i32* %e, align 4
-  %add = add nsw i32 %1, 20
+  %add = add nsw i32 %1, 21
   store i32 %add, i32* %a, align 4
   br label %end
 
 label_4:                                          ; preds = %sw.bb1
   store i32 90, i32* %e, align 4
   %2 = load i32, i32* %z, align 4
-  %add2 = add nsw i32 %2, 100
+  %add2 = add nsw i32 %2, 37
   store i32 %add2, i32* %a, align 4
   br label %end
 
@@ -74,22 +79,32 @@ label_5:                                          ; preds = %sw.default
 
 end:                                              ; preds = %label_5, %label_4, %label_3
   %4 = load i32, i32* %e, align 4
-  %cmp = icmp sge i32 %4, 100
+  %add3 = add nsw i32 %4, 30
+  store i32 %add3, i32* %z, align 4
+  %5 = load i32, i32* %a, align 4
+  %6 = load i32, i32* %z, align 4
+  %add4 = add nsw i32 %5, %6
+  %7 = load i32, i32* %n, align 4
+  %add5 = add nsw i32 %add4, %7
+  store i32 %add5, i32* %b, align 4
+  %8 = load i32, i32* %b, align 4
+  %cmp = icmp sge i32 %8, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %5 = load i32, i32* %a, align 4
-  %add3 = add nsw i32 %5, 777
-  store i32 %add3, i32* %a, align 4
+  %9 = load i32, i32* %e, align 4
+  %add6 = add nsw i32 %9, 777
+  store i32 %add6, i32* %a, align 4
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %6 = load i32, i32* %a, align 4
-  %sub4 = sub nsw i32 %6, 888
-  store i32 %sub4, i32* %a, align 4
+  store i32 3223, i32* %a, align 4
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
+  %10 = load i32, i32* %a, align 4
+  %add7 = add nsw i32 %10, 1
+  store i32 %add7, i32* %a, align 4
   ret i32 0
 }
 

@@ -12,6 +12,10 @@
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/Support/Debug.h"
+#include "llvm/Support/ErrorHandling.h"
+#include "llvm/Support/raw_ostream.h"
+
 //
 //===----------------------------------------------------------------------===//
 //                               SpecValueLatticeElement
@@ -408,7 +412,8 @@ public:
                MergeOptions Opts = MergeOptions()) {
     
     if(isSpeculativeConstant()) {
-      assert(!RHS.isUnknown());
+      if(RHS.isUnknown())
+        return false;
       if (RHS.isUndef())
         return false;
       if (RHS.isConstant())
@@ -421,6 +426,10 @@ public:
 
     if (RHS.isUnknown() || isOverdefined())
       return false;
+    
+    if (RHS.isSpeculativeConstant())
+      return markSpeculativeConstant();
+
     if (RHS.isOverdefined()) {
       markOverdefined();
       return true;

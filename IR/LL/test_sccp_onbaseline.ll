@@ -52,7 +52,7 @@ label_5:                                          ; preds = %sw.default
   br label %end
 
 end:                                              ; preds = %label_5, %label_4, %label_3
-  br i1 false, label %if.then, label %if.else
+  br i1 true, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
   br label %if.end

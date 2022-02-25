@@ -7,8 +7,8 @@
 // entry start sw.default label_6 end if.then if.end
 
 int main() {
-  int a = 1000, z, c, e = 0;
-  switch(c) {   
+  int a = 1000, z, c = 2, m, e = 0, n = 100; 
+  switch(m) {   
     case 2 : goto label_3; break;
     case 4 : goto label_4; break;
     default : goto label_5;
@@ -16,25 +16,28 @@ int main() {
   
   label_3:
     e = 45 * 2;
-    a = e + 20;
+    a = e + 21;
     goto end;
   
   label_4:
     e = 10 * 9;
-    a = z + 100;
+    a = z + 37;
     goto end;
 
   label_5:
-    e = 100 - 10;
+    e = 5 * 9 + 45;
     a = z - 87;
     goto end;
 
   end:
-    if (e >= 100) {
-      a = a + 777;
+    z = e + 30;
+    int b = a + z + n; 
+    if (b >= 100) {
+      a = e + 777;
     } else {
-      a = a - 888;
+      a = 3223;
     }
     
+  a += 1;
   return 0;
 }

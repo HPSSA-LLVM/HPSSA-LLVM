@@ -15,6 +15,7 @@ if.end: { 1 }
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : end
 Inserted Tau at : if.end
+Inserted Tau at : if.end
 -- BB: entry
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
@@ -72,6 +73,24 @@ Inserted Tau at : if.end
 ------ mrd: tau
 ------ Not a phi instruction
 ------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ Not a phi instruction
+------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.then
 -------- Succ: if.else
@@ -92,6 +111,10 @@ Inserted Tau at : if.end
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
+---------- phi: a.1
+---------- V: add6
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
@@ -102,12 +125,42 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ tau
 ------ mrd: tau
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ phi: a.1
+------ a.1
+------ mrd: a.1
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ phi: a.1
+------ tau2
+------ mrd: tau2
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ tau1
 ------ mrd: tau1
+------ phi: a.1
+------ tau2
+------ mrd: tau2
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau1
+------ mrd: tau1
+------ phi: a.1
+------ tau2
+------ mrd: tau2
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -115,35 +168,45 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau1
 ---------- mrd changed
+-------- phi: a.1 mrd: tau2
+---------- mrd changed
 -------- Parent: end | Child: if.else
 -- BB: if.else
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ tau
 ------ mrd: tau
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: a.0
------- tau
------- mrd: tau
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
+---------- phi: a.1
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
 ------ Recurse over Child 
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
 ---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: tau
 ---------- mrd changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 -------- Parent: entry | Child: sw.bb
 -- BB: sw.bb
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -155,12 +218,18 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -173,8 +242,12 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
 ---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 -------- Parent: entry | Child: sw.bb1
 -- BB: sw.bb1
@@ -182,6 +255,9 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -193,12 +269,18 @@ Inserted Tau at : if.end
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: a.0
 ------ a.0
 ------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -211,32 +293,38 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
 ---------- mrd not changed
------- Remove definitions if needed
--------- phi: a.0 mrd: a.0
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: a.0 mrd: a.0
+---------- mrd not changed
+-------- phi: a.1 mrd: a.1
 ---------- mrd not changed
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0090 seconds (0.0327 wall clock)
+  Total Execution Time: 0.0064 seconds (0.0064 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0033 ( 58.7%)   0.0026 ( 78.6%)   0.0059 ( 66.0%)   0.0296 ( 90.4%)  HPSSAPass
-   0.0009 ( 15.6%)   0.0002 (  6.3%)   0.0011 ( 12.2%)   0.0011 (  3.3%)  VerifierPass
-   0.0009 ( 15.1%)   0.0002 (  6.0%)   0.0011 ( 11.8%)   0.0011 (  3.2%)  VerifierAnalysis
-   0.0004 (  7.8%)   0.0003 (  9.0%)   0.0007 (  8.3%)   0.0008 (  2.5%)  PrintModulePass
-   0.0001 (  1.7%)   0.0000 (  0.2%)   0.0001 (  1.1%)   0.0001 (  0.3%)  PreservedCFGCheckerAnalysis
-   0.0001 (  1.1%)   0.0000 (  0.0%)   0.0001 (  0.7%)   0.0001 (  0.2%)  DominatorTreeAnalysis
-   0.0057 (100.0%)   0.0033 (100.0%)   0.0090 (100.0%)   0.0327 (100.0%)  Total
+   0.0008 ( 31.6%)   0.0033 ( 85.5%)   0.0041 ( 63.7%)   0.0041 ( 63.9%)  HPSSAPass
+   0.0007 ( 25.4%)   0.0002 (  4.3%)   0.0008 ( 12.8%)   0.0008 ( 12.8%)  VerifierPass
+   0.0006 ( 24.2%)   0.0002 (  4.2%)   0.0008 ( 12.3%)   0.0008 ( 12.2%)  VerifierAnalysis
+   0.0004 ( 14.6%)   0.0002 (  5.9%)   0.0006 (  9.4%)   0.0006 (  9.4%)  PrintModulePass
+   0.0001 (  2.2%)   0.0000 (  0.1%)   0.0001 (  1.0%)   0.0001 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0001 (  2.0%)   0.0000 (  0.0%)   0.0001 (  0.8%)   0.0001 (  0.8%)  DominatorTreeAnalysis
+   0.0026 (100.0%)   0.0038 (100.0%)   0.0064 (100.0%)   0.0064 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0032 seconds (0.0041 wall clock)
+  Total Execution Time: 0.0027 seconds (0.0027 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0032 (100.0%)   0.0032 (100.0%)   0.0041 (100.0%)  Parse IR
-   0.0032 (100.0%)   0.0032 (100.0%)   0.0041 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0018 (100.0%)   0.0009 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Parse IR
+   0.0018 (100.0%)   0.0009 (100.0%)   0.0027 (100.0%)   0.0027 (100.0%)  Total
 

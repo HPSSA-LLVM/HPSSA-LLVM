@@ -13,7 +13,7 @@ endif
 all: build test runpass cfg
 runtest : test runpass cfg 
 
-build: src/SCCPSolverTau.cpp src/SCCPTau.cpp
+build: src/SCCPSolverTau.cpp src/SCCPTau.cpp include/SpecValueLattice.h
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
 	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
