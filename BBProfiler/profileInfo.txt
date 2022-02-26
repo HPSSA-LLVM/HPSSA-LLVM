@@ -1,3 +1,5 @@
-1
+2
 6
 entry sw.bb1 label_4 end if.else if.end
+6
+entry sw.default label_5 end if.then if.end

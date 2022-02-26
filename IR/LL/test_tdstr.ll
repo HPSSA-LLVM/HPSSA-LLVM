@@ -43,33 +43,37 @@ sw.default:                                       ; preds = %entry
   br label %label_5
 
 label_3:                                          ; preds = %sw.bb
+  %mul = mul nsw i32 10, 10
   br label %end
 
 label_4:                                          ; preds = %sw.bb1
+  %mul2 = mul nsw i32 10, 10
   br label %end
 
 label_5:                                          ; preds = %sw.default
-  %sub = sub nsw i32 90, 87
+  %sub = sub nsw i32 10, 1
+  %mul3 = mul nsw i32 %sub, 10
+  %add = add nsw i32 %mul3, 10
   br label %end
 
 end:                                              ; preds = %label_5, %label_4, %label_3
-  %a.0 = phi i32 [ %sub, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ]
-  %add = add nsw i32 90, 30
-  %add2 = add nsw i32 %a.0, %add
-  %add3 = add nsw i32 %add2, 100
-  %cmp = icmp sge i32 %add3, 100
+  %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
+  %add4 = add nsw i32 1000, %e.0
+  %add5 = add nsw i32 %add4, 100
+  %cmp = icmp sge i32 %add5, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %add4 = add nsw i32 90, 777
+  %add6 = add nsw i32 %e.0, 779
   br label %if.end
 
 if.else:                                          ; preds = %end
+  %add7 = add nsw i32 %e.0, 543
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.1 = phi i32 [ %add4, %if.then ], [ 3223, %if.else ]
-  %add5 = add nsw i32 %a.1, 1
+  %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
+  %add8 = add nsw i32 %a.0, 1
   ret i32 0
 }
 

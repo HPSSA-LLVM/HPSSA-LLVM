@@ -1,10 +1,8 @@
 #include <bits/stdc++.h>
 
-// 2
-// 8
-// entry start sw.bb1 label_4 label_7 end if.else if.end
-// 7
-// entry start sw.default label_6 end if.then if.end
+// 1
+// 6
+// entry sw.bb1 label_4 end if.else if.end
 
 int main() {
   int a = 1000, z, c = 10, m, e = 0, n = 100; 
@@ -15,26 +13,26 @@ int main() {
   }
   
   label_3:
-    e = 101;
-    a = e + 50;
+    e = c * 10;
+    // a = 111;
     goto end;
   
   label_4:
-    e = 101;
-    a = e + 40;
+    e = c * (2 * 5);
+    // a = 111;
     goto end;
 
   label_5:
-    e = 101;
-    a = e + 40;
+    e = (c - 1) * 10 + 10;
+    // a = e - 87;
     goto end;
 
   end:
-    int b = a + e; 
-    if (b + n >= 100) {
-      a = b + 999;
+    int b = a + e + n; 
+    if (b >= 100) {
+      a = e + 779;
     } else {
-      a = b + 666;
+      a = e + 543;
     }
     
   a += 1;

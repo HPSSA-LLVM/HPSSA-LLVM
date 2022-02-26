@@ -9,6 +9,8 @@
 #ifndef LLVM_ANALYSIS_VALUELATTICE_H
 #define LLVM_ANALYSIS_VALUELATTICE_H
 
+#define DEBUG_TYPE "tausccp"
+
 #include "llvm/IR/ConstantRange.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Instructions.h"
@@ -89,6 +91,7 @@ class SpecValueLatticeElement {
   };
 
   SpecValueLatticeElementTy Tag : 8;
+  
   /// Number of times a constant range has been extended with widening enabled.
   unsigned NumRangeExtensions : 8;
 
@@ -118,6 +121,7 @@ class SpecValueLatticeElement {
   }
 
 public:
+  SpecValueLatticeElementTy Shadow_Tag : 8;
   /// Struct to control some aspects related to merging constant ranges.
   struct MergeOptions {
     /// The merge value may include undef.
@@ -156,12 +160,13 @@ public:
   };
 
   // ConstVal and Range are initialized on-demand.
-  SpecValueLatticeElement() : Tag(unknown), NumRangeExtensions(0) {}
+  SpecValueLatticeElement() : Tag(unknown), Shadow_Tag(unknown), 
+    NumRangeExtensions(0) {}
 
   ~SpecValueLatticeElement() { destroy(); }
 
   SpecValueLatticeElement(const SpecValueLatticeElement &Other)
-      : Tag(Other.Tag), NumRangeExtensions(0) {
+      : Tag(Other.Tag), Shadow_Tag(Other.Tag), NumRangeExtensions(0) {
     switch (Other.Tag) {
     case constantrange:
     case constantrange_including_undef:
@@ -181,7 +186,7 @@ public:
   }
 
   SpecValueLatticeElement(SpecValueLatticeElement &&Other)
-      : Tag(Other.Tag), NumRangeExtensions(0) {
+      : Tag(Other.Tag), Shadow_Tag(Other.Tag), NumRangeExtensions(0) {
     switch (Other.Tag) {
     case constantrange:
     case constantrange_including_undef:
@@ -251,7 +256,7 @@ public:
   }
 
   bool isUndef() const { return Tag == undef; }
-  bool isSpeculativeConstant() const { return Tag == spec_constant; }
+  bool isSpeculativeConstant() const { return Shadow_Tag == spec_constant; }
   bool isUnknown() const { return Tag == unknown; }
   bool isUnknownOrUndef() const { return Tag == unknown || Tag == undef; }
   bool isConstant() const { return Tag == constant; }
@@ -267,6 +272,7 @@ public:
     return Tag == constantrange || (Tag == constantrange_including_undef &&
                                     (UndefAllowed || Range.isSingleElement()));
   }
+  
   bool isOverdefined() const { return Tag == overdefined; }
 
   Constant *getConstant() const {
@@ -329,7 +335,8 @@ public:
       return false;
 
     // assert(isUnknown());
-    Tag = spec_constant;
+    Tag = constant;
+    Shadow_Tag = spec_constant;
     ConstVal = V;
     return true;
   }
@@ -416,35 +423,66 @@ public:
     return true;
   }
 
+  // COMMENT : Add a shadow Tag.
+  bool markSpeculativeConstantRange(ConstantRange NewR,
+                         MergeOptions Opts = MergeOptions()) {
+    assert(!NewR.isEmptySet() && "should only be called for non-empty sets");
+
+    if (NewR.isFullSet())
+      return markOverdefined();
+
+    SpecValueLatticeElementTy OldTag = Tag;
+    SpecValueLatticeElementTy NewTag =
+        (isUndef() || isConstantRangeIncludingUndef() || Opts.MayIncludeUndef)
+            ? constantrange_including_undef
+            : constantrange;
+    if (isConstantRange()) {
+      Tag = NewTag;
+      if (getConstantRange() == NewR)
+        return Tag != OldTag;
+
+      // Simple form of widening. If a range is extended multiple times, go to
+      // overdefined.
+      if (Opts.CheckWiden && ++NumRangeExtensions > Opts.MaxWidenSteps)
+        return markOverdefined();
+
+      assert(NewR.contains(getConstantRange()) &&
+             "Existing range must be a subset of NewR");
+      Range = std::move(NewR);
+      return true;
+    }
+
+    assert(isUnknown() || isUndef());
+
+    NumRangeExtensions = 0;
+    Tag = NewTag;
+    Shadow_Tag = spec_constant;
+    new (&Range) ConstantRange(std::move(NewR));
+    return true;
+  }
+
   /// Updates this object to approximate both this object and RHS. Returns
   /// true if this object has been changed.
   bool mergeIn(const SpecValueLatticeElement &RHS,
                MergeOptions Opts = MergeOptions()) {
-
-    // COMMENT : Meet. 
+    
     if (RHS.isUnknown() || isOverdefined())
       return false;
     
-    // if (RHS.isSpeculativeConstant())
-    //   return markSpeculativeConstant();
-
     if (RHS.isOverdefined()) {
       markOverdefined();
       return true;
     }
 
     // COMMENT : LHS meet RHS 
-    if(isSpeculativeConstant()) {
-      Constant *SpecConst = getConstant();
-      if(RHS.isUnknown())
-        return false;
-      if (RHS.isUndef())
-        return false;
-      if (RHS.isConstant() && getConstant() == RHS.getConstant())
-        return markSpeculativeConstant(RHS.getConstant());
-      if (RHS.isConstantRange())
-        return markConstantRange(RHS.getConstantRange(true),
+    if (RHS.isSpeculativeConstant()) {
+      if (isConstant() && getConstant() == RHS.getConstant())
+        return markSpeculativeConstant(getConstant());
+      if (isConstantRange() && RHS.isConstantRange() 
+          && getConstantRange() == RHS.getConstantRange())
+        return markSpeculativeConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
+      return false;
     }
 
     if (isUndef()) {
@@ -453,9 +491,6 @@ public:
         return false;
       if (RHS.isConstant())
         return markConstant(RHS.getConstant(), true);
-      // COMMENT : Move down the lattice since Top meet SpecC is SpecC
-      if (RHS.isSpeculativeConstant() && getConstant() == RHS.getConstant())
-        return markSpeculativeConstant(RHS.getConstant());
       if (RHS.isConstantRange())
         return markConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
@@ -469,11 +504,6 @@ public:
     }
 
     if (isConstant()) {
-      // COMMENT : Constant meet SPEC is SPEC.
-      if (RHS.isSpeculativeConstant() && getConstant() == RHS.getConstant()) {
-        markSpeculativeConstant(RHS.getConstant());
-        return true;
-      }
       if (RHS.isConstant() && getConstant() == RHS.getConstant())
         return false;
       if (RHS.isUndef())
@@ -549,12 +579,20 @@ public:
   void setNumRangeExtensions(unsigned N) { NumRangeExtensions = N; }
 };
 
-static_assert(sizeof(SpecValueLatticeElement) <= 40,
+static_assert(sizeof(SpecValueLatticeElement) <= 48,
               "size of SpecValueLatticeElement changed unexpectedly");
 
 raw_ostream &operator<<(raw_ostream &OS, const SpecValueLatticeElement &Val) {
-  if (Val.isSpeculativeConstant())
-    return OS << "speculative constant";
+  
+  if (Val.isSpeculativeConstant()) {
+    OS << "speculative constant, ";
+    if (Val.isConstant()) 
+      return OS << "constant<" << *Val.getConstant() << ">";
+    if (Val.isConstantRange())
+      return OS << "constantrange<" << Val.getConstantRange().getLower() << ", "
+        << Val.getConstantRange().getUpper() << ">";
+  }
+  
   if (Val.isUnknown())
     return OS << "unknown";
   if (Val.isUndef())

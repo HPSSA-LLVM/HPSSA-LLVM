@@ -43,38 +43,40 @@ sw.default:                                       ; preds = %entry
   br label %label_5
 
 label_3:                                          ; preds = %sw.bb
-  %add = add nsw i32 101, 50
+  %mul = mul nsw i32 10, 10
   br label %end
 
 label_4:                                          ; preds = %sw.bb1
-  %add2 = add nsw i32 101, 40
+  %mul2 = mul nsw i32 10, 10
   br label %end
 
 label_5:                                          ; preds = %sw.default
-  %add3 = add nsw i32 101, 40
+  %sub = sub nsw i32 10, 1
+  %mul3 = mul nsw i32 %sub, 10
+  %add = add nsw i32 %mul3, 10
   br label %end
 
 end:                                              ; preds = %label_5, %label_4, %label_3
-  %a.0 = phi i32 [ %add3, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add, i32 %add2)
-  %add4 = add nsw i32 %tau, 101
+  %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
+  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add)
+  %add4 = add nsw i32 1000, %tau
   %add5 = add nsw i32 %add4, 100
   %cmp = icmp sge i32 %add5, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %add6 = add nsw i32 %add4, 999
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add)
+  %add6 = add nsw i32 %tau2, 779
   br label %if.end
 
 if.else:                                          ; preds = %end
-  %add7 = add nsw i32 %add4, 666
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2)
+  %add7 = add nsw i32 %tau1, 543
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.1 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %add7)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add, i32 %add2)
-  %add8 = add nsw i32 %tau2, 1
+  %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
+  %add8 = add nsw i32 %a.0, 1
   ret i32 0
 }
 

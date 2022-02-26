@@ -2,21 +2,28 @@
 < ; ModuleID = 'IR/BC/test.bc'
 ---
 > ; ModuleID = 'IR/LL/test_mem2reg.ll'
-56a57
->   %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 111)
-58c59
-<   %add2 = add nsw i32 %a.0, %add
+61c61,62
+<   %add4 = add nsw i32 1000, %e.0
 ---
->   %add2 = add nsw i32 %tau, %add
-72c73,75
-<   %add5 = add nsw i32 %a.1, 1
+>   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2)
+>   %add4 = add nsw i32 1000, %tau
+67c68
+<   %add6 = add nsw i32 %e.0, 779
 ---
->   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223)
->   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 111)
->   %add5 = add nsw i32 %tau2, 1
-82a86,88
+>   %add6 = add nsw i32 %tau, 779
+71c72
+<   %add7 = add nsw i32 %e.0, 543
+---
+>   %add7 = add nsw i32 %tau, 543
+76c77,79
+<   %add8 = add nsw i32 %a.0, 1
+---
+>   %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add7)
+>   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2)
+>   %add8 = add nsw i32 %tau2, 1
+86a90,92
 > ; Function Attrs: nofree nosync nounwind willreturn
 > declare i32 @llvm.tau.i32(...) #5
 > 
-87a94
+91a98
 > attributes #5 = { nofree nosync nounwind willreturn }

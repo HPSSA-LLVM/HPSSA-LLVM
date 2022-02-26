@@ -25,7 +25,13 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/Local.h"
 #include <cassert>
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/InstIterator.h"
+#include "llvm/IR/InstrTypes.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/LLVMContext.h"
 #include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/GlobalValue.h>
 #include <llvm/IR/Instruction.h>
 #include <utility>
 #include <vector>
@@ -532,15 +538,15 @@ bool SCCPTauInstVisitor::markOverdefined(SpecValueLatticeElement &IV, Value *V) 
 // COMMENT : Mark Spec Const Visitor
 bool SCCPTauInstVisitor::markSpeculativeConstant(
     SpecValueLatticeElement &IV, Value *V) {
-  LLVM_DEBUG(dbgs() << "Marking Spec Value* " << *V << "\n");
-  if (IV.isSpeculativeConstant())
-    return true;
+  LLVM_DEBUG(dbgs() << "\t[Taulog] Marking Spec Value* " << *V << "\n");
 
   // COMMENT : Constant is a Constant !
-  if(auto *C = dyn_cast<Constant>(V))
-    IV.markSpeculativeConstant(C);
+  auto *C = dyn_cast<Constant>(V);
+  if (C)
+    if(!IV.markSpeculativeConstant(C))
+      return false;
 
-  LLVM_DEBUG(dbgs() << "markSpeculativeConstant: ";
+  LLVM_DEBUG(dbgs() << "\t[Taulog] markSpeculativeConstant: ";
              if (auto *F = dyn_cast<Function>(V)) dbgs()
              << "Function '" << F->getName() << "'\n";
              else dbgs() << *V << '\n');
@@ -843,34 +849,26 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   unsigned NumActiveIncoming = 0;
 
   // Look at all of the executable operands of the Tau node except the first one.  
-  // If any of them are spec_const, the tau becomes spec_const as well. If they are all
-  // constant, and they agree with each other, the tau becomes the identical
-  // constant.  If they are constant and don't agree, the PHI is a constant
+  // If any of them are spec_const, the tau becomes spec_const as well. If they
+  // are all constant, and they agree with each other, the tau becomes the identical
+  // constant. If they are constant and don't agree, the PHI is a constant
   // range. If there are no executable operands, the PHI remains unknown.
-  SpecValueLatticeElement TauState = getValueState(&Tau);
+  SpecValueLatticeElement TauState = getValueState(&Tau), 
+    beta = getValueState(Tau.getOperand(1)), x0 = getValueState(Tau.getOperand(0));
+
   TauState.markUnknown();
-  LLVM_DEBUG(dbgs() << "\t\tTau State init : " << TauState <<"\n");
-  SpecValueLatticeElement beta, x0 = getValueState(Tau.getOperand(0));
-  LLVM_DEBUG(dbgs() << "\t\tx0 (phi-state) " << Tau.getOperand(0)->getNameOrAsOperand()<< " : " << x0 <<"\n");
-  beta.markUnknown();
+  LLVM_DEBUG(dbgs() << "\t\tTau State init : " << 
+      TauState <<"\n");
+  LLVM_DEBUG(dbgs() << "\t\tx0 (phi-state) " << 
+      Tau.getOperand(0)->getNameOrAsOperand()<< " : " << x0 <<"\n");
 
   for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i) {
     SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
-    // Beta <- Beta meet opnext
-    if (IV.isConstantRange()) {
-      const auto &CR = IV.getConstantRange();
-      if (CR.getSingleElement())
-        IV.markConstant(ConstantInt::get(Ctx, *CR.getSingleElement()));
-    }
-
-    Constant *C = dyn_cast<Constant>(Tau.getOperand(i));
-    if (C) 
-      IV.markConstant(C);
-
+    // COMMENT Beta = x1 meet x2 meet x3 ....
     beta.mergeIn(IV);
     NumActiveIncoming++;
     LLVM_DEBUG(dbgs() << "\t\tTau Operand (L) : " 
-      << Tau.getOperand(i)->getNameOrAsOperand() << ", " << beta <<"\n");
+      << Tau.getOperand(i)->getNameOrAsOperand() << ", " << IV <<"\n");
     if (beta.isOverdefined())
       break;
   }
@@ -882,12 +880,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // limit multiple extensions caused by the same incoming value, if other
   // incoming values are equal.
 
-  // ASSERT Beta = x1 meet x2 meet x3 ....
-  if (x0.isConstantRange()) {
-    const auto &CR = x0.getConstantRange();
-    if (CR.getSingleElement())
-      TauState.markConstant(ConstantInt::get(Ctx, *CR.getSingleElement()));
-  }
+  // COMMENT 
+  if (x0.isConstantRange())
+    TauState.markConstantRange(x0.getConstantRange());
   
   if (x0.isConstant()) {
     TauState.markConstant(x0.getConstant());
@@ -898,14 +893,17 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     && (beta.getConstant() == x0.getConstant()))
     TauState.markSpeculativeConstant(x0.getConstant());
 
+  // COMMENT -> Constant can transition to Const Range.
+  if (beta.isConstantRange() && x0.isConstantRange() 
+    && (beta.getConstantRange() == x0.getConstantRange()))
+    TauState.markSpeculativeConstantRange(x0.getConstantRange());
+
   if (beta.isOverdefined() || x0.isOverdefined())
     TauState.markOverdefined();
 
-  if(TauState.isConstantRange()){
-    const auto &CR = TauState.getConstantRange();
-    if (CR.getSingleElement())
-      TauState.markConstant(ConstantInt::get(Ctx, *CR.getSingleElement()));
-  }
+  // if(TauState.isConstantRange()){
+  //   TauState.markSpeculativeConstantRange(x0.getConstantRange());
+  // }
 
   // ensure monotonicity.
   mergeInValue(&Tau, TauState,
@@ -914,10 +912,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   SpecValueLatticeElement &TauStateRefElem = getValueState(&Tau);
   TauStateRefElem.setNumRangeExtensions(
       std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
-  LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() << " : " << TauState << "\n");
-
-  // COMMENT -> Propagate to uses.
-  markUsersAsChanged(&Tau);
+  
+  LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
+      << " : " << TauState << ", " << TauState.Shadow_Tag << "\n"); 
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
@@ -1608,19 +1605,24 @@ void SCCPTauInstVisitor::solve() {
     while (!BBWorkList.empty()) {
       BasicBlock *BB = BBWorkList.pop_back_val();
       LLVM_DEBUG(dbgs() << "\nPopped off BBWL: " << *BB << '\n');
-      visit(BB);
 
       // COMMENT : Visit Tau nodes as well and not just the basic blocks.
       for (auto& I : *&(*(BB))) {
         CallInst* CI = dyn_cast<CallInst>(&I);
-        if (CI == NULL)
-          continue;
-        Function* CF = CI->getCalledFunction();
-        if (CF != NULL &&
-            CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
-          LLVM_DEBUG(dbgs() << "[Taulog] Visiting LLVM Instrinsic : llvm.tau (" 
-            << I.getOpcodeName() << ")\n");
-          visitTauNode(I);
+        if (CI != NULL) {
+          Function* CF = CI->getCalledFunction();
+          if (CF != NULL &&
+              CF->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau")) {
+            LLVM_DEBUG(dbgs() << "\t[Taulog] Visiting LLVM Instrinsic : llvm.tau (" 
+              << I << ")\n");
+            visitTauNode(I);
+          } else {
+            LLVM_DEBUG(dbgs() << "\t[Taulog] Visiting Call Instruction : " << I << "\n");
+            visit(I);
+          } 
+        } else {
+          LLVM_DEBUG(dbgs() << "\t[Taulog] Visiting Other Instruction : " << I << "\n");
+          visit(I);
         }
       }
       // Notify all instructions in this basic block that they are newly

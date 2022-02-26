@@ -25,7 +25,7 @@ test: build BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
-runpass: test build/*.so build/*.o  
+runpass: test build  
 	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
 		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
 		-f 2> output/custom_hpssa.log
@@ -38,7 +38,7 @@ runpass: test build/*.so build/*.o
 	$(BUILD_PATH)/opt -sccp -time-passes -debug-only=sccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_sccp_onbaseline.ll \
 		-f 2> output/custom_sccp_onbaseline.log
 
-cfg: test runpass
+cfg: test runpass build
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot baseline.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -enable-new-pm=0 -disable-output

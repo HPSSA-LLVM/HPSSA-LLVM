@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 \usetheme{Frankfurt}
 \usepackage{tikz}
 \usepackage{minted}
@@ -11,12 +11,12 @@
 \usetikzlibrary{chains, shadows.blur, trees}
 %Information to be included in the title page:
 \title[\url{https://google.com}] %optional
-{LLVM \& HPSSA}
+{The Hot Path SSA Form in LLVM}
 
-\subtitle{Hot Path SSA Form in LLVM}
+\subtitle{Algorithms \& Applications}
 
 \author[VIP1 \& VIP2] % (optional, for multiple authors)
-{Presented By Abhay\inst{1} \& Muzzammil\inst{1}}
+{IIT Kanpur \\ Dept. Of Computer Science \& Engineering}
 
 \institute[IDK] % (optional)
 {
@@ -26,12 +26,12 @@
 }
 
 \date[01/03/2022] % (optional)
-{Dr. Subhajit Roy, Dr. Awanish Pandey, Mr. Sumit Lahiri}
+{Mohd. Muzzammil, Abhay Kumar, Sumit Lahiri \\ Dr. Awanish Pandey, Dr. Subhajit Roy}
 
 \AtBeginSection[]
 {
 	\begin{frame}<beamer>
-		\frametitle{Section \thesection}
+		\frametitle{Presentation Outline : Section \thesection}
 		\tableofcontents[
 			currentsection,
 			hideothersubsections,
@@ -46,7 +46,7 @@
 
 \footnotesize
 \section{HPSSA : Why another SSA Form?}
-
+\subsection{Doing Speculative Analysis is Hard !}
 \begin{frame}
 	\frametitle{Doing Speculative Analysis is Hard !}
 	Importance of speculative analysis. It is hard to do. Whole research papers dedicated to 
@@ -54,26 +54,84 @@
 \end{frame}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={3,4,5}]{summary.pdf}
+	\includepdf[pages={3,4,5,6,7,8,9,10,11,12,13,14,15,18}]{summary.pdf}
 }
-\begin{frame}
-	\frametitle{Case Study : Speculative SCCP Pass}
-	\begin{itemize}
-		\item We implement a speculative version of the SCCP to demonstrate the usefulness of the HPSSA Form.
-		\item Modified the existing SCCP Pass to add in a function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions. \color{blue} (8 lines extra of code only!) \color{black}
-		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. \color{blue} (5 lines extra of code only!) \color{black} 
-		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()} function. \color{blue} (5 lines extra of code only!) \color{black}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}[fragile]
-	\frametitle{SSCCP with an Example}
+	\frametitle{Profile Guided Optimization is easy with HPSSA Form}
+	\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+	visitTauNode() {
+			...
+		SpecValueLatticeElement TauState = getValueState(&Tau), 
+			beta = getValueState(Tau.getOperand(1)), 
+			x0 = getValueState(Tau.getOperand(0));
+		TauState.markUnknown();
+		for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i) {
+			SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
+			beta.mergeIn(IV);
+			NumActiveIncoming++;
+			if (beta.isOverdefined())
+				break;
+		}
+
+		if (x0.isConstantRange())
+			TauState.markConstantRange(x0.getConstantRange());
+		if (x0.isConstant()) 
+  			TauState.markConstant(x0.getConstant());
+		if (beta.isConstant() && x0.isConstant() 
+  			&& (beta.getConstant() == x0.getConstant()))
+  			TauState.markSpeculativeConstant(x0.getConstant());
+		if (beta.isConstantRange() && x0.isConstantRange() 
+  			&& (beta.getConstantRange() == x0.getConstantRange()))
+  			TauState.markSpeculativeConstantRange(x0.getConstantRange());
+		if (beta.isOverdefined() || x0.isOverdefined())
+  			TauState.markOverdefined();
+		...
+	}
+	\end{minted}
+\end{frame}
+\begin{frame}[fragile]
+	\frametitle{Using \texttt{HPSSAPass} [It is easy!]}
+	\begin{itemize}
+		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
+		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, tabsize=2, highlightlines={1,14,15,18}, linenos]{cpp}
+	#include <HPSSA.h> // import the header.
+	
+	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
+		public: PreservedAnalyses run(Function &F, 
+		FunctionAnalysisManager &AM);
+	};
+	...
+	
+	PreservedAnalyses MyExamplePass::run(Function &F, 
+	FunctionAnalysisManager &AM) {
+		if (F.getName() != "main")
+		return PreservedAnalyses::all();
+		
+		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
+		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
+		
+		std::vector<Instruction *> TauInsts 
+		= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
+		
+		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
+		...
+	}
+	
+	/// [output] Total Tau Instructions : 7 
+	\end{minted}
+\end{frame}
+\subsection{Speculative Analysis using HPSSA Form}
+\begin{frame}[fragile]
+	\frametitle{Speculative Pass using HPSSA : SSCCP}
 	We run the speculative SCCP on the example below. \color{red} Mark the different types of variables. Make the CFG look pretty and add hot path. \color{black}.
 	\begin{columns}
 		\begin{column}{0.2\textwidth}
 			\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
 int main() {
 	int a = 1000, z, c, e = 0;
+	std::cin >> c;
 	switch(c) {   
 		case 2 : goto label_3; break;
 		case 4 : goto label_4; break;
@@ -109,19 +167,97 @@ int main() {
 \end{frame}
 
 \begin{frame}{HPSSA Transformation}
-	\frametitle{TODO : SCCP pass running on Example.}
+	\frametitle{Standard SCCP Pass running on example.}
 	\centering
 	\includegraphics[width=5.5cm,height=7.5cm]{baseline.dot.png}
 \end{frame}
 
 \begin{frame}{HPSSA Transformation}
-	\frametitle{TODO : Speculative SCCP pass running on Example.}
+	\frametitle{Speculative SCCP pass running on Example.}
 	\centering
 	\includegraphics[width=5.5cm,height=7.5cm]{afterHPSSA.dot.png}
 \end{frame}
 
 \section{What is HPSSA form?}
+\subsection{Hot Path SSA Form}
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={25,26,27,28,29,30}]{summary.pdf}
+}
+\subsection{Speculative SCCP Pass in LLVM}
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={31,32}]{summary.pdf}
+}
+
+\begin{frame}
+	\frametitle{Speculative SCCP Pass}
+	CFG, Hotpath, show only speculative part. Const green, spec pink on the CFG. 
+\end{frame}
+\begin{frame}
+	\frametitle{LLVM Implementation : Speculative SCCP Pass}
+	\begin{itemize}
+		\item We implement a speculative version of the SCCP to demonstrate the usefulness of the HPSSA Form.
+		\item Modified the existing SCCP Pass to add in a function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.
+		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants.
+		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()} function.
+	\end{itemize}
+\end{frame}
 \footnotesize
+\begin{frame}[fragile]
+	\frametitle{LLVM Implementation : Speculative SCCP Pass}
+	\begin{itemize}
+		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced.  
+		\item Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic which is essentially an \mintinline[fontsize=\footnotesize]{css}{llvm:CallInst} type, we modified all appropriate visit and marking functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor, SCCPSolver} and \mintinline[fontsize=\footnotesize]{css}{SCCPPass} to handle this case separately by calling \mintinline[fontsize=\footnotesize]{css}{visitTauNode()}.
+		\item Modified utility functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to print marking of speculative constants and related operations for debugging purpose.
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, tabsize=2, highlightcolor=lime, linenos, highlightlines={4,5,8}]{css}
+	... // logs
+	[BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
+	Visiting Tau Instruction
+	Speculative Operand : , speculative constant
+	Speculative Operand : llvm.tau.i32, speculative constant
+	Merged speculative constant into   %tau = call i32 (...) 
+	@llvm.tau.i32(i32 %e.0, i32 90) : speculative constant
+	ValueLattice (TauState) : speculative constant
+	...
+	\end{minted}
+\end{frame}
+\section{How is HPSSA Implemented?}
+\subsection{Constructing HPSSA Form}
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={40-59}]{summary.pdf}
+}
+\subsection{Implementing HPSSA Form in LLVM}
+\begin{frame}[fragile]
+	\frametitle{What we modified in LLVM Source?}
+	\begin{itemize}
+		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, tabsize=4, linenos]{python}
+	+ //===---------- intrinsic for tau ---------------=====//
+	+ def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
+	+                   [llvm_vararg_ty],
+	+                   []>;
+	\end{minted}
+	\begin{itemize}
+		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
+	+ //===---------- Changes for tau.intrinsic ---------------=====//
+	void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
+		Instruction *Op = cast<Instruction>(I.getOperand(i));
+		+	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
+		+	Function *CallFunction = CI->getCalledFunction();
+		+	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
+		+		Function::lookupIntrinsicID("llvm.tau")) {
+		+			return;
+		+		}
+		+	}
+		...
+		\end{minted}
+	\end{frame}
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Overview}
 	\begin{itemize}
@@ -129,7 +265,7 @@ int main() {
 		\begin{itemize}
 			\footnotesize
 			\item Implemented \mintinline[]{css}{llvm::HPSSAPass} pass using the new LLVM Pass Manager. 
-			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function \&F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR and handles argument allocation for  \mintinline[]{css}{"llvm.tau"} intrinsic calls as described in the previous slides.
+			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function &F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR and handles argument allocation for  \mintinline[]{css}{"llvm.tau"} intrinsic calls as described in the previous slides.
 		\end{itemize}
 		\item Key HPSSA Data Structures :  
 		\begin{itemize}
@@ -150,7 +286,7 @@ int main() {
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Main Pass}
 	\begin{itemize}
-		\item \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function \&F, FunctionAnalysisManager \&AM)} 
+		\item \mintinline[fontsize=\footnotesize]{cpp}{HPSSAPass::run(Function &F, FunctionAnalysisManager &AM)} 
 		\begin{itemize}
 			\footnotesize
 			\item Invoke \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getProfileInfo()} function to get a compact representation of all the profiled \color{red} hot paths \color{black} in the program and then call \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getCaloricConnector()} to get all the caloric connectors from the \color{red} hot path \color{black} information. This is a precursor to finding strategic positions to place \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR.
@@ -167,110 +303,18 @@ int main() {
 		\item Out of HPSSA Form. 
 		\begin{itemize}
 			\item A seperate pass using the new LLVM Pass Manager. \mintinline[]{css}{class TDSTRPass : public PassInfoMixin<TDSTRPass>}
-			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function \&F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR.
+			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function &F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR.
 			\item The LLVM IR becomes identical to what it was before running the HPSSA Pass. 
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
-\section{How is HPSSA Used?}
-
-\begin{frame}[fragile]
-	\frametitle{Further Modifications}
-	\begin{itemize}
-		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced.  
-		\item Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic which is essentially an \mintinline[fontsize=\footnotesize]{css}{llvm:CallInst} type, we modified all appropriate visit and marking functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor, SCCPSolver} and \mintinline[fontsize=\footnotesize]{css}{SCCPPass} to handle this case separately by calling \mintinline[fontsize=\footnotesize]{css}{visitTauNode()}.
-		\item Modified utility functions in \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to print marking of speculative constants and related operations for debugging purpose.
-	\end{itemize}
-\begin{minted}[fontsize=\tiny, tabsize=2, highlightcolor=lime, linenos, highlightlines={4,5,8}]{css}
-... // logs
-[BBWorkList] Visiting LLVM Instrinsic : llvm.tau (call)
-	Visiting Tau Instruction
-		Speculative Operand : , speculative constant
-		Speculative Operand : llvm.tau.i32, speculative constant
-	Merged speculative constant into   %tau = call i32 (...) 
-		@llvm.tau.i32(i32 %e.0, i32 90) : speculative constant
-	ValueLattice (TauState) : speculative constant
-...
-\end{minted}
-\end{frame}
 \footnotesize
-
-\begin{frame}
-	\frametitle{SSCCP with an Example}
-	\footnotesize
-	\begin{itemize}
-\item The \textsc{PHINode} at \texttt{label\_7} is removed due to constant propagation of value 90 for variable "e" along all paths. However since the operands of the $\tau$-function are marked speculative, this instruction and it's uses are not removed by the SSCCP Pass.
-	\end{itemize}
-	\centering
-	\includegraphics[width=4.6cm,height=6.1cm]{SCCP_BASELINE.dot.png}
-	\includegraphics[width=4.6cm,height=6.1cm]{specSCCP_HPSSA.dot.png}
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{\texttt{HPSSAPass} : Usage [It is easy!]}
-	\begin{itemize}
-		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
-		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
-	\end{itemize}
-	\begin{minted}[fontsize=\tiny, tabsize=2, highlightlines={1,14,15,18}, linenos]{cpp}
-	#include <HPSSA.h> // import the header.
-	
-	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
-		public: PreservedAnalyses run(Function &F, 
-		FunctionAnalysisManager &AM);
-	};
-	...
-	
-	PreservedAnalyses MyExamplePass::run(Function &F, 
-	FunctionAnalysisManager &AM) {
-		if (F.getName() != "main")
-		return PreservedAnalyses::all();
-		
-		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
-		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
-		
-		std::vector<Instruction *> TauInsts 
-		= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
-		
-		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
-		...
-	}
-	
-	/// [output] Total Tau Instructions : 7 
-	\end{minted}
-\end{frame}
 
 \section{Conclusion}
-
-\footnotesize
-\begin{frame}[fragile]
-\frametitle{What we modified in LLVM Source?}
-\begin{itemize}
-	\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
-\end{itemize}
-\begin{minted}[fontsize=\tiny, tabsize=4, linenos]{python}
-	+ //===---------- intrinsic for tau ---------------=====//
-	+ def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
-	+                   [llvm_vararg_ty],
-	+                   []>;
-\end{minted}
-\begin{itemize}
-	\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
-\end{itemize}
-\begin{minted}[fontsize=\tiny, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
-	+ //===---------- Changes for tau.intrinsic ---------------=====//
-	void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
-		Instruction *Op = cast<Instruction>(I.getOperand(i));
-		+	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-		+	Function *CallFunction = CI->getCalledFunction();
-		+	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
-		+		Function::lookupIntrinsicID("llvm.tau")) {
-		+			return;
-		+		}
-		+	}
-	...
-	\end{minted}
+\begin{frame}
+	\frametitle{Conclusion}
 \end{frame}
+\footnotesize
 
 \end{document}

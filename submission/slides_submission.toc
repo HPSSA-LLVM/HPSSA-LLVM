@@ -1,4 +1,10 @@
 \beamer@sectionintoc {1}{HPSSA : Why another SSA Form?}{2}{0}{1}
-\beamer@sectionintoc {2}{What is HPSSA form?}{11}{0}{2}
-\beamer@sectionintoc {3}{How is HPSSA Used?}{16}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{20}{0}{4}
+\beamer@subsectionintoc {1}{1}{Doing Speculative Analysis is Hard !}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Speculative Analysis using HPSSA Form}{20}{0}{1}
+\beamer@sectionintoc {2}{What is HPSSA form?}{23}{0}{2}
+\beamer@subsectionintoc {2}{1}{Hot Path SSA Form}{24}{0}{2}
+\beamer@subsectionintoc {2}{2}{Speculative SCCP Pass in LLVM}{30}{0}{2}
+\beamer@sectionintoc {3}{How is HPSSA Implemented?}{35}{0}{3}
+\beamer@subsectionintoc {3}{1}{Constructing HPSSA Form}{36}{0}{3}
+\beamer@subsectionintoc {3}{2}{Implementing HPSSA Form in LLVM}{56}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{61}{0}{4}
