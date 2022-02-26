@@ -315,14 +315,22 @@ public:
     return true;
   }
 
+  bool markUnknown() {
+    if (isUnknown())
+      return false;
+
+    Tag = unknown;
+    return true;
+  }
+
   // COMMENT : Added marking of Spec Const.
-  bool markSpeculativeConstant() {
+  bool markSpeculativeConstant(Constant *V) {
     if (isSpeculativeConstant())
       return false;
 
     // assert(isUnknown());
     Tag = spec_constant;
-    // ConstVal = V;
+    ConstVal = V;
     return true;
   }
 
@@ -427,16 +435,16 @@ public:
 
     // COMMENT : LHS meet RHS 
     if(isSpeculativeConstant()) {
+      Constant *SpecConst = getConstant();
       if(RHS.isUnknown())
         return false;
       if (RHS.isUndef())
         return false;
-      if (RHS.isConstant())
-        return markSpeculativeConstant();
+      if (RHS.isConstant() && getConstant() == RHS.getConstant())
+        return markSpeculativeConstant(RHS.getConstant());
       if (RHS.isConstantRange())
         return markConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
-      return markSpeculativeConstant();
     }
 
     if (isUndef()) {
@@ -446,8 +454,8 @@ public:
       if (RHS.isConstant())
         return markConstant(RHS.getConstant(), true);
       // COMMENT : Move down the lattice since Top meet SpecC is SpecC
-      if (RHS.isSpeculativeConstant())
-        return markSpeculativeConstant();
+      if (RHS.isSpeculativeConstant() && getConstant() == RHS.getConstant())
+        return markSpeculativeConstant(RHS.getConstant());
       if (RHS.isConstantRange())
         return markConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
@@ -462,8 +470,8 @@ public:
 
     if (isConstant()) {
       // COMMENT : Constant meet SPEC is SPEC.
-      if (RHS.isSpeculativeConstant()) {
-        markSpeculativeConstant();
+      if (RHS.isSpeculativeConstant() && getConstant() == RHS.getConstant()) {
+        markSpeculativeConstant(RHS.getConstant());
         return true;
       }
       if (RHS.isConstant() && getConstant() == RHS.getConstant())

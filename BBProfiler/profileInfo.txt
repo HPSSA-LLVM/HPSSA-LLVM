@@ -1,5 +1,3 @@
-2
+1
 6
 entry sw.bb1 label_4 end if.else if.end
-6
-entry sw.bb label_3 end if.else if.end

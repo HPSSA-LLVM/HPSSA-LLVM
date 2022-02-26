@@ -43,35 +43,38 @@ sw.default:                                       ; preds = %entry
   br label %label_5
 
 label_3:                                          ; preds = %sw.bb
+  %add = add nsw i32 101, 50
   br label %end
 
 label_4:                                          ; preds = %sw.bb1
+  %add2 = add nsw i32 101, 40
   br label %end
 
 label_5:                                          ; preds = %sw.default
-  %sub = sub nsw i32 90, 87
+  %add3 = add nsw i32 101, 40
   br label %end
 
 end:                                              ; preds = %label_5, %label_4, %label_3
-  %a.0 = phi i32 [ %sub, %label_5 ], [ 111, %label_4 ], [ 111, %label_3 ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 111)
-  %add = add nsw i32 %tau, 90
-  %add2 = add nsw i32 %add, 100
-  %cmp = icmp sge i32 %add2, 100
+  %a.0 = phi i32 [ %add3, %label_5 ], [ %add2, %label_4 ], [ %add, %label_3 ]
+  %tau = call i32 (...) @llvm.tau.i32(i32 %a.0, i32 %add, i32 %add2)
+  %add4 = add nsw i32 %tau, 101
+  %add5 = add nsw i32 %add4, 100
+  %cmp = icmp sge i32 %add5, 100
   br i1 %cmp, label %if.then, label %if.else
 
 if.then:                                          ; preds = %end
-  %add3 = add nsw i32 90, 777
+  %add6 = add nsw i32 %add4, 999
   br label %if.end
 
 if.else:                                          ; preds = %end
+  %add7 = add nsw i32 %add4, 666
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %a.1 = phi i32 [ %add3, %if.then ], [ 3223, %if.else ]
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 3223)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 111)
-  %add4 = add nsw i32 %tau2, 1
+  %a.1 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %a.1, i32 %add7)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add, i32 %add2)
+  %add8 = add nsw i32 %tau2, 1
   ret i32 0
 }
 

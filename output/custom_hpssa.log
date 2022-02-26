@@ -44,7 +44,7 @@ Inserted Tau at : if.end
 ------ Succesor Logic
 -------- Succ: end
 ---------- phi: a.0
----------- V: sub
+---------- V: add3
 ---------- Not a phi operand
 ---------- Not a tau operand
 ------ Recurse over Child 
@@ -106,7 +106,7 @@ Inserted Tau at : if.end
 ------ Succesor Logic
 -------- Succ: if.end
 ---------- phi: a.1
----------- V: add3
+---------- V: add6
 ---------- Not a phi operand
 ---------- Not a tau operand
 ------ Recurse over Child 
@@ -175,10 +175,19 @@ Inserted Tau at : if.end
 ------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ tau
+------ mrd: tau
+------ phi: a.1
+------ a.1
+------ mrd: a.1
+------ Not a phi instruction
+------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
 ---------- phi: a.1
----------- V: 
+---------- V: add7
 ---------- Not a phi operand
 ---------- Not a tau operand
 ------ Recurse over Child 
@@ -217,10 +226,19 @@ Inserted Tau at : if.end
 ------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ a.0
+------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
+------ Not a phi instruction
+------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end
 ---------- phi: a.0
----------- V: 
+---------- V: add
 ---------- Not a phi operand
 ---------- Not a tau operand
 ------ Recurse over Child 
@@ -259,10 +277,19 @@ Inserted Tau at : if.end
 ------ mrd: a.1
 ------ Not a phi instruction
 ------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: a.0
+------ a.0
+------ mrd: a.0
+------ phi: a.1
+------ a.1
+------ mrd: a.1
+------ Not a phi instruction
+------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end
 ---------- phi: a.0
----------- V: 
+---------- V: add2
 ---------- Not a phi operand
 ---------- Not a tau operand
 ------ Recurse over Child 
@@ -284,23 +311,23 @@ Inserted Tau at : if.end
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0058 seconds (0.0059 wall clock)
+  Total Execution Time: 0.0071 seconds (0.0071 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0034 ( 59.1%)   0.0034 ( 59.1%)   0.0035 ( 59.8%)  HPSSAPass
-   0.0008 ( 14.7%)   0.0008 ( 14.7%)   0.0008 ( 14.5%)  VerifierPass
-   0.0008 ( 13.9%)   0.0008 ( 13.9%)   0.0008 ( 13.7%)  VerifierAnalysis
-   0.0006 ( 10.3%)   0.0006 ( 10.3%)   0.0006 ( 10.1%)  PrintModulePass
-   0.0001 (  1.1%)   0.0001 (  1.1%)   0.0001 (  1.1%)  PreservedCFGCheckerAnalysis
-   0.0001 (  0.9%)   0.0001 (  0.9%)   0.0001 (  0.9%)  DominatorTreeAnalysis
-   0.0058 (100.0%)   0.0058 (100.0%)   0.0059 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0011 ( 33.5%)   0.0033 ( 84.5%)   0.0044 ( 61.2%)   0.0044 ( 61.2%)  HPSSAPass
+   0.0007 ( 22.6%)   0.0002 (  5.3%)   0.0009 ( 13.2%)   0.0009 ( 13.2%)  VerifierPass
+   0.0007 ( 21.7%)   0.0002 (  5.1%)   0.0009 ( 12.7%)   0.0009 ( 12.7%)  VerifierAnalysis
+   0.0006 ( 17.2%)   0.0002 (  4.8%)   0.0007 ( 10.5%)   0.0007 ( 10.5%)  PrintModulePass
+   0.0001 (  3.2%)   0.0000 (  0.0%)   0.0001 (  1.5%)   0.0001 (  1.5%)  DominatorTreeAnalysis
+   0.0001 (  1.7%)   0.0000 (  0.3%)   0.0001 (  1.0%)   0.0001 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0032 (100.0%)   0.0039 (100.0%)   0.0071 (100.0%)   0.0071 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0025 seconds (0.0025 wall clock)
+  Total Execution Time: 0.0029 seconds (0.0029 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0021 (100.0%)   0.0004 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Parse IR
-   0.0021 (100.0%)   0.0004 (100.0%)   0.0025 (100.0%)   0.0025 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0029 (100.0%)   0.0029 (100.0%)   0.0029 (100.0%)  Parse IR
+   0.0029 (100.0%)   0.0029 (100.0%)   0.0029 (100.0%)  Total
 
