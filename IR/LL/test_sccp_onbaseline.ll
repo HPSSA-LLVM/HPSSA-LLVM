@@ -45,49 +45,66 @@ declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
 ; Function Attrs: mustprogress noinline norecurse uwtable
 define dso_local i32 @main() #4 {
-label_a:
+entry:
   %m = alloca i32, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
   %i = load i32, i32* %m, align 4
-  switch i32 %i, label %label_e [
-    i32 2, label %label_b
-    i32 4, label %label_c
-    i32 6, label %label_d
+  switch i32 %i, label %sw.default [
+    i32 2, label %sw.bb
+    i32 4, label %sw.bb1
+    i32 6, label %sw.bb4
   ]
 
-label_b:                                          ; preds = %label_a
-  br label %label_e
+sw.bb:                                            ; preds = %entry
+  br label %sw.epilog
 
-label_c:                                          ; preds = %label_a
-  br label %label_e
+sw.bb1:                                           ; preds = %entry
+  br label %sw.epilog
 
-label_d:                                          ; preds = %label_a
-  br label %label_e
+sw.bb4:                                           ; preds = %entry
+  br label %sw.epilog
 
-label_e:                                          ; preds = %label_d, %label_c, %label_b, %label_a
-  %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
-  br i1 false, label %label_g, label %label_f
+sw.default:                                       ; preds = %entry
+  br label %sw.epilog
 
-label_f:                                          ; preds = %label_e
-  switch i32 %x.0, label %label_g [
-    i32 2, label %label_h
+sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
+  %mul7 = mul nsw i32 2, %x.0
+  %add8 = add nsw i32 %mul7, 10
+  %add9 = add nsw i32 9, %x.0
+  %cmp = icmp sle i32 %add8, %add9
+  br i1 %cmp, label %if.end, label %if.else
+
+if.else:                                          ; preds = %sw.epilog
+  %mul10 = mul nsw i32 3, %x.0
+  %add11 = add nsw i32 %add8, %mul10
+  switch i32 %add11, label %if.end [
+    i32 200, label %sw.bb13
+    i32 300, label %sw.bb15
   ]
 
-label_g:                                          ; preds = %label_f, %label_e
+sw.bb13:                                          ; preds = %if.else
   br label %end
 
-label_h:                                          ; preds = %label_f
+sw.bb15:                                          ; preds = %if.else
+  unreachable
+
+if.end:                                           ; preds = %if.else, %sw.epilog
+  %add17 = add nsw i32 %add8, %x.0
+  store i32 %add17, i32* %m, align 4
   br label %end
 
-end:                                              ; preds = %label_h, %label_g
-  %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
-  %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
+end:                                              ; preds = %if.end, %sw.bb13
+  %add18 = add nsw i32 1, %x.0
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
 
 declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
+
+; Function Attrs: noreturn nounwind
+declare dso_local void @exit(i32) #5
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
@@ -101,6 +118,7 @@ attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protect
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
 attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

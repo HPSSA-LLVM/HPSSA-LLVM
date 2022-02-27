@@ -12,90 +12,110 @@ Merged overdefined into   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void 
 Popped off OI-WL:   %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3
 RESOLVING UNDEFs
 SCCP on function 'main'
-Marking Block Executable: label_a
+Marking Block Executable: entry
 
 Popped off BBWL: 
-label_a:
+entry:
   %m = alloca i32, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
   %i = load i32, i32* %m, align 4
-  switch i32 %i, label %label_e [
-    i32 2, label %label_b
-    i32 4, label %label_c
-    i32 6, label %label_d
+  switch i32 %i, label %sw.default [
+    i32 2, label %sw.bb
+    i32 4, label %sw.bb1
+    i32 6, label %sw.bb4
   ]
 
 SCCP: Don't know how to handle:   %m = alloca i32, align 4
 markOverdefined:   %m = alloca i32, align 4
 Merged overdefined into   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m) : overdefined
 Merged overdefined into   %i = load i32, i32* %m, align 4 : overdefined
-Marking Block Executable: label_e
-Marking Block Executable: label_b
-Marking Block Executable: label_c
-Marking Block Executable: label_d
+Marking Block Executable: sw.default
+Marking Block Executable: sw.bb
+Marking Block Executable: sw.bb1
+Marking Block Executable: sw.bb4
 
 Popped off BBWL: 
-label_d:                                          ; preds = %label_a
-  br label %label_e
+sw.bb4:                                           ; preds = %entry
+  %mul5 = mul nsw i32 2, 1
+  %add6 = add nsw i32 %mul5, 1
+  br label %sw.epilog
 
-Marking Edge Executable: label_d -> label_e
-Merged constantrange<1, 3> into   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ] : constantrange<1, 3>
-
-Popped off BBWL: 
-label_c:                                          ; preds = %label_a
-  br label %label_e
-
-Marking Edge Executable: label_c -> label_e
-Merged constantrange<1, 6> into   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ] : constantrange<1, 6>
+Merged constantrange<2, 3> into   %mul5 = mul nsw i32 2, 1 : constantrange<2, 3>
+Merged constantrange<3, 4> into   %add6 = add nsw i32 %mul5, 1 : constantrange<3, 4>
+Marking Block Executable: sw.epilog
 
 Popped off BBWL: 
-label_b:                                          ; preds = %label_a
-  br label %label_e
+sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+  %mul7 = mul nsw i32 2, %x.0
+  %add8 = add nsw i32 %mul7, 10
+  %add9 = add nsw i32 9, %x.0
+  %cmp = icmp sle i32 %add8, %add9
+  br i1 %cmp, label %if.end, label %if.else
 
-Marking Edge Executable: label_b -> label_e
+Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 4>
+Merged constantrange<6, 7> into   %mul7 = mul nsw i32 2, %x.0 : constantrange<6, 7>
+Merged constantrange<16, 17> into   %add8 = add nsw i32 %mul7, 10 : constantrange<16, 17>
+Merged constantrange<12, 13> into   %add9 = add nsw i32 9, %x.0 : constantrange<12, 13>
+Merged constantrange<0, -1> into   %cmp = icmp sle i32 %add8, %add9 : constantrange<0, -1>
+Marking Block Executable: if.else
 
 Popped off BBWL: 
-label_e:                                          ; preds = %label_d, %label_c, %label_b, %label_a
-  %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
-  %cmp = icmp sge i32 %x.0, 1000
-  br i1 %cmp, label %label_g, label %label_f
-
-Merged constantrange<0, -1> into   %cmp = icmp sge i32 %x.0, 1000 : constantrange<0, -1>
-Marking Block Executable: label_f
-
-Popped off BBWL: 
-label_f:                                          ; preds = %label_e
-  switch i32 %x.0, label %label_g [
-    i32 2, label %label_h
+if.else:                                          ; preds = %sw.epilog
+  %mul10 = mul nsw i32 3, %x.0
+  %add11 = add nsw i32 %add8, %mul10
+  switch i32 %add11, label %if.end [
+    i32 200, label %sw.bb13
+    i32 300, label %sw.bb15
   ]
 
-Marking Block Executable: label_g
-Marking Block Executable: label_h
+Merged constantrange<9, 10> into   %mul10 = mul nsw i32 3, %x.0 : constantrange<9, 10>
+Merged constantrange<25, 26> into   %add11 = add nsw i32 %add8, %mul10 : constantrange<25, 26>
+Marking Block Executable: if.end
 
 Popped off BBWL: 
-label_h:                                          ; preds = %label_f
+if.end:                                           ; preds = %if.else, %sw.epilog
+  %add17 = add nsw i32 %add8, %x.0
+  store i32 %add17, i32* %m, align 4
   br label %end
 
+Merged constantrange<19, 20> into   %add17 = add nsw i32 %add8, %x.0 : constantrange<19, 20>
 Marking Block Executable: end
 
 Popped off BBWL: 
-end:                                              ; preds = %label_h, %label_g
-  %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
-  %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
+end:                                              ; preds = %if.end, %sw.bb13
+  %add18 = add nsw i32 1, %x.0
   ret i32 0
 
-Merged overdefined into   %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0) : overdefined
-Merged overdefined into   %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0) : overdefined
+Merged constantrange<4, 5> into   %add18 = add nsw i32 1, %x.0 : constantrange<4, 5>
 
 Popped off BBWL: 
-label_g:                                          ; preds = %label_f, %label_e
-  br label %end
+sw.bb1:                                           ; preds = %entry
+  %mul2 = mul nsw i32 2, 1
+  %add3 = add nsw i32 %mul2, 5
+  br label %sw.epilog
 
-Marking Edge Executable: label_g -> end
+Merged constantrange<2, 3> into   %mul2 = mul nsw i32 2, 1 : constantrange<2, 3>
+Merged constantrange<7, 8> into   %add3 = add nsw i32 %mul2, 5 : constantrange<7, 8>
+Marking Edge Executable: sw.bb1 -> sw.epilog
+Merged constantrange<3, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 8>
 
-Popped off OI-WL:   %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
+Popped off BBWL: 
+sw.bb:                                            ; preds = %entry
+  %mul = mul nsw i32 2, 1
+  %add = add nsw i32 %mul, 5
+  br label %sw.epilog
 
-Popped off OI-WL:   %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
+Merged constantrange<2, 3> into   %mul = mul nsw i32 2, 1 : constantrange<2, 3>
+Merged constantrange<7, 8> into   %add = add nsw i32 %mul, 5 : constantrange<7, 8>
+Marking Edge Executable: sw.bb -> sw.epilog
+
+Popped off BBWL: 
+sw.default:                                       ; preds = %entry
+  br label %sw.epilog
+
+Marking Edge Executable: sw.default -> sw.epilog
+Merged constantrange<2, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<2, 8>
 
 Popped off OI-WL:   %i = load i32, i32* %m, align 4
 
@@ -103,13 +123,82 @@ Popped off OI-WL:   %call = call nonnull align 8 dereferenceable(16) %"class.std
 
 Popped off OI-WL:   %m = alloca i32, align 4
 
-Popped off I-WL:   %cmp = icmp sge i32 %x.0, 1000
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+Merged constantrange<3, 9> into   %add18 = add nsw i32 1, %x.0 : constantrange<3, 9>
+Merged constantrange<18, 24> into   %add17 = add nsw i32 %add8, %x.0 : constantrange<18, 24>
+Merged constantrange<6, 22> into   %mul10 = mul nsw i32 3, %x.0 : constantrange<6, 22>
+Merged constantrange<11, 17> into   %add9 = add nsw i32 9, %x.0 : constantrange<11, 17>
+Merged constantrange<4, 15> into   %mul7 = mul nsw i32 2, %x.0 : constantrange<4, 15>
 
-Popped off I-WL:   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+Popped off I-WL:   %mul7 = mul nsw i32 2, %x.0
+Merged constantrange<14, 25> into   %add8 = add nsw i32 %mul7, 10 : constantrange<14, 25>
 
-Popped off I-WL:   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+Popped off I-WL:   %add8 = add nsw i32 %mul7, 10
+Merged constantrange<16, 32> into   %add17 = add nsw i32 %add8, %x.0 : constantrange<16, 32>
+Merged constantrange<20, 46> into   %add11 = add nsw i32 %add8, %mul10 : constantrange<20, 46>
+markOverdefined:   %cmp = icmp sle i32 %add8, %add9
+
+Popped off I-WL:   %add11 = add nsw i32 %add8, %mul10
+
+Popped off I-WL:   %add17 = add nsw i32 %add8, %x.0
+
+Popped off I-WL:   %add9 = add nsw i32 9, %x.0
+
+Popped off I-WL:   %mul10 = mul nsw i32 3, %x.0
+
+Popped off I-WL:   %add17 = add nsw i32 %add8, %x.0
+
+Popped off I-WL:   %add18 = add nsw i32 1, %x.0
+
+Popped off I-WL:   %add = add nsw i32 %mul, 5
+
+Popped off I-WL:   %mul = mul nsw i32 2, 1
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+
+Popped off I-WL:   %add3 = add nsw i32 %mul2, 5
+
+Popped off I-WL:   %mul2 = mul nsw i32 2, 1
+
+Popped off I-WL:   %add18 = add nsw i32 1, %x.0
+
+Popped off I-WL:   %add17 = add nsw i32 %add8, %x.0
+
+Popped off I-WL:   %add11 = add nsw i32 %add8, %mul10
+
+Popped off I-WL:   %mul10 = mul nsw i32 3, %x.0
+
+Popped off I-WL:   %cmp = icmp sle i32 %add8, %add9
+
+Popped off I-WL:   %add9 = add nsw i32 9, %x.0
+
+Popped off I-WL:   %add8 = add nsw i32 %mul7, 10
+
+Popped off I-WL:   %mul7 = mul nsw i32 2, %x.0
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+
+Popped off I-WL:   %add6 = add nsw i32 %mul5, 1
+
+Popped off I-WL:   %mul5 = mul nsw i32 2, 1
+
+Popped off OI-WL:   %cmp = icmp sle i32 %add8, %add9
+Marking Edge Executable: sw.epilog -> if.end
 RESOLVING UNDEFs
-  Constant: i1 false =   %cmp = icmp sge i32 %x.0, 1000
+  Constant: i32 2 =   %mul = mul nsw i32 2, 1
+  Constant: i32 7 =   %add = add nsw i32 2, 5
+  Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
+  Constant: i32 7 =   %add3 = add nsw i32 2, 5
+  Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
+  Constant: i32 3 =   %add6 = add nsw i32 2, 1
+  BasicBlock Dead:
+sw.bb13:                                          ; preds = %if.else
+  %call14 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
+  br label %end
+  BasicBlock Dead:
+sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #6
+  unreachable
 SCCP on function '_GLOBAL__sub_I_test.cpp'
 Marking Block Executable: entry
 
@@ -122,23 +211,23 @@ RESOLVING UNDEFs
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0084 seconds (0.0084 wall clock)
+  Total Execution Time: 0.0123 seconds (0.0123 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0058 ( 71.7%)   0.0000 (  2.0%)   0.0058 ( 69.6%)   0.0058 ( 69.7%)  SCCPPass
-   0.0008 (  9.4%)   0.0001 ( 48.8%)   0.0009 ( 10.6%)   0.0009 ( 10.6%)  VerifierPass
-   0.0007 (  9.0%)   0.0001 ( 46.9%)   0.0009 ( 10.2%)   0.0009 ( 10.2%)  VerifierAnalysis
-   0.0007 (  9.1%)   0.0000 (  0.0%)   0.0007 (  8.8%)   0.0007 (  8.6%)  PrintModulePass
-   0.0001 (  0.6%)   0.0000 (  1.6%)   0.0001 (  0.6%)   0.0001 (  0.7%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.3%)   0.0000 (  0.8%)   0.0000 (  0.3%)   0.0000 (  0.3%)  TargetLibraryAnalysis
-   0.0081 (100.0%)   0.0003 (100.0%)   0.0084 (100.0%)   0.0084 (100.0%)  Total
+   0.0091 ( 73.7%)   0.0000 (  0.0%)   0.0091 ( 73.7%)   0.0091 ( 73.7%)  SCCPPass
+   0.0012 ( 10.1%)   0.0000 (100.0%)   0.0012 ( 10.1%)   0.0012 ( 10.1%)  VerifierPass
+   0.0012 (  9.8%)   0.0000 (  0.0%)   0.0012 (  9.8%)   0.0012 (  9.8%)  VerifierAnalysis
+   0.0007 (  5.7%)   0.0000 (  0.0%)   0.0007 (  5.7%)   0.0007 (  5.7%)  PrintModulePass
+   0.0001 (  0.5%)   0.0000 (  0.0%)   0.0001 (  0.5%)   0.0001 (  0.5%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.2%)   0.0000 (  0.0%)   0.0000 (  0.2%)   0.0000 (  0.2%)  TargetLibraryAnalysis
+   0.0123 (100.0%)   0.0000 (100.0%)   0.0123 (100.0%)   0.0123 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0035 seconds (0.0035 wall clock)
+  Total Execution Time: 0.0039 seconds (0.0039 wall clock)
 
    ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0035 (100.0%)   0.0035 (100.0%)   0.0035 (100.0%)  Parse IR
-   0.0035 (100.0%)   0.0035 (100.0%)   0.0035 (100.0%)  Total
+   0.0039 (100.0%)   0.0039 (100.0%)   0.0039 (100.0%)  Parse IR
+   0.0039 (100.0%)   0.0039 (100.0%)   0.0039 (100.0%)  Total
 

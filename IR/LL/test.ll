@@ -51,98 +51,106 @@ entry:
   %m = alloca i32, align 4
   %y = alloca i32, align 4
   %z = alloca i32, align 4
+  %c = alloca i32, align 4
   store i32 0, i32* %retval, align 4
   store i32 2, i32* %x, align 4
+  store i32 9, i32* %z, align 4
+  store i32 1, i32* %c, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
   %0 = load i32, i32* %m, align 4
   switch i32 %0, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
-    i32 6, label %sw.bb2
+    i32 6, label %sw.bb4
   ]
 
 sw.bb:                                            ; preds = %entry
-  br label %label_b
+  %1 = load i32, i32* %c, align 4
+  %mul = mul nsw i32 2, %1
+  %add = add nsw i32 %mul, 5
+  store i32 %add, i32* %x, align 4
+  br label %sw.epilog
 
 sw.bb1:                                           ; preds = %entry
-  br label %label_c
+  %2 = load i32, i32* %c, align 4
+  %mul2 = mul nsw i32 2, %2
+  %add3 = add nsw i32 %mul2, 5
+  store i32 %add3, i32* %x, align 4
+  br label %sw.epilog
 
-sw.bb2:                                           ; preds = %entry
-  br label %label_d
+sw.bb4:                                           ; preds = %entry
+  %3 = load i32, i32* %c, align 4
+  %mul5 = mul nsw i32 2, %3
+  %add6 = add nsw i32 %mul5, 1
+  store i32 %add6, i32* %x, align 4
+  br label %sw.epilog
 
 sw.default:                                       ; preds = %entry
-  br label %label_e
+  br label %sw.epilog
 
-label_b:                                          ; preds = %sw.bb
-  store i32 5, i32* %x, align 4
-  br label %label_e
-
-label_c:                                          ; preds = %sw.bb1
-  store i32 5, i32* %x, align 4
-  br label %label_e
-
-label_d:                                          ; preds = %sw.bb2
-  store i32 1, i32* %x, align 4
-  br label %label_e
-
-label_e:                                          ; preds = %label_d, %label_c, %label_b, %sw.default
-  %1 = load i32, i32* %x, align 4
-  store i32 %1, i32* %y, align 4
-  %2 = load i32, i32* %y, align 4
-  %cmp = icmp sge i32 %2, 1000
+sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %4 = load i32, i32* %x, align 4
+  %mul7 = mul nsw i32 2, %4
+  %add8 = add nsw i32 %mul7, 10
+  store i32 %add8, i32* %y, align 4
+  %5 = load i32, i32* %y, align 4
+  %6 = load i32, i32* %z, align 4
+  %7 = load i32, i32* %x, align 4
+  %add9 = add nsw i32 %6, %7
+  %cmp = icmp sle i32 %5, %add9
   br i1 %cmp, label %if.then, label %if.else
 
-if.then:                                          ; preds = %label_e
-  br label %label_g
+if.then:                                          ; preds = %sw.epilog
+  br label %if.end
 
-if.else:                                          ; preds = %label_e
-  br label %label_f
-
-label_f:                                          ; preds = %if.else
-  %3 = load i32, i32* %x, align 4
-  store i32 %3, i32* %z, align 4
-  %4 = load i32, i32* %z, align 4
-  switch i32 %4, label %sw.default5 [
-    i32 2, label %sw.bb3
-    i32 4, label %sw.bb4
+if.else:                                          ; preds = %sw.epilog
+  %8 = load i32, i32* %y, align 4
+  %9 = load i32, i32* %x, align 4
+  %mul10 = mul nsw i32 3, %9
+  %add11 = add nsw i32 %8, %mul10
+  store i32 %add11, i32* %z, align 4
+  %10 = load i32, i32* %z, align 4
+  switch i32 %10, label %sw.default12 [
+    i32 200, label %sw.bb13
+    i32 300, label %sw.bb15
   ]
 
-sw.bb3:                                           ; preds = %label_f
-  br label %label_g
+sw.default12:                                     ; preds = %if.else
+  br label %sw.epilog16
 
-label_g:                                          ; preds = %sw.bb3, %if.then
-  %5 = load i32, i32* %x, align 4
-  store i32 %5, i32* %y, align 4
-  br label %label_j
-
-sw.bb4:                                           ; preds = %label_f
-  br label %label_h
-
-label_h:                                          ; preds = %sw.bb4
-  br label %label_j
-
-sw.default5:                                      ; preds = %label_f
-  br label %label_i
-
-label_i:                                          ; preds = %sw.default5
+sw.bb13:                                          ; preds = %if.else
+  %11 = load i32, i32* %x, align 4
+  %call14 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %11)
   br label %end
 
-label_j:                                          ; preds = %label_h, %label_g
-  %6 = load i32, i32* %x, align 4
-  store i32 %6, i32* %y, align 4
+sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #6
+  unreachable
+
+sw.epilog16:                                      ; preds = %sw.default12
+  br label %if.end
+
+if.end:                                           ; preds = %sw.epilog16, %if.then
+  %12 = load i32, i32* %y, align 4
+  %13 = load i32, i32* %x, align 4
+  %add17 = add nsw i32 %12, %13
+  store i32 %add17, i32* %m, align 4
   br label %end
 
-end:                                              ; preds = %label_j, %label_i
-  %7 = load i32, i32* %x, align 4
-  %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %7)
-  %8 = load i32, i32* %y, align 4
-  %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %8)
+end:                                              ; preds = %if.end, %sw.bb13
+  %14 = load i32, i32* %c, align 4
+  %15 = load i32, i32* %x, align 4
+  %add18 = add nsw i32 %14, %15
+  store i32 %add18, i32* %z, align 4
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
 
 declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
+
+; Function Attrs: noreturn nounwind
+declare dso_local void @exit(i32) #5
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
@@ -156,6 +164,8 @@ attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protect
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
 attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

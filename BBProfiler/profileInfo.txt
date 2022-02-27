@@ -1,7 +1,7 @@
 3
 6
-label_a label_d label_e label_f label_h end
+entry sw.bb sw.epilog if.then if.end end
 6
-label_a label_c label_e label_f label_g end
-5
-label_a label_b label_e label_g end
+entry sw.bb1 sw.epilog if.else if.end end
+6
+entry sw.bb4 sw.epilog if.else sw.bb13 end

@@ -5,58 +5,30 @@
 // entry sw.bb1 label_4 end if.else if.end
 
 int main() {
-  int x = 2, m, y;
+  int x = 2, m, y, z = 9, c = 1;
   std::cin >> m;
   switch(m) {   
-    case 2 : goto label_b; break;
-    case 4 : goto label_c; break;
-    case 6 : goto label_d; break;
-    default : goto label_e; break;
+    case 2 : x = 2 * c + 5; break;
+    case 4 : x = 2 * c + 5; break;
+    case 6 : x = 2 * c + 1; break;
+    default : break;
   }
   
-  label_b:
-    x = 5;
-    goto label_e;
-  
-  label_c:
-    x = 5;
-    goto label_e;
+  y = 2 * x + 10;
 
-  label_d:
-    x = 1;
-    goto label_e;
-
-  label_e:
-    y = x;
-    if (y >= 1000) {
-      goto label_g;
-    } else {
-      label_f:
-        int z;
-        z = x;
-        switch(z) {   
-          case 2 : {
-          label_g:
-            y = x;
-            goto label_j;
-          }
-          case 4 : {
-          label_h:
-            goto label_j;
-          }
-          default: {
-          label_i:
-            goto end;
-          }
-        }
+  if (y <= z + x) {
+  } else {
+    z = y + 3 * x;
+    switch (z) {
+      default : break;
+      case 200 : std::cout << x ; goto end;
+      case 300 : exit(0);
     }
-  
-  label_j:
-    y = x;
-    goto end;
-  
+  }
+
+  m = y + x;  
   end:
-    std::cout << x << y;
+    z = c + x;
 
   return 0;
 }

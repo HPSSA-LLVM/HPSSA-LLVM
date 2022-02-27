@@ -18,7 +18,7 @@ build: src/SCCPSolverTau.cpp src/SCCPTau.cpp include/SpecValueLattice.h
 	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
 	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
 
-test: build BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
+test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	# use the same test case which was profiled 
 	cp BBProfiler/tests/test.cpp tests/test.cpp
 	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
@@ -26,9 +26,9 @@ test: build BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 runpass:  
-	# $(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
-	# 	IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
-	# 	-f 2> output/custom_hpssa.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
+		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
+		-f 2> output/custom_hpssa.log
 	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
 	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
 		-time-passes -debug-only=tausccp IR/LL/test_hpssa.ll -S -o IR/LL/test_spec_sccp.ll \
