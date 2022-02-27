@@ -1,5 +1,6 @@
-\documentclass[aspectratio=169]{beamer}
-\usetheme{Frankfurt}
+\documentclass[aspectratio=169, compress]{beamer}
+\usetheme{Warsaw}
+\setbeamertemplate{headline}{}
 \usepackage{tikz}
 \usepackage{minted}
 \usepackage{pdfpages}
@@ -25,7 +26,7 @@
 
 \subtitle{Algorithms \& Applications}
 
-\author[VIP1 \& VIP2] % (optional, for multiple authors)
+\author[Profile Guided Optimizations using HPSSA Form in LLVM] % (optional, for multiple authors)
 {IIT Kanpur \\ Dept. Of Computer Science \& Engineering}
 
 \institute[IDK] % (optional)
@@ -329,13 +330,13 @@ int main() {
 \begin{frame}{SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=8.5cm,height=7.81cm]{baseline.pdf}
+	\includegraphics[width=9.5cm,height=8cm]{baseline.pdf}
 \end{frame}
 
 \begin{frame}{Hot Path SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=8.5cm,height=8.35cm]{afterHPSSA.pdf}
+	\includegraphics[width=9.2cm,height=8.6cm]{afterHPSSA.pdf}
 \end{frame}
 
 \begin{frame}
