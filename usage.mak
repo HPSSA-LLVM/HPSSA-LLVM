@@ -25,24 +25,26 @@ test: build BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
-runpass: test build  
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
-		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
-		-f 2> output/custom_hpssa.log
+runpass:  
+	# $(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
+	# 	IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
+	# 	-f 2> output/custom_hpssa.log
 	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
 	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
-		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_spec_sccp.ll \
+		-time-passes -debug-only=tausccp IR/LL/test_hpssa.ll -S -o IR/LL/test_spec_sccp.ll \
 		-f 2> output/custom_speculative_sccp.log
 	$(BUILD_PATH)/opt -sccp -time-passes -debug-only=sccp IR/LL/test_hpssa.ll -S -o IR/LL/test_sccp_onhpssa.ll \
 		-f 2> output/custom_sccp_onhpssa.log
 	$(BUILD_PATH)/opt -sccp -time-passes -debug-only=sccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_sccp_onbaseline.ll \
 		-f 2> output/custom_sccp_onbaseline.log
 
-cfg: test runpass build
+cfg:
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot baseline.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -enable-new-pm=0 -disable-output
 	mv .main.dot afterHPSSA.dot
+	mv *.dot IR/cfg/
+	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_spec_sccp.ll -enable-new-pm=0 -disable-output
 	mv .main.dot specSCCP_HPSSA.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_sccp_onhpssa.ll -enable-new-pm=0 -disable-output

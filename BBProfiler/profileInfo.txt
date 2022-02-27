@@ -1,5 +1,7 @@
-2
+3
 6
-entry sw.bb1 label_4 end if.else if.end
+label_a label_d label_e label_f label_h end
 6
-entry sw.default label_5 end if.then if.end
+label_a label_c label_e label_f label_g end
+5
+label_a label_b label_e label_g end

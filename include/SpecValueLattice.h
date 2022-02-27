@@ -498,6 +498,7 @@ public:
     }
 
     if (isUnknown()) {
+      LLVM_DEBUG(dbgs() << "\t\tUnknown LHS\n");
       assert(!RHS.isUnknown() && "Unknow RHS should be handled earlier");
       *this = RHS;
       return true;
@@ -585,11 +586,10 @@ static_assert(sizeof(SpecValueLatticeElement) <= 48,
 raw_ostream &operator<<(raw_ostream &OS, const SpecValueLatticeElement &Val) {
   
   if (Val.isSpeculativeConstant()) {
-    OS << "speculative constant, ";
     if (Val.isConstant()) 
-      return OS << "constant<" << *Val.getConstant() << ">";
+      return OS << "speculative constant<" << *Val.getConstant() << ">";
     if (Val.isConstantRange())
-      return OS << "constantrange<" << Val.getConstantRange().getLower() << ", "
+      return OS << "speculative constantrange<" << Val.getConstantRange().getLower() << ", "
         << Val.getConstantRange().getUpper() << ">";
   }
   

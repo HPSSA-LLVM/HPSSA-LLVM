@@ -1,522 +1,215 @@
-----------===Caloric Connector and BuddySet Information===----------
-entry: {1 1 } 
-sw.bb1: { 1 0 } 
-label_4: { 1 0 } 
-sw.bb: 
-label_3: 
-sw.default: { 0 1 } 
-label_5: { 0 1 } 
-end is a Caloric Connector
-end: { 0 1 } { 1 0 } 
-if.else is a Caloric Connector
-if.else: { 1 0 } 
-if.then is a Caloric Connector
-if.then: { 0 1 } 
-if.end: { 1 0 } { 0 1 } 
-----------===Initiating Tau Insertion Algroithm===----------
-Inserted Tau at : end
-Inserted Tau at : if.else
-Inserted Tau at : if.then
--- BB: entry
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: sw.default
--------- Succ: sw.bb
--------- Succ: sw.bb1
------- Recurse over Child 
--------- Parent: entry | Child: sw.default
--- BB: sw.default
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: label_5
------- Recurse over Child 
--------- Parent: sw.default | Child: label_5
--- BB: label_5
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: end
----------- phi: e.0
----------- V: add
----------- Not a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
------- Remove definitions if needed
--------- Parent: entry | Child: end
--- BB: end
----- I: ---- attempt to renaming uses in I
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: if.then
--------- Succ: if.else
------- Recurse over Child 
--------- Parent: end | Child: if.then
--- BB: if.then
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau2
------- mrd: tau2
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau2
------- mrd: tau2
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: if.end
----------- phi: a.0
----------- V: add6
----------- Not a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: tau2
----------- mrd changed
--------- Parent: end | Child: if.end
--- BB: if.end
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: tau
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- Parent: end | Child: if.else
--- BB: if.else
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau
------- mrd: tau
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- tau1
------- mrd: tau1
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: if.end
----------- phi: a.0
----------- V: add7
----------- Not a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: tau1
----------- mrd changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: tau
----------- mrd changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- Parent: entry | Child: sw.bb
--- BB: sw.bb
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: label_3
------- Recurse over Child 
--------- Parent: sw.bb | Child: label_3
--- BB: label_3
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: end
----------- phi: e.0
----------- V: mul
----------- Not a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
--------- Parent: entry | Child: sw.bb1
--- BB: sw.bb1
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: label_4
------- Recurse over Child 
--------- Parent: sw.bb1 | Child: label_4
--- BB: label_4
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: e.0
------- e.0
------- mrd: e.0
------- phi: a.0
------- a.0
------- mrd: a.0
------- Not a phi instruction
------- Not a tau instruction
------- Succesor Logic
--------- Succ: end
----------- phi: e.0
----------- V: mul2
----------- Not a phi operand
----------- Not a tau operand
------- Recurse over Child 
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
------- Remove definitions if needed
--------- phi: e.0 mrd: e.0
----------- mrd not changed
--------- phi: a.0 mrd: a.0
----------- mrd not changed
 Speculative SCCP on function 'main'
-Marking Block Executable: entry
+Marking Block Executable: label_a
 
 Popped off BBWL: 
-entry:
-  switch i32 undef, label %sw.default [
-    i32 2, label %sw.bb
-    i32 4, label %sw.bb1
+label_a:
+  %m = alloca i32, align 4
+  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+  %i = load i32, i32* %m, align 4
+  switch i32 %i, label %label_e [
+    i32 2, label %label_b
+    i32 4, label %label_c
+    i32 6, label %label_d
   ]
 
-	[Taulog] Visiting Other Instruction :   switch i32 undef, label %sw.default [
-    i32 2, label %sw.bb
-    i32 4, label %sw.bb1
+	[Taulog] Visiting Other Instruction :   %m = alloca i32, align 4
+Spec SCCP: Don't know how to handle:   %m = alloca i32, align 4
+markOverdefined:   %m = alloca i32, align 4
+	[Taulog] Visiting Call Instruction :   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+Merged overdefined into   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m) : overdefined
+	[Taulog] Visiting Other Instruction :   %i = load i32, i32* %m, align 4
+Merged overdefined into   %i = load i32, i32* %m, align 4 : overdefined
+	[Taulog] Visiting Other Instruction :   switch i32 %i, label %label_e [
+    i32 2, label %label_b
+    i32 4, label %label_c
+    i32 6, label %label_d
   ]
-RESOLVING UNDEFs
-Marking Block Executable: sw.bb
+Marking Block Executable: label_e
+Marking Block Executable: label_b
+Marking Block Executable: label_c
+Marking Block Executable: label_d
 
 Popped off BBWL: 
-sw.bb:                                            ; preds = %entry
-  br label %label_3
+label_d:                                          ; preds = %label_a
+  br label %label_e
 
-	[Taulog] Visiting Other Instruction :   br label %label_3
-Marking Block Executable: label_3
+	[Taulog] Visiting Other Instruction :   br label %label_e
+Marking Edge Executable: label_d -> label_e
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<1, 3> into   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ] : constantrange<1, 3>
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<1, 3>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 1, constantrange<1, 2>
+		Meet over Ops : Beta constantrange<1, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau : speculative constantrange<1, 6>
 
 Popped off BBWL: 
-label_3:                                          ; preds = %sw.bb
-  %mul = mul nsw i32 10, 10
+label_c:                                          ; preds = %label_a
+  br label %label_e
+
+	[Taulog] Visiting Other Instruction :   br label %label_e
+Marking Edge Executable: label_c -> label_e
+Marking Spec PHINode exec.
+Merged constantrange<1, 6> into   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ] : constantrange<1, 6>
+		Tau State init : speculative constantrange<1, 6>
+		x0 (phi-state) x.0 : constantrange<1, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 1, constantrange<1, 2>
+		Meet over Ops : Beta constantrange<1, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau : speculative constantrange<1, 6>
+
+Popped off BBWL: 
+label_b:                                          ; preds = %label_a
+  br label %label_e
+
+	[Taulog] Visiting Other Instruction :   br label %label_e
+Marking Edge Executable: label_b -> label_e
+Marking Spec PHINode exec.
+		Tau State init : speculative constantrange<1, 6>
+		x0 (phi-state) x.0 : constantrange<1, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 1, constantrange<1, 2>
+		Meet over Ops : Beta constantrange<1, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau : speculative constantrange<1, 6>
+
+Popped off BBWL: 
+label_e:                                          ; preds = %label_d, %label_c, %label_b, %label_a
+  %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+  %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5, i32 1)
+  %cmp = icmp sge i32 %tau, 1000
+  br i1 %cmp, label %label_g, label %label_f
+
+	[Taulog] Visiting Other Instruction :   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+Marking Spec PHINode exec.
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5, i32 1))
+		Tau State init : speculative constantrange<1, 6>
+		x0 (phi-state) x.0 : constantrange<1, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 1, constantrange<1, 2>
+		Meet over Ops : Beta constantrange<1, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau : speculative constantrange<1, 6>
+	[Taulog] Visiting Other Instruction :   %cmp = icmp sge i32 %tau, 1000
+		Unknown LHS
+Merged constantrange<0, -1> into   %cmp = icmp sge i32 %tau, 1000 : constantrange<0, -1>
+	[Taulog] Visiting Other Instruction :   br i1 %cmp, label %label_g, label %label_f
+Marking Block Executable: label_f
+
+Popped off BBWL: 
+label_f:                                          ; preds = %label_e
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 1)
+  switch i32 %tau1, label %label_g [
+    i32 2, label %label_h
+  ]
+
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau1 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 1))
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<1, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 1, constantrange<1, 2>
+		Meet over Ops : Beta constantrange<1, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau1 : speculative constantrange<1, 6>
+	[Taulog] Visiting Other Instruction :   switch i32 %tau1, label %label_g [
+    i32 2, label %label_h
+  ]
+Marking Block Executable: label_g
+Marking Block Executable: label_h
+
+Popped off BBWL: 
+label_h:                                          ; preds = %label_f
   br label %end
 
-	[Taulog] Visiting Other Instruction :   %mul = mul nsw i32 10, 10
-Merged constantrange<100, 101> into   %mul = mul nsw i32 10, 10 : constantrange<100, 101>
 	[Taulog] Visiting Other Instruction :   br label %end
 Marking Block Executable: end
 
 Popped off BBWL: 
-end:                                              ; preds = %label_5, %label_4, %label_3
-  %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add)
-  %add4 = add nsw i32 1000, %tau
-  %add5 = add nsw i32 %add4, 100
-  %cmp = icmp sge i32 %add5, 100
-  br i1 %cmp, label %if.then, label %if.else
-
-	[Taulog] Visiting Other Instruction :   %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
-Marking Spec PHINode exec.
-Merged constantrange<100, 101> into   %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ] : constantrange<100, 101>
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add))
-		Tau State init : unknown
-		x0 (phi-state) e.0 : constantrange<100, 101>
-		Tau Operand (L) : mul2, unknown
-		Tau Operand (L) : add, unknown
-		Meet over Ops : Beta unknown
-Merged constantrange<100, 101> into   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add) : constantrange<100, 101>
-		ValueLattice (TauState) tau : constantrange<100, 101>, 0
-	[Taulog] Visiting Other Instruction :   %add4 = add nsw i32 1000, %tau
-Merged constantrange<1100, 1101> into   %add4 = add nsw i32 1000, %tau : constantrange<1100, 1101>
-	[Taulog] Visiting Other Instruction :   %add5 = add nsw i32 %add4, 100
-Merged constantrange<1200, 1201> into   %add5 = add nsw i32 %add4, 100 : constantrange<1200, 1201>
-	[Taulog] Visiting Other Instruction :   %cmp = icmp sge i32 %add5, 100
-Merged constantrange<-1, 0> into   %cmp = icmp sge i32 %add5, 100 : constantrange<-1, 0>
-	[Taulog] Visiting Other Instruction :   br i1 %cmp, label %if.then, label %if.else
-Marking Block Executable: if.then
-
-Popped off BBWL: 
-if.then:                                          ; preds = %end
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add)
-  %add6 = add nsw i32 %tau2, 779
-  br label %if.end
-
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add))
-		Tau State init : unknown
-		x0 (phi-state) tau : constantrange<100, 101>
-		Tau Operand (L) : add, unknown
-		Meet over Ops : Beta unknown
-Merged constantrange<100, 101> into   %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add) : constantrange<100, 101>
-		ValueLattice (TauState) tau2 : constantrange<100, 101>, 0
-	[Taulog] Visiting Other Instruction :   %add6 = add nsw i32 %tau2, 779
-Merged constantrange<879, 880> into   %add6 = add nsw i32 %tau2, 779 : constantrange<879, 880>
-	[Taulog] Visiting Other Instruction :   br label %if.end
-Marking Block Executable: if.end
-
-Popped off BBWL: 
-if.end:                                           ; preds = %if.else, %if.then
-  %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-  %add8 = add nsw i32 %a.0, 1
+end:                                              ; preds = %label_h, %label_g
+  %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
+  %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
   ret i32 0
 
-	[Taulog] Visiting Other Instruction :   %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-Marking Spec PHINode exec.
-Merged constantrange<879, 880> into   %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ] : constantrange<879, 880>
-	[Taulog] Visiting Other Instruction :   %add8 = add nsw i32 %a.0, 1
-Merged constantrange<880, 881> into   %add8 = add nsw i32 %a.0, 1 : constantrange<880, 881>
+	[Taulog] Visiting Call Instruction :   %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
+Merged overdefined into   %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0) : overdefined
+	[Taulog] Visiting Call Instruction :   %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
+Merged overdefined into   %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0) : overdefined
 	[Taulog] Visiting Other Instruction :   ret i32 0
 
-Popped off I-WL:   %add8 = add nsw i32 %a.0, 1
-
-Popped off I-WL:   %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-
-Popped off I-WL:   %add6 = add nsw i32 %tau2, 779
-Marking Spec PHINode exec.
-
-Popped off I-WL:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add)
-
-Popped off I-WL:   %cmp = icmp sge i32 %add5, 100
-
-Popped off I-WL:   %add5 = add nsw i32 %add4, 100
-
-Popped off I-WL:   %add4 = add nsw i32 1000, %tau
-
-Popped off I-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add)
-Merged overdefined into   %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add) : overdefined
-
-Popped off I-WL:   %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
-Merged overdefined into   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add) : overdefined
-
-Popped off I-WL:   %mul = mul nsw i32 10, 10
-Marking Spec PHINode exec.
-
-Popped off OI-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %e.0, i32 %mul2, i32 %add)
-Merged overdefined into   %add4 = add nsw i32 1000, %tau : overdefined
-
-Popped off OI-WL:   %add4 = add nsw i32 1000, %tau
-Merged overdefined into   %add5 = add nsw i32 %add4, 100 : overdefined
-
-Popped off OI-WL:   %add5 = add nsw i32 %add4, 100
-markOverdefined:   %cmp = icmp sge i32 %add5, 100
-
-Popped off OI-WL:   %cmp = icmp sge i32 %add5, 100
-Marking Block Executable: if.else
-
-Popped off OI-WL:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %add)
-Merged overdefined into   %add6 = add nsw i32 %tau2, 779 : overdefined
-
-Popped off OI-WL:   %add6 = add nsw i32 %tau2, 779
-Marking Spec PHINode exec.
-Merged overdefined into   %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ] : overdefined
-
-Popped off OI-WL:   %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-Merged overdefined into   %add8 = add nsw i32 %a.0, 1 : overdefined
-
-Popped off OI-WL:   %add8 = add nsw i32 %a.0, 1
-
 Popped off BBWL: 
-if.else:                                          ; preds = %end
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2)
-  %add7 = add nsw i32 %tau1, 543
-  br label %if.end
+label_g:                                          ; preds = %label_f, %label_e
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5)
+  br label %end
 
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2))
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau2 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5))
 		Tau State init : unknown
-		x0 (phi-state) tau : overdefined
-		Tau Operand (L) : mul2, unknown
-		Meet over Ops : Beta unknown
-Merged overdefined into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2) : overdefined
-		ValueLattice (TauState) tau1 : overdefined, 0
-	[Taulog] Visiting Other Instruction :   %add7 = add nsw i32 %tau1, 543
-Merged overdefined into   %add7 = add nsw i32 %tau1, 543 : overdefined
-	[Taulog] Visiting Other Instruction :   br label %if.end
-Marking Edge Executable: if.else -> if.end
-Marking Spec PHINode exec.
+		x0 (phi-state) x.0 : constantrange<1, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Tau Operand (L) : 5, constantrange<5, 6>
+		Meet over Ops : Beta constantrange<5, 6>
+		x0 meet beta : constantrange<1, 6>
+		ValueLattice (TauState) tau2 : speculative constantrange<1, 6>
+	[Taulog] Visiting Other Instruction :   br label %end
+Marking Edge Executable: label_g -> end
 
-Popped off OI-WL:   %add7 = add nsw i32 %tau1, 543
-Marking Spec PHINode exec.
+Popped off OI-WL:   %call7 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) %call6, i32 %x.0)
 
-Popped off OI-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %mul2)
+Popped off OI-WL:   %call6 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %x.0)
+
+Popped off OI-WL:   %i = load i32, i32* %m, align 4
+
+Popped off OI-WL:   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+
+Popped off OI-WL:   %m = alloca i32, align 4
+
+Popped off I-WL:   %cmp = icmp sge i32 %tau, 1000
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+Merged overdefined into   %tau2 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5) : overdefined
+Merged overdefined into   %tau1 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 1) : overdefined
+Merged overdefined into   %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5, i32 1) : overdefined
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %label_a ], [ 1, %label_d ], [ 5, %label_c ], [ 5, %label_b ]
+
+Popped off OI-WL:   %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5, i32 1)
+markOverdefined:   %cmp = icmp sge i32 %tau, 1000
+
+Popped off OI-WL:   %cmp = icmp sge i32 %tau, 1000
+Marking Edge Executable: label_e -> label_g
+
+Popped off OI-WL:   %tau1 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 1)
+
+Popped off OI-WL:   %tau2 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 5, i32 5)
 RESOLVING UNDEFs
-  BasicBlock Dead:
-sw.bb1:                                           ; preds = %entry
-  br label %label_4
-  BasicBlock Dead:
-sw.default:                                       ; preds = %entry
-  br label %label_5
-  Constant: i32 100 =   %mul = mul nsw i32 10, 10
-  BasicBlock Dead:
-label_4:                                          ; preds = %sw.bb1
-  %mul2 = mul nsw i32 10, 10
-  br label %end
-  BasicBlock Dead:
-label_5:                                          ; preds = %sw.default
-  %sub = sub nsw i32 10, 1
-  %mul3 = mul nsw i32 %sub, 10
-  %add = add nsw i32 %mul3, 10
-  br label %end
-  Constant: i32 100 =   %e.0 = phi i32 [ undef, %label_5 ], [ undef, %label_4 ], [ 100, %label_3 ]
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0141 seconds (0.0141 wall clock)
+  Total Execution Time: 0.0111 seconds (0.0112 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0008 ( 36.1%)   0.0108 ( 91.5%)   0.0116 ( 82.5%)   0.0116 ( 82.5%)  SCCPTauPass
-   0.0005 ( 23.8%)   0.0004 (  3.0%)   0.0009 (  6.4%)   0.0009 (  6.4%)  VerifierPass
-   0.0005 ( 22.6%)   0.0003 (  2.9%)   0.0009 (  6.1%)   0.0009 (  6.1%)  VerifierAnalysis
-   0.0003 ( 12.4%)   0.0003 (  2.4%)   0.0006 (  4.0%)   0.0006 (  4.0%)  PrintModulePass
-   0.0001 (  2.5%)   0.0000 (  0.1%)   0.0001 (  0.5%)   0.0001 (  0.5%)  PreservedCFGCheckerAnalysis
-   0.0001 (  2.2%)   0.0000 (  0.0%)   0.0001 (  0.4%)   0.0001 (  0.4%)  DominatorTreeAnalysis
-   0.0000 (  0.3%)   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)  TargetLibraryAnalysis
-   0.0023 (100.0%)   0.0118 (100.0%)   0.0141 (100.0%)   0.0141 (100.0%)  Total
+   0.0044 ( 77.9%)   0.0047 ( 84.9%)   0.0091 ( 81.4%)   0.0091 ( 81.4%)  SCCPTauPass
+   0.0008 ( 14.7%)   0.0000 (  0.0%)   0.0008 (  7.4%)   0.0008 (  7.4%)  PrintModulePass
+   0.0002 (  3.6%)   0.0004 (  7.4%)   0.0006 (  5.5%)   0.0006 (  5.5%)  VerifierPass
+   0.0002 (  3.3%)   0.0004 (  6.7%)   0.0006 (  5.0%)   0.0006 (  4.9%)  VerifierAnalysis
+   0.0000 (  0.4%)   0.0000 (  0.9%)   0.0001 (  0.7%)   0.0001 (  0.7%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  TargetLibraryAnalysis
+   0.0056 (100.0%)   0.0055 (100.0%)   0.0111 (100.0%)   0.0112 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0026 seconds (0.0026 wall clock)
+  Total Execution Time: 0.0036 seconds (0.0036 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0018 (100.0%)   0.0009 (100.0%)   0.0026 (100.0%)   0.0026 (100.0%)  Parse IR
-   0.0018 (100.0%)   0.0009 (100.0%)   0.0026 (100.0%)   0.0026 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0036 (100.0%)   0.0036 (100.0%)   0.0036 (100.0%)  Parse IR
+   0.0036 (100.0%)   0.0036 (100.0%)   0.0036 (100.0%)  Total
 

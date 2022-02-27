@@ -622,6 +622,7 @@ void SCCPTauInstVisitor::visitInstruction(Instruction &I) {
 bool SCCPTauInstVisitor::mergeInValue(SpecValueLatticeElement &IV, Value *V,
                                    SpecValueLatticeElement MergeWithV,
                                    SpecValueLatticeElement::MergeOptions Opts) {
+  // LLVM_DEBUG(dbgs() << "MergeWithV : " << MergeWithV << " \n");
   if (IV.mergeIn(MergeWithV, Opts)) {
     pushToWorkList(IV, V);
     LLVM_DEBUG(dbgs() << "Merged " << MergeWithV << " into " << *V << " : "
@@ -853,10 +854,14 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // are all constant, and they agree with each other, the tau becomes the identical
   // constant. If they are constant and don't agree, the PHI is a constant
   // range. If there are no executable operands, the PHI remains unknown.
-  SpecValueLatticeElement TauState = getValueState(&Tau), 
-    beta = getValueState(Tau.getOperand(1)), x0 = getValueState(Tau.getOperand(0));
+  SpecValueLatticeElement &TauState = getValueState(&Tau), 
+    x0 = getValueState(Tau.getOperand(0)),
+    beta = getValueState(Tau.getOperand(1)); 
+  // TauState.markUnknown();
+  
+  if (TauState.isOverdefined())
+    return (void)markOverdefined(&Tau);
 
-  TauState.markUnknown();
   LLVM_DEBUG(dbgs() << "\t\tTau State init : " << 
       TauState <<"\n");
   LLVM_DEBUG(dbgs() << "\t\tx0 (phi-state) " << 
@@ -880,30 +885,28 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // limit multiple extensions caused by the same incoming value, if other
   // incoming values are equal.
 
-  // COMMENT 
-  if (x0.isConstantRange())
-    TauState.markConstantRange(x0.getConstantRange());
-  
-  if (x0.isConstant()) {
-    TauState.markConstant(x0.getConstant());
-  }
+  beta.mergeIn(x0);
+  LLVM_DEBUG(dbgs() << "\t\tx0 meet beta : " << beta <<"\n");
 
   // COMMENT -> Constant can transition to Const Range.
-  if (beta.isConstant() && x0.isConstant() 
-    && (beta.getConstant() == x0.getConstant()))
-    TauState.markSpeculativeConstant(x0.getConstant());
+  if (beta.isConstant())
+    TauState.markSpeculativeConstant(beta.getConstant());
 
   // COMMENT -> Constant can transition to Const Range.
-  if (beta.isConstantRange() && x0.isConstantRange() 
-    && (beta.getConstantRange() == x0.getConstantRange()))
-    TauState.markSpeculativeConstantRange(x0.getConstantRange());
+  if (beta.isConstantRange())
+    TauState.markSpeculativeConstantRange(beta.getConstantRange());
 
   if (beta.isOverdefined() || x0.isOverdefined())
     TauState.markOverdefined();
 
-  // if(TauState.isConstantRange()){
-  //   TauState.markSpeculativeConstantRange(x0.getConstantRange());
-  // }
+  // // COMMENT 
+  // if (x0.isConstantRange())
+  //   TauState.markConstantRange(x0.getConstantRange());
+  
+  // if (x0.isConstant()) 
+  //   TauState.markConstant(x0.getConstant());
+
+  // LLVM_DEBUG(dbgs() << "Lattice : " << getLatticeValueFor(&Tau) << ", " << TauState << " \n");
 
   // ensure monotonicity.
   mergeInValue(&Tau, TauState,
@@ -912,9 +915,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   SpecValueLatticeElement &TauStateRefElem = getValueState(&Tau);
   TauStateRefElem.setNumRangeExtensions(
       std::max(NumActiveIncoming, TauStateRefElem.getNumRangeExtensions()));
-  
+
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
-      << " : " << TauState << ", " << TauState.Shadow_Tag << "\n"); 
+      << " : " << TauStateRefElem << "\n"); 
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
@@ -1125,6 +1128,9 @@ void SCCPTauInstVisitor::visitUnaryOperator(Instruction &I) {
 void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
   SpecValueLatticeElement V1State = getValueState(I.getOperand(0));
   SpecValueLatticeElement V2State = getValueState(I.getOperand(1));
+
+  LLVM_DEBUG(dbgs() << "\t[Taulog] " << I.getOperand(0)->getNameOrAsOperand() << " : " << V1State << ", " << 
+    I.getOperand(1)->getNameOrAsOperand() << " : " << V2State << "\n");
 
   SpecValueLatticeElement &IV = ValueState[&I];
   if (IV.isOverdefined())
