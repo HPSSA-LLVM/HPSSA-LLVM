@@ -1,0 +1,31 @@
+digraph "CFG for 'main' function" {
+	label="";
+	node [fontname="Courier"];
+	edge [fontname="Courier"];
+	Node0x55a42e985260 [shape=record,color="#b70d28ff", style="", fillcolor="#b70d2870",label="{entry:\l  %m = alloca i32, align 4\l  %call = call ...\l  %i = load i32, i32* %m, align 4\l  switch i32 %i, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l    i32 6, label %sw.bb4\l  ]\l|{<s0>def|<s1>2|<s2>4|<s3>6}}"];
+	Node0x55a42e985260:s0 -> Node0x55a42e9856a0;
+	Node0x55a42e985260:s1 -> Node0x55a42e9857b0;
+	Node0x55a42e985260:s2 -> Node0x55a42e9858b0;
+	Node0x55a42e985260:s3 -> Node0x55a42e9859b0;
+	Node0x55a42e9857b0 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb:                                            \l  %mul = mul nsw i32 2, 1\l  %add = add nsw i32 %mul, 5\l  br label %sw.epilog\l}"];
+	Node0x55a42e9857b0 -> Node0x55a42e985c60;
+	Node0x55a42e9858b0 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb1:                                           \l  %mul2 = mul nsw i32 2, 1\l  %add3 = add nsw i32 %mul2, 5\l  br label %sw.epilog\l}"];
+	Node0x55a42e9858b0 -> Node0x55a42e985c60;
+	Node0x55a42e9859b0 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb4:                                           \l  %mul5 = mul nsw i32 2, 1\l  %add6 = add nsw i32 %mul5, 1\l  br label %sw.epilog\l}"];
+	Node0x55a42e9859b0 -> Node0x55a42e985c60;
+	Node0x55a42e9856a0 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.default:                                       \l  br label %sw.epilog\l}"];
+	Node0x55a42e9856a0 -> Node0x55a42e985c60;
+	Node0x55a42e985c60 [shape=record,color="#b70d28ff", style=filled, fillcolor="#f4c2c2",label="{sw.epilog:                                        \l  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [\l... %add, %sw.bb ]\l  %mul7 = mul nsw i32 2, %x.0\l  %add8 = add nsw i32 %mul7, 10\l  %add9 = add nsw i32 9, %x.0\l  %cmp = icmp sle i32 %add8, %add9\l  br i1 %cmp, label %if.end, label %if.else\l|{<s0>T|<s1>F}}"];
+	Node0x55a42e985c60:s0 -> Node0x55a42e986740;
+	Node0x55a42e985c60:s1 -> Node0x55a42e9867b0;
+	Node0x55a42e9867b0 [shape=record,color="#3d50c3ff", style="", fillcolor="#c5333470",label="{if.else:                                          \l  %mul10 = mul nsw i32 3, %x.0\l  %add11 = add nsw i32 %add8, %mul10\l  switch i32 %add11, label %if.end [\l    i32 200, label %sw.bb13\l    i32 300, label %sw.bb15\l  ]\l|{<s0>def|<s1>200|<s2>300}}"];
+	Node0x55a42e9867b0:s0 -> Node0x55a42e986740;
+	Node0x55a42e9867b0:s1 -> Node0x55a42e986a90;
+	Node0x55a42e9867b0:s2 -> Node0x55a42e986e50;
+	Node0x55a42e986a90 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb13: \l%call14 = call ... \l  br label %end\l}"];
+	Node0x55a42e986a90 -> Node0x55a42e9871f0;
+	Node0x55a42e986e50 [shape=record,color="#3d50c3ff", style="", fillcolor="#6282ea70",label="{sw.bb15:                                          \l  call void @exit(i32 0) #6\l  unreachable\l}"];
+	Node0x55a42e986740 [shape=record,color="#b70d28ff", style="", fillcolor="#be242e70",label="{if.end:                                           \l  %add17 = add nsw i32 %add8, %x.0\l  store i32 %add17, i32* %m, align 4\l  br label %end\l}"];
+	Node0x55a42e986740 -> Node0x55a42e9871f0;
+	Node0x55a42e9871f0 [shape=record,color="#b70d28ff", style="", fillcolor="#b70d2870",label="{end:                                              \l  %add18 = add nsw i32 1, %x.0\l  ret i32 0\l}"];
+}

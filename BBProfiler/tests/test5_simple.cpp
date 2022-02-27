@@ -21,7 +21,10 @@ int main() {
     z = y + 3 * x;
     switch (z) {
       default : break;
-      case 200 : std::cout << x ; goto end;
+      case 200 : { 
+        std::cout << x ; 
+        goto end;
+      }
       case 300 : exit(0);
     }
   }

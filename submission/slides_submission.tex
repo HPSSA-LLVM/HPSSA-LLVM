@@ -6,8 +6,18 @@
 \usefonttheme{professionalfonts}
 \usecolortheme{sidebartab}
 \usepackage{xcolor}
+\usepackage{svg}
 \usepackage{hyperref}
-
+\definecolor{bg}{RGB}{210, 255, 180}
+\definecolor{aquamarine}{rgb}{0.5, 1.0, 0.83}
+\newcommand{\highlight}[1]{\colorbox{pink}{#1}}
+\newcommand{\highlightcode}[1]{\colorbox{bg}{#1}}
+\newcommand{\highlightflag}[1]{\colorbox{yellow}{#1}}
+\newcommand{\colorprog}[1]{\colorbox{aquamarine}{#1}}
+\newcommand{\colorpred}[1]{\colorbox{green}{#1}}
+\newcommand{\colorinv}[1]{\colorbox{yellow}{#1}}
+\newcommand{\coloralg}[1]{\colorbox{lg}{#1}}
+\newcommand{\coloryellow}[1]{\colorbox{yellow}{#1}}
 \usetikzlibrary{chains, shadows.blur, trees}
 %Information to be included in the title page:
 \title[\url{https://google.com}] %optional
@@ -59,8 +69,8 @@
 \begin{frame}[fragile]
 	\frametitle{Profile Guided Optimization is easy with HPSSA Form}
 	\begin{columns}
-		\begin{column}{0.3\textwidth}
-	\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+		\begin{column}{0.4\textwidth}
+	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, escapeinside=||, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
 // Function to process "llvm.tau" function intrinsic.
 visitTauNode() {
 	...
@@ -90,9 +100,9 @@ visitTauNode() {
 }
 \end{minted}
 		\end{column}
-	\begin{column}{0.1\textwidth} \end{column}
+	\begin{column}{0.05\textwidth} \end{column}
 		\begin{column}{0.3\textwidth}  
-			\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={10}]{cpp}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={10}]{cpp}
 // Omit handling of "llvm.tau" intrinsic 
 // as a regular Instruction.
 for (auto& I : *&(*(BB))) {
@@ -120,7 +130,7 @@ for (auto& I : *&(*(BB))) {
 		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
 		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
 	\end{itemize}
-	\begin{minted}[fontsize=\tiny, tabsize=2, highlightlines={1,14,15,18}, linenos]{cpp}
+	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,14,15,18}, linenos]{cpp}
 	#include <HPSSA.h> // import the header.
 	
 	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
@@ -152,18 +162,62 @@ for (auto& I : *&(*(BB))) {
 	\frametitle{Speculative Pass using HPSSA : SSCCP}
 	We run the speculative SCCP on the example below.
 	\begin{columns}
-		\begin{column}{0.2\textwidth}
-			\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-	int main() {
-		// Constants and Overdefined.	
+		\begin{column}{0.4\textwidth}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+int main() {
+	int x = 2, m, y, z = 9, c = 1;
+	std::cin >> m;
+	switch(m) {   
+		case 2 : x = 2 * c + 5; break;
+		case 4 : x = 2 * c + 5; break;
+		case 6 : x = 2 * c + 1; break;
+		default : break;
 	}
+	y = 2 * x + 10;
+	if (y <= z + x) {
+		// ..
+	} else {
+		z = y + 3 * x;
+		switch (z) {
+			default : break;
+			case 200 : std::cout << x; goto end;
+			case 300 : exit(0);
+		}
+	}
+	m = y + x;  
+	end:
+		z = c + x;
+	return 0;
+}
 			\end{minted}
 		\end{column}
-		\begin{column}{0.5\textwidth}  
-			\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-	int main() {
-		// Constants, Speculative Constants, Overdefined.
+		\begin{column}{0.4\textwidth}  
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+int main() {
+	int x = 2, m, y, z = 9, c = 1;
+	std::cin >> m;
+	switch(m) {   
+		case 2 : x = 2 * c + 5; break;
+		case 4 : x = 2 * c + 5; break;
+		case 6 : x = 2 * c + 1; break;
+		default : break;
 	}
+	y = 2 * x + 10;
+	if (y <= z + x) {
+		// ..
+	} else {
+		z = y + 3 * x;
+		switch (z) {
+			default : break;
+			case 200 : std::cout << x; goto end;
+			case 300 : exit(0);
+		}
+	}
+	m = y + x;  
+	end:
+		z = c + x;
+	return 0;
+}
 		\end{minted}
 		\end{column}
 	\end{columns}
@@ -272,11 +326,16 @@ for (auto& I : *&(*(BB))) {
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{HPSSA Transformation}
+\begin{frame}{SSA Form}
 	\centering
-	Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	%\includegraphics[width=5.3cm,height=7.5cm]{baseline.dot.png}
-	%\includegraphics[width=5.3cm,height=7.5cm]{afterHPSSA.dot.png}
+	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
+	\includegraphics[width=8.5cm,height=7.81cm]{baseline.pdf}
+\end{frame}
+
+\begin{frame}{Hot Path SSA Form}
+	\centering
+	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
+	\includegraphics[width=8.5cm,height=8.35cm]{afterHPSSA.pdf}
 \end{frame}
 
 \begin{frame}

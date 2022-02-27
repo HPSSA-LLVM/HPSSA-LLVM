@@ -1,6 +1,6 @@
 3
-6
-entry sw.bb sw.epilog if.then if.end end
+5
+entry sw.bb sw.epilog if.end end
 6
 entry sw.bb1 sw.epilog if.else if.end end
 6
