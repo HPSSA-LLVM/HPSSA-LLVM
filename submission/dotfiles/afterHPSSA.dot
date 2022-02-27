@@ -1,5 +1,5 @@
 digraph "CFG for 'main' function" {
-	label="CFG for 'main' function";
+	label="Program in HPSSA Form";
 	node [fontname="Courier"];
 	edge [fontname="Courier"];
 	Node0x559ed7f102f0 [shape=record,color="#b70d28ff", style="", fillcolor="#b70d2870",label="{entry:\l  %m = alloca i32, align 4\l  %call = call ...\l  %i = load i32, i32* %m, align 4\l  switch i32 %i, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l    i32 6, label %sw.bb4\l  ]\l|{<s0>def|<s1>2|<s2>4|<s3>6}}"];

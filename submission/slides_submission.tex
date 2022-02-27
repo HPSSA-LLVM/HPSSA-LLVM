@@ -17,7 +17,7 @@
 \newcommand{\colorprog}[1]{\colorbox{aquamarine}{#1}}
 \newcommand{\colorpred}[1]{\colorbox{green}{#1}}
 \newcommand{\colorinv}[1]{\colorbox{yellow}{#1}}
-\newcommand{\coloralg}[1]{\colorbox{lg}{#1}}
+\newcommand{\coloralg}[1]{\colorbox{pink}{#1}}
 \newcommand{\coloryellow}[1]{\colorbox{yellow}{#1}}
 \usetikzlibrary{chains, shadows.blur, trees}
 %Information to be included in the title page:
@@ -60,7 +60,7 @@
 \subsection{Profile Guided Optimization}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={3,4,5,6,7,8,9,10,11,12,13,14,15,18}]{summary.pdf}
+	\includepdf[pages={3,4,5,6,7,8,9,10,11,12,13,14,15}]{summary.pdf}
 }
 \subsection{Doing Profile Guided Optimizations is Hard!}
 {
@@ -70,8 +70,8 @@
 \begin{frame}[fragile]
 	\frametitle{Profile Guided Optimization is easy with HPSSA Form}
 	\begin{columns}
-		\begin{column}{0.4\textwidth}
-	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, escapeinside=||, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+		\begin{column}{0.5\textwidth}
+	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, escapeinside=||, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
 // Function to process "llvm.tau" function intrinsic.
 visitTauNode() {
 	...
@@ -80,7 +80,7 @@ visitTauNode() {
 		x0 = getValueState(Tau.getOperand(0));
 	if (TauState.isOverdefined())
 		return (void)markOverdefined(&Tau);
-	for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i) {
+	for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i){
 		SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
 		beta.mergeIn(IV);
 		NumActiveIncoming++;
@@ -101,9 +101,9 @@ visitTauNode() {
 }
 \end{minted}
 		\end{column}
-	\begin{column}{0.05\textwidth} \end{column}
-		\begin{column}{0.3\textwidth}  
-			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={10}]{cpp}
+	\begin{column}{0.01\textwidth} \end{column}
+		\begin{column}{0.4\textwidth}  
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={1,2,10}]{cpp}
 // Omit handling of "llvm.tau" intrinsic 
 // as a regular Instruction.
 for (auto& I : *&(*(BB))) {
@@ -112,7 +112,7 @@ for (auto& I : *&(*(BB))) {
 		Function* CF = CI->getCalledFunction();
 		if (CF != NULL &&
 		CF->getIntrinsicID() == 
-			Function::lookupIntrinsicID("llvm.tau")) {
+			Function::lookupIntrinsicID("llvm.tau")){
 			visitTauNode(I);
 		} else {
 			visit(I);
@@ -128,22 +128,23 @@ for (auto& I : *&(*(BB))) {
 \begin{frame}[fragile]
 	\frametitle{Using \texttt{HPSSAPass} [It is easy!]}
 	\begin{itemize}
-		\item Include \mintinline[]{css}{llvm::HPSSAPass} header file.
+		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
 		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
 	\end{itemize}
-	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,14,15,18}, linenos]{cpp}
+	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,15,16,19}, linenos]{cpp}
 	#include <HPSSA.h> // import the header.
+	#include <SCCP.h>
 	
-	class MyExamplePass : public PassInfoMixin<MyExamplePass> {
+	class SpecSCCPPass : public PassInfoMixin<SpecSCCPPass> {
 		public: PreservedAnalyses run(Function &F, 
 		FunctionAnalysisManager &AM);
 	};
 	...
 	
-	PreservedAnalyses MyExamplePass::run(Function &F, 
+	PreservedAnalyses SpecSCCPPass::run(Function &F, 
 	FunctionAnalysisManager &AM) {
 		if (F.getName() != "main")
-		return PreservedAnalyses::all();
+			return PreservedAnalyses::all();
 		
 		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
 		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
@@ -161,62 +162,63 @@ for (auto& I : *&(*(BB))) {
 \subsection{Profile Guided SSCCP Analysis using HPSSA Form}
 \begin{frame}[fragile]
 	\frametitle{Speculative Pass using HPSSA : SSCCP}
-	We run the speculative SCCP on the example below.
+	Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Analysis proved Constants \textcolor{yellow}{$\blacksquare$} Real Constants
+	\textcolor{green}{$\blacksquare$} Speculative Constants 
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
-			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
 int main() {
 	int x = 2, m, y, z = 9, c = 1;
-	std::cin >> m;
-	switch(m) {   
-		case 2 : x = 2 * c + 5; break;
-		case 4 : x = 2 * c + 5; break;
-		case 6 : x = 2 * c + 1; break;
+	std::cin >> |\coloralg{m}|;
+	switch(|\coloralg{m}|) {   
+		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
+		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
+		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; break;
 		default : break;
 	}
-	y = 2 * x + 10;
-	if (y <= z + x) {
+	|\coloralg{y}| = 2 * |\coloralg{x}| + 10;
+	if (|\coloralg{y}| <= |\coloralg{z}| + |\coloralg{x}|) {
 		// ..
 	} else {
-		z = y + 3 * x;
-		switch (z) {
+		|\coloralg{z}| = |\coloralg{y}| + 3 * |\coloralg{x}|;
+		switch (|\coloralg{z}|) {
 			default : break;
-			case 200 : std::cout << x; goto end;
+			case 200 : std::cout << |\coloralg{x}|; goto end;
 			case 300 : exit(0);
 		}
 	}
-	m = y + x;  
+	|\coloralg{m}| = |\coloralg{y}| + |\coloralg{x}|;  
 	end:
-		z = c + x;
+		|\coloralg{z}| = |\coloryellow{c}| + |\coloralg{x}|;
 	return 0;
 }
 			\end{minted}
 		\end{column}
 		\begin{column}{0.4\textwidth}  
-			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}]{cpp}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
 int main() {
 	int x = 2, m, y, z = 9, c = 1;
-	std::cin >> m;
-	switch(m) {   
-		case 2 : x = 2 * c + 5; break;
-		case 4 : x = 2 * c + 5; break;
-		case 6 : x = 2 * c + 1; break;
+	std::cin >> |\coloralg{m}|;
+	switch(|\coloralg{m}|) {   
+		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
+		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
+		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; break;
 		default : break;
 	}
-	y = 2 * x + 10;
-	if (y <= z + x) {
+	|\coloralg{y}| = 2 * |\coloralg{x}| + 10;
+	if (|\coloralg{y}| <= |\coloralg{z}| + |\coloralg{x}|) {
 		// ..
 	} else {
-		z = y + 3 * x;
-		switch (z) {
+		|\coloralg{z}| = |\coloralg{y}| + 3 * |\coloralg{x}|;
+		switch (|\coloralg{z}|) {
 			default : break;
-			case 200 : std::cout << x; goto end;
+			case 200 : std::cout << |\coloralg{x}|; goto end;
 			case 300 : exit(0);
 		}
 	}
-	m = y + x;  
+	|\coloralg{m}| = |\coloralg{y}| + |\colorpred{x}|; // speculative constant : x  
 	end:
-		z = c + x;
+		|\coloralg{z}| = |\coloryellow{c}| + |\coloralg{x}|;
 	return 0;
 }
 		\end{minted}
@@ -228,16 +230,47 @@ int main() {
 	\frametitle{Speculative Pass using HPSSA : SSCCP}
 	Standard SCCP VS. Speculative SCCP Pass.
 \begin{columns}
-	\begin{column}{0.2\textwidth}
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-		opt -sccp ...
-		// Output
+	\begin{column}{0.4\textwidth}
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={}]{c}
+# Running Regular SCCP Pass on Program.
+$ opt -sccp -time-passes -debug-only=sccp \
+	IR/LL/test.ll -S -o \
+	IR/LL/test_sccp_onbaseline.ll \
+	-f 2> output/custom_sccp_onbaseline.log
+
+...
+Output:
+	...
+	Constant: i32 2 =   %mul = mul nsw i32 2, 1
+	Constant: i32 7 =   %add = add nsw i32 2, 5
+	Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
+	Constant: i32 7 =   %add3 = add nsw i32 2, 5
+	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
+	Constant: i32 3 =   %add6 = add nsw i32 2, 1
 		\end{minted}
 	\end{column}
 	\begin{column}{0.5\textwidth}  
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=yellow, highlightlines={16,20}]{cpp}
-		opt -load=build/SpecSCCP.cpp.so -passes="specsccp" ...
-		// Output 
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3}]{c}
+# Running HPSSA Transformation followed by Speculative SCCP Pass.
+$ opt -load build/SCCPSolverTau.cpp.so 
+	-load build/HPSSA.cpp.so \
+	-load-pass-plugin=build/SpecSCCP.cpp.so \
+	-passes="specsccp" \
+	-time-passes -debug-only=specsccp \
+	IR/LL/test.ll -S -o IR/LL/test_spec_sccp.ll \
+	-f 2> output/custom_speculative_sccp.log
+	
+...
+Output :
+	...
+	ValueLattice (TauState) tau3 : speculative constantrange<3, 4> 
+	...
+	Constant: i32 2 =   %mul = mul nsw i32 2, 1
+	Constant: i32 7 =   %add = add nsw i32 2, 5
+	Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
+	Constant: i32 7 =   %add3 = add nsw i32 2, 5
+	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
+	Constant: i32 3 =   %add6 = add nsw i32 2, 1
 		\end{minted}
 	\end{column}
 \end{columns}
@@ -249,18 +282,19 @@ int main() {
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={25,26,27,28,29,30}]{summary.pdf}
 }
-\subsection{Profile Guided SSCCP Pass in LLVM}
+\subsection{Profile Guided SSCCP Pass}
 {
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={31,32}]{summary.pdf}
 }
 
 \begin{frame}
-	\frametitle{Speculative SCCP Pass}
-	CFG, Hotpath, show only speculative part. Const green, spec pink on the CFG. 
+	\frametitle{Profile Guided SSCCP Pass in LLVM}
+	\centering
+	\includegraphics[width=8.5cm, height=7.8cm]{speculative.pdf} 
 \end{frame}
 \begin{frame}
-	\frametitle{LLVM Implementation : Speculative SCCP Pass}
+	\frametitle{LLVM Implementation : Profile Guided SSCCP Pass}
 	\begin{itemize}
 		\item Modified the existing SCCP Pass to add \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.\footnotemark
 		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced.
@@ -276,7 +310,7 @@ int main() {
 \subsection{Constructing HPSSA Form}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={40-59}]{summary.pdf}
+	\includepdf[pages={41-59}]{summary.pdf}
 }
 \subsection{Implementing HPSSA Form in LLVM}
 \begin{frame}[fragile]
@@ -330,13 +364,13 @@ int main() {
 \begin{frame}{SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=9.5cm,height=8cm]{baseline.pdf}
+	\includegraphics[width=9cm,height=8cm]{baseline.pdf}
 \end{frame}
 
 \begin{frame}{Hot Path SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=9.2cm,height=8.6cm]{afterHPSSA.pdf}
+	\includegraphics[width=8.5cm,height=7.8cm]{afterHPSSA.pdf}
 \end{frame}
 
 \begin{frame}
