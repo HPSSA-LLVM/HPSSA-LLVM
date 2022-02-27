@@ -8,17 +8,19 @@ ifdef SILENT
 .SILENT:
 endif
 
-.PHONY: test 
+.PHONY: test build dot2png
 
 all: build test dot2png
 runpass : test dot2png
 
-build: src/HPSSA.cpp include/HPSSA.h src/TDestruction.cpp include/TDestruction.h
+build: src/HPSSA.cpp include/HPSSA.h src/TDestruction.cpp include/TDestruction.h src/SpecTauInsertion.cpp include/SpecTauInsertion.h
 	@mkdir -p build
 	$(CXX) -c src/HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
 	$(CXX) -c src/TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
+	$(CXX) -c src/SpecTauInsertion.cpp -o build/SpecTauInsertion.cpp.o $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -shared build/SpecTauInsertion.cpp.o -o build/SpecTauInsertion.cpp.so $(LDFLAGS)
 
 test: build BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
@@ -30,9 +32,11 @@ test: build BBProfiler/profileInfo.txt
 	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
 	# $(BUILD_PATH)/opt -load-pass-plugin=build/TConditional.cpp.so -passes=tcond -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tcond.ll -f 2> output/custom_tcond.log
 	$(BUILD_PATH)/opt -load-pass-plugin=build/TDestruction.cpp.so -passes=tdstr -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tdstr.ll -f 2> output/custom_tdstr.log
+	# $(BUILD_PATH)/opt -load-pass-plugin=build/SpecTauInsertion.cpp.so -passes=sptau -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_sptau.ll -f 2> output/custom_sptau.log
 	# Handle exit code of diff(1 if changes found).
 	diff IR/LL/test_mem2reg.ll IR/LL/test_hpssa.ll > output/changes_hpssa.log; [ $$? -eq 1 ]
 	# diff IR/LL/test_hpssa.ll IR/LL/test_tdstr.ll > output/changes_tdstr.log; [ $$? -eq 1 ]
+	# diff IR/LL/test_hpssa.ll IR/LL/test_sptau.ll > output/changes_sptau.log; [ $$? -eq 1 ]
 	$(BUILD_PATH)/opt -dot-cfg-only -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot stripped.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -disable-output -enable-new-pm=0 
