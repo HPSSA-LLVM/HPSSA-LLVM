@@ -1,0 +1,31 @@
+digraph "CFG for 'main' function" {
+	label="Speculative SCCP on 'main' function";
+	node [fontname="Courier"];
+	edge [fontname="Courier"];
+	Node0x55d202d84210 [shape=record,color="#b70d28ff", style="", fillcolor="#b70d2870",label="{entry:\l  %m = alloca i32, align 4\l  %call = call ... \l  switch i32 %i, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l    i32 6, label %sw.bb4\l  ]\l|{<s0>def|<s1>2|<s2>4|<s3>6}}"];
+	Node0x55d202d84210:s0 -> Node0x55d202d84650;
+	Node0x55d202d84210:s1 -> Node0x55d202d84760;
+	Node0x55d202d84210:s2 -> Node0x55d202d84860;
+	Node0x55d202d84210:s3 -> Node0x55d202d84960;
+	Node0x55d202d84760 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb:                                            \l  br label %sw.epilog\l}"];
+	Node0x55d202d84760 -> Node0x55d202d84a80;
+	Node0x55d202d84860 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb1:                                           \l  br label %sw.epilog\l}"];
+	Node0x55d202d84860 -> Node0x55d202d84a80;
+	Node0x55d202d84960 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb4:                                           \l  br label %sw.epilog\l}"];
+	Node0x55d202d84960 -> Node0x55d202d84a80;
+	Node0x55d202d84650 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.default:                                       \l  br label %sw.epilog\l}"];
+	Node0x55d202d84650 -> Node0x55d202d84a80;
+	Node0x55d202d84a80 [shape=record,color="#b70d28ff", style=filled, fillcolor="#F0DFD6",label="{sw.epilog:                                        \l  %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7,\l... %sw.bb ]\l  %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 7, i32 7, i32 3)\l  %mul7 = mul nsw i32 2, %tau\l  %add8 = add nsw i32 %mul7, 10\l  %add9 = add nsw i32 9, %tau\l  %cmp = icmp sle i32 %add8, %add9\l  br i1 %cmp, label %if.end, label %if.else\l|{<s0>T|<s1>F}}"];
+	Node0x55d202d84a80:s0 -> Node0x55d202d85530;
+	Node0x55d202d84a80:s1 -> Node0x55d202d855a0;
+	Node0x55d202d855a0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#F0DFD6",label="{if.else:                                          \l  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 7, i32 3)\l  %mul10 = mul nsw i32 3, %tau1\l  %add11 = add nsw i32 %add8, %mul10\l  switch i32 %add11, label %if.end [\l    i32 200, label %sw.bb13\l    i32 300, label %sw.bb15\l  ]\l|{<s0>def|<s1>200|<s2>300}}"];
+	Node0x55d202d855a0:s0 -> Node0x55d202d85530;
+	Node0x55d202d855a0:s1 -> Node0x55d202d858c0;
+	Node0x55d202d855a0:s2 -> Node0x55d202d85960;
+	Node0x55d202d858c0 [shape=record,color="#3d50c3ff", style="", fillcolor="#d24b4070",label="{sw.bb13:  \l  %call14 = call ...\l  br label %end\l}"];
+	Node0x55d202d858c0 -> Node0x55d202d85e90;
+	Node0x55d202d85960 [shape=record,color="#3d50c3ff", style="", fillcolor="#6282ea70",label="{sw.bb15:                                          \l  call void @exit(i32 0) #7\l  unreachable\l}"];
+	Node0x55d202d85530 [shape=record,color="#b70d28ff", style=filled, fillcolor="#F0DFD6",label="{if.end:                                           \l  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 7, i32 7)\l  %add17 = add nsw i32 %add8, %tau3\l  store i32 %add17, i32* %m, align 4\l  br label %end\l}"];
+	Node0x55d202d85530 -> Node0x55d202d85e90;
+	Node0x55d202d85e90 [shape=record,color="#b70d28ff", style="", fillcolor="#b70d2870",label="{end:                                              \l  %add18 = add nsw i32 1, %tau\l  ret i32 0\l}"];
+}

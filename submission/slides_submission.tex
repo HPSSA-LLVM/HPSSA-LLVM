@@ -162,8 +162,6 @@ for (auto& I : *&(*(BB))) {
 \subsection{Profile Guided SSCCP Analysis using HPSSA Form}
 \begin{frame}[fragile]
 	\frametitle{Speculative Pass using HPSSA : SSCCP}
-	Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Analysis proved Constants \textcolor{yellow}{$\blacksquare$} Real Constants
-	\textcolor{green}{$\blacksquare$} Speculative Constants 
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
@@ -224,6 +222,8 @@ int main() {
 		\end{minted}
 		\end{column}
 	\end{columns}
+	\fbox{Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Analysis proved Constants \textcolor{yellow}{$\blacksquare$} Real Constants
+	\textcolor{green}{$\blacksquare$} Speculative Constants}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -250,7 +250,7 @@ Output:
 		\end{minted}
 	\end{column}
 	\begin{column}{0.5\textwidth}  
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3}]{c}
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,13}]{c}
 # Running HPSSA Transformation followed by Speculative SCCP Pass.
 $ opt -load build/SCCPSolverTau.cpp.so 
 	-load build/HPSSA.cpp.so \
@@ -263,7 +263,7 @@ $ opt -load build/SCCPSolverTau.cpp.so
 ...
 Output :
 	...
-	ValueLattice (TauState) tau3 : speculative constantrange<3, 4> 
+	(TauState) tau3 : speculative constantrange<7, 8> 
 	...
 	Constant: i32 2 =   %mul = mul nsw i32 2, 1
 	Constant: i32 7 =   %add = add nsw i32 2, 5
@@ -291,7 +291,7 @@ Output :
 \begin{frame}
 	\frametitle{Profile Guided SSCCP Pass in LLVM}
 	\centering
-	\includegraphics[width=8.5cm, height=7.8cm]{speculative.pdf} 
+	\includegraphics[width=11cm, height=8.3cm]{dotfiles/specSCCP_HPSSA.pdf}
 \end{frame}
 
 \begin{frame}
@@ -303,7 +303,7 @@ Output :
 		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::solve()}. function to process \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions using \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} instead of the standard \mintinline[fontsize=\footnotesize]{css}{visit()} function.
 	\end{itemize}
 	\tiny 
-	\footnotetext[1]{Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic, we blocked process it as a regular Instruction.}
+	\footnotetext[1]{Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic, we blocked processing it as a regular LLVM Instruction.}
 \end{frame}
 \footnotesize
 
@@ -314,6 +314,7 @@ Output :
 	\includepdf[pages={41-59}]{summary.pdf}
 }
 \subsection{Implementing HPSSA Form in LLVM}
+
 \begin{frame}[fragile]
 	\frametitle{What we modified in LLVM Source?}
 	\begin{itemize}
@@ -340,8 +341,9 @@ Output :
 		+		}
 		+	}
 		...
-		\end{minted}
-	\end{frame}
+	\end{minted}
+\end{frame}
+
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Overview}
 	\begin{itemize}
@@ -365,13 +367,13 @@ Output :
 \begin{frame}{SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=9cm,height=8cm]{baseline.pdf}
+	\includegraphics[width=9cm,height=8.2cm]{baseline.pdf}
 \end{frame}
 
 \begin{frame}{Hot Path SSA Form}
 	\centering
 	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=8.5cm,height=7.8cm]{afterHPSSA.pdf}
+	\includegraphics[width=8.6cm,height=8cm]{afterHPSSA.pdf}
 \end{frame}
 
 \begin{frame}
