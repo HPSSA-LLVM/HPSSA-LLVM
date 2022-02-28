@@ -165,6 +165,7 @@ for (auto& I : *&(*(BB))) {
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
+// Running Standard SCCP Pass.
 int main() {
 	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
@@ -193,6 +194,7 @@ int main() {
 		\end{column}
 		\begin{column}{0.4\textwidth}  
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
+// Running Speculative SCCP on HPSSA Form.
 int main() {
 	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
@@ -221,7 +223,7 @@ int main() {
 		\end{column}
 	\end{columns}
 	\vspace{1pt}
-	\fbox{Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Discovered Constants \textcolor{yellow}{$\blacksquare$} Real Constants
+	\fbox{\textbf{Legend:} \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Discovered Constants \textcolor{yellow}{$\blacksquare$} Real Constants
 	\textcolor{green}{$\blacksquare$} Speculative Constants}
 \end{frame}
 
@@ -371,13 +373,13 @@ Output :
 \begin{frame}{SSA Form}
 	\centering
 	% sSSA Form, Simple Standard SSA Form from program. SSA
-	\includegraphics[width=8.3cm, height=8.35cm]{dotfiles/baseline.dot.pdf}
+	\includegraphics[width=8.5cm, height=8.35cm]{dotfiles/baseline.dot.pdf}
 \end{frame}
 
 \begin{frame}{Hot Path SSA Form}
 	\centering
 	% HOT PATH SSA PICTURE. HOT PATH SSA, HPSSA 
-	\includegraphics[width=9cm, height=8.95cm]{dotfiles/afterHPSSA.dot.pdf}
+	\includegraphics[width=11cm, height=8.95cm]{dotfiles/afterHPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}
