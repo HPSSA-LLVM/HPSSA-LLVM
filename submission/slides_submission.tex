@@ -27,8 +27,8 @@
 
 \subtitle{Algorithms \& Applications}
 
-\author[Muzzammil, Kumar, Lahiri, Pandey, and Roy] % (optional, for multiple authors)
-{Mohd. Muzzammil\inst{1}, Abhay Kumar\inst{1}, Sumit Lahiri\inst{1} \\ Awanish Pandey\inst{2}, and Subhajit Roy\inst{1}}
+\author[Muzzammil, Mishra, Lahiri, Pandey, and Roy] % (optional, for multiple authors)
+{Mohd. Muzzammil\inst{1}, Abhay Mishra\inst{1}, Sumit Lahiri\inst{1} \\ Awanish Pandey\inst{2}, and Subhajit Roy\inst{1}}
 
 \institute[IDK] % (optional)
 {
@@ -83,7 +83,11 @@
 \subsection{Path Profile Guided Optimizations}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={17,18,19,20,21,22}]{summary.pdf}
+	\includepdf[pages={19,20,21,22}]{summary.pdf}
+}
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={17,18}]{summary.pdf}
 }
 \begin{frame}[fragile]
 	\frametitle{... but it is easy with the Hot Path SSA (HPSSA) Form!}
@@ -154,26 +158,26 @@ for (auto& I : *&(*(BB))) {
 		shade,
 		top color=blue!10,
 		bottom color=blue!30,
-		inner xsep=-5pt,
-		inner ysep=5pt,
+		inner xsep=-40pt,
+		inner ysep=2pt,
 		text width=\columnwidth,
 		text centered,
 		anchor=center
 		] at (7, 4) {%
-		Only these \textbf{few lines} were enough to create a \textbf{new path profile guided analysis}, \textit{speculative sparse conditional constant propagation (SpecSCCP)} from the currently existing SCCP pass in LLVM!
+		Only these \textbf{few lines} were enough to create a \textbf{new path profile guided analysis}, \\ \textit{Speculative Sparse Conditional Constant Propagation (SpecSCCP)} \\ from the currently existing SCCP pass in LLVM !
 	};
 	\node <3> [rectangle,
 		rounded corners,
 		shade,
 		top color=red!5,
 		bottom color=red!20,
-		inner xsep=-3pt,
+		inner xsep=-8pt,
 		inner ysep=5pt,
 		text width=30em,
 		text centered,
 		anchor=center
 		] at (7,4) {%
-			\textbf{It took us only an afternoon to transform SCCP to SpecSCCP !} 
+			\textbf{It took us only an afternoon to transform SCCP to SpecSCCP} 
 		};
 \end{tikzpicture}
 \end{frame}
@@ -181,41 +185,7 @@ for (auto& I : *&(*(BB))) {
 %Only these few lines were enough to create a new path profile guided analysis, \textit{speculative sparse conditional constant propagation (SpecSCCP)} from the currently existing SCCP pass in LLVM!
 %Slide-2
 %It took us only an afternoon to transform SCCP to SpecSCCP!.  
-\begin{frame}[fragile]
-	\frametitle{Using the HPSSA Form for writing new analyses}
-	\begin{itemize}
-		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
-		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
-	\end{itemize}
-	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,15,16,19}, linenos]{cpp}
-	#include <HPSSA.h> // import the header.
-	#include <SCCP.h>
-	
-	class SpecSCCPPass : public PassInfoMixin<SpecSCCPPass> {
-		public: PreservedAnalyses run(Function &F, 
-		FunctionAnalysisManager &AM);
-	};
-	...
-	
-	PreservedAnalyses SpecSCCPPass::run(Function &F, 
-	FunctionAnalysisManager &AM) {
-		if (F.getName() != "main")
-			return PreservedAnalyses::all();
-		
-		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
-		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
-		
-		std::vector<Instruction *> TauInsts 
-		= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
-		
-		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
-		...
-	}
-	
-	/// [output] Total Tau Instructions : 7 
-	\end{minted}
-\end{frame}
-\subsection{Profile Guided SSCCP Analysis using HPSSA Form}
+\subsection{Profile Guided SpecSCCP Analysis using HPSSA Form}
 \begin{frame}[fragile]
 	\frametitle{SCCP vs SpecSCCP}
 	\begin{columns}
@@ -358,7 +328,43 @@ Output :
 	\end{column}
 \end{columns}
 \end{frame}
+\begin{frame}[fragile]
+	\frametitle{Using the HPSSA Form for writing new analyses}
+	\begin{itemize}
+		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
+		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
+	\end{itemize}
+	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,15,16,19}, linenos]{cpp}
+#include <HPSSA.h> // import the header.
+#include <SCCP.h>
 
+class SpecSCCPPass : public PassInfoMixin<SpecSCCPPass> {
+	public: PreservedAnalyses run(Function &F, 
+	FunctionAnalysisManager &AM);
+};
+...
+
+PreservedAnalyses SpecSCCPPass::run(Function &F, 
+	FunctionAnalysisManager &AM) {
+		if (F.getName() != "main")
+		return PreservedAnalyses::all();
+		
+		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
+		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
+		
+		std::vector<Instruction *> TauInsts 
+		= hpssaUtil.getAllTauInstrunctions(F); // Calling HPSSA utility function.
+		
+		std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << ",\n";
+		...
+	}
+	\end{minted}
+\fbox{
+	Output : \mintinline[]{css}{
+		Total Tau Instructions : 7,
+	...rest of the logs}
+}
+\end{frame}
 \section{What is HPSSA form?}
 \subsection{Introduction to Path Profile Guided Optimizations}
 {
@@ -385,7 +391,7 @@ Output :
 \begin{frame}
 	\frametitle{LLVM Implementation : Profile Guided SpecSCCP Pass}
 	\begin{itemize}
-		\item Modified the existing SCCP Pass to add \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.\footnotemark
+		\item Modified the existing SCCP Pass to add \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.\footnotemark \pause
 		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced. \pause
 		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using as function \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()}. \pause
 		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::solve()}. function to process \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions using \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} instead of the standard \mintinline[fontsize=\footnotesize]{css}{visit()} function.
@@ -442,7 +448,7 @@ Output :
 			\item Implemented \mintinline[]{css}{llvm::HPSSAPass} pass using the new LLVM Pass Manager. 
 			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function &F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR and handles argument allocation for  \mintinline[]{css}{"llvm.tau"} intrinsic calls as described in the previous slides. \pause
 		\end{itemize}
-		\item Key HPSSA Data Structures :  
+		\item Key HPSSA Data Structures :  \pause
 		\begin{itemize}
 			\footnotesize
 			\item Hot Path Set using \mintinline[]{css}{llvm::BitVector} for maintaining \color{red} hot paths \color{black} in the program. \pause
@@ -471,7 +477,7 @@ Output :
 		\item \mintinline[fontsize=\footnotesize]{cpp}{HPSSAPass::run(Function &F, FunctionAnalysisManager &AM)} 
 		\begin{itemize}
 			\footnotesize
-			\item Invoke \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getProfileInfo()} function to get a compact representation of all the profiled \color{red} hot paths \color{black} in the program and then call \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getCaloricConnector()} to get all the caloric connectors from the \color{red} hot path \color{black} information. This is a precursor to finding strategic positions to place \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR. \pause
+			\item Invokes \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getProfileInfo()} function to get a compact representation of all the profiled \color{red} hot paths \color{black} in the program and then calls \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::getCaloricConnector()} to get all the caloric connectors from the \color{red} hot path \color{black} information. This is a precursor to finding strategic positions to place \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR. \pause
 			\item Runs over each basic block in the function "F" in topological order using iterator returned from \mintinline[fontsize=\footnotesize]{css}{llvm::Function::RPOT()} call.
 			\item Uses the \mintinline[fontsize=\footnotesize]{css}{llvm::dominates()} function from \mintinline[fontsize=\footnotesize]{css}{llvm::DominatorTreeAnalysis} to check for dominance frontier while processing the child nodes of the current basic block. This step is a part of correctly placing \mintinline[]{css}{"llvm.tau"} intrinsic calls in the LLVM IR. \pause
 			\item Uses the renaming stack and \mintinline[]{css}{HPSSAPass::Search()} function to search and replace all use of PHI result operand with that returned by the \mintinline[]{css}{"llvm.tau"} intrinsic call.
