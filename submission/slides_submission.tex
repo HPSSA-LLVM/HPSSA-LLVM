@@ -21,7 +21,7 @@
 \newcommand{\coloryellow}[1]{\colorbox{yellow}{#1}}
 \usetikzlibrary{chains, shadows.blur, trees}
 %Information to be included in the title page:
-\title[\url{https://google.com}] %optional
+\title[\url{https://dl.acm.org/doi/10.1145/3078659.3078660}] %optional
 {The Hot Path SSA Form in LLVM}
 
 \subtitle{Algorithms \& Applications}
@@ -293,6 +293,7 @@ Output :
 	\centering
 	\includegraphics[width=8.5cm, height=7.8cm]{speculative.pdf} 
 \end{frame}
+
 \begin{frame}
 	\frametitle{LLVM Implementation : Profile Guided SSCCP Pass}
 	\begin{itemize}
@@ -404,6 +405,20 @@ Output :
 \section{Conclusion}
 \begin{frame}
 	\frametitle{Conclusion}
+\end{frame}
+\begin{frame}
+	\frametitle{References}
+	This work is based on the following research papers.
+	\begin{itemize}
+		\item Subhajit et. al, The Hot Path SSA Form: Extending the Static Single Assignment Form for Speculative Optimizations. \href{https://link.springer.com/chapter/10.1007/978-3-642-11970-5_17}{CC 2010:304-323}
+		\item Jaiswal et. al, Constructing HPSSA over SSA.
+		\href{https://dl.acm.org/doi/10.1145/3078659.3078660}{SCOPES 2017: 31-40}
+	\end{itemize}
+	Other References:
+\begin{itemize}
+	\item The LLVM Project. \href{https://llvm.org/}{https://llvm.org/}
+	\item \href{https://llvm.org/docs/LangRef.html}{LLVM Language Reference Manual}
+\end{itemize}
 \end{frame}
 \footnotesize
 
