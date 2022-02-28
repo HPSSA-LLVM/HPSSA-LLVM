@@ -5,7 +5,7 @@
 \beamer@subsectionintoc {2}{1}{Introduction to Path Profile Guided Optimizations}{20}{0}{2}
 \beamer@subsectionintoc {2}{2}{Hot Path SSA Form}{32}{0}{2}
 \beamer@subsectionintoc {2}{3}{Profile Guided SpecSCCP Pass}{39}{0}{2}
-\beamer@sectionintoc {3}{How is HPSSA Implemented?}{44}{0}{3}
-\beamer@subsectionintoc {3}{1}{Constructing HPSSA Form}{45}{0}{3}
-\beamer@subsectionintoc {3}{2}{Implementing HPSSA Form in LLVM}{62}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{69}{0}{4}
+\beamer@sectionintoc {3}{How is HPSSA Implemented?}{46}{0}{3}
+\beamer@subsectionintoc {3}{1}{Constructing HPSSA Form}{47}{0}{3}
+\beamer@subsectionintoc {3}{2}{Implementing HPSSA Form in LLVM}{64}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{78}{0}{4}
