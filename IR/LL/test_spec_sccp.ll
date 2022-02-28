@@ -24,7 +24,6 @@ target triple = "x86_64-unknown-linux-gnu"
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
 @_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
-@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -68,26 +67,27 @@ sw.default:                                       ; preds = %entry
   br label %sw.epilog
 
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %n.0 = phi i32 [ undef, %sw.default ], [ 5, %sw.bb4 ], [ 5, %sw.bb1 ], [ 10, %sw.bb ]
   %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
-  %tau = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 7, i32 7, i32 3)
-  %mul7 = mul nsw i32 2, %tau
-  %add8 = add nsw i32 %mul7, 10
-  %add9 = add nsw i32 9, %tau
-  %cmp = icmp sle i32 %add8, %add9
+  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 7, i32 7, i32 3)
+  %tau = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 5, i32 5, i32 10)
+  %mul8 = mul nsw i32 2, %tau4
+  %add9 = add nsw i32 %mul8, 10
+  %add10 = add nsw i32 9, %tau4
+  %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.end, label %if.else
 
 if.else:                                          ; preds = %sw.epilog
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 7, i32 3)
-  %mul10 = mul nsw i32 3, %tau1
-  %add11 = add nsw i32 %add8, %mul10
-  switch i32 %add11, label %if.end [
-    i32 200, label %sw.bb13
+  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 3)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 5)
+  %mul11 = mul nsw i32 3, %tau5
+  %add12 = add nsw i32 %tau1, %mul11
+  switch i32 %add12, label %if.end [
+    i32 200, label %sw.bb14
     i32 300, label %sw.bb15
   ]
 
-sw.bb13:                                          ; preds = %if.else
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau1, i32 3)
-  %call14 = call nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8) @_ZSt4cout, i32 %tau2)
+sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
@@ -95,19 +95,17 @@ sw.bb15:                                          ; preds = %if.else
   unreachable
 
 if.end:                                           ; preds = %if.else, %sw.epilog
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 7, i32 7)
-  %add17 = add nsw i32 %add8, %tau3
+  %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 7)
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 10)
+  %add17 = add nsw i32 %add9, %tau7
   store i32 %add17, i32* %m, align 4
   br label %end
 
-end:                                              ; preds = %if.end, %sw.bb13
-  %add18 = add nsw i32 1, %tau
+end:                                              ; preds = %if.end, %sw.bb14
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
-
-declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
 
 ; Function Attrs: noreturn nounwind
 declare dso_local void @exit(i32) #5

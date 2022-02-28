@@ -166,28 +166,27 @@ for (auto& I : *&(*(BB))) {
 		\begin{column}{0.4\textwidth}
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
 int main() {
-	int x = 2, m, y, z = 9, c = 1;
+	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
 	switch(|\coloralg{m}|) {   
-		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
-		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
-		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; break;
+		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; |\coloryellow{n}| = 10; break;
+		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; |\colorprog{n}| = |\coloralg{x}| - 2; break;
+		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; |\colorprog{n}| = |\coloralg{x}| + 2; break;
 		default : break;
 	}
 	|\coloralg{y}| = 2 * |\coloralg{x}| + 10;
 	if (|\coloralg{y}| <= |\coloralg{z}| + |\coloralg{x}|) {
 		// ..
 	} else {
-		|\coloralg{z}| = |\coloralg{y}| + 3 * |\coloralg{x}|;
+		|\coloralg{z}| = |\coloralg{n}| + 3 * |\coloralg{x}|;
 		switch (|\coloralg{z}|) {
 			default : break;
-			case 200 : std::cout << |\coloralg{x}|; goto end;
-			case 300 : exit(0);
-		}
+			case 200 : goto end;
+			case 300 : exit(0); }
 	}
 	|\coloralg{m}| = |\coloralg{y}| + |\coloralg{x}|;  
 	end:
-		|\coloralg{z}| = |\coloryellow{c}| + |\coloralg{x}|;
+		|\coloralg{z}| = |\coloralg{x}|;
 	return 0;
 }
 			\end{minted}
@@ -195,34 +194,34 @@ int main() {
 		\begin{column}{0.4\textwidth}  
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
 int main() {
-	int x = 2, m, y, z = 9, c = 1;
+	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
 	switch(|\coloralg{m}|) {   
-		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
-		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; break;
-		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; break;
+		case 2 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; |\coloryellow{n}| = 10; break;
+		case 4 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 5; |\colorprog{n}| = |\coloralg{x}| - 2; break;
+		case 6 : |\colorprog{x}| = 2 * |\coloryellow{c}| + 1; |\colorprog{n}| = |\coloralg{x}| + 2; break;
 		default : break;
 	}
 	|\coloralg{y}| = 2 * |\coloralg{x}| + 10;
 	if (|\coloralg{y}| <= |\coloralg{z}| + |\coloralg{x}|) {
 		// ..
 	} else {
-		|\coloralg{z}| = |\coloralg{y}| + 3 * |\coloralg{x}|;
+		|\coloralg{z}| = |\colorpred{n}| + 3 * |\coloralg{x}|; // n : Speculative Constant 5
 		switch (|\coloralg{z}|) {
 			default : break;
-			case 200 : std::cout << |\coloralg{x}|; goto end;
-			case 300 : exit(0);
-		}
+			case 200 : goto end;
+			case 300 : exit(0); }
 	}
-	|\coloralg{m}| = |\coloralg{y}| + |\colorpred{x}|; // speculative constant : x  
+	|\coloralg{m}| = |\coloralg{y}| + |\colorpred{x}|;  // x : Speculative Constant 7
 	end:
-		|\coloralg{z}| = |\coloryellow{c}| + |\coloralg{x}|;
+		|\coloralg{z}| = |\coloralg{x}|;
 	return 0;
 }
 		\end{minted}
 		\end{column}
 	\end{columns}
-	\fbox{Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Analysis proved Constants \textcolor{yellow}{$\blacksquare$} Real Constants
+	\vspace{1pt}
+	\fbox{Legends \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Discovered Constants \textcolor{yellow}{$\blacksquare$} Real Constants
 	\textcolor{green}{$\blacksquare$} Speculative Constants}
 \end{frame}
 
@@ -245,12 +244,14 @@ Output:
 	Constant: i32 7 =   %add = add nsw i32 2, 5
 	Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
 	Constant: i32 7 =   %add3 = add nsw i32 2, 5
+	Constant: i32 5 =   %sub = sub nsw i32 7, 2
 	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
 	Constant: i32 3 =   %add6 = add nsw i32 2, 1
+	Constant: i32 5 =   %add7 = add nsw i32 3, 2
 		\end{minted}
 	\end{column}
 	\begin{column}{0.5\textwidth}  
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,13}]{c}
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,13,14}]{c}
 # Running HPSSA Transformation followed by Speculative SCCP Pass.
 $ opt -load build/SCCPSolverTau.cpp.so 
 	-load build/HPSSA.cpp.so \
@@ -263,14 +264,17 @@ $ opt -load build/SCCPSolverTau.cpp.so
 ...
 Output :
 	...
-	(TauState) tau3 : speculative constantrange<7, 8> 
+	(TauState) tau1 : speculative constantrange<5, 6> 
+	(TauState) tau7 : speculative constantrange<7, 8> 
 	...
 	Constant: i32 2 =   %mul = mul nsw i32 2, 1
 	Constant: i32 7 =   %add = add nsw i32 2, 5
 	Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
 	Constant: i32 7 =   %add3 = add nsw i32 2, 5
+	Constant: i32 5 =   %sub = sub nsw i32 7, 2
 	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
 	Constant: i32 3 =   %add6 = add nsw i32 2, 1
+	Constant: i32 5 =   %add7 = add nsw i32 3, 2
 		\end{minted}
 	\end{column}
 \end{columns}
@@ -291,7 +295,7 @@ Output :
 \begin{frame}
 	\frametitle{Profile Guided SSCCP Pass in LLVM}
 	\centering
-	\includegraphics[width=11cm, height=8.3cm]{dotfiles/specSCCP_HPSSA.pdf}
+	\includegraphics[width=8.3cm, height=8.3cm]{dotfiles/specSCCP_HPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}
@@ -366,14 +370,14 @@ Output :
 
 \begin{frame}{SSA Form}
 	\centering
-	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=9cm,height=8.2cm]{baseline.pdf}
+	% sSSA Form, Simple Standard SSA Form from program. SSA
+	\includegraphics[width=8.3cm, height=8.35cm]{dotfiles/baseline.dot.pdf}
 \end{frame}
 
 \begin{frame}{Hot Path SSA Form}
 	\centering
-	%Before and After HPSSA CFG, Tau Insert points and calls highlighted.
-	\includegraphics[width=8.6cm,height=8cm]{afterHPSSA.pdf}
+	% HOT PATH SSA PICTURE. HOT PATH SSA, HPSSA 
+	\includegraphics[width=8.3cm, height=8.3cm]{dotfiles/afterHPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}

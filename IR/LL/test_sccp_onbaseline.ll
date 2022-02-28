@@ -24,7 +24,6 @@ target triple = "x86_64-unknown-linux-gnu"
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
 @_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
-@_ZSt4cout = external dso_local global %"class.std::basic_ostream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -68,40 +67,38 @@ sw.default:                                       ; preds = %entry
   br label %sw.epilog
 
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %n.0 = phi i32 [ undef, %sw.default ], [ 5, %sw.bb4 ], [ 5, %sw.bb1 ], [ 10, %sw.bb ]
   %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
-  %mul7 = mul nsw i32 2, %x.0
-  %add8 = add nsw i32 %mul7, 10
-  %add9 = add nsw i32 9, %x.0
-  %cmp = icmp sle i32 %add8, %add9
+  %mul8 = mul nsw i32 2, %x.0
+  %add9 = add nsw i32 %mul8, 10
+  %add10 = add nsw i32 9, %x.0
+  %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.end, label %if.else
 
 if.else:                                          ; preds = %sw.epilog
-  %mul10 = mul nsw i32 3, %x.0
-  %add11 = add nsw i32 %add8, %mul10
-  switch i32 %add11, label %if.end [
-    i32 200, label %sw.bb13
+  %mul11 = mul nsw i32 3, %x.0
+  %add12 = add nsw i32 %n.0, %mul11
+  switch i32 %add12, label %if.end [
+    i32 200, label %sw.bb14
     i32 300, label %sw.bb15
   ]
 
-sw.bb13:                                          ; preds = %if.else
+sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
   unreachable
 
 if.end:                                           ; preds = %if.else, %sw.epilog
-  %add17 = add nsw i32 %add8, %x.0
+  %add17 = add nsw i32 %add9, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
 
-end:                                              ; preds = %if.end, %sw.bb13
-  %add18 = add nsw i32 1, %x.0
+end:                                              ; preds = %if.end, %sw.bb14
   ret i32 0
 }
 
 declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
-
-declare dso_local nonnull align 8 dereferenceable(8) %"class.std::basic_ostream"* @_ZNSolsEi(%"class.std::basic_ostream"* nonnull align 8 dereferenceable(8), i32) #1
 
 ; Function Attrs: noreturn nounwind
 declare dso_local void @exit(i32) #5
