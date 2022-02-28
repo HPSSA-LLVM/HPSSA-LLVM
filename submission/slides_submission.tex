@@ -2,6 +2,7 @@
 \usetheme{Warsaw}
 \setbeamertemplate{headline}{}
 \usepackage{tikz}
+\usetikzlibrary{backgrounds}
 \usepackage{minted}
 \usepackage{pdfpages}
 \usefonttheme{professionalfonts}
@@ -21,28 +22,29 @@
 \newcommand{\coloryellow}[1]{\colorbox{yellow}{#1}}
 \usetikzlibrary{chains, shadows.blur, trees}
 %Information to be included in the title page:
-\title[\url{https://dl.acm.org/doi/10.1145/3078659.3078660}] %optional
+\title[Hot Path SSA in LLVM] %optional
 {The Hot Path SSA Form in LLVM}
 
 \subtitle{Algorithms \& Applications}
 
-\author[Profile Guided Optimizations using HPSSA Form in LLVM] % (optional, for multiple authors)
-{IIT Kanpur \\ Dept. Of Computer Science \& Engineering}
+\author[Muzzammil, Kumar, Lahiri, Pandey, and Roy] % (optional, for multiple authors)
+{Mohd. Muzzammil\inst{1}, Abhay Kumar\inst{1}, Sumit Lahiri\inst{1} \\ Awanish Pandey\inst{2}, and Subhajit Roy\inst{1}}
 
 \institute[IDK] % (optional)
 {
 	\inst{1}%
-	IIT Kanpur\\
-	PRAISE Group
+	Dept. Of Computer Science \& Engineering,
+	IIT Kanpur \\
+	\inst{2}%
+	Qualcomm
 }
 
 \date[01/03/2022] % (optional)
-{Mohd. Muzzammil, Abhay Kumar, Sumit Lahiri \\ Dr. Awanish Pandey, Dr. Subhajit Roy}
 
 \AtBeginSection[]
 {
 	\begin{frame}<beamer>
-		\frametitle{Presentation Outline : Section \thesection}
+		\frametitle{Presentation Outline}
 		\tableofcontents[
 			currentsection,
 			hideothersubsections,
@@ -51,24 +53,40 @@
 	\end{frame}
 }
 
+\AtBeginSubsection[]
+{
+	\begin{frame}<beamer>
+		\frametitle{Presentation Outline}
+		\tableofcontents[
+		currentsection,
+		hideothersubsections,
+		currentsubsection
+		]
+	\end{frame}
+}
 
 \begin{document}
 \frame{\titlepage}
-
+\begin{frame}
+	\frametitle{References}
+	This work is based on the following research papers.
+	\vspace{20pt}
+	\begin{itemize}
+		\setlength\itemsep{1em} 
+		\item Subhajit Roy and Y. Srikant. The Hot Path SSA Form: Extending the Static Single Assignment Form for Speculative Optimizations. In CC '10: International Conference on Compiler Construction. 2010. \href{https://link.springer.com/chapter/10.1007/978-3-642-11970-5_17}{CC 2010:304-323} 
+		\item Smriti Jaiswal, Praveen Hegde and Subhajit Roy. Constructing HPSSA over SSA. In Proceedings of the 20th International Workshop on Software and Compilers for Embedded Systems. 2017.
+		\href{https://dl.acm.org/doi/10.1145/3078659.3078660}{SCOPES 2017: 31-40}
+	\end{itemize}
+\end{frame}
 \footnotesize
 \section{HPSSA : Why another SSA Form?}
-\subsection{Profile Guided Optimization}
+\subsection{Path Profile Guided Optimizations}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={3,4,5,6,7,8,9,10,11,12,13,14,15}]{summary.pdf}
-}
-\subsection{Doing Profile Guided Optimizations is Hard!}
-{
-	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={18}]{summary.pdf}
+	\includepdf[pages={17,18,19,20,21,22}]{summary.pdf}
 }
 \begin{frame}[fragile]
-	\frametitle{Profile Guided Optimization is easy with HPSSA Form}
+	\frametitle{... but it is easy with the Hot Path SSA (HPSSA) Form!}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, escapeinside=||, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
@@ -124,9 +142,47 @@ for (auto& I : *&(*(BB))) {
 			\end{minted}
 		\end{column}
 	\end{columns}
+\begin{tikzpicture}[remember picture, overlay]
+	% we don't want to affect the bounding box if the rectangle is too large
+	\begin{pgfinterruptboundingbox}
+		% the following coords. may need to be changed to suit your slides
+		\fill <2> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7);
+		\fill <3> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7);
+	\end{pgfinterruptboundingbox}
+	\node <2> [rectangle,
+		rounded corners,
+		shade,
+		top color=blue!5,
+		bottom color=blue!20,
+		inner xsep=10pt,
+		inner ysep=10pt,
+		text width=\columnwidth,
+		text justified,
+		anchor=center
+		] at (7, 4) {%
+		Only these few lines were enough to create a new path profile guided analysis, \\ \textit{speculative sparse conditional constant propagation (SpecSCCP)} from the currently existing SCCP pass in LLVM!
+	};
+	\node <3> [rectangle,
+		rounded corners,
+		shade,
+		top color=red!5,
+		bottom color=red!20,
+		inner xsep=10pt,
+		inner ysep=10pt,
+		text width=\columnwidth,
+		text justified,
+		anchor=center
+		] at (7, 4) {%
+			\textbf{It took us only an afternoon to transform SCCP to SpecSCCP !} 
+		};
+\end{tikzpicture}
 \end{frame}
+%Slide-1
+%Only these few lines were enough to create a new path profile guided analysis, \textit{speculative sparse conditional constant propagation (SpecSCCP)} from the currently existing SCCP pass in LLVM!
+%Slide-2
+%It took us only an afternoon to transform SCCP to SpecSCCP!.  
 \begin{frame}[fragile]
-	\frametitle{Using \texttt{HPSSAPass} [It is easy!]}
+	\frametitle{Using the HPSSA Form for writing new analyses}
 	\begin{itemize}
 		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
 		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
@@ -161,11 +217,11 @@ for (auto& I : *&(*(BB))) {
 \end{frame}
 \subsection{Profile Guided SSCCP Analysis using HPSSA Form}
 \begin{frame}[fragile]
-	\frametitle{Speculative Pass using HPSSA : SSCCP}
+	\frametitle{SCCP vs SpecSCCP}
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
+			\fbox{SCCP}
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
-// Running Standard SCCP Pass.
 int main() {
 	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
@@ -192,9 +248,9 @@ int main() {
 }
 			\end{minted}
 		\end{column}
-		\begin{column}{0.4\textwidth}  
+		\begin{column}{0.4\textwidth}
+			\fbox{SpecSCCP}  
 			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={}, escapeinside=||]{cpp}
-// Running Speculative SCCP on HPSSA Form.
 int main() {
 	int x = 2, m, n, y, z = 9, c = 1;
 	std::cin >> |\coloralg{m}|;
@@ -225,10 +281,31 @@ int main() {
 	\vspace{1pt}
 	\fbox{\textbf{Legend:} \textcolor{pink}{$\blacksquare$} Overdefined  \textcolor{aquamarine}{$\blacksquare$} Discovered Constants \textcolor{yellow}{$\blacksquare$} Real Constants
 	\textcolor{green}{$\blacksquare$} Speculative Constants}
+\begin{tikzpicture}[remember picture, overlay]
+	% we don't want to affect the bounding box if the rectangle is too large
+	\begin{pgfinterruptboundingbox}
+		% the following coords. may need to be changed to suit your slides
+		\fill <2> [fill=white, opacity=0.8] (-100,-1) rectangle (16, 8);
+	\end{pgfinterruptboundingbox}
+	\node <2> [rectangle,
+	rounded corners,
+	shade,
+	top color=blue!5,
+	bottom color=blue!20,
+	inner xsep=10pt,
+	inner ysep=10pt,
+	text width=\columnwidth,
+	text justified,
+	anchor=center
+	] at (-6, 4) {%
+		\textbf{SpecSCCP discovers $n$ \& $x$ as speculative constants.}
+	};
+\end{tikzpicture}
 \end{frame}
-
+%Slide-3
+%(SpecSCCP discovers n & x as speculative constants.)
 \begin{frame}[fragile]
-	\frametitle{Speculative Pass using HPSSA : SSCCP}
+	\frametitle{SCCP vs SpecSCCP}
 	Standard SCCP VS. Speculative SCCP Pass.
 \begin{columns}
 	\begin{column}{0.4\textwidth}
@@ -283,25 +360,30 @@ Output :
 \end{frame}
 
 \section{What is HPSSA form?}
+\subsection{Introduction to Path Profile Guided Optimizations}
+{
+	\setbeamercolor{background canvas}{bg=}
+	\includepdf[pages={5,6,7,8,9,10,11,12,13,14,15}]{summary.pdf}
+}
 \subsection{Hot Path SSA Form}
 {
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={25,26,27,28,29,30}]{summary.pdf}
 }
-\subsection{Profile Guided SSCCP Pass}
+\subsection{Profile Guided SpecSCCP Pass}
 {
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={31,32}]{summary.pdf}
 }
 
 \begin{frame}
-	\frametitle{Profile Guided SSCCP Pass in LLVM}
+	\frametitle{Profile Guided SpecSCCP Pass in LLVM}
 	\centering
 	\includegraphics[width=9.5cm, height=8.05cm]{dotfiles/specSCCP_HPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}
-	\frametitle{LLVM Implementation : Profile Guided SSCCP Pass}
+	\frametitle{LLVM Implementation : Profile Guided SpecSCCP Pass}
 	\begin{itemize}
 		\item Modified the existing SCCP Pass to add \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.\footnotemark
 		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced.
@@ -317,7 +399,7 @@ Output :
 \subsection{Constructing HPSSA Form}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={41-59}]{summary.pdf}
+	\includepdf[pages={41-56}]{summary.pdf}
 }
 \subsection{Implementing HPSSA Form in LLVM}
 
@@ -413,20 +495,10 @@ Output :
 \section{Conclusion}
 \begin{frame}
 	\frametitle{Conclusion}
-\end{frame}
-\begin{frame}
-	\frametitle{References}
-	This work is based on the following research papers.
 	\begin{itemize}
-		\item Subhajit et. al, The Hot Path SSA Form: Extending the Static Single Assignment Form for Speculative Optimizations. \href{https://link.springer.com/chapter/10.1007/978-3-642-11970-5_17}{CC 2010:304-323}
-		\item Jaiswal et. al, Constructing HPSSA over SSA.
-		\href{https://dl.acm.org/doi/10.1145/3078659.3078660}{SCOPES 2017: 31-40}
+		\item The Hot Path SSA form opens up an exciting opportunity for compiler writers to ``port" exisiting standard analyses to their profile guided variants. \pause
+		\item We plan to push this work to LLVM main branch soon. 
 	\end{itemize}
-	Other References:
-\begin{itemize}
-	\item The LLVM Project. \href{https://llvm.org/}{https://llvm.org/}
-	\item \href{https://llvm.org/docs/LangRef.html}{LLVM Language Reference Manual}
-\end{itemize}
 \end{frame}
 \footnotesize
 
