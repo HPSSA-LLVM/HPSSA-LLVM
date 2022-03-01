@@ -93,21 +93,23 @@
 	\frametitle{... but it is easy with the Hot Path SSA (HPSSA) Form!}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
-	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, escapeinside=||, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
+	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
 // Function to process "llvm.tau" function intrinsic.
 visitTauNode() {
 	...
 	SpecValueLatticeElement TauState = getValueState(&Tau), 
 		beta = getValueState(Tau.getOperand(1)), 
 		x0 = getValueState(Tau.getOperand(0));
+		
 	if (TauState.isOverdefined())
 		return (void)markOverdefined(&Tau);
+		
 	for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i){
 		SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
 		beta.mergeIn(IV);
 		NumActiveIncoming++;
 		if (beta.isOverdefined())
-		break;
+			break;
 	}
 	
 	beta.mergeIn(x0);
@@ -133,8 +135,8 @@ for (auto& I : *&(*(BB))) {
 	if (CI != NULL) {
 		Function* CF = CI->getCalledFunction();
 		if (CF != NULL &&
-		CF->getIntrinsicID() == 
-			Function::lookupIntrinsicID("llvm.tau")){
+			CF->getIntrinsicID() == 
+				Function::lookupIntrinsicID("llvm.tau")){
 			visitTauNode(I);
 		} else {
 			visit(I);
@@ -150,8 +152,8 @@ for (auto& I : *&(*(BB))) {
 	% we don't want to affect the bounding box if the rectangle is too large
 	\begin{pgfinterruptboundingbox}
 		% the following coords. may need to be changed to suit your slides
-		\fill <2> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7);
-		\fill <3> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7);
+		\fill <2> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7.5);
+		\fill <3> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7.5);
 	\end{pgfinterruptboundingbox}
 	\node <2> [rectangle,
 		rounded corners,
