@@ -28,6 +28,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Transforms/Utils/PredicateInfo.h"
+#include <llvm/Support/InstructionCost.h>
 #include "../include/SpecValueLattice.h"
 #include "../include/SCCPSolverTau.h"
 
@@ -38,6 +39,7 @@ class PostDominatorTree;
 /// This pass performs function-level constant propagation and merging.
 class SCCPTauPass : public PassInfoMixin<SCCPTauPass> {
 public:
+  std::vector<std::pair<llvm::Instruction*, llvm::Value*>> specCallInsertList;
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 };
 

@@ -857,10 +857,10 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   SpecValueLatticeElement &TauState = getValueState(&Tau), 
     x0 = getValueState(Tau.getOperand(0)),
     beta = getValueState(Tau.getOperand(1)); 
-  // TauState.markUnknown();
+  TauState.markUnknown();
   
-  if (TauState.isOverdefined())
-    return (void)markOverdefined(&Tau);
+  // if (TauState.isOverdefined())
+  //   return (void)markOverdefined(&Tau);
 
   LLVM_DEBUG(dbgs() << "\t\tTau State init : " << 
       TauState <<"\n");
@@ -878,26 +878,26 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
       break;
   }
 
-  LLVM_DEBUG(dbgs() << "\t\tMeet over Ops : Beta " << beta <<"\n");
-  // We allow up to 1 range extension per active incoming value and one
-  // additional extension. Note that we manually adjust the number of range
-  // extensions to match the number of active incoming values. This helps to
-  // limit multiple extensions caused by the same incoming value, if other
-  // incoming values are equal.
-
-  beta.mergeIn(x0);
-  LLVM_DEBUG(dbgs() << "\t\tx0 meet beta : " << beta <<"\n");
-
   // COMMENT -> Constant can transition to Const Range.
   if (beta.isConstant())
-    TauState.markSpeculativeConstant(beta.getConstant());
+    beta.markSpeculativeConstant(beta.getConstant());
 
   // COMMENT -> Constant can transition to Const Range.
   if (beta.isConstantRange())
-    TauState.markSpeculativeConstantRange(beta.getConstantRange());
+    beta.markSpeculativeConstantRange(beta.getConstantRange());
+
+  LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
+  x0.mergeIn(beta);
 
   if (beta.isOverdefined() || x0.isOverdefined())
     TauState.markOverdefined();
+  else {
+    if (beta.isSpeculativeConstant() && beta.isConstant())
+      TauState.markSpeculativeConstant(beta.getConstant());
+    // COMMENT -> Constant can transition to Const Range.
+    if (beta.isSpeculativeConstant() && beta.isConstantRange())
+      TauState.markSpeculativeConstantRange(beta.getConstantRange());
+  }
 
   // // COMMENT 
   // if (x0.isConstantRange())
@@ -906,7 +906,8 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // if (x0.isConstant()) 
   //   TauState.markConstant(x0.getConstant());
 
-  // LLVM_DEBUG(dbgs() << "Lattice : " << getLatticeValueFor(&Tau) << ", " << TauState << " \n");
+  LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << 
+    getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
 
   // ensure monotonicity.
   mergeInValue(&Tau, TauState,

@@ -10,6 +10,7 @@
 \usepackage{xcolor}
 \usepackage{svg}
 \usepackage{hyperref}
+\usepackage[most]{tcolorbox}
 \definecolor{bg}{RGB}{210, 255, 180}
 \definecolor{aquamarine}{rgb}{0.5, 1.0, 0.83}
 \newcommand{\highlight}[1]{\colorbox{pink}{#1}}
@@ -69,8 +70,22 @@
 \frame{\titlepage}
 \begin{frame}
 	\frametitle{References}
-	This work is based on the following research papers.
-	\vspace{20pt}
+	\tcbset
+	{
+		enhanced,
+		left=2mm,
+		right=2mm,
+		boxrule=0.4pt,
+		colback=red!5!white,
+		boxrule=1.2pt,
+		colframe=red!75!black,fonttitle=\bfseries,
+	}
+	\begin{tcolorbox}[colback=red!3!white,colframe=red!50!black,lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}]
+	This presentation presents the details of building a robust and efficient implementation of the \textbf{Hot Path SSA (HPSSA)} form in the LLVM compiler infrastructure. 
+	\end{tcolorbox}
+	\pause \vspace{10pt}
+	The Hot Path SSA form is based on the following research papers.
+	\vspace{15pt}
 	\begin{itemize}
 		\setlength\itemsep{1em} 
 		\item Subhajit Roy and Y. Srikant. The Hot Path SSA Form: Extending the Static Single Assignment Form for Speculative Optimizations. In CC '10: International Conference on Compiler Construction. 2010. \href{https://link.springer.com/chapter/10.1007/978-3-642-11970-5_17}{CC 2010:304-323} 
@@ -93,9 +108,9 @@
 	\frametitle{... but it is easy with the Hot Path SSA (HPSSA) Form!}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
-	\begin{minted}[xleftmargin=1em, tabsize=2, numbersep=0.5em, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
+	\begin{minted}[xleftmargin=1.2em, tabsize=2, numbersep=0.4em, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
 // Function to process "llvm.tau" function intrinsic.
-visitTauNode() {
+void SpecSCCPInstVisitor::visitTauNode(Instruction &Tau) {
 	...
 	SpecValueLatticeElement TauState = getValueState(&Tau), 
 		beta = getValueState(Tau.getOperand(1)), 
@@ -111,40 +126,47 @@ visitTauNode() {
 		if (beta.isOverdefined())
 			break;
 	}
-	
-	beta.mergeIn(x0);
+	 
 	if (beta.isConstant())
-		TauState.markSpeculativeConstant(beta.getConstant());
-	
+		beta.markSpeculativeConstant(beta.getConstant());
 	if (beta.isConstantRange())
-		TauState.markSpeculativeConstantRange(beta.getConstantRange());
-	
+		beta.markSpeculativeConstantRange(beta.getConstantRange());
+
 	if (beta.isOverdefined() || x0.isOverdefined())
 		TauState.markOverdefined();
-	...
+		
+	beta.mergeInSpec(x0);
+	TauState.mergeIn(beta);
+	... // futher processing similar to visitPHINode();
 }
 \end{minted}
 		\end{column}
 	\begin{column}{0.01\textwidth} \end{column}
 		\begin{column}{0.4\textwidth}  
-			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={1,2,10}]{cpp}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={1,2,13}]{cpp}
 // Omit handling of "llvm.tau" intrinsic 
 // as a regular Instruction.
-for (auto& I : *&(*(BB))) {
-	CallInst* CI = dyn_cast<CallInst>(&I);
-	if (CI != NULL) {
-		Function* CF = CI->getCalledFunction();
-		if (CF != NULL &&
-			CF->getIntrinsicID() == 
-				Function::lookupIntrinsicID("llvm.tau")){
-			visitTauNode(I);
+void SpecSCCPInstVisitor::solve() {
+	...
+	...
+	for (auto& I : *&(*(BB))) {
+		CallInst* CI = dyn_cast<CallInst>(&I);
+		if (CI != NULL) {
+			Function* CF = CI->getCalledFunction();
+			if (CF != NULL &&
+				CF->getIntrinsicID() == 
+			  Function::lookupIntrinsicID("llvm.tau")){
+				visitTauNode(I);
+			} else {
+				visit(I);
+			} 
 		} else {
 			visit(I);
-		} 
-	} else {
-		visit(I);
+		}
 	}
+	... // rest of the code.
 }
+
 			\end{minted}
 		\end{column}
 	\end{columns}
@@ -152,16 +174,16 @@ for (auto& I : *&(*(BB))) {
 	% we don't want to affect the bounding box if the rectangle is too large
 	\begin{pgfinterruptboundingbox}
 		% the following coords. may need to be changed to suit your slides
-		\fill <2> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7.5);
-		\fill <3> [fill=white, opacity=0.8] (-2,0) rectangle (16, 7.5);
+		\fill <2> [fill=white, opacity=0.8] (-2,0) rectangle (16,7.5);
+		\fill <3> [fill=white, opacity=0.8] (-2,0) rectangle (16,7.5);
 	\end{pgfinterruptboundingbox}
 	\node <2> [rectangle,
 		rounded corners,
 		shade,
 		top color=blue!10,
 		bottom color=blue!30,
-		inner xsep=-40pt,
-		inner ysep=2pt,
+		inner xsep=-35pt,
+		inner ysep=3pt,
 		text width=\columnwidth,
 		text centered,
 		anchor=center
@@ -387,16 +409,16 @@ PreservedAnalyses SpecSCCPPass::run(Function &F,
 \begin{frame}
 	\frametitle{Profile Guided SpecSCCP Pass in LLVM}
 	\centering
-	\includegraphics[width=9.7cm, height=8.5cm]{dotfiles/specSCCP_HPSSA.dot.pdf}
+	\includegraphics[width=10cm, height=8.5cm]{dotfiles/specSCCP_HPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}
 	\frametitle{LLVM Implementation : Profile Guided SpecSCCP Pass}
 	\begin{itemize}
 		\item Modified the existing SCCP Pass to add \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} function which handles the special \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions used for $\tau$-functions.\footnotemark \pause
-		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::mergeIn()} function to handle lattice ''meet" operation for the new speculative constants introduced. \pause
+		\item Added a new lattice element type \mintinline[fontsize=\footnotesize]{css}{"spec_constant"} and \mintinline[fontsize=\footnotesize]{css}{mergeInSpec()} function in \mintinline[fontsize=\footnotesize]{css}{ValueLattice} class supporting operations on speculative constants. Modified the existing \mintinline[fontsize=\footnotesize]{css}{mergeIn()} function to handle lattice ``meet" operation for the new speculative constants introduced.  \pause
 		\item Added new functions in the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor} and \mintinline[fontsize=\footnotesize]{css}{SCCPSolver} class to handle operations on speculative constants. Eg. Operands can be marked speculative using as function \mintinline[fontsize=\footnotesize]{css}{markSpeculativeConstant()}. \pause
-		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::solve()}. function to process \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions using \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} instead of the standard \mintinline[fontsize=\footnotesize]{css}{visit()} function.
+		\item Modified the \mintinline[fontsize=\footnotesize]{css}{SCCPInstVisitor::solve()} function to process \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic instructions using \mintinline[fontsize=\footnotesize]{css}{visitTauNode()} instead of the standard \mintinline[fontsize=\footnotesize]{css}{visit()} function.
 	\end{itemize}
 	\tiny 
 	\footnotetext[1]{Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic, we blocked processing it as a regular LLVM Instruction.}
@@ -461,16 +483,16 @@ PreservedAnalyses SpecSCCPPass::run(Function &F,
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{SSA Form}
+\begin{frame}{Program in SSA Form}
 	\centering
 	% sSSA Form, Simple Standard SSA Form from program. SSA
-	\includegraphics[width=8.5cm, height=8.35cm]{dotfiles/baseline.dot.pdf}
+	\includegraphics[width=9cm, height=8.35cm]{dotfiles/baseline.dot.pdf}
 \end{frame}
 
-\begin{frame}{Hot Path SSA Form}
+\begin{frame}{Program in Hot Path SSA Form}
 	\centering
 	% HOT PATH SSA PICTURE. HOT PATH SSA, HPSSA 
-	\includegraphics[width=11cm, height=8.95cm]{dotfiles/afterHPSSA.dot.pdf}
+	\includegraphics[width=12cm, height=8.95cm]{dotfiles/afterHPSSA.dot.pdf}
 \end{frame}
 
 \begin{frame}
