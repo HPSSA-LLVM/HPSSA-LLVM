@@ -20,6 +20,7 @@ using namespace std;
 namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
+  void FillFunctionBackedges(Function& F);
   void fillTopologicalNumbering(ReversePostOrderTraversal<Function*> RPOT);
   void getProfileInfo(Function& F);
   map<BasicBlock*, bool> getCaloricConnector(Function& F);

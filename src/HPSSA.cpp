@@ -172,6 +172,12 @@ void HPSSAPass::Search(BasicBlock& BB, DomTreeNode& DTN) {
     if (hasTau[{&BB, varstack.first}]) {
       errs() << "---------- ";
       errs() << "mrd changed\n";
+      if (varstack.second.back()->getNumUses() ==
+          0) { // The tau inserted is spurious
+        auto I = dyn_cast<Instruction>(
+            varstack.second.back()); // ? Can the casting result be Null?
+        I->eraseFromParent();
+      }
       varstack.second.pop_back();
     } else {
       errs() << "---------- ";

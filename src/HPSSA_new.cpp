@@ -93,6 +93,16 @@ void HPSSAPass::fillTopologicalNumbering(
   }
 }
 
+map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
+void HPSSAPass::FillFunctionBackedges(Function& F) { // fill the isBackedge map to be used in AllocateArgs()
+  SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
+  FindFunctionBackedges(F,
+                        result); // backedges in this function
+  for (auto& info : result) {
+    isBackedge[info] = true;
+  }
+}
+
 map<Value*, vector<Value*>> renaming_stack;
 map<pair<BasicBlock*, Value*>, bool> hasPhi, hasTau;
 map<Value*, Value*> stackmap;
@@ -123,7 +133,8 @@ void HPSSAPass::Search(BasicBlock& BB, DomTreeNode& DTN) {
 
   for (auto Succ : successors(&BB)) {
     for (auto& phi : Succ->phis()) {
-      // ! Assuming this gives the operand coming from this block
+      if (phi.getBasicBlockIndex(&BB) < 0)
+        continue; // if no argument comes from this basic block
       Value* V = phi.getIncomingValueForBlock(&BB);
       if (PHINode* operand = isPhi(V)) {
         phi.replaceUsesOfWith(operand,
@@ -145,6 +156,12 @@ void HPSSAPass::Search(BasicBlock& BB, DomTreeNode& DTN) {
 
   for (auto& varstack : renaming_stack) {
     if (hasTau[{&BB, varstack.first}]) {
+      if (varstack.second.back()->getNumUses() ==
+          0) { // The tau inserted is spurious
+        auto I = dyn_cast<Instruction>(
+            varstack.second.back()); // ? Can the casting result be Null?
+        I->eraseFromParent();
+      }
       varstack.second.pop_back();
     }
   }
@@ -162,23 +179,25 @@ BitVector getIncubationPaths(BasicBlock* BB) {
   return BBVector;
 }
 
-map<pair<BasicBlock*, PHINode*>, frame> defAcc;
+map<pair<BasicBlock*, Value*>, frame> defAcc; // ! Convincing evidence that defAcc is for all variables, not only phis
 map<PHINode*, pStack> phiStack;
 map<Value*, Value*> corrPhi; // phi corresponding to a tau
 void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN) {
-  // errs()<<"Why so?\n";
-  // COMPUTING BACKEDGES
-  SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
-  FindFunctionBackedges(*(BB->getParent()),
-                        result); // backedges in this function
-  map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
-  for (auto& info : result) {
-    isBackedge[info] = true;
-  }
+  
   auto currHotPath = HotPathSet[BB];
   BitVector incubationPaths = getIncubationPaths(BB);
 
   for (auto& phi : BB->phis()) {
+
+    for(auto& arg: phi.operands()) {
+      auto from = phi.getIncomingBlock(arg);
+      auto pathInt = HotPathSet[from];
+      pathInt &= currHotPath;
+      if(pathInt.any()) {
+        defAcc[{BB, &phi}].add(arg, pathInt); // ! Our idea, not in paper
+      }
+    }
+
     auto deFrame = defAcc[{BB, &phi}];
     if (!deFrame.empty()) {
       phiStack[&phi].push(deFrame, BB);
@@ -221,7 +240,9 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN) {
     std::vector<Value*> Args;
 
     Tys.push_back(phi->getType());
-    Args.push_back(dyn_cast<Value>(phi));
+    Args.push_back(dyn_cast<Value>(
+        it->getOperand(0))); // ! It should be noted that the phi may be
+                             // replaced by some tau as first argument
 
     if (!phiStack[phi].empty()) {
       for (auto& [phiArgs, phiArgsPath] :
@@ -231,27 +252,28 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN) {
         if (commonPaths.any()) {
           Args.push_back(dyn_cast<Value>(phiArgs));
         }
-
-        // ! Need to again create tau functions
-        Function* tau = Intrinsic::getDeclaration(
-            BB->getParent()->getParent(),
-            Function::lookupIntrinsicID("llvm.tau"), Tys);
-
-        CallInst* TAUNode;
-        TAUNode = CallInst::Create(tau, Args, "tau", BB->getFirstNonPHI());
-        it->dump();
-        it->replaceAllUsesWith(TAUNode); // ! Replace the uses with the new use
-        ReplaceInstWithInst(
-            &*it, TAUNode); // ! Replacing the original tau instruction
-        it->dump();
       }
+      // ! Need to again create tau functions
+      Function* tau = Intrinsic::getDeclaration(
+          BB->getParent()->getParent(), Function::lookupIntrinsicID("llvm.tau"),
+          Tys);
+
+      CallInst* TAUNode;
+      TAUNode = CallInst::Create(tau, Args, "tau");
+      it->dump();
+      ReplaceInstWithInst(BB->getInstList(), it,
+                          TAUNode); // ! Replacing the original tau instruction,
+                                    // 'it' will be reset to new inst
+      it->dump();
     }
     ++it;
   }
+
   for (auto Succ : successors(BB)) {
 
     if (pred_size(Succ) <= 1) // not a join node
       continue;
+    //  errs()<<Succ->getName()<<"->";
     auto PathSet = HotPathSet[Succ];
     PathSet &= currHotPath; // pathSet(bp->b)
     for (auto& [phi, frameStack] : phiStack) {
@@ -259,13 +281,13 @@ void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN) {
         continue;
       for (auto& [phiArgs, phiArgsPath] : frameStack.top().first.frameVector) {
         phiArgsPath &= PathSet;
-        defAcc[{BB, phi}].add(phiArgs, phiArgsPath);
+        defAcc[{Succ, phi}].add(phiArgs, phiArgsPath);
       }
     }
   }
-  // !NOT DONE YET
-  // ! Store topological numbering, sort children of domtree according
-  // to that numbering, then call recursively.
+  // // !NOT DONE YET
+  // // ! Store topological numbering, sort children of domtree according
+  // // to that numbering, then call recursively.
   vector<tuple<int, BasicBlock*, DomTreeNode**>> Children;
   for (auto Child = DTN.begin(); Child != DTN.end(); ++Child) {
     BasicBlock* ChildBB = (**Child).getBlock();
@@ -443,6 +465,7 @@ PreservedAnalyses HPSSAPass::run(Function& F, FunctionAnalysisManager& AM) {
     }
   }
   Search(F.getEntryBlock(), *DT.getRootNode()); // Renaming Algo
+  FillFunctionBackedges(F);
   AllocateArgs(&F.getEntryBlock(),
                *DT.getRootNode()); // Argument allocation algo
 

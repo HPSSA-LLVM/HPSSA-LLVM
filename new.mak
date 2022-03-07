@@ -12,7 +12,7 @@ endif
 
 all: build test cfg_before cfg_after
 
-build: src/HPSSA_new.cpp headers/HPSSA_new.h src/TDestruction.cpp headers/TDestruction.h
+build: src/HPSSA_new.cpp include/HPSSA_new.h  # src/TDestruction.cpp headers/TDestruction.h
 	$(CXX) -v
 	@mkdir -p build
 	$(CXX) -c src/HPSSA_new.cpp -o build/HPSSA_new.cpp.o $(CXXFLAGS)
@@ -37,28 +37,29 @@ test: build tests/test.cpp BBProfiler/profileInfo.txt
 
 cfg_before: build tests/test.cpp BBProfiler/profileInfo.txt 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
-	make dot2png
+	make -f new.mak dot2png
 	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_before.png
 
 dom_before:build tests/test.cpp BBProfiler/profileInfo.txt 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
-	make dot2png
+	make -f new.mak dot2png
 	mv ./IR/cfg/.main.dot.png ./IR/cfg/dom_before.png
 
 cfg_after: test 
 	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_HPSSA_new.ll -o IR/BC/test_HPSSA_new.bc
 	# $(BUILD_PATH)/opt --dot-cfg IR/LL/test_tcond.ll -o IR/BC/test_tcond.bc 
-	make dot2png
+	make -f new.mak dot2png
 	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_after.png
 
 dom_after: test
 	$(BUILD_PATH)/opt --dot-dom-only IR/LL/test_HPSSA_new.ll -o IR/BC/test_HPSSA_new.bc 
-	make dot2png
+	make -f new.mak dot2png
 	mv ./IR/cfg/.main.dot.png ./IR/cfg/dom_after.png
 
 dot2png: 
+
 	mv .*.dot IR/cfg/
-	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
+	find IR/cfg/ -name .*.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 
 	rm -rf output && mkdir output 
