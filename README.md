@@ -14,7 +14,17 @@ Directory Structure:
 - [tests](./tests) : Files on which passes will be tested.
 - Other files are for standard use.
 
-## Running 
+## Installing & Running 
+
+```
+$ mkdir build
+$ cd build 
+$ cmake -G "Ninja" \
+  -DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;compiler-rt" \
+  -DLLVM_USE_LINKER=gold \
+  -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON \
+  -LLVM_CCACHE_BUILD=ON ../llvm
+```
 
 ```
 $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all

@@ -23,7 +23,7 @@ target triple = "x86_64-unknown-linux-gnu"
 
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
-@_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
+@_ZSt3cin = external global %"class.std::basic_istream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -34,16 +34,16 @@ entry:
   ret void
 }
 
-declare dso_local void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
+declare void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
 
 ; Function Attrs: nounwind
-declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #2
+declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #2
 
 ; Function Attrs: nounwind
-declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
+declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
 ; Function Attrs: mustprogress noinline norecurse uwtable
-define dso_local i32 @main() #4 {
+define i32 @main() #4 {
 entry:
   %m = alloca i32, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
@@ -77,37 +77,42 @@ sw.default:                                       ; preds = %entry
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
   %tau = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
-  %mul8 = mul nsw i32 2, %tau4
+  %mul8 = mul nsw i32 2, %tau3
   %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %tau4
+  %add10 = add nsw i32 9, %tau3
   %cmp = icmp sle i32 %add9, %add10
-  br i1 %cmp, label %if.end, label %if.else
+  br i1 %cmp, label %if.then, label %if.else
+
+if.then:                                          ; preds = %sw.epilog
+  br label %if.end
 
 if.else:                                          ; preds = %sw.epilog
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %add3, i32 %add6)
+  %tau4 = call i32 (...) @llvm.tau.i32(i32 %tau3, i32 %add3, i32 %add6)
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 %add7)
-  %mul11 = mul nsw i32 3, %tau5
+  %mul11 = mul nsw i32 3, %tau4
   %add12 = add nsw i32 %tau1, %mul11
-  switch i32 %add12, label %if.end [
+  switch i32 %add12, label %sw.default13 [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
   ]
 
+sw.default13:                                     ; preds = %if.else
+  br label %sw.epilog16
+
 sw.bb14:                                          ; preds = %if.else
-  ; %tau6 = call i32 (...) @llvm.tau.i32(i32 %tau5, i32 %add6)
-  ; %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau1, i32 %add7)
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
   call void @exit(i32 0) #7
   unreachable
 
-if.end:                                           ; preds = %if.else, %sw.epilog
-  %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %add, i32 %add3)
-  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 10)
-  %add17 = add nsw i32 %add9, %tau7
+sw.epilog16:                                      ; preds = %sw.default13
+  br label %if.end
+
+if.end:                                           ; preds = %sw.epilog16, %if.then
+  %add17 = add nsw i32 %add9, %tau3
   store i32 %add17, i32* %m, align 4
   br label %end
 
@@ -115,10 +120,10 @@ end:                                              ; preds = %if.end, %sw.bb14
   ret i32 0
 }
 
-declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
+declare nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
 
 ; Function Attrs: noreturn nounwind
-declare dso_local void @exit(i32) #5
+declare void @exit(i32) #5
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
@@ -139,10 +144,11 @@ attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="tr
 attributes #6 = { nofree nosync nounwind willreturn }
 attributes #7 = { noreturn nounwind }
 
-!llvm.module.flags = !{!0, !1, !2}
-!llvm.ident = !{!3}
+!llvm.module.flags = !{!0, !1, !2, !3}
+!llvm.ident = !{!4}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 7, !"uwtable", i32 1}
-!2 = !{i32 7, !"frame-pointer", i32 2}
-!3 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!1 = !{i32 7, !"PIC Level", i32 2}
+!2 = !{i32 7, !"uwtable", i32 1}
+!3 = !{i32 7, !"frame-pointer", i32 2}
+!4 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}

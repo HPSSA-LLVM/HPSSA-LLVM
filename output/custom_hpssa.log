@@ -11,18 +11,19 @@ if.else: { 0 0 1 } { 0 1 0 }
 sw.bb15: 
 sw.bb14 is a Caloric Connector
 sw.bb14: { 0 0 1 } 
+sw.default13: 
+sw.epilog16: 
+if.then: 
 if.end is a Caloric Connector
-if.end: { 0 1 0 } { 1 0 0 } 
-end: { 0 1 0 } { 1 0 0 } { 0 0 1 } 
+if.end: 
+end: { 0 0 1 } 
 ----------===Initiating Tau Insertion Algroithm===----------
 Inserted Tau at : sw.epilog
 Inserted Tau at : if.else
 Inserted Tau at : sw.bb14
-Inserted Tau at : if.end
 Inserted Tau at : sw.epilog
 Inserted Tau at : if.else
 Inserted Tau at : sw.bb14
-Inserted Tau at : if.end
 -- BB: entry
 ---- I: ---- attempt to renaming uses in I
 ------ Not a phi instruction
@@ -84,8 +85,8 @@ Inserted Tau at : if.end
 ------ n.0
 ------ mrd: n.0
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -93,8 +94,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -102,8 +103,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -111,8 +112,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -120,8 +121,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -129,14 +130,33 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.then
+-------- Succ: if.else
+------ Recurse over Child 
+-------- Parent: sw.epilog | Child: if.then
+-- BB: if.then
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
--------- Succ: if.else
 ------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau
+---------- mrd not changed
+-------- phi: x.0 mrd: tau3
+---------- mrd not changed
 -------- Parent: sw.epilog | Child: if.end
 -- BB: if.end
 ---- I: ---- attempt to renaming uses in I
@@ -144,54 +164,36 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
------- a tau instruction
+------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: n.0
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau7
------- mrd: tau7
------- Not a phi instruction
------- a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: n.0
 ------ tau3
 ------ mrd: tau3
------- phi: x.0
------- tau7
------- mrd: tau7
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
 ------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
 ------ tau3
 ------ mrd: tau3
------- phi: x.0
------- tau7
------- mrd: tau7
------- Not a phi instruction
------- Not a tau instruction
----- I: ---- attempt to renaming uses in I
------- phi: n.0
------- tau3
------- mrd: tau3
------- phi: x.0
------- tau7
------- mrd: tau7
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: end
 ------ Recurse over Child 
 ------ Remove definitions if needed
--------- phi: n.0 mrd: tau3
----------- mrd changed
--------- phi: x.0 mrd: tau7
----------- mrd changed
+-------- phi: n.0 mrd: tau
+---------- mrd not changed
+-------- phi: x.0 mrd: tau3
+---------- mrd not changed
 -------- Parent: sw.epilog | Child: end
 -- BB: end
 ---- I: ---- attempt to renaming uses in I
@@ -199,8 +201,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -208,7 +210,7 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: n.0 mrd: tau
 ---------- mrd not changed
--------- phi: x.0 mrd: tau4
+-------- phi: x.0 mrd: tau3
 ---------- mrd not changed
 -------- Parent: sw.epilog | Child: if.else
 -- BB: if.else
@@ -217,8 +219,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau4
------- mrd: tau4
+------ tau3
+------ mrd: tau3
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -226,8 +228,8 @@ Inserted Tau at : if.end
 ------ tau
 ------ mrd: tau
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -235,8 +237,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -244,8 +246,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -253,15 +255,53 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.default13
+-------- Succ: sw.bb14
+-------- Succ: sw.bb15
+------ Recurse over Child 
+-------- Parent: if.else | Child: sw.default13
+-- BB: sw.default13
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.epilog16
+------ Recurse over Child 
+-------- Parent: sw.default13 | Child: sw.epilog16
+-- BB: sw.epilog16
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
 -------- Succ: if.end
--------- Succ: sw.bb14
--------- Succ: sw.bb15
 ------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau1
+---------- mrd not changed
+-------- phi: x.0 mrd: tau4
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau1
+---------- mrd not changed
+-------- phi: x.0 mrd: tau4
+---------- mrd not changed
 -------- Parent: if.else | Child: sw.bb14
 -- BB: sw.bb14
 ---- I: ---- attempt to renaming uses in I
@@ -269,8 +309,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -278,8 +318,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau6
------- mrd: tau6
+------ tau5
+------ mrd: tau5
 ------ Not a phi instruction
 ------ a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -287,8 +327,8 @@ Inserted Tau at : if.end
 ------ tau2
 ------ mrd: tau2
 ------ phi: x.0
------- tau6
------- mrd: tau6
+------ tau5
+------ mrd: tau5
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -297,7 +337,7 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: n.0 mrd: tau2
 ---------- mrd changed
--------- phi: x.0 mrd: tau6
+-------- phi: x.0 mrd: tau5
 ---------- mrd changed
 -------- Parent: if.else | Child: sw.bb15
 -- BB: sw.bb15
@@ -306,8 +346,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ Not a tau instruction
 ---- I: ---- attempt to renaming uses in I
@@ -315,8 +355,8 @@ Inserted Tau at : if.end
 ------ tau1
 ------ mrd: tau1
 ------ phi: x.0
------- tau5
------- mrd: tau5
+------ tau4
+------ mrd: tau4
 ------ Not a phi instruction
 ------ Not a tau instruction
 ------ Succesor Logic
@@ -324,17 +364,17 @@ Inserted Tau at : if.end
 ------ Remove definitions if needed
 -------- phi: n.0 mrd: tau1
 ---------- mrd not changed
--------- phi: x.0 mrd: tau5
+-------- phi: x.0 mrd: tau4
 ---------- mrd not changed
 ------ Remove definitions if needed
 -------- phi: n.0 mrd: tau1
 ---------- mrd changed
--------- phi: x.0 mrd: tau5
+-------- phi: x.0 mrd: tau4
 ---------- mrd changed
 ------ Remove definitions if needed
 -------- phi: n.0 mrd: tau
 ---------- mrd changed
--------- phi: x.0 mrd: tau4
+-------- phi: x.0 mrd: tau3
 ---------- mrd changed
 -------- Parent: entry | Child: sw.bb
 -- BB: sw.bb
@@ -497,23 +537,23 @@ Inserted Tau at : if.end
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0086 seconds (0.0086 wall clock)
+  Total Execution Time: 0.0041 seconds (0.0043 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0055 ( 63.5%)   0.0055 ( 63.5%)   0.0055 ( 63.5%)  HPSSAPass
-   0.0011 ( 12.8%)   0.0011 ( 12.8%)   0.0011 ( 12.8%)  VerifierPass
-   0.0011 ( 12.4%)   0.0011 ( 12.4%)   0.0011 ( 12.4%)  VerifierAnalysis
-   0.0009 ( 10.0%)   0.0009 ( 10.0%)   0.0009 ( 10.0%)  PrintModulePass
-   0.0001 (  0.7%)   0.0001 (  0.7%)   0.0001 (  0.7%)  PreservedCFGCheckerAnalysis
-   0.0001 (  0.6%)   0.0001 (  0.6%)   0.0001 (  0.6%)  DominatorTreeAnalysis
-   0.0086 (100.0%)   0.0086 (100.0%)   0.0086 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0000 ( 21.9%)   0.0036 ( 92.5%)   0.0037 ( 89.5%)   0.0038 ( 89.9%)  HPSSAPass
+   0.0000 ( 27.5%)   0.0001 (  3.2%)   0.0002 (  4.3%)   0.0002 (  4.1%)  PrintModulePass
+   0.0000 ( 21.9%)   0.0001 (  2.1%)   0.0001 (  2.9%)   0.0001 (  2.8%)  VerifierPass
+   0.0000 ( 19.7%)   0.0001 (  1.9%)   0.0001 (  2.7%)   0.0001 (  2.6%)  VerifierAnalysis
+   0.0000 (  5.6%)   0.0000 (  0.2%)   0.0000 (  0.4%)   0.0000 (  0.4%)  PreservedCFGCheckerAnalysis
+   0.0000 (  3.4%)   0.0000 (  0.1%)   0.0000 (  0.2%)   0.0000 (  0.2%)  DominatorTreeAnalysis
+   0.0002 (100.0%)   0.0039 (100.0%)   0.0041 (100.0%)   0.0043 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0037 seconds (0.0039 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0037 (100.0%)   0.0037 (100.0%)   0.0039 (100.0%)  Parse IR
-   0.0037 (100.0%)   0.0037 (100.0%)   0.0039 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0003 (100.0%)   0.0002 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0003 (100.0%)   0.0002 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 

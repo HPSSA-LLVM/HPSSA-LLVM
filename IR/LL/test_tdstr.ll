@@ -4,9 +4,26 @@ target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16
 target triple = "x86_64-unknown-linux-gnu"
 
 %"class.std::ios_base::Init" = type { i8 }
+%"class.std::basic_istream" = type { i32 (...)**, i64, %"class.std::basic_ios" }
+%"class.std::basic_ios" = type { %"class.std::ios_base", %"class.std::basic_ostream"*, i8, i8, %"class.std::basic_streambuf"*, %"class.std::ctype"*, %"class.std::num_put"*, %"class.std::num_get"* }
+%"class.std::ios_base" = type { i32 (...)**, i64, i64, i32, i32, i32, %"struct.std::ios_base::_Callback_list"*, %"struct.std::ios_base::_Words", [8 x %"struct.std::ios_base::_Words"], i32, %"struct.std::ios_base::_Words"*, %"class.std::locale" }
+%"struct.std::ios_base::_Callback_list" = type { %"struct.std::ios_base::_Callback_list"*, void (i32, %"class.std::ios_base"*, i32)*, i32, i32 }
+%"struct.std::ios_base::_Words" = type { i8*, i64 }
+%"class.std::locale" = type { %"class.std::locale::_Impl"* }
+%"class.std::locale::_Impl" = type { i32, %"class.std::locale::facet"**, i64, %"class.std::locale::facet"**, i8** }
+%"class.std::locale::facet" = type <{ i32 (...)**, i32, [4 x i8] }>
+%"class.std::basic_ostream" = type { i32 (...)**, %"class.std::basic_ios" }
+%"class.std::basic_streambuf" = type { i32 (...)**, i8*, i8*, i8*, i8*, i8*, i8*, %"class.std::locale" }
+%"class.std::ctype" = type <{ %"class.std::locale::facet.base", [4 x i8], %struct.__locale_struct*, i8, [7 x i8], i32*, i32*, i16*, i8, [256 x i8], [256 x i8], i8, [6 x i8] }>
+%"class.std::locale::facet.base" = type <{ i32 (...)**, i32 }>
+%struct.__locale_struct = type { [13 x %struct.__locale_data*], i16*, i32*, i32*, [13 x i8*] }
+%struct.__locale_data = type opaque
+%"class.std::num_put" = type { %"class.std::locale::facet.base", [4 x i8] }
+%"class.std::num_get" = type { %"class.std::locale::facet.base", [4 x i8] }
 
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
+@_ZSt3cin = external global %"class.std::basic_istream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
 ; Function Attrs: noinline uwtable
@@ -25,57 +42,84 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 ; Function Attrs: nounwind
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
-; Function Attrs: mustprogress noinline norecurse nounwind uwtable
+; Function Attrs: mustprogress noinline norecurse uwtable
 define i32 @main() #4 {
 entry:
-  switch i32 undef, label %sw.default [
+  %m = alloca i32, align 4
+  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+  %i = load i32, i32* %m, align 4
+  switch i32 %i, label %sw.default [
     i32 2, label %sw.bb
     i32 4, label %sw.bb1
+    i32 6, label %sw.bb4
   ]
 
 sw.bb:                                            ; preds = %entry
-  br label %label_3
+  %mul = mul nsw i32 2, 1
+  %add = add nsw i32 %mul, 5
+  br label %sw.epilog
 
 sw.bb1:                                           ; preds = %entry
-  br label %label_4
+  %mul2 = mul nsw i32 2, 1
+  %add3 = add nsw i32 %mul2, 5
+  %sub = sub nsw i32 %add3, 2
+  br label %sw.epilog
+
+sw.bb4:                                           ; preds = %entry
+  %mul5 = mul nsw i32 2, 1
+  %add6 = add nsw i32 %mul5, 1
+  %add7 = add nsw i32 %add6, 2
+  br label %sw.epilog
 
 sw.default:                                       ; preds = %entry
-  br label %label_5
+  br label %sw.epilog
 
-label_3:                                          ; preds = %sw.bb
-  %mul = mul nsw i32 10, 10
-  br label %end
-
-label_4:                                          ; preds = %sw.bb1
-  %mul2 = mul nsw i32 10, 10
-  br label %end
-
-label_5:                                          ; preds = %sw.default
-  %sub = sub nsw i32 10, 1
-  %mul3 = mul nsw i32 %sub, 10
-  %add = add nsw i32 %mul3, 10
-  br label %end
-
-end:                                              ; preds = %label_5, %label_4, %label_3
-  %e.0 = phi i32 [ %add, %label_5 ], [ %mul2, %label_4 ], [ %mul, %label_3 ]
-  %add4 = add nsw i32 1000, %e.0
-  %add5 = add nsw i32 %add4, 100
-  %cmp = icmp sge i32 %add5, 100
+sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+  %mul8 = mul nsw i32 2, %x.0
+  %add9 = add nsw i32 %mul8, 10
+  %add10 = add nsw i32 9, %x.0
+  %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.then, label %if.else
 
-if.then:                                          ; preds = %end
-  %add6 = add nsw i32 %e.0, 779
+if.then:                                          ; preds = %sw.epilog
   br label %if.end
 
-if.else:                                          ; preds = %end
-  %add7 = add nsw i32 %e.0, 543
+if.else:                                          ; preds = %sw.epilog
+  %mul11 = mul nsw i32 3, %x.0
+  %add12 = add nsw i32 %n.0, %mul11
+  switch i32 %add12, label %sw.default13 [
+    i32 200, label %sw.bb14
+    i32 300, label %sw.bb15
+  ]
+
+sw.default13:                                     ; preds = %if.else
+  br label %sw.epilog16
+
+sw.bb14:                                          ; preds = %if.else
+  br label %end
+
+sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #7
+  unreachable
+
+sw.epilog16:                                      ; preds = %sw.default13
   br label %if.end
 
-if.end:                                           ; preds = %if.else, %if.then
-  %a.0 = phi i32 [ %add6, %if.then ], [ %add7, %if.else ]
-  %add8 = add nsw i32 %a.0, 1
+if.end:                                           ; preds = %sw.epilog16, %if.then
+  %add17 = add nsw i32 %add9, %x.0
+  store i32 %add17, i32* %m, align 4
+  br label %end
+
+end:                                              ; preds = %if.end, %sw.bb14
   ret i32 0
 }
+
+declare nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
+
+; Function Attrs: noreturn nounwind
+declare void @exit(i32) #5
 
 ; Function Attrs: noinline uwtable
 define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
@@ -85,14 +129,16 @@ entry:
 }
 
 ; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #5
+declare i32 @llvm.tau.i32(...) #6
 
 attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
-attributes #4 = { mustprogress noinline norecurse nounwind uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #5 = { nofree nosync nounwind willreturn }
+attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nofree nosync nounwind willreturn }
+attributes #7 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}
