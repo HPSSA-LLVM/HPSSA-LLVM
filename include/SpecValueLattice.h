@@ -256,7 +256,9 @@ public:
   }
 
   bool isUndef() const { return Tag == undef; }
-  bool isSpeculativeConstant() const { return Shadow_Tag == spec_constant; }
+  bool isSpeculativeConstant() const { return Tag == spec_constant; }
+  bool isSpecRange() const { return Shadow_Tag == constantrange || Tag == constantrange_including_undef; }
+  bool isSpecConstant() const { return Shadow_Tag == constant; }
   bool isUnknown() const { return Tag == unknown; }
   bool isUnknownOrUndef() const { return Tag == unknown || Tag == undef; }
   bool isConstant() const { return Tag == constant; }
@@ -335,8 +337,8 @@ public:
       return false;
 
     // assert(isUnknown());
-    Tag = constant;
-    Shadow_Tag = spec_constant;
+    Tag = spec_constant;
+    Shadow_Tag = constant;
     ConstVal = V;
     return true;
   }
@@ -455,8 +457,8 @@ public:
     assert(isUnknown() || isUndef());
 
     NumRangeExtensions = 0;
-    Tag = NewTag;
-    Shadow_Tag = spec_constant;
+    Tag = spec_constant;
+    Shadow_Tag = NewTag;
     new (&Range) ConstantRange(std::move(NewR));
     return true;
   }
@@ -584,11 +586,11 @@ static_assert(sizeof(SpecValueLatticeElement) <= 48,
               "size of SpecValueLatticeElement changed unexpectedly");
 
 raw_ostream &operator<<(raw_ostream &OS, const SpecValueLatticeElement &Val) {
-  
+  // COMMENT : Print Speculative Consts
   if (Val.isSpeculativeConstant()) {
-    if (Val.isConstant()) 
+    if (Val.isSpecConstant())
       return OS << "speculative constant<" << *Val.getConstant() << ">";
-    if (Val.isConstantRange())
+    if (Val.isSpecRange())
       return OS << "speculative constantrange<" << Val.getConstantRange().getLower() << ", "
         << Val.getConstantRange().getUpper() << ">";
   }

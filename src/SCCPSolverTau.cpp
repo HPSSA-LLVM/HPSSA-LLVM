@@ -31,6 +31,7 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/LLVMContext.h"
 #include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/Constant.h>
 #include <llvm/IR/GlobalValue.h>
 #include <llvm/IR/Instruction.h>
 #include <utility>
@@ -879,12 +880,16 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   }
 
   // COMMENT -> Constant can transition to Const Range.
-  if (beta.isConstant())
+  if (beta.isConstant()) {
+    LLVM_DEBUG(dbgs() << "\tSpeculative Beta : " << beta << "\n");
     beta.markSpeculativeConstant(beta.getConstant());
+  }
 
   // COMMENT -> Constant can transition to Const Range.
-  if (beta.isConstantRange())
-    beta.markSpeculativeConstantRange(beta.getConstantRange());
+  if (beta.isConstantRange()) {
+    if (beta.getConstantRange().isSingleElement())
+      LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta.getConstantRange().getLower() << "\n");
+  }
 
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
   x0.mergeIn(beta);
