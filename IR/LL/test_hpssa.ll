@@ -104,7 +104,8 @@ sw.bb15:                                          ; preds = %if.else
 
 if.end:                                           ; preds = %if.else, %sw.epilog
   %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 %add, i32 %add3)
-  %add17 = add nsw i32 %add9, %tau7
+  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 10)
+  %add17 = add nsw i32 %tau3, %tau7
   store i32 %add17, i32* %m, align 4
   br label %end
 

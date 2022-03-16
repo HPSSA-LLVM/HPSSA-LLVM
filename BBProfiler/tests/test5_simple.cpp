@@ -28,7 +28,7 @@ int main() {
     }
   }
 
-  m = y + x;  
+  m = n + x;  
   end:
     z = x;
 

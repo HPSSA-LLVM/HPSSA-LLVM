@@ -108,7 +108,7 @@ sw.bb15:                                          ; preds = %if.else
 ;   br label %if.end
 
 if.end:                                           ; preds = %sw.epilog16, %if.then
-  %add17 = add nsw i32 %add9, %x.0
+  %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
 
