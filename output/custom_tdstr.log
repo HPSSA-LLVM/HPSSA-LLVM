@@ -1,28 +1,30 @@
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau with e.0.
+Replacing variable tau3 with x.0.
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau2 with a.0.
+Replacing variable tau with n.0.
 Tau to be removed : llvm.tau.i32	
-Replacing variable tau1 with e.0.
+Replacing variable tau4 with x.0.
+Tau to be removed : llvm.tau.i32	
+Replacing variable tau1 with n.0.
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0031 seconds (0.0046 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0004 ( 18.2%)   0.0002 ( 29.4%)   0.0007 ( 20.8%)   0.0021 ( 45.5%)  TDSTRPass
-   0.0008 ( 33.0%)   0.0001 ( 18.8%)   0.0009 ( 29.7%)   0.0009 ( 20.5%)  VerifierPass
-   0.0008 ( 31.4%)   0.0001 ( 18.1%)   0.0009 ( 28.3%)   0.0009 ( 19.5%)  VerifierAnalysis
-   0.0004 ( 15.6%)   0.0002 ( 31.0%)   0.0006 ( 19.2%)   0.0006 ( 13.2%)  PrintModulePass
-   0.0000 (  1.8%)   0.0000 (  2.6%)   0.0001 (  2.0%)   0.0001 (  1.3%)  PreservedCFGCheckerAnalysis
-   0.0024 (100.0%)   0.0007 (100.0%)   0.0031 (100.0%)   0.0046 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0002 ( 30.7%)   0.0002 ( 30.7%)   0.0002 ( 30.7%)  TDSTRPass
+   0.0002 ( 30.2%)   0.0002 ( 30.2%)   0.0002 ( 30.2%)  PrintModulePass
+   0.0001 ( 18.7%)   0.0001 ( 18.7%)   0.0001 ( 19.0%)  VerifierPass
+   0.0001 ( 17.5%)   0.0001 ( 17.5%)   0.0001 ( 17.4%)  VerifierAnalysis
+   0.0000 (  2.9%)   0.0000 (  2.9%)   0.0000 (  2.7%)  PreservedCFGCheckerAnalysis
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0033 seconds (0.0033 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0033 (100.0%)   0.0033 (100.0%)   0.0033 (100.0%)  Parse IR
-   0.0033 (100.0%)   0.0033 (100.0%)   0.0033 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 
