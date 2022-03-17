@@ -48,14 +48,6 @@ class SpecValueLatticeElement {
     ///  overdefined
     undef,
 
-    /// This Value has a speculative constant value.  The constant cannot be undef.
-    /// (For constant integers, constantrange is used instead. Integer typed
-    /// constantexprs can appear as constant.) Note that the constant state
-    /// can be reached by merging undef & constant states.
-    /// Transition allowed to the following states:
-    ///  overdefined
-    spec_constant,
-
     /// This Value has a specific constant value.  The constant cannot be undef.
     /// (For constant integers, constantrange is used instead. Integer typed
     /// constantexprs can appear as constant.) Note that the constant state
@@ -63,6 +55,14 @@ class SpecValueLatticeElement {
     /// Transition allowed to the following states:
     ///  overdefined
     constant,
+
+    /// This Value has a speculative constant value.  The constant cannot be undef.
+    /// (For constant integers, constantrange is used instead. Integer typed
+    /// constantexprs can appear as constant.) Note that the constant state
+    /// can be reached by merging undef & constant states.
+    /// Transition allowed to the following states:
+    ///  overdefined
+    spec_constant,
 
     /// This Value is known to not have the specified value. (For constant
     /// integers, constantrange is used instead.  As above, integer typed
@@ -256,9 +256,8 @@ public:
   }
 
   bool isUndef() const { return Tag == undef; }
-  bool isSpeculativeConstant() const { return Tag == spec_constant; }
-  bool isSpecRange() const { return Shadow_Tag == constantrange || Tag == constantrange_including_undef; }
-  bool isSpecConstant() const { return Shadow_Tag == constant; }
+  bool isSpecRange() const { return Shadow_Tag == spec_constant && Tag == constantrange; }
+  bool isSpecConstant() const { return Shadow_Tag == spec_constant && Tag == constant; }
   bool isUnknown() const { return Tag == unknown; }
   bool isUnknownOrUndef() const { return Tag == unknown || Tag == undef; }
   bool isConstant() const { return Tag == constant; }
@@ -333,12 +332,12 @@ public:
 
   // COMMENT : Added marking of Spec Const.
   bool markSpeculativeConstant(Constant *V) {
-    if (isSpeculativeConstant())
+    if (isSpecConstant())
       return false;
 
     // assert(isUnknown());
-    Tag = spec_constant;
-    Shadow_Tag = constant;
+    Tag = constant;
+    Shadow_Tag = spec_constant;
     ConstVal = V;
     return true;
   }
@@ -440,6 +439,8 @@ public:
             : constantrange;
     if (isConstantRange()) {
       Tag = NewTag;
+      if (getConstantRange().isSingleElement())
+        Shadow_Tag = spec_constant;
       if (getConstantRange() == NewR)
         return Tag != OldTag;
 
@@ -457,8 +458,9 @@ public:
     assert(isUnknown() || isUndef());
 
     NumRangeExtensions = 0;
-    Tag = spec_constant;
-    Shadow_Tag = NewTag;
+    Tag = NewTag;
+    if (getConstantRange().isSingleElement())
+      Shadow_Tag = spec_constant;
     new (&Range) ConstantRange(std::move(NewR));
     return true;
   }
@@ -477,11 +479,11 @@ public:
     }
 
     // COMMENT : LHS meet RHS 
-    if (RHS.isSpeculativeConstant()) {
+    if (RHS.isSpecConstant()) {
       if (isConstant() && getConstant() == RHS.getConstant())
         return markSpeculativeConstant(getConstant());
-      if (isConstantRange() && RHS.isConstantRange() 
-          && getConstantRange() == RHS.getConstantRange())
+      if (getConstantRange().isSingleElement() && RHS.getConstantRange().isSingleElement() 
+        && getConstantRange() == RHS.getConstantRange())
         return markSpeculativeConstantRange(RHS.getConstantRange(true),
                                  Opts.setMayIncludeUndef());
       return false;
@@ -586,15 +588,13 @@ static_assert(sizeof(SpecValueLatticeElement) <= 48,
               "size of SpecValueLatticeElement changed unexpectedly");
 
 raw_ostream &operator<<(raw_ostream &OS, const SpecValueLatticeElement &Val) {
-  // COMMENT : Print Speculative Consts
-  if (Val.isSpeculativeConstant()) {
-    if (Val.isSpecConstant())
-      return OS << "speculative constant<" << *Val.getConstant() << ">";
-    if (Val.isSpecRange())
-      return OS << "speculative constantrange<" << Val.getConstantRange().getLower() << ", "
-        << Val.getConstantRange().getUpper() << ">";
-  }
-  
+  // COMMENT : Print Speculative Consts  
+  if (Val.isSpecConstant())
+    return OS << "speculative constant<" << *Val.getConstant() << ">";
+  if (Val.isSpecRange())
+    return OS << "speculative constantrange<" << Val.getConstantRange().getLower() << ", "
+      << Val.getConstantRange().getUpper() << ">";
+
   if (Val.isUnknown())
     return OS << "unknown";
   if (Val.isUndef())

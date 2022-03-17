@@ -67,7 +67,7 @@ bool isConstant(const SpecValueLatticeElement &LV) {
 // SpecValueLatticeElement::isOverdefined() and is intended to be used in the
 // transition to SpecValueLatticeElement.
 bool isOverdefined(const SpecValueLatticeElement &LV) {
-  return !LV.isUnknownOrUndef() && !isConstant(LV) && !LV.isSpeculativeConstant();
+  return !LV.isUnknownOrUndef() && !isConstant(LV) && !LV.isSpecConstant();
 }
 
 } // namespace
@@ -879,30 +879,32 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
       break;
   }
 
-  // COMMENT -> Constant can transition to Const Range.
+  // COMMENT -> Constant can transition to Spec Const.
   if (beta.isConstant()) {
-    LLVM_DEBUG(dbgs() << "\tSpeculative Beta : " << beta << "\n");
+    LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta << "\n");
     beta.markSpeculativeConstant(beta.getConstant());
   }
 
-  // COMMENT -> Constant can transition to Const Range.
+  // COMMENT -> Constant can transition to Spec Const Range.
   if (beta.isConstantRange()) {
-    if (beta.getConstantRange().isSingleElement())
+    if (beta.getConstantRange().isSingleElement()) {
       LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta.getConstantRange().getLower() << "\n");
+      beta.markSpeculativeConstantRange(beta.getConstantRange());
+    }
   }
 
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
-  x0.mergeIn(beta);
+  TauState.mergeIn(beta);
 
   if (beta.isOverdefined() || x0.isOverdefined())
     TauState.markOverdefined();
-  else {
-    if (beta.isSpeculativeConstant() && beta.isConstant())
-      TauState.markSpeculativeConstant(beta.getConstant());
-    // COMMENT -> Constant can transition to Const Range.
-    if (beta.isSpeculativeConstant() && beta.isConstantRange())
-      TauState.markSpeculativeConstantRange(beta.getConstantRange());
-  }
+  // else {
+  //   if (beta.isSpeculativeConstant() && beta.isConstant())
+  //     TauState.markSpeculativeConstant(beta.getConstant());
+  //   // COMMENT -> Constant can transition to Const Range.
+  //   if (beta.isSpeculativeConstant() && beta.isConstantRange())
+  //     TauState.markSpeculativeConstantRange(beta.getConstantRange());
+  // }
 
   // // COMMENT 
   // if (x0.isConstantRange())
@@ -1150,8 +1152,8 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
     return (void)markOverdefined(&I);
 
   // COMMENT : Handle operation on speculative constants.
-  if (V1State.isSpeculativeConstant() || V2State.isSpeculativeConstant())
-    return (void)markSpeculativeConstant(&I);
+  // if (V1State.isSpeculativeConstant() || V2State.isSpeculativeConstant())
+  //   return (void)markSpeculativeConstant(&I);
 
   // If either of the operands is a constant, try to fold it to a constant.
   // TODO: Use information from notconstant better.
