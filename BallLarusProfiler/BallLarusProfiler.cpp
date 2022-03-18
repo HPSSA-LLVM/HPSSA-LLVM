@@ -3,6 +3,8 @@
 using namespace llvm;
 using namespace std;
 
+// ! Assuming no of paths <= INT_MAX, Modify if needed
+
 map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
 Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   BasicBlock* Exit = *po_begin(&F); // ? Exit will be the last block in post
@@ -41,6 +43,16 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   return AbstractGraph;
 }
 
+Graph transposeGraph(Graph& AG) {
+  Graph TAG;
+  for (auto& [BB, BBEdgeList] : AG.G) {
+    for (auto& Edge : BBEdgeList) {
+      TAG.G[Edge.to].push_back(Edge);
+    }
+  }
+  return TAG;
+}
+
 vector<BasicBlock*> TopoSort(Graph& AG, BasicBlock* BBEntry) {
   int cntr = 0;
   map<BasicBlock*, int> visited, start, finish;
@@ -69,26 +81,62 @@ void DFS(Graph& AG, BasicBlock* BB, map<BasicBlock*, int>& visited,
   finish[BB] = cntr++;
 }
 
-void BallLarusProfiler::getEdgeValues(Function& F, Graph& AG) {
-  map<BasicBlock*, int32_t> NumPaths;
-  vector<BasicBlock*> bbInPOrder = TopoSort(AG, F.getEntryBlock());
+// void BallLarusProfiler::getEdgeValues(Function& F, Graph& AG) {
+//   map<BasicBlock*, int32_t> NumPaths;
+//   vector<BasicBlock*> bbInPOrder = TopoSort(AG, F.getEntryBlock());
 
-  // Post Order Traversal--Reverse Topological
-  for (auto it = bbInPOrder.begin(); it != bbInPOrder.end(); ++it) {
-    BasicBlock* BB = *it;
-    if (AG.G[BB].empty()) { // Leaf Node
-      NumPaths[BB] = 1;
+//   // Post Order Traversal--Reverse Topological
+//   for (auto it = bbInPOrder.begin(); it != bbInPOrder.end(); ++it) {
+//     BasicBlock* BB = *it;
+//     if (AG.G[BB].empty()) { // Leaf Node
+//       NumPaths[BB] = 1;
+//     } else {
+//       NumPaths[BB] = 0;
+//       for (auto SuccEdge : AG.G[BB]) {
+//         auto Succ = SuccEdge.to;
+//         SuccEdge.val = NumPaths[BB];
+//         NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
+//       }
+//     }
+//   }
+// }
+
+void getIncValues(Graph& AG) {
+  Graph TAG = transposeGraph(AG);
+  set<pair<int, BasicBlock*>> inMST, notInMST;
+  map<BasicBlock*, int> distance;
+  map<BasicBlock*, BasicBlock*> parent;
+  bool flag = true;
+  for (auto& [BB, BBEdgeList] : AG.G) {
+    if (flag) {
+      notInMST.insert({0, BB});
+      distance[BB] = 0;
+      parent[BB] = NULL; // root vertex
+      flag = false;
     } else {
-      NumPaths[BB] = 0;
-      for (auto SuccEdge : AG.G[BB]) {
-        auto Succ = SuccEdge.to;
-        SuccEdge.val = NumPaths[BB];
-        NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
+      notInMST.insert({INT_MAX, BB});
+      distance[BB] = INT_MAX;
+    }
+  }
+
+  while (!notInMST.empty()) {
+    int BBDistance = notInMST.begin()->first;
+    BasicBlock* BB = notInMST.begin()->second;
+    // Use parent information here to update distance
+    inMST.insert({BBDistance, BB});
+    notInMST.erase(notInMST.begin());
+    for (auto& SuccEdge : AG.G[BB]) {
+      auto Succ = SuccEdge.to;
+      auto EdgeVal = SuccEdge.val;
+      if ((BBDistance + EdgeVal) <= distance[Succ]) {
+        notInMST.erase({distance[Succ], Succ});
+        distance[Succ] = BBDistance + EdgeVal;
+        parent[Succ] = BB;
+        notInMST.insert({distance[Succ], Succ});
       }
     }
   }
 }
-
 // ? Should we add the edge exit -> entry for mst
 
 // void BallLarusProfilerPass::convertToDAG(Function& F) {
