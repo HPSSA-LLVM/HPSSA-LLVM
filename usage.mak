@@ -10,21 +10,27 @@ endif
 
 .PHONY: test 
 
-all: build runpass cfg
-runtest : runpass cfg 
+all: build baseline runpass cfg
+runtest : baseline runpass cfg 
 
 build: src/SCCPSolverTau.cpp src/SCCPTau.cpp include/SpecValueLattice.h
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
 	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
 
-test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
-	# use the same test case which was profiled 
-	cp BBProfiler/tests/test.cpp tests/test.cpp
-	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
-	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
-	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
+# test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
+# 	# use the same test case which was profiled 
+# 	cp BBProfiler/tests/test.cpp tests/test.cpp
+# 	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
+# 	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
+# 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
+baseline: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
+	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
+	mv .main.dot baseline.dot
+	mv *.dot IR/cfg/
+	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
+	
 runpass:  
 	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
 		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
@@ -39,8 +45,6 @@ runpass:
 		-f 2> output/custom_sccp_onbaseline.log
 
 cfg:
-	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
-	mv .main.dot baseline.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -enable-new-pm=0 -disable-output
 	mv .main.dot afterHPSSA.dot
 	mv *.dot IR/cfg/

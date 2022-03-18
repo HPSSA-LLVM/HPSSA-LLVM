@@ -291,13 +291,13 @@ llvmGetPassPluginInfo() {
   return getSCCPTauPluginInfo();
 }
 
-namespace {
+// namespace {
 
-//===--------------------------------------------------------------------===//
-//
-/// SCCP Class - This class uses the SCCPTauSolver to implement a per-function
-/// Sparse Conditional Constant Propagator.
-///
+// //===--------------------------------------------------------------------===//
+// //
+// /// SCCP Class - This class uses the SCCPTauSolver to implement a per-function
+// /// Sparse Conditional Constant Propagator.
+// ///
 // class SCCPLegacyPass : public FunctionPass {
 // public:
 //   // Pass identification, replacement for typeid
@@ -325,7 +325,7 @@ namespace {
 //   }
 // };
 
-} // end anonymous namespace
+// } // end anonymous namespace
 
 // char SCCPLegacyPass::ID = 0;
 
