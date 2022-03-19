@@ -81,62 +81,99 @@ void DFS(Graph& AG, BasicBlock* BB, map<BasicBlock*, int>& visited,
   finish[BB] = cntr++;
 }
 
-// void BallLarusProfiler::getEdgeValues(Function& F, Graph& AG) {
-//   map<BasicBlock*, int32_t> NumPaths;
-//   vector<BasicBlock*> bbInPOrder = TopoSort(AG, F.getEntryBlock());
+void BallLarusProfilerPass::getEdgeValues(Function& F, Graph& AG) {
+  map<BasicBlock*, int32_t> NumPaths;
+  vector<BasicBlock*> bbInPOrder = TopoSort(AG, F.getEntryBlock());
 
 //   // Post Order Traversal--Reverse Topological
-//   for (auto it = bbInPOrder.begin(); it != bbInPOrder.end(); ++it) {
-//     BasicBlock* BB = *it;
-//     if (AG.G[BB].empty()) { // Leaf Node
-//       NumPaths[BB] = 1;
-//     } else {
-//       NumPaths[BB] = 0;
-//       for (auto SuccEdge : AG.G[BB]) {
-//         auto Succ = SuccEdge.to;
-//         SuccEdge.val = NumPaths[BB];
-//         NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
-//       }
-//     }
-//   }
-// }
+  for (auto it = bbInPOrder.begin(); it != bbInPOrder.end(); ++it) {
+    BasicBlock* BB = *it;
+    if (AG.G[BB].empty()) { // Leaf Node
+      NumPaths[BB] = 1;
+    } else {
+      NumPaths[BB] = 0;
+      for (auto SuccEdge : AG.G[BB]) {
+        auto Succ = SuccEdge.to;
+        SuccEdge.val = NumPaths[BB];
+        NumPaths[BB] = NumPaths[BB] + NumPaths[Succ];
+      }
+    }
+  }
+}
 
-void getIncValues(Graph& AG) {
+map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
+  BasicBlock* Exit = *po_begin(&F);
+  BasicBlock& Entry = F.getEntryBlock();
+  Edge nedge;
+  nedge.backedge_number = 0; // ! See to it
+  nedge.from = Exit;
+  nedge.to = &Entry; 
+  nedge.val = 0; // used in figure 7 of Paper
+  AG.G[Exit].push_back(nedge);
+
   Graph TAG = transposeGraph(AG);
-  set<pair<int, BasicBlock*>> inMST, notInMST;
+  set<pair<int, BasicBlock*>, greater<pair<int, BasicBlock*>>> inMST, notInMST; // set sorted in descending order
   map<BasicBlock*, int> distance;
-  map<BasicBlock*, BasicBlock*> parent;
+  map<BasicBlock*, pair<BasicBlock*,bool>> parent; // true: positive sign, false: negative sign
+  map<pair<BasicBlock*, BasicBlock*>, int> Inc; // for each vertex pair
   bool flag = true;
   for (auto& [BB, BBEdgeList] : AG.G) {
     if (flag) {
       notInMST.insert({0, BB});
       distance[BB] = 0;
-      parent[BB] = NULL; // root vertex
+      parent[BB] = {NULL, true}; // root vertex
       flag = false;
     } else {
-      notInMST.insert({INT_MAX, BB});
-      distance[BB] = INT_MAX;
+      notInMST.insert({INT_MIN, BB});
+      distance[BB] = INT_MIN;
     }
   }
 
   while (!notInMST.empty()) {
     int BBDistance = notInMST.begin()->first;
     BasicBlock* BB = notInMST.begin()->second;
+
+    //==================Updating Inc================//
+    for(auto [BBDistance, BBMST]: inMST) {
+      Inc[{BBMST, BB}] = Inc[{BBMST,parent[BB].first}] + (parent[BB].second?BBDistance:-BBDistance);
+      Inc[{BB, BBMST}] = -Inc[{BBMST,BB}];
+    }
+    //==============Done===============//
     // Use parent information here to update distance
     inMST.insert({BBDistance, BB});
     notInMST.erase(notInMST.begin());
     for (auto& SuccEdge : AG.G[BB]) {
       auto Succ = SuccEdge.to;
       auto EdgeVal = SuccEdge.val;
-      if ((BBDistance + EdgeVal) <= distance[Succ]) {
+      if (EdgeVal > distance[Succ]) {
         notInMST.erase({distance[Succ], Succ});
-        distance[Succ] = BBDistance + EdgeVal;
-        parent[Succ] = BB;
+        distance[Succ] = EdgeVal;
+        parent[Succ] = {BB, true};
+        notInMST.insert({distance[Succ], Succ});
+      }
+    }
+    for (auto& SuccEdge : TAG.G[BB]) {
+      auto Succ = SuccEdge.from; // from and to is maintained in edge struct
+      auto EdgeVal = SuccEdge.val;
+      if (EdgeVal > distance[Succ]) {
+        notInMST.erase({distance[Succ], Succ});
+        distance[Succ] = EdgeVal;
+        parent[Succ] = {BB, false};
         notInMST.insert({distance[Succ], Succ});
       }
     }
   }
+
+  for (auto& [BB, BBEdgeList] : AG.G) {
+    for(auto& Edge: BBEdgeList) {
+      if(Edge.from != parent[Edge.to].first && parent[Edge.from].first != Edge.to) {
+        Edge.chordEdge = true;
+      }
+    }
+  }
+  return Inc;
 }
+
 // ? Should we add the edge exit -> entry for mst
 
 // void BallLarusProfilerPass::convertToDAG(Function& F) {
@@ -165,6 +202,8 @@ PreservedAnalyses BallLarusProfilerPass::run(Module& M,
 
     Graph AbstractGraph = getAbstractGraph(F);
     getEdgeValues(F, AbstractGraph);
+    auto Inc = getIncValues(AbstractGraph, F); // got annotated edges also
+    // separate chord edges and instrument
 
     // Inside main function
     IRBuilder<> Builder(M.getContext());
