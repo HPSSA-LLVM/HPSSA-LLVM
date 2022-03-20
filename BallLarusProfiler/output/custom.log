@@ -1,21 +1,39 @@
+Basic Blocks in Topological order: entry sw.bb4 sw.bb1 sw.bb sw.default sw.epilog if.else sw.bb15 sw.bb14 if.end end 
+entry sw.default 0
+entry sw.bb 4
+entry sw.bb1 8
+entry sw.bb4 12
+sw.default sw.epilog 0
+sw.bb sw.epilog 0
+sw.bb1 sw.epilog 0
+sw.bb4 sw.epilog 0
+sw.epilog if.end 0
+sw.epilog if.else 1
+if.end end 0
+if.else if.end 0
+if.else sw.bb14 1
+if.else sw.bb15 2
+sw.bb14 end 0
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0006 seconds (0.0006 wall clock)
+  Total Execution Time: 0.0008 seconds (0.0008 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0003 ( 42.5%)   0.0003 ( 42.5%)   0.0003 ( 42.4%)  PrintModulePass
-   0.0001 ( 23.2%)   0.0001 ( 23.2%)   0.0001 ( 23.3%)  VerifierPass
-   0.0001 ( 22.1%)   0.0001 ( 22.1%)   0.0001 ( 22.0%)  VerifierAnalysis
-   0.0001 ( 12.2%)   0.0001 ( 12.2%)   0.0001 ( 12.3%)  BallLarusProfilerPass
-   0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0003 ( 43.2%)   0.0003 ( 43.2%)   0.0003 ( 43.0%)  BallLarusProfilerPass
+   0.0002 ( 25.6%)   0.0002 ( 25.6%)   0.0002 ( 25.6%)  PrintModulePass
+   0.0001 ( 15.1%)   0.0001 ( 15.1%)   0.0001 ( 15.2%)  VerifierPass
+   0.0001 ( 14.0%)   0.0001 ( 14.0%)   0.0001 ( 14.0%)  VerifierAnalysis
+   0.0000 (  1.5%)   0.0000 (  1.5%)   0.0000 (  1.6%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.7%)   0.0000 (  0.7%)   0.0000 (  0.7%)  UnifyFunctionExitNodesPass
+   0.0008 (100.0%)   0.0008 (100.0%)   0.0008 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0006 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
-   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0006 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0006 (100.0%)  Total
 

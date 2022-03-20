@@ -1,7 +1,6 @@
 #ifndef LLVM_TRANSFORMS_BBProfiler_BBProfiler_H
 #define LLVM_TRANSFORMS_BBProfiler_BBProfiler_H
 
-#include ""
 #include "llvm/Analysis/CFG.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Dominators.h"
@@ -22,9 +21,9 @@
 using namespace std;
 namespace llvm {
 
-struct Edge{
+struct Edge {
   uint val; // value of the edge
-  int inc; // the value needed to be incremented with, if a chord edge
+  int inc;  // the value needed to be incremented with, if a chord edge
   uint backedge_number;
   bool chordEdge; // chord edge of the minimal spanning tree
   BasicBlock* from;
@@ -32,18 +31,18 @@ struct Edge{
 };
 
 class Graph {
-  public:
-    map<BasicBlock*, vector<Edge>> G;
-    // map<std::pair<BasicBlock*, BasicBlock*>, vector<Edge>> Edges;
-    map<uint, std::pair<BasicBlock*, BasicBlock*>>  Backedge;
-    map<std::pair<BasicBlock*, BasicBlock*>, uint> BackedgeNumber;
+public:
+  map<BasicBlock*, vector<Edge>> G;
+  // map<std::pair<BasicBlock*, BasicBlock*>, vector<Edge>> Edges;
+  map<uint, std::pair<BasicBlock*, BasicBlock*>> Backedge;
+  map<std::pair<BasicBlock*, BasicBlock*>, uint> BackedgeNumber;
 };
 class BallLarusProfilerPass : public PassInfoMixin<BallLarusProfilerPass> {
 public:
   void getAnalysisUsage(AnalysisUsage& Info);
   Graph getAbstractGraph(Function& F);
-  void getEdgeValues(Function &F, Graph &AG);
-  PreservedAnalyses run(Module& M, ModuleAnalysisManager& AM);
+  void getEdgeValues(Function& F, Graph& AG);
+  PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
 };
 
 } // namespace llvm
