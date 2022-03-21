@@ -42,6 +42,17 @@ declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* no
 ; Function Attrs: nounwind
 declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
+; Function Attrs: noinline nounwind optnone uwtable
+; define dso_local i32 @callvoid(i32 %a, i32 %b) #0 {
+; entry:
+;   %a.addr = alloca i32, align 4
+;   %b.addr = alloca i32, align 4
+;   store i32 %a, i32* %a.addr, align 4
+;   store i32 %b, i32* %b.addr, align 4
+;   %0 = load i32, i32* %b.addr, align 4
+;   ret i32 %0
+; }
+
 ; Function Attrs: mustprogress noinline norecurse uwtable
 define dso_local i32 @main() #4 {
 entry:
@@ -110,6 +121,7 @@ sw.bb15:                                          ; preds = %if.else
 if.end:                                           ; preds = %sw.epilog16, %if.then
   %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
+  ; %add90 = call i32 @callvoid(i32 %add17, i32 40) #10
   br label %end
 
 end:                                              ; preds = %if.end, %sw.bb14
