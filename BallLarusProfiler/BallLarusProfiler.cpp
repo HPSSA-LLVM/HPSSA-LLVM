@@ -7,7 +7,18 @@ using namespace std;
 
 map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
 Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
-  BasicBlock* Exit = *po_begin(&F); // ? Exit will be the last block in post
+  BasicBlock* Exit;
+  for(auto& BB: F) {
+    if(succ_empty(&BB)) {
+      for(auto& I: BB) {
+        if(auto *RI = dyn_cast<ReturnInst>(&I)) {
+          Exit = &BB;
+          break;
+        }
+      }
+    }
+  }
+  // BasicBlock* Exit = *po_begin(&F); // ? Exit will be the last block in post
                                     // order iterator. Will it be inefficient?
   Graph AbstractGraph;
   SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
@@ -19,6 +30,13 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
 
   uint backedge_ctr = 1;
   for (auto& BB : F) {
+    if(succ_empty(&BB) && &BB != Exit) { // Unreachable block
+      Edge nedge;
+      nedge.from = &BB;
+      nedge.to = Exit;
+      nedge.backedge_number = 0;
+      AbstractGraph.G[&BB].push_back(nedge);
+    }
     for (auto Succ : successors(&BB)) {
       if (!isBackedge[{&BB, Succ}]) {
         Edge nedge;
@@ -141,9 +159,17 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
 
     //==================Updating Inc================//
     for (auto [BBDistance, BBMST] : inMST) {
-      Inc[{BBMST, BB}] = Inc[{BBMST, parent[BB].first}] +
-                         (parent[BB].second ? BBDistance : -BBDistance);
-      Inc[{BB, BBMST}] = -Inc[{BBMST, BB}];
+      if(parent[BB].first == BBMST) {
+        
+        Inc[{BBMST, BB}] = (parent[BB].second ? distance[BB] : -distance[BB]);
+        Inc[{BB, BBMST}] = -Inc[{BBMST, BB}];
+        // errs()<<Inc[{BBMST, BB}]<<" ";
+      }
+      else{
+        Inc[{BBMST, BB}] = Inc[{BBMST, parent[BB].first}] +
+                          (parent[BB].second ? distance[BB] : -distance[BB]);
+        Inc[{BB, BBMST}] = -Inc[{BBMST, BB}];
+      }
     }
     //==============Done===============//
 
@@ -153,6 +179,7 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
       auto Succ = SuccEdge.to;
       auto EdgeVal = SuccEdge.val;
       if (EdgeVal > distance[Succ]) {
+        // errs()<<"helo";
         notInMST.erase({distance[Succ], Succ});
         distance[Succ] = EdgeVal;
         parent[Succ] = {BB, true};
@@ -170,9 +197,9 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
       }
     }
   }
-
   for (auto& [BB, BBEdgeList] : AG.G) {
     for (auto& Edge : BBEdgeList) {
+      Edge.inc = Inc[{Edge.from, Edge.to}];
       if (Edge.from != parent[Edge.to].first &&
           parent[Edge.from].first != Edge.to) {
         Edge.chordEdge = true;
@@ -211,13 +238,19 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
 
   Graph AbstractGraph = getAbstractGraph(F);
   getEdgeValues(F, AbstractGraph);
+  // for (auto& [BB, EdgeList] : AbstractGraph.G) {
+  //   for (auto& Edge : EdgeList) {
+  //     errs() << (Edge.from)->getName() << " " << (Edge.to)->getName() << " "
+  //            << (Edge.val) << "\n";
+  //   }
+  // }
+  auto Inc = getIncValues(AbstractGraph, F); // got annotated edges also
   for (auto& [BB, EdgeList] : AbstractGraph.G) {
     for (auto& Edge : EdgeList) {
       errs() << (Edge.from)->getName() << " " << (Edge.to)->getName() << " "
-             << (Edge.val) << "\n";
+             << (Edge.inc) << " " << (Edge.chordEdge?"true":"false") <<"\n";
     }
   }
-  auto Inc = getIncValues(AbstractGraph, F); // got annotated edges also
   // for(auto [Edge, ])
   // separate chord edges and instrument
 

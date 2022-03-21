@@ -22,7 +22,7 @@ using namespace std;
 namespace llvm {
 
 struct Edge {
-  uint val; // value of the edge
+  int val; // value of the edge
   int inc;  // the value needed to be incremented with, if a chord edge
   uint backedge_number;
   bool chordEdge; // chord edge of the minimal spanning tree
