@@ -28,7 +28,7 @@ test: build tests/test.cpp
 	# echo ${LLVM_BIN_PATH}
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
-	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
+	# $(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 	$(BUILD_PATH)/opt -load-pass-plugin=build/BallLarusProfiler.cpp.so -passes=blprofiler -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
 	# Handle exit code of diff(1 if changes found).
 	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
@@ -54,7 +54,7 @@ cfg_after: test
 
 dot2png: 
 	mv .*.dot IR/cfg/
-	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
+	find IR/cfg/ -name .*.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 
 	rm -rf output && mkdir output 
