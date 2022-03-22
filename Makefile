@@ -10,13 +10,15 @@ endif
 
 .PHONY: test build dot2png
 
-all: build test dot2png
+all: buildhpssa build test dot2png 
 runpass : test dot2png
 
-build: src/HPSSA.cpp include/HPSSA.h src/TDestruction.cpp include/TDestruction.h src/SpecTauInsertion.cpp include/SpecTauInsertion.h
+buildhpssa: src/HPSSA.cpp include/HPSSA.h
 	@mkdir -p build
 	$(CXX) -c src/HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
+
+build: src/TDestruction.cpp include/TDestruction.h src/SpecTauInsertion.cpp include/SpecTauInsertion.h
 	$(CXX) -c src/TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
 	$(CXX) -c src/SpecTauInsertion.cpp -o build/SpecTauInsertion.cpp.o $(CXXFLAGS)

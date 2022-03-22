@@ -34,7 +34,7 @@
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/GlobalValue.h>
 #include <llvm/IR/Instruction.h>
-#include <SpecTauInsertion.h>
+// #include <SpecTauInsertion.h>
 #include <utility>
 #include <vector>
 
@@ -860,9 +860,6 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     x0 = getValueState(Tau.getOperand(0)),
     beta = getValueState(Tau.getOperand(1)); 
   TauState.markUnknown();
-  
-  // if (TauState.isOverdefined())
-  //   return (void)markOverdefined(&Tau);
 
   LLVM_DEBUG(dbgs() << "\t\tTau State init : " << 
       TauState <<"\n");
@@ -886,9 +883,9 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
       " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
       << ", i32 " << beta.getConstant() << ")\n\n" );
-
     beta.markSpeculativeConstant(beta.getConstant());
-    TauState.markSpeculativeConstant(beta.getConstant());
+    // if (x0.isUnknownOrUndef())
+    //   TauState.markSpeculativeConstant(beta.getConstant());
   }
 
   // COMMENT -> Constant can transition to Spec Const Range.
@@ -900,12 +897,19 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
         " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
         << ", i32 " << beta.getConstantRange().getLower() << ")\n\n" );
       beta.markSpeculativeConstantRange(beta.getConstantRange());
-      TauState.markSpeculativeConstantRange(beta.getConstantRange());
+      // if (x0.isUnknownOrUndef())
+      //   TauState.markSpeculativeConstantRange(beta.getConstantRange());
     }
   }
 
+  x0.mergeIn(beta);
+  if (x0.isUnknownOrUndef()) {
+    TauState.mergeIn(beta);
+  } else {
+    TauState.mergeIn(x0);
+  }
+
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
-  // TauState.mergeIn(beta);
 
   if (beta.isOverdefined() || x0.isOverdefined())
     TauState.markOverdefined();
