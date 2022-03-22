@@ -883,7 +883,7 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   // COMMENT -> Constant can transition to Spec Const.
   if (beta.isConstant()) {
     LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta << "\n");
-    LLVM_DEBUG(dbgs() << "\t\t" << "%" << Tau.getNameOrAsOperand() << 
+    LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
       " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
       << ", i32 " << beta.getConstant() << ")\n\n" );
 
@@ -896,7 +896,7 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     if (beta.getConstantRange().isSingleElement()) {
       LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " 
         << beta.getConstantRange().getLower() << "\n");
-      LLVM_DEBUG(dbgs() << "\t\t" << "%" << Tau.getNameOrAsOperand() << 
+      LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
         " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
         << ", i32 " << beta.getConstantRange().getLower() << ")\n\n" );
       beta.markSpeculativeConstantRange(beta.getConstantRange());
