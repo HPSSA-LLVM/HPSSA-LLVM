@@ -879,17 +879,17 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
 
   // COMMENT -> Constant can transition to Spec Const.
   if (beta.isConstant()) {
+    // Beta is a safe constant
     LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta << "\n");
     LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
       " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
       << ", i32 " << beta.getConstant() << ")\n\n" );
     beta.markSpeculativeConstant(beta.getConstant());
-    // if (x0.isUnknownOrUndef())
-    //   TauState.markSpeculativeConstant(beta.getConstant());
   }
 
   // COMMENT -> Constant can transition to Spec Const Range.
   if (beta.isConstantRange()) {
+    // Beta is a safe constant range
     if (beta.getConstantRange().isSingleElement()) {
       LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " 
         << beta.getConstantRange().getLower() << "\n");
@@ -897,17 +897,11 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
         " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
         << ", i32 " << beta.getConstantRange().getLower() << ")\n\n" );
       beta.markSpeculativeConstantRange(beta.getConstantRange());
-      // if (x0.isUnknownOrUndef())
-      //   TauState.markSpeculativeConstantRange(beta.getConstantRange());
     }
   }
 
   x0.mergeIn(beta);
-  if (x0.isUnknownOrUndef()) {
-    TauState.mergeIn(beta);
-  } else {
-    TauState.mergeIn(x0);
-  }
+  TauState.mergeIn(x0);
 
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
 
