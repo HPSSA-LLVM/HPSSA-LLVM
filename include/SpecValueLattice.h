@@ -460,7 +460,7 @@ public:
     NumRangeExtensions = 0;
     Tag = NewTag;
     // if (getConstantRange().isSingleElement())
-    //   Shadow_Tag = spec_constant;
+    Shadow_Tag = spec_constant;
     new (&Range) ConstantRange(std::move(NewR));
     return true;
   }
@@ -478,6 +478,7 @@ public:
       return true;
     }
 
+    
     // COMMENT : LHS meet RHS 
     if (RHS.isSpecRange()) {
       if (isUnknownOrUndef())

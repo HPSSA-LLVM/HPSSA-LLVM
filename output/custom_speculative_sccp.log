@@ -81,11 +81,13 @@ Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %s
 		Unknown LHS
 		Tau Operand (L) : add6, constantrange<3, 4>
 	Speculative Constant Beta : 3
+	Lattice (Tau) : tau4, unknown, (TauState) : unknown 
+		Unknown LHS
+	Beta : speculative constantrange<3, 4>, x0 : constantrange<3, 4>
+	Lattice (Tau) : tau4, constantrange<3, 4>, (TauState) : constantrange<3, 4> 
+		ValueLattice (TauState) tau4 : constantrange<3, 4>
 		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
 
-	Beta : speculative constantrange<3, 4>, x0 : constantrange<3, 4>
-	Lattice (Tau) : tau4, speculative constantrange<3, 4>, (TauState) : speculative constantrange<3, 4> 
-		ValueLattice (TauState) tau4 : speculative constantrange<3, 4>
 	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10))
 		Tau State init : unknown
 		x0 (phi-state) n.0 : constantrange<5, 6>
@@ -93,9 +95,13 @@ Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %s
 		Unknown LHS
 		Tau Operand (L) : add7, constantrange<5, 6>
 		Tau Operand (L) : 10, constantrange<10, 11>
-	Beta : constantrange<5, 11>, x0 : constantrange<5, 6>
 	Lattice (Tau) : tau, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau : unknown
+		Unknown LHS
+	Beta : constantrange<5, 11>, x0 : constantrange<5, 6>
+	Lattice (Tau) : tau, constantrange<5, 6>, (TauState) : constantrange<5, 6> 
+		ValueLattice (TauState) tau : constantrange<5, 6>
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
 	[Taulog] Visiting Other Instruction :   %mul8 = mul nsw i32 2, %tau4
 	[Taulog] 2 : constantrange<2, 3>, tau4 : constantrange<3, 4>
 		Unknown LHS
@@ -132,23 +138,33 @@ if.else:                                          ; preds = %sw.epilog
 		Unknown LHS
 		Tau Operand (L) : add6, constantrange<3, 4>
 	Speculative Constant Beta : 3
+	Lattice (Tau) : tau5, unknown, (TauState) : unknown 
+		Unknown LHS
+	Beta : speculative constantrange<3, 4>, x0 : constantrange<3, 4>
+	Lattice (Tau) : tau5, constantrange<3, 4>, (TauState) : constantrange<3, 4> 
+		ValueLattice (TauState) tau5 : constantrange<3, 4>
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
 		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
 
-	Beta : speculative constantrange<3, 4>, x0 : constantrange<3, 4>
-	Lattice (Tau) : tau5, speculative constantrange<3, 4>, (TauState) : speculative constantrange<3, 4> 
-		ValueLattice (TauState) tau5 : speculative constantrange<3, 4>
 	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 %add7))
 		Tau State init : unknown
-		x0 (phi-state) tau : unknown
+		x0 (phi-state) tau : constantrange<5, 6>
 		Tau Operand (L) : sub, unknown
 		Unknown LHS
 		Tau Operand (L) : add7, constantrange<5, 6>
 	Speculative Constant Beta : 5
+	Lattice (Tau) : tau1, unknown, (TauState) : unknown 
+		Unknown LHS
+	Beta : speculative constantrange<5, 6>, x0 : constantrange<5, 6>
+	Lattice (Tau) : tau1, constantrange<5, 6>, (TauState) : constantrange<5, 6> 
+		ValueLattice (TauState) tau1 : constantrange<5, 6>
 		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
 
-	Beta : speculative constantrange<5, 6>, x0 : unknown
-	Lattice (Tau) : tau1, speculative constantrange<5, 6>, (TauState) : speculative constantrange<5, 6> 
-		ValueLattice (TauState) tau1 : speculative constantrange<5, 6>
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 	[Taulog] Visiting Other Instruction :   %mul11 = mul nsw i32 3, %tau5
 	[Taulog] 3 : constantrange<3, 4>, tau5 : constantrange<3, 4>
 		Unknown LHS
@@ -176,23 +192,41 @@ if.end:                                           ; preds = %if.else, %sw.epilog
 		x0 (phi-state) tau4 : constantrange<3, 4>
 		Tau Operand (L) : add, unknown
 		Tau Operand (L) : add3, unknown
-	Beta : unknown, x0 : constantrange<3, 4>
 	Lattice (Tau) : tau7, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau7 : unknown
+		Unknown LHS
+	Beta : unknown, x0 : constantrange<3, 4>
+	Lattice (Tau) : tau7, constantrange<3, 4>, (TauState) : constantrange<3, 4> 
+		ValueLattice (TauState) tau7 : constantrange<3, 4>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 10))
 		Tau State init : unknown
-		x0 (phi-state) tau : unknown
+		x0 (phi-state) tau : constantrange<5, 6>
 		Tau Operand (L) : sub, unknown
 		Unknown LHS
 		Tau Operand (L) : 10, constantrange<10, 11>
 	Speculative Constant Beta : 10
+	Lattice (Tau) : tau3, unknown, (TauState) : unknown 
+		Unknown LHS
+	Beta : speculative constantrange<10, 11>, x0 : constantrange<5, 6>
+	Lattice (Tau) : tau3, constantrange<5, 6>, (TauState) : constantrange<5, 6> 
+		ValueLattice (TauState) tau3 : constantrange<5, 6>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
 		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
 
-	Beta : speculative constantrange<10, 11>, x0 : unknown
-	Lattice (Tau) : tau3, speculative constantrange<10, 11>, (TauState) : speculative constantrange<10, 11> 
-		ValueLattice (TauState) tau3 : speculative constantrange<10, 11>
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 	[Taulog] Visiting Other Instruction :   %add17 = add nsw i32 %tau3, %tau7
-	[Taulog] tau3 : constantrange<10, 11>, tau7 : unknown
+	[Taulog] tau3 : constantrange<5, 6>, tau7 : constantrange<3, 4>
+		Unknown LHS
+Merged constantrange<8, 9> into   %add17 = add nsw i32 %tau3, %tau7 : constantrange<8, 9>
 	[Taulog] Visiting Other Instruction :   store i32 %add17, i32* %m, align 4
 	[Taulog] Visiting Other Instruction :   br label %end
 Marking Block Executable: end
@@ -233,17 +267,37 @@ Merged constantrange<3, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %s
 		Unknown LHS
 		Tau Operand (L) : add3, constantrange<7, 8>
 		Tau Operand (L) : add6, constantrange<3, 4>
-	Beta : constantrange<3, 8>, x0 : constantrange<3, 8>
 	Lattice (Tau) : tau4, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau4 : unknown
+		Unknown LHS
+	Beta : constantrange<3, 8>, x0 : constantrange<3, 8>
+	Lattice (Tau) : tau4, constantrange<3, 8>, (TauState) : constantrange<3, 8> 
+		ValueLattice (TauState) tau4 : constantrange<3, 8>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 		Tau State init : unknown
 		x0 (phi-state) n.0 : constantrange<5, 6>
 		Tau Operand (L) : sub, constantrange<5, 6>
 		Tau Operand (L) : add7, constantrange<5, 6>
 		Tau Operand (L) : 10, constantrange<10, 11>
-	Beta : constantrange<5, 11>, x0 : constantrange<5, 6>
 	Lattice (Tau) : tau, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau : unknown
+		Unknown LHS
+	Beta : constantrange<5, 11>, x0 : constantrange<5, 6>
+	Lattice (Tau) : tau, constantrange<5, 6>, (TauState) : constantrange<5, 6> 
+		ValueLattice (TauState) tau : constantrange<5, 6>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 
 Popped off BBWL: 
 sw.bb:                                            ; preds = %entry
@@ -269,17 +323,37 @@ Marking Spec PHINode exec.
 		Tau Operand (L) : add, constantrange<7, 8>
 		Tau Operand (L) : add3, constantrange<7, 8>
 		Tau Operand (L) : add6, constantrange<3, 4>
-	Beta : constantrange<3, 8>, x0 : constantrange<3, 8>
 	Lattice (Tau) : tau4, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau4 : unknown
+		Unknown LHS
+	Beta : constantrange<3, 8>, x0 : constantrange<3, 8>
+	Lattice (Tau) : tau4, constantrange<3, 8>, (TauState) : constantrange<3, 8> 
+		ValueLattice (TauState) tau4 : constantrange<3, 8>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 		Tau State init : unknown
 		x0 (phi-state) n.0 : constantrange<5, 11>
 		Tau Operand (L) : sub, constantrange<5, 6>
 		Tau Operand (L) : add7, constantrange<5, 6>
 		Tau Operand (L) : 10, constantrange<10, 11>
-	Beta : constantrange<5, 11>, x0 : constantrange<5, 11>
 	Lattice (Tau) : tau, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau : unknown
+		Unknown LHS
+	Beta : constantrange<5, 11>, x0 : constantrange<5, 11>
+	Lattice (Tau) : tau, constantrange<5, 11>, (TauState) : constantrange<5, 11> 
+		ValueLattice (TauState) tau : constantrange<5, 11>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 
 Popped off BBWL: 
 sw.default:                                       ; preds = %entry
@@ -296,17 +370,37 @@ Merged constantrange<2, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %s
 		Tau Operand (L) : add, constantrange<7, 8>
 		Tau Operand (L) : add3, constantrange<7, 8>
 		Tau Operand (L) : add6, constantrange<3, 4>
-	Beta : constantrange<3, 8>, x0 : constantrange<2, 8>
 	Lattice (Tau) : tau4, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau4 : unknown
+		Unknown LHS
+	Beta : constantrange<3, 8>, x0 : constantrange<2, 8>
+	Lattice (Tau) : tau4, constantrange<2, 8>, (TauState) : constantrange<2, 8> 
+		ValueLattice (TauState) tau4 : constantrange<2, 8>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 		Tau State init : unknown
 		x0 (phi-state) n.0 : constantrange incl. undef <5, 11>
 		Tau Operand (L) : sub, constantrange<5, 6>
 		Tau Operand (L) : add7, constantrange<5, 6>
 		Tau Operand (L) : 10, constantrange<10, 11>
-	Beta : constantrange<5, 11>, x0 : constantrange incl. undef <5, 11>
 	Lattice (Tau) : tau, unknown, (TauState) : unknown 
-		ValueLattice (TauState) tau : unknown
+		Unknown LHS
+	Beta : constantrange<5, 11>, x0 : constantrange incl. undef <5, 11>
+	Lattice (Tau) : tau, constantrange incl. undef <5, 11>, (TauState) : constantrange incl. undef <5, 11> 
+		ValueLattice (TauState) tau : constantrange incl. undef <5, 11>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 
 Popped off OI-WL:   %i = load i32, i32* %m, align 4
 
@@ -343,6 +437,8 @@ Marking Spec PHINode exec.
 
 Popped off I-WL:   %mul2 = mul nsw i32 2, 1
 	[Taulog] mul2 : constantrange<2, 3>, 5 : constantrange<5, 6>
+
+Popped off I-WL:   %add17 = add nsw i32 %tau3, %tau7
 
 Popped off I-WL:   %add12 = add nsw i32 %tau1, %mul11
 
@@ -418,18 +514,39 @@ Marking Edge Executable: sw.epilog -> if.end
 		Tau Operand (L) : add, constantrange<7, 8>
 		Tau Operand (L) : add3, constantrange<7, 8>
 	Speculative Constant Beta : 7
+	Lattice (Tau) : tau7, unknown, (TauState) : unknown 
+	Beta : speculative constantrange<7, 8>, x0 : overdefined
+	Lattice (Tau) : tau7, speculative constantrange<7, 8>, (TauState) : speculative constantrange<7, 8> 
+		ValueLattice (TauState) tau7 : speculative constantrange<7, 8>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
 		%spec_tau7 = call i32 @specConst(i32 %tau7, i32 7)
 
-	Beta : speculative constantrange<7, 8>, x0 : overdefined
-	Lattice (Tau) : tau7, overdefined, (TauState) : overdefined 
-		ValueLattice (TauState) tau7 : overdefined
 		Tau State init : unknown
 		x0 (phi-state) tau : overdefined
 		Tau Operand (L) : sub, constantrange<5, 6>
 		Tau Operand (L) : 10, constantrange<10, 11>
+	Lattice (Tau) : tau3, unknown, (TauState) : unknown 
+		Unknown LHS
 	Beta : constantrange<5, 11>, x0 : overdefined
-	Lattice (Tau) : tau3, overdefined, (TauState) : overdefined 
-		ValueLattice (TauState) tau3 : overdefined
+	Lattice (Tau) : tau3, constantrange<5, 11>, (TauState) : constantrange<5, 11> 
+		ValueLattice (TauState) tau3 : constantrange<5, 11>
+		%spec_tau1 = call i32 @specConst(i32 %tau1, i32 5)
+
+		%spec_tau3 = call i32 @specConst(i32 %tau3, i32 10)
+
+		%spec_tau4 = call i32 @specConst(i32 %tau4, i32 3)
+
+		%spec_tau5 = call i32 @specConst(i32 %tau5, i32 3)
+
+		%spec_tau7 = call i32 @specConst(i32 %tau7, i32 7)
+
 
 Popped off OI-WL:   %add10 = add nsw i32 9, %tau4
 
@@ -456,26 +573,27 @@ RESOLVING UNDEFs
   Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
   Constant: i32 3 =   %add6 = add nsw i32 2, 1
   Constant: i32 5 =   %add7 = add nsw i32 3, 2
+  Constant: i32 7 =   %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 7)
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0130 seconds (0.0130 wall clock)
+  Total Execution Time: 0.0156 seconds (0.0156 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0041 ( 94.7%)   0.0084 ( 97.8%)   0.0125 ( 96.8%)   0.0125 ( 96.7%)  SCCPTauPass
-   0.0001 (  1.8%)   0.0001 (  0.9%)   0.0002 (  1.2%)   0.0002 (  1.2%)  PrintModulePass
-   0.0001 (  1.7%)   0.0001 (  0.6%)   0.0001 (  1.0%)   0.0001 (  1.0%)  VerifierPass
-   0.0001 (  1.5%)   0.0000 (  0.6%)   0.0001 (  0.9%)   0.0001 (  0.9%)  VerifierAnalysis
-   0.0000 (  0.2%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  TargetLibraryAnalysis
-   0.0044 (100.0%)   0.0086 (100.0%)   0.0130 (100.0%)   0.0130 (100.0%)  Total
+   0.0034 ( 87.9%)   0.0117 (100.0%)   0.0151 ( 97.0%)   0.0151 ( 97.0%)  SCCPTauPass
+   0.0002 (  5.3%)   0.0000 (  0.0%)   0.0002 (  1.3%)   0.0002 (  1.3%)  PrintModulePass
+   0.0001 (  3.0%)   0.0000 (  0.0%)   0.0001 (  0.8%)   0.0001 (  0.8%)  VerifierPass
+   0.0001 (  2.8%)   0.0000 (  0.0%)   0.0001 (  0.7%)   0.0001 (  0.7%)  VerifierAnalysis
+   0.0000 (  1.0%)   0.0000 (  0.0%)   0.0000 (  0.3%)   0.0000 (  0.3%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  TargetLibraryAnalysis
+   0.0039 (100.0%)   0.0117 (100.0%)   0.0156 (100.0%)   0.0156 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
-   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 

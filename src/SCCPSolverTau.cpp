@@ -348,6 +348,9 @@ private:
   void visitInstruction(Instruction &I);
 
 public:
+
+  std::map<std::string, long long unsigned> specConstsMap;
+  
   void addAnalysis(Function &F, AnalysisResultsForFn A) {
     AnalysisResults.insert({&F, std::move(A)});
   }
@@ -893,21 +896,24 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     if (beta.getConstantRange().isSingleElement()) {
       LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " 
         << beta.getConstantRange().getLower() << "\n");
-      LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
-        " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
-        << ", i32 " << beta.getConstantRange().getLower() << ")\n\n" );
+      specConstsMap.insert(
+        std::make_pair(Tau.getNameOrAsOperand(), beta.getConstantRange().getLower().getZExtValue())
+      );
       beta.markSpeculativeConstantRange(beta.getConstantRange());
     }
   }
 
-  x0.mergeIn(beta);
-  TauState.mergeIn(x0);
+  LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
+    getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
+    
+  // x0.mergeIn(beta);
+  if (x0.isConstant() || x0.isConstantRange())
+    TauState.mergeIn(x0);
+  else 
+    TauState.mergeIn(beta);
+    
 
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
-
-  if (beta.isOverdefined() || x0.isOverdefined())
-    TauState.markOverdefined();
-
   LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
     getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
 
@@ -921,6 +927,18 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
 
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
       << " : " << TauStateRefElem << "\n"); 
+  
+  if (TauStateRefElem.isOverdefined() || TauStateRefElem.isNotConstant()) {
+    auto it = specConstsMap.find(Tau.getNameOrAsOperand());
+    if (it != specConstsMap.end())
+      specConstsMap.erase(it);
+  }
+  
+  for (const auto &k : specConstsMap){
+    LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << k.first << 
+      " = call i32 @specConst(i32 %" << k.first
+      << ", i32 " << k.second << ")\n\n" );
+  }
 }
 
 void SCCPTauInstVisitor::visitReturnInst(ReturnInst &I) {
