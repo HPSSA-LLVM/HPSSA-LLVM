@@ -231,18 +231,23 @@ static bool runSCCP(Function &F, const DataLayout &DL,
   // as we cannot modify the CFG of the function.
 
   SmallPtrSet<Value *, 32> InsertedValues;
-  for (BasicBlock &BB : F) {
-    if (!Solver.isBlockExecutable(&BB)) {
-      LLVM_DEBUG(dbgs() << "  BasicBlock Dead:" << BB);
+  
+  // Why not use RPOT I ask?
+  ReversePostOrderTraversal<Function *> RPOT(&F);
+  for (BasicBlock *BB : RPOT) {
+    LLVM_DEBUG(dbgs() << "  BasicBlock Processed : " << BB);
+    
+    if (!Solver.isBlockExecutable(BB)) {
+      LLVM_DEBUG(dbgs() << "  BasicBlock Dead : " << BB);
 
       ++NumDeadBlocks;
-      NumInstRemoved += removeAllNonTerminatorAndEHPadInstructions(&BB).first;
+      NumInstRemoved += removeAllNonTerminatorAndEHPadInstructions(BB).first;
 
       MadeChanges = true;
       continue;
     }
 
-    MadeChanges |= simplifyInstsInBlock(Solver, BB, InsertedValues,
+    MadeChanges |= simplifyInstsInBlock(Solver, *BB, InsertedValues,
                                         NumInstRemoved, NumInstReplaced);
   }
 
