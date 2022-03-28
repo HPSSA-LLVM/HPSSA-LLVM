@@ -80,8 +80,8 @@ sw.epilog:                                        ; preds = %sw.default, %sw.bb4
 if.else:                                          ; preds = %sw.epilog
   %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 3)
   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 5)
-  %mul11 = mul nsw i32 3, %tau5
-  %add12 = add nsw i32 %tau1, %mul11
+  %mul11 = mul nsw i32 3, undef
+  %add12 = add nsw i32 5, %mul11
   switch i32 %add12, label %if.end [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
@@ -97,7 +97,7 @@ sw.bb15:                                          ; preds = %if.else
 if.end:                                           ; preds = %if.else, %sw.epilog
   %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 7)
   %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 10)
-  %add17 = add nsw i32 %tau3, 7
+  %add17 = add nsw i32 undef, 7
   store i32 %add17, i32* %m, align 4
   br label %end
 

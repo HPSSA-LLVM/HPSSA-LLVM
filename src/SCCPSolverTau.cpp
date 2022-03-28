@@ -871,7 +871,7 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
 
   for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i) {
     SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
-    // COMMENT Beta = x1 meet x2 meet x3 ....
+    // COMMENT Beta = x1 meet x2 meet x3 ...
     beta.mergeIn(IV);
     NumActiveIncoming++;
     LLVM_DEBUG(dbgs() << "\t\tTau Operand (L) : " 
@@ -880,38 +880,20 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
       break;
   }
 
-  // COMMENT -> Constant can transition to Spec Const.
+  if (beta.isConstantRange() && beta.getConstantRange().isSingleElement()) {
+    beta.markSpeculativeConstantRange(beta.getConstantRange());
+  }
+
   if (beta.isConstant()) {
-    // Beta is a safe constant
-    LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " << beta << "\n");
-    LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << Tau.getNameOrAsOperand() << 
-      " = call i32 @specConst(i32 %" << Tau.getNameOrAsOperand() 
-      << ", i32 " << beta.getConstant() << ")\n\n" );
     beta.markSpeculativeConstant(beta.getConstant());
   }
 
-  // COMMENT -> Constant can transition to Spec Const Range.
-  if (beta.isConstantRange()) {
-    // Beta is a safe constant range
-    if (beta.getConstantRange().isSingleElement()) {
-      LLVM_DEBUG(dbgs() << "\tSpeculative Constant Beta : " 
-        << beta.getConstantRange().getLower() << "\n");
-      specConstsMap.insert(
-        std::make_pair(Tau.getNameOrAsOperand(), beta.getConstantRange().getLower().getZExtValue())
-      );
-      beta.markSpeculativeConstantRange(beta.getConstantRange());
-    }
+  if (x0.isOverdefined()) {
+    if (beta.isSpecConstant())
+      TauState.markSpeculativeConstant(beta.getConstant());
+    if (beta.isSpecRange())
+      TauState.markSpeculativeConstantRange(beta.getConstantRange());
   }
-
-  LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
-    getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
-    
-  // x0.mergeIn(beta);
-  if (x0.isConstant() || x0.isConstantRange())
-    TauState.mergeIn(x0);
-  else 
-    TauState.mergeIn(beta);
-    
 
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
   LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
@@ -928,16 +910,18 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
       << " : " << TauStateRefElem << "\n"); 
   
-  if (TauStateRefElem.isOverdefined() || TauStateRefElem.isNotConstant()) {
-    auto it = specConstsMap.find(Tau.getNameOrAsOperand());
-    if (it != specConstsMap.end())
-      specConstsMap.erase(it);
+  if (TauStateRefElem.isSpecRange() && beta.isSpecRange()) {
+    specConstsMap.insert(
+      std::make_pair(Tau.getNameOrAsOperand(), 
+        beta.getConstantRange().getLower().getZExtValue())
+    );
   }
   
+  LLVM_DEBUG(dbgs() << "\n");
   for (const auto &k : specConstsMap){
     LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << k.first << 
       " = call i32 @specConst(i32 %" << k.first
-      << ", i32 " << k.second << ")\n\n" );
+      << ", i32 " << k.second << ")\n" );
   }
 }
 
