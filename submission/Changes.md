@@ -16,3 +16,7 @@
 
 - Don't put so much content for explaining the HPSSA implementation in LLVM, too verbose
 	right now. Maybe we can use hierarchy diagrams if possible. 
+
+- Put Page Numbers. 
+
+- Tau notation looks different in image and text.
