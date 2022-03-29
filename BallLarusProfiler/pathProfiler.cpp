@@ -1,11 +1,16 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-bool flag = 1;
-void counter(int n) {
-  FILE* pathData = fopen("pathData.txt", "a");
-  fprintf(pathData, "%d\n", n);
-  fclose(pathData);
+map<int, int> pathCounter;
+void counter(int n, bool dump) {
+  pathCounter[n]++;
+  if(dump) {
+    FILE* pathData = fopen("pathData.txt", "a");
+    for(auto [pathNum, freq]: pathCounter) {
+      fprintf(pathData, "%d\t%d\n", pathNum, freq);
+    }
+    fclose(pathData);
+  }
 }
 
 /**

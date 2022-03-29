@@ -34,8 +34,8 @@ class Graph {
 public:
   map<BasicBlock*, vector<Edge>> G;
   // map<std::pair<BasicBlock*, BasicBlock*>, vector<Edge>> Edges;
-  map<uint, std::pair<BasicBlock*, BasicBlock*>> Backedge;
-  map<std::pair<BasicBlock*, BasicBlock*>, uint> BackedgeNumber;
+  map<uint, std::pair<Edge, Edge>> Backedge;
+  // map<std::pair<BasicBlock*, BasicBlock*>, uint> BackedgeNumber;
 };
 class BallLarusProfilerPass : public PassInfoMixin<BallLarusProfilerPass> {
 public:
@@ -43,6 +43,8 @@ public:
   Graph getAbstractGraph(Function& F);
   void getEdgeValues(Function& F, Graph& AG);
   PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
+  void insertInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar, int inc); 
+  void regInc(Function* regIncF, GlobalVariable* gVar, Instruction* insertBefore, Module* M, bool dump = false);
 };
 
 } // namespace llvm
