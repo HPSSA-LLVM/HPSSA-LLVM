@@ -256,6 +256,7 @@ public:
   }
 
   bool isUndef() const { return Tag == undef; }
+  bool isFullySpeculative() const { return Shadow_Tag == spec_constant; }
   bool isSpecRange() const { return Shadow_Tag == spec_constant && Tag == constantrange; }
   bool isSpecConstant() const { return Shadow_Tag == spec_constant && Tag == constant; }
   bool isUnknown() const { return Tag == unknown; }
@@ -460,7 +461,7 @@ public:
     NumRangeExtensions = 0;
     Tag = NewTag;
     // if (getConstantRange().isSingleElement())
-    //   Shadow_Tag = spec_constant;
+    Shadow_Tag = spec_constant;
     new (&Range) ConstantRange(std::move(NewR));
     return true;
   }
@@ -478,10 +479,9 @@ public:
       return true;
     }
 
+    
     // COMMENT : LHS meet RHS 
     if (RHS.isSpecRange()) {
-      if (isUnknownOrUndef())
-        return markSpeculativeConstantRange(RHS.getConstantRange());
       if (isConstantRange() && getConstantRange() == RHS.getConstantRange())
         return markSpeculativeConstantRange(RHS.getConstantRange());
       return false;
@@ -489,8 +489,6 @@ public:
 
     // COMMENT : LHS meet RHS 
     if (RHS.isSpecConstant()) {
-      if (isUnknownOrUndef())
-        return markSpeculativeConstant(RHS.getConstant());
       if (isConstant() && getConstant() == RHS.getConstant())
         return markSpeculativeConstant(RHS.getConstant());
       return false;

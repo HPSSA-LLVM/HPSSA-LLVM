@@ -105,6 +105,10 @@ static bool isConstant(const SpecValueLatticeElement &LV) {
          (LV.isConstantRange() && LV.getConstantRange().isSingleElement());
 }
 
+static bool isSpeculative(const SpecValueLatticeElement &LV) {
+  return LV.isFullySpeculative();
+}
+
 // Helper to check if \p LV is either overdefined or a constant range with more
 // than a single element. This should cover exactly the same cases as the old
 // ValueLatticeElement::isOverdefined() and is intended to be used in the
@@ -129,6 +133,11 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
                               : UndefValue::get(ST->getElementType(i)));
     }
     Const = ConstantStruct::get(ST, ConstVals);
+    if (any_of(IVs,
+            [](const SpecValueLatticeElement &LV) { return isSpeculative(LV); }))
+      LLVM_DEBUG(dbgs() << "  Speculative Constant: " << *Const << " = " << *V << '\n');
+    else
+      LLVM_DEBUG(dbgs() << "  Constant: " << *Const << " = " << *V << '\n');
   } else {
     const SpecValueLatticeElement &IV = Solver.getLatticeValueFor(V);
     if (isOverdefined(IV))
@@ -136,6 +145,10 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
 
     Const =
         isConstant(IV) ? Solver.getConstant(IV) : UndefValue::get(V->getType());
+    if (isSpeculative(IV))
+      LLVM_DEBUG(dbgs() << "  Speculative Constant: " << *Const << " = " << *V << '\n');
+    else
+      LLVM_DEBUG(dbgs() << "  Constant: " << *Const << " = " << *V << '\n');
   }
   assert(Const && "Constant is nullptr here!");
 
@@ -147,8 +160,7 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
   if (CB && ((CB->isMustTailCall() && !CB->isSafeToRemove()) ||
              CB->getOperandBundle(LLVMContext::OB_clang_arc_attachedcall))) {
     Function *F = CB->getCalledFunction();
-    // if (F != NULL && F->getIntrinsicID() == Function::lookupIntrinsicID("llvm.tau"))
-    //   return false;
+
     // Don't zap returns of the callee
     if (F)
       Solver.addToMustPreserveReturnsInFunctions(F);
@@ -157,8 +169,6 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
                       << " as a constant\n");
     return false;
   }
-
-  LLVM_DEBUG(dbgs() << "  Constant: " << *Const << " = " << *V << '\n');
 
   // Replaces all of the uses of a variable with uses of the constant.
   V->replaceAllUsesWith(Const);
@@ -231,18 +241,21 @@ static bool runSCCP(Function &F, const DataLayout &DL,
   // as we cannot modify the CFG of the function.
 
   SmallPtrSet<Value *, 32> InsertedValues;
-  for (BasicBlock &BB : F) {
-    if (!Solver.isBlockExecutable(&BB)) {
-      LLVM_DEBUG(dbgs() << "  BasicBlock Dead:" << BB);
+  
+  // Why not use RPOT I ask?
+  ReversePostOrderTraversal<Function *> RPOT(&F);
+  for (BasicBlock *BB : RPOT) {
+    if (!Solver.isBlockExecutable(BB)) {
+      LLVM_DEBUG(dbgs() << "  BasicBlock Dead : " << BB);
 
       ++NumDeadBlocks;
-      NumInstRemoved += removeAllNonTerminatorAndEHPadInstructions(&BB).first;
+      NumInstRemoved += removeAllNonTerminatorAndEHPadInstructions(BB).first;
 
       MadeChanges = true;
       continue;
     }
 
-    MadeChanges |= simplifyInstsInBlock(Solver, BB, InsertedValues,
+    MadeChanges |= simplifyInstsInBlock(Solver, *BB, InsertedValues,
                                         NumInstRemoved, NumInstReplaced);
   }
 
