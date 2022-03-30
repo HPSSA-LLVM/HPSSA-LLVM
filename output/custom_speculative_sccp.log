@@ -1,3 +1,499 @@
+----------===Caloric Connector and BuddySet Information===----------
+entry: {1 1 1 } 
+sw.bb4: { 0 0 1 } 
+sw.bb1: { 0 1 0 } 
+sw.bb: { 1 0 0 } 
+sw.default: 
+sw.epilog is a Caloric Connector
+sw.epilog: { 0 0 1 } { 0 1 0 } { 1 0 0 } 
+if.else is a Caloric Connector
+if.else: { 0 0 1 } { 0 1 0 } 
+sw.bb15: 
+sw.bb14 is a Caloric Connector
+sw.bb14: { 0 0 1 } 
+if.end is a Caloric Connector
+if.end: { 0 1 0 } { 1 0 0 } 
+end: { 0 1 0 } { 1 0 0 } { 0 0 1 } 
+----------===Initiating Tau Insertion Algroithm===----------
+Inserted Tau at : sw.epilog
+Inserted Tau at : if.else
+Inserted Tau at : sw.bb14
+Inserted Tau at : if.end
+Inserted Tau at : sw.epilog
+Inserted Tau at : if.else
+Inserted Tau at : sw.bb14
+Inserted Tau at : if.end
+-- BB: entry
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.default
+-------- Succ: sw.bb
+-------- Succ: sw.bb1
+-------- Succ: sw.bb4
+------ Recurse over Child 
+-------- Parent: entry | Child: sw.default
+-- BB: sw.default
+---- I: ---- attempt to renaming uses in I
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.epilog
+---------- phi: n.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- Parent: entry | Child: sw.epilog
+-- BB: sw.epilog
+---- I: ---- attempt to renaming uses in I
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end
+-------- Succ: if.else
+------ Recurse over Child 
+-------- Parent: sw.epilog | Child: if.end
+-- BB: if.end
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau7
+------ mrd: tau7
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau3
+------ mrd: tau3
+------ phi: x.0
+------ tau7
+------ mrd: tau7
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau3
+------ mrd: tau3
+------ phi: x.0
+------ tau7
+------ mrd: tau7
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau3
+------ mrd: tau3
+------ phi: x.0
+------ tau7
+------ mrd: tau7
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: end
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau3
+---------- mrd changed
+-------- phi: x.0 mrd: tau7
+---------- mrd changed
+-------- Parent: sw.epilog | Child: end
+-- BB: end
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau
+---------- mrd not changed
+-------- phi: x.0 mrd: tau4
+---------- mrd not changed
+-------- Parent: sw.epilog | Child: if.else
+-- BB: if.else
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau4
+------ mrd: tau4
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau
+------ mrd: tau
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: if.end
+-------- Succ: sw.bb14
+-------- Succ: sw.bb15
+------ Recurse over Child 
+-------- Parent: if.else | Child: sw.bb14
+-- BB: sw.bb14
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau6
+------ mrd: tau6
+------ Not a phi instruction
+------ a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau2
+------ mrd: tau2
+------ phi: x.0
+------ tau6
+------ mrd: tau6
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: end
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau2
+---------- mrd changed
+-------- phi: x.0 mrd: tau6
+---------- mrd changed
+-------- Parent: if.else | Child: sw.bb15
+-- BB: sw.bb15
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ tau1
+------ mrd: tau1
+------ phi: x.0
+------ tau5
+------ mrd: tau5
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau1
+---------- mrd not changed
+-------- phi: x.0 mrd: tau5
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau1
+---------- mrd changed
+-------- phi: x.0 mrd: tau5
+---------- mrd changed
+------ Remove definitions if needed
+-------- phi: n.0 mrd: tau
+---------- mrd changed
+-------- phi: x.0 mrd: tau4
+---------- mrd changed
+-------- Parent: entry | Child: sw.bb
+-- BB: sw.bb
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.epilog
+---------- phi: n.0
+---------- V: 
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.0
+---------- V: add
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: n.0
+---------- mrd not changed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- Parent: entry | Child: sw.bb1
+-- BB: sw.bb1
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.epilog
+---------- phi: n.0
+---------- V: sub
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.0
+---------- V: add3
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: n.0
+---------- mrd not changed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+-------- Parent: entry | Child: sw.bb4
+-- BB: sw.bb4
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+---- I: ---- attempt to renaming uses in I
+------ phi: n.0
+------ n.0
+------ mrd: n.0
+------ phi: x.0
+------ x.0
+------ mrd: x.0
+------ Not a phi instruction
+------ Not a tau instruction
+------ Succesor Logic
+-------- Succ: sw.epilog
+---------- phi: n.0
+---------- V: add7
+---------- Not a phi operand
+---------- Not a tau operand
+---------- phi: x.0
+---------- V: add6
+---------- Not a phi operand
+---------- Not a tau operand
+------ Recurse over Child 
+------ Remove definitions if needed
+-------- phi: n.0 mrd: n.0
+---------- mrd not changed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
+------ Remove definitions if needed
+-------- phi: n.0 mrd: n.0
+---------- mrd not changed
+-------- phi: x.0 mrd: x.0
+---------- mrd not changed
 Speculative SCCP on function 'main'
 Marking Block Executable: entry
 
@@ -424,23 +920,20 @@ RESOLVING UNDEFs
   Speculative Constant: i32 5 =   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 5)
   Speculative Constant: i32 7 =   %tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 7)
   Constant: i32 undef =   %tau3 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 10)
-
-
-
-  
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0099 seconds (0.0099 wall clock)
+  Total Execution Time: 0.0157 seconds (0.0168 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0006 ( 86.7%)   0.0089 ( 96.6%)   0.0095 ( 95.9%)   0.0095 ( 95.9%)  SCCPTauPass
-   0.0000 (  4.3%)   0.0001 (  1.4%)   0.0002 (  1.6%)   0.0002 (  1.6%)  PrintModulePass
-   0.0000 (  4.5%)   0.0001 (  1.0%)   0.0001 (  1.2%)   0.0001 (  1.2%)  VerifierPass
-   0.0000 (  3.9%)   0.0001 (  0.9%)   0.0001 (  1.1%)   0.0001 (  1.1%)  VerifierAnalysis
-   0.0000 (  0.5%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
+   0.0076 ( 96.5%)   0.0077 ( 97.7%)   0.0152 ( 97.1%)   0.0164 ( 97.3%)  SCCPTauPass
+   0.0001 (  1.3%)   0.0001 (  0.9%)   0.0002 (  1.1%)   0.0002 (  1.0%)  PrintModulePass
+   0.0001 (  1.0%)   0.0001 (  0.7%)   0.0001 (  0.9%)   0.0001 (  0.8%)  VerifierPass
+   0.0001 (  1.0%)   0.0000 (  0.6%)   0.0001 (  0.8%)   0.0001 (  0.7%)  VerifierAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  DominatorTreeAnalysis
    0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  TargetLibraryAnalysis
-   0.0007 (100.0%)   0.0092 (100.0%)   0.0099 (100.0%)   0.0099 (100.0%)  Total
+   0.0079 (100.0%)   0.0078 (100.0%)   0.0157 (100.0%)   0.0168 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
@@ -448,6 +941,6 @@ RESOLVING UNDEFs
   Total Execution Time: 0.0004 seconds (0.0004 wall clock)
 
    ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0001 (100.0%)   0.0003 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
-   0.0001 (100.0%)   0.0003 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
+   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
+   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
 
