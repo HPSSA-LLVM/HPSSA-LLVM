@@ -24,13 +24,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="2.5513536"
-     inkscape:cx="513.64892"
-     inkscape:cy="1162.3242"
-     inkscape:window-width="1920"
-     inkscape:window-height="970"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:zoom="0.90203972"
+     inkscape:cx="604.74056"
+     inkscape:cy="1061.4832"
+     inkscape:window-width="2560"
+     inkscape:window-height="1330"
+     inkscape:window-x="1440"
+     inkscape:window-y="877"
      inkscape:window-maximized="1"
      inkscape:current-layer="g204"
      width="298mm" />
@@ -1414,12 +1414,12 @@
            y="820.18146"
            sodipodi:role="line"
            id="tspan390"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono Bold';fill:#0000ff;stroke-width:1.03287">%tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 3)</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono Bold';fill:#0000ff;stroke-width:1.03287">%tau5 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 3)</tspan><tspan
            x="784.31653 792.8338 801.35101 809.88269 818.3999 826.91711 835.43433 843.966 852.48322 861.00037 869.51758 878.03485 886.56647 895.08368 903.60095 912.1181 920.64984 929.16705 937.6842 946.20142 954.71863 963.25031 971.76758 980.28473 988.802 997.33368 1005.851 1014.3682 1022.8853 1031.417 1039.9341 1048.4514 1056.9686 1065.4858 1074.0177 1082.5348 1091.0521 1099.5692 1108.1008 1116.6179 1125.1351 1133.6523 1142.1697 1150.7013 1159.2185 1167.736 1176.2529 1184.7845 1193.3018 1201.8191 1210.3362 1218.8534 1227.3851 1235.9023 1244.4196 1252.9368 1261.4685 1269.9857 1278.5029 1287.0201 1295.5374"
            y="835.67456"
            sodipodi:role="line"
            id="tspan392"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono Bold';fill:#0000ff;stroke-width:1.03287">%tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 5)</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono Bold';fill:#0000ff;stroke-width:1.03287">%tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 5, i32 5)</tspan><tspan
            x="784.31653 792.8338 801.35101 809.88269 818.3999 826.91711 835.43433 843.966 852.48322 861.00037 869.51758 878.03485 886.56647 895.08368 903.60095 912.1181 920.64984 929.16705 937.6842 946.20142 954.71863 963.25031 971.76758 980.28473 988.802 997.33368 1005.851 1014.3682 1022.8853 1031.417"
            y="851.1676"
            sodipodi:role="line"
@@ -2411,7 +2411,7 @@
              sodipodi:nodetypes="cscc" />
           <path
              style="fill:none;stroke:#000000;stroke-width:0.537862;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.15145, 2.15145;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker1692)"
-             d="m 199.52446,167.57917 c 0.20243,8.46248 -16.66278,8.26509 -25.07202,7.38896 -25.70087,-2.6777 -37.56866,6.93371 17.33726,15.1165"
+             d="m 199.52446,167.57917 c 0.20243,8.46248 -16.66278,8.26509 -25.07202,7.38896 -25.70087,-2.6777 -14.96958,11.63081 18.76687,13.67697"
              id="path64075"
              sodipodi:nodetypes="csc" />
         </g>

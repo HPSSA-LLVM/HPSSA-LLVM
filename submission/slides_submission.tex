@@ -42,28 +42,37 @@
 
 \date[01/03/2022] % (optional)
 
+\addtobeamertemplate{navigation symbols}{}{%
+	\usebeamerfont{footline}%
+	\usebeamercolor[fg]{footline}%
+	\hspace{-50em}%
+	\raisebox{20pt}[0pt][0pt]{\small{pg.\insertpagenumber}}
+}
+\setbeamercolor{footline}{fg=red}
+\setbeamerfont{footline}{series=\bfseries}
+
 \AtBeginSection[]
 {
 	\begin{frame}<beamer>
 		\frametitle{Presentation Outline}
 		\tableofcontents[
 			currentsection,
-			hideothersubsections,
 			currentsubsection
 		]
 	\end{frame}
 }
 
-%\AtBeginSubsection[]
-%{
-%	\begin{frame}<beamer>
-%		\frametitle{Presentation Outline}
-%		\tableofcontents[
-%		currentsection,
-%		]
-%	\end{frame}
-%}
-%
+\AtBeginSubsection[]
+{
+	\begin{frame}<beamer>
+		\frametitle{Presentation Outline}
+		\tableofcontents[
+		currentsection,
+		currentsubsection
+		]
+	\end{frame}
+}
+
 \begin{document}
 \frame{\titlepage}
 \begin{frame}
@@ -114,7 +123,7 @@
 	disparate data-structures, one for \textbf{program representation} and other for \textbf{profile information}.
 	\end{tcolorbox}
 	\centering
-	\includegraphics[width=11cm, height=3.75cm]{dotfiles/docs.pdf}
+	\includegraphics[width=11cm, height=4.5cm]{dotfiles/docs.pdf}
 \end{frame}
 {
 	\setbeamercolor{background canvas}{bg=}
@@ -324,7 +333,7 @@ int main() {
 \end{frame}
 \begin{frame}
 	\centering
-	\includegraphics[width=10cm, height=9.5cm]{dotfiles/specSCCP_HPSSA_next.dot.pdf}
+	\includegraphics[width=10.2cm, height=9.5cm]{dotfiles/specSCCP_HPSSA_next.dot.pdf}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -526,7 +535,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 \end{frame}
 
 \begin{frame}
-	\frametitle{\texttt{HPSSAPass} : Main Pass}
+	\frametitle{\texttt{HPSSAPass} : Details of \texttt{run(...)}}
 	\begin{itemize}
 		\item \mintinline[fontsize=\footnotesize]{cpp}{HPSSAPass::run(Function &F, FunctionAnalysisManager &AM)} 
 		\begin{itemize}
