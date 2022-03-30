@@ -114,7 +114,7 @@
 	disparate data-structures, one for \textbf{program representation} and other for \textbf{profile information}.
 	\end{tcolorbox}
 	\centering
-	\includegraphics[width=10cm, height=7cm]{dotfiles/docs.pdf}
+	\includegraphics[width=11cm, height=3.75cm]{dotfiles/docs.pdf}
 \end{frame}
 {
 	\setbeamercolor{background canvas}{bg=}
@@ -350,10 +350,14 @@ Output:
 	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
 	Constant: i32 3 =   %add6 = add nsw i32 2, 1
 	Constant: i32 5 =   %add7 = add nsw i32 3, 2
+	
+	
+	
+	
 		\end{minted}
 	\end{column}
 	\begin{column}{0.5\textwidth}  
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,13,14}]{c}
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,20,21,22,23}]{c}
 # Running HPSSA Transformation followed by Speculative SCCP Pass.
 $ opt -load build/SCCPSolverTau.cpp.so 
 	-load build/HPSSA.cpp.so \
@@ -365,10 +369,6 @@ $ opt -load build/SCCPSolverTau.cpp.so
 	
 ...
 Output :
-	...
-	(TauState) tau1 : speculative constantrange<5, 6> 
-	(TauState) tau7 : speculative constantrange<7, 8> 
-	...
 	Constant: i32 2 =   %mul = mul nsw i32 2, 1
 	Constant: i32 7 =   %add = add nsw i32 2, 5
 	Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
@@ -377,6 +377,10 @@ Output :
 	Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
 	Constant: i32 3 =   %add6 = add nsw i32 2, 1
 	Constant: i32 5 =   %add7 = add nsw i32 3, 2
+Speculative Constant: i32 5 = %tau1 = call i32 (...) 
+		@llvm.tau.i32(i32 %tau, i32 5, i32 5)
+Speculative Constant: i32 7 = %tau7 = call i32 (...) 
+		@llvm.tau.i32(i32 %tau4, i32 7, i32 7)
 		\end{minted}
 	\end{column}
 \end{columns}
@@ -387,24 +391,22 @@ Output :
 		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
 		\item Load shared object using opt tool. \mintinline[]{css}{opt -load HPSSA.cpp.so ...} 
 	\end{itemize}
-	\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,15,16,19}, linenos]{cpp}
+	\begin{minted}[fontsize=\footnotesize, xleftmargin=1em, tabsize=2, numbersep=0.5em, highlightlines={1,12,13}, linenos]{cpp}
 #include <HPSSA.h> // import the header.
 #include <SCCP.h>
 
-class SpecSCCPPass : public PassInfoMixin<SpecSCCPPass> {
+class YourPGOPass : public PassInfoMixin<YourPGOPass> {
 	public: PreservedAnalyses run(Function &F, 
 	FunctionAnalysisManager &AM);
 };
-...
 
-PreservedAnalyses SpecSCCPPass::run(Function &F, 
+PreservedAnalyses YourPGOPass::run(Function &F, 
 	FunctionAnalysisManager &AM) {
-		if (F.getName() != "main")
-		return PreservedAnalyses::all();
-		
+		...
 		HPSSAPass hpssaUtil; // Make a HPSSAPass Object.
 		hpssaUtil.run(F, AM);  // Call the HPSSAPass::run() function.
 		...
+		// Rest of the code ..
 	}
 	\end{minted}
 %\fbox{
