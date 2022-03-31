@@ -118,7 +118,7 @@ static bool isOverdefined(const SpecValueLatticeElement &LV) {
   return !LV.isUnknownOrUndef() && !isConstant(LV);
 }
 
-static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
+static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V, Function &F) {
   Constant *Const = nullptr;
   if (V->getType()->isStructTy()) {
     std::vector<SpecValueLatticeElement> IVs = Solver.getStructLatticeValueFor(V);
@@ -135,8 +135,10 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
     }
     Const = ConstantStruct::get(ST, ConstVals);
     if (any_of(IVs,
-            [](const SpecValueLatticeElement &LV) { return isSpeculative(LV); }))
+            [](const SpecValueLatticeElement &LV) { return isSpeculative(LV); })) {
       LLVM_DEBUG(dbgs() << "  Speculative Constant: " << *Const << " = " << *V << '\n');
+      insertSpeculativeValues(F, V, (Const)->getUniqueInteger().getZExtValue());
+    }
     else
       LLVM_DEBUG(dbgs() << "  Constant: " << *Const << " = " << *V << '\n');
   } else {
@@ -146,8 +148,10 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
 
     Const =
         isConstant(IV) ? Solver.getConstant(IV) : UndefValue::get(V->getType());
-    if (isSpeculative(IV))
+    if (isSpeculative(IV)) {
       LLVM_DEBUG(dbgs() << "  Speculative Constant: " << *Const << " = " << *V << '\n');
+      insertSpeculativeValues(F, V, (Const)->getUniqueInteger().getZExtValue());
+    }
     else
       LLVM_DEBUG(dbgs() << "  Constant: " << *Const << " = " << *V << '\n');
   }
@@ -179,12 +183,13 @@ static bool tryToReplaceWithConstant(SCCPTauSolver &Solver, Value *V) {
 static bool simplifyInstsInBlock(SCCPTauSolver &Solver, BasicBlock &BB,
                                  SmallPtrSetImpl<Value *> &InsertedValues,
                                  Statistic &InstRemovedStat,
-                                 Statistic &InstReplacedStat) {
+                                 Statistic &InstReplacedStat,
+                                 Function &F) {
   bool MadeChanges = false;
   for (Instruction &Inst : make_early_inc_range(BB)) {
     if (Inst.getType()->isVoidTy())
       continue;
-    if (tryToReplaceWithConstant(Solver, &Inst)) {
+    if (tryToReplaceWithConstant(Solver, &Inst, F)) {
       if (Inst.isSafeToRemove())
         Inst.eraseFromParent();
 
@@ -257,7 +262,7 @@ static bool runSCCP(Function &F, const DataLayout &DL,
     }
 
     MadeChanges |= simplifyInstsInBlock(Solver, *BB, InsertedValues,
-                                        NumInstRemoved, NumInstReplaced);
+                                        NumInstRemoved, NumInstReplaced, F);
   }
 
   return MadeChanges;

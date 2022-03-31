@@ -894,6 +894,7 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
       TauState.markSpeculativeConstantRange(beta.getConstantRange());
   }
 
+  // For Loggin purpose
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
   LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
     getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
@@ -909,13 +910,15 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
       << " : " << TauStateRefElem << "\n"); 
   
-  if (TauStateRefElem.isSpecRange() && beta.isSpecRange()) {
+  // Auxilliary Parts just for logging.
+  if (TauStateRefElem.isSpecRange()) {
     specConstsMap.insert(
       std::make_pair(Tau.getNameOrAsOperand(), 
         beta.getConstantRange().getLower().getZExtValue())
     );
   }
   
+  // Auxilliary Parts just for logging.
   LLVM_DEBUG(dbgs() << "\n");
   for (const auto &k : specConstsMap){
     LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << k.first << 
