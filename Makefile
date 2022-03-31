@@ -13,16 +13,16 @@ endif
 all: buildhpssa build test dot2png 
 runpass : test dot2png
 
-buildhpssa: src/HPSSA.cpp include/HPSSA.h
+buildhpssa: src/HPSSA_new.cpp include/HPSSA_new.h
 	@mkdir -p build
-	$(CXX) -c src/HPSSA.cpp -o build/HPSSA.cpp.o $(CXXFLAGS)
-	$(CXX) $(CXXFLAGS) -shared build/HPSSA.cpp.o -o build/HPSSA.cpp.so $(LDFLAGS)
+	$(CXX) -c src/HPSSA_new.cpp -o build/HPSSA_new.cpp.o $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -shared build/HPSSA_new.cpp.o -o build/HPSSA_new.cpp.so $(LDFLAGS)
 
 build: src/TDestruction.cpp include/TDestruction.h src/SpecTauInsertion.cpp include/SpecTauInsertion.h
 	$(CXX) -c src/TDestruction.cpp -o build/TDestruction.cpp.o $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -shared build/TDestruction.cpp.o -o build/TDestruction.cpp.so $(LDFLAGS)
-	$(CXX) -c src/SpecTauInsertion.cpp -o build/SpecTauInsertion.cpp.o $(CXXFLAGS)
-	$(CXX) $(CXXFLAGS) -shared build/SpecTauInsertion.cpp.o -o build/SpecTauInsertion.cpp.so $(LDFLAGS)
+	# $(CXX) -c src/SpecTauInsertion.cpp -o build/SpecTauInsertion.cpp.o $(CXXFLAGS)
+	# $(CXX) $(CXXFLAGS) -shared build/SpecTauInsertion.cpp.o -o build/SpecTauInsertion.cpp.so $(LDFLAGS)
 
 test: build BBProfiler/profileInfo.txt 
 	# use the same test case which was profiled 
@@ -31,7 +31,7 @@ test: build BBProfiler/profileInfo.txt
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA_new.cpp.so -passes=hpssa_new -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll -f 2> output/custom_hpssa.log
 	# $(BUILD_PATH)/opt -load-pass-plugin=build/TConditional.cpp.so -passes=tcond -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tcond.ll -f 2> output/custom_tcond.log
 	$(BUILD_PATH)/opt -load-pass-plugin=build/TDestruction.cpp.so -passes=tdstr -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_tdstr.ll -f 2> output/custom_tdstr.log
 	# $(BUILD_PATH)/opt -load-pass-plugin=build/SpecTauInsertion.cpp.so -passes=sptau -time-passes IR/LL/test_hpssa.ll -S -o IR/LL/test_sptau.ll -f 2> output/custom_sptau.log
@@ -42,9 +42,9 @@ test: build BBProfiler/profileInfo.txt
 	$(BUILD_PATH)/opt -dot-cfg-only -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot stripped.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_hpssa.ll -disable-output -enable-new-pm=0 
-	mv .main.dot withHPSSA.dot
+	mv .main.dot withHPSSA_new.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_tdstr.ll -disable-output -enable-new-pm=0 
-	mv .main.dot removeHPSSA.dot
+	mv .main.dot removeHPSSA_new.dot
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
 	mv .main.dot baseline.dot
 	rm -rf .dot

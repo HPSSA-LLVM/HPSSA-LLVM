@@ -5,34 +5,36 @@
 80c80,82
 <   %mul8 = mul nsw i32 2, %x.0
 ---
->   %tau3 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
->   %tau = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
->   %mul8 = mul nsw i32 2, %tau3
+>   %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+>   %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+>   %mul8 = mul nsw i32 2, %tau8
 82c84
 <   %add10 = add nsw i32 9, %x.0
 ---
->   %add10 = add nsw i32 9, %tau3
+>   %add10 = add nsw i32 9, %tau8
 90,91c92,95
 <   %mul11 = mul nsw i32 3, %x.0
 <   %add12 = add nsw i32 %n.0, %mul11
 ---
->   %tau4 = call i32 (...) @llvm.tau.i32(i32 %tau3, i32 %add3, i32 %add6)
->   %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau, i32 %sub, i32 %add7)
->   %mul11 = mul nsw i32 3, %tau4
->   %add12 = add nsw i32 %tau1, %mul11
+>   %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
+>   %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
+>   %mul11 = mul nsw i32 3, %tau
+>   %add12 = add nsw i32 %tau10, %mul11
 104c108
 <   call void @exit(i32 0) #6
 ---
 >   call void @exit(i32 0) #7
-111c115
-<   %add17 = add nsw i32 %add9, %x.0
+111c115,117
+<   %add17 = add nsw i32 %n.0, %x.0
 ---
->   %add17 = add nsw i32 %add9, %tau3
-130a135,137
+>   %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
+>   %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+>   %add17 = add nsw i32 %tau12, %tau11
+130a137,139
 > ; Function Attrs: nofree nosync nounwind willreturn
 > declare i32 @llvm.tau.i32(...) #6
 > 
-137c144,145
+137c146,147
 < attributes #6 = { noreturn nounwind }
 ---
 > attributes #6 = { nofree nosync nounwind willreturn }
