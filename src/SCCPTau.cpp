@@ -34,6 +34,7 @@
 #include <bits/stdc++.h>
 #include <llvm/IR/Value.h>
 #include "../include/SpecValueLattice.h"
+#include "../include/InsertSpecValues.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseSet.h"
@@ -266,11 +267,9 @@ PreservedAnalyses SCCPTauPass::run(Function &F, FunctionAnalysisManager &AM) {
   if (F.getName() != "main")
     return PreservedAnalyses::all();
   
-  // HPSSAPass hpssaUtil;
-  // hpssaUtil.run(F, AM);  
-  // std::vector<Instruction *> TauInsts = hpssaUtil.getAllTauInstrunctions(F);
-  // std::cout << "\t\tTotal Tau Instructions : " << TauInsts.size() << "\n";
-
+  HPSSAPass hpssaUtil;
+  hpssaUtil.run(F, AM);
+    
   const DataLayout &DL = F.getParent()->getDataLayout();
   auto &TLI = AM.getResult<TargetLibraryAnalysis>(F);
   if (!runSCCP(F, DL, &TLI))
