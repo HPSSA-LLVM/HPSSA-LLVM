@@ -32,12 +32,12 @@ baseline: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 	
 runpass:  
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA_new.cpp.so -passes=hpssa_new -time-passes \
 		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
 		-f 2> output/custom_hpssa.log
 	
 	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
-	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
+	-load-pass-plugin=build/HPSSA_new.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes=tausccp \
 		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_spec_sccp.ll \
 		-f 2> output/custom_speculative_sccp.log
 

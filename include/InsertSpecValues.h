@@ -21,7 +21,7 @@ using namespace llvm;
 
 namespace llvm {
 
-inline void insertSpeculativeValues(Function &F, llvm::Value* tau, uint64_t C) {
+inline void insertSpeculativeValues(Function &F, llvm::Value* tau, uint64_t specVal) {
   // assuming spec function signature takes a pointer to tau (Value*)
   // and an integer (speculative argument)
   Module *M = F.getParent();
@@ -40,7 +40,7 @@ inline void insertSpeculativeValues(Function &F, llvm::Value* tau, uint64_t C) {
   std::vector<Value*> Args;
   Args.push_back(I);
   Args.push_back(
-      ConstantInt::get(Type::getInt32Ty(M->getContext()), C));
+      ConstantInt::get(Type::getInt32Ty(M->getContext()), specVal));
   CallInst* SpecTau;
   SpecTau = CallInst::Create(specFun, Args, "", I->getNextNode());
   I->replaceAllUsesWith(SpecTau);

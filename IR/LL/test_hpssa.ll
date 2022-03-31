@@ -43,7 +43,7 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
 ; Function Attrs: mustprogress noinline norecurse uwtable
-define dso_local i32 @main() #4 {
+define i32 @main() #4 {
 entry:
   %m = alloca i32, align 4
   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)

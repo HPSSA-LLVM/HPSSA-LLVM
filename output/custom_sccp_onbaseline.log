@@ -54,7 +54,7 @@ sw.epilog:                                        ; preds = %sw.default, %sw.bb4
   %add9 = add nsw i32 %mul8, 10
   %add10 = add nsw i32 9, %x.0
   %cmp = icmp sle i32 %add9, %add10
-  br i1 %cmp, label %if.end, label %if.else
+  br i1 %cmp, label %if.then, label %if.else
 
 Merged constantrange<5, 6> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange<5, 6>
 Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 4>
@@ -68,17 +68,29 @@ Popped off BBWL:
 if.else:                                          ; preds = %sw.epilog
   %mul11 = mul nsw i32 3, %x.0
   %add12 = add nsw i32 %n.0, %mul11
-  switch i32 %add12, label %if.end [
+  switch i32 %add12, label %sw.default13 [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
   ]
 
 Merged constantrange<9, 10> into   %mul11 = mul nsw i32 3, %x.0 : constantrange<9, 10>
 Merged constantrange<14, 15> into   %add12 = add nsw i32 %n.0, %mul11 : constantrange<14, 15>
+Marking Block Executable: sw.default13
+
+Popped off BBWL: 
+sw.default13:                                     ; preds = %if.else
+  br label %sw.epilog16
+
+Marking Block Executable: sw.epilog16
+
+Popped off BBWL: 
+sw.epilog16:                                      ; preds = %sw.default13
+  br label %if.end
+
 Marking Block Executable: if.end
 
 Popped off BBWL: 
-if.end:                                           ; preds = %if.else, %sw.epilog
+if.end:                                           ; preds = %sw.epilog16, %if.then
   %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
@@ -191,7 +203,13 @@ Popped off I-WL:   %add6 = add nsw i32 %mul5, 1
 Popped off I-WL:   %mul5 = mul nsw i32 2, 1
 
 Popped off OI-WL:   %cmp = icmp sle i32 %add9, %add10
-Marking Edge Executable: sw.epilog -> if.end
+Marking Block Executable: if.then
+
+Popped off BBWL: 
+if.then:                                          ; preds = %sw.epilog
+  br label %if.end
+
+Marking Edge Executable: if.then -> if.end
 RESOLVING UNDEFs
   Constant: i32 2 =   %mul = mul nsw i32 2, 1
   Constant: i32 7 =   %add = add nsw i32 2, 5
@@ -220,23 +238,23 @@ RESOLVING UNDEFs
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0076 seconds (0.0079 wall clock)
+  Total Execution Time: 0.0075 seconds (0.0078 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0070 ( 93.1%)   0.0070 ( 93.1%)   0.0073 ( 93.4%)  SCCPPass
-   0.0002 (  3.0%)   0.0002 (  3.0%)   0.0002 (  2.9%)  PrintModulePass
-   0.0001 (  1.7%)   0.0001 (  1.7%)   0.0001 (  1.6%)  VerifierPass
-   0.0001 (  1.6%)   0.0001 (  1.6%)   0.0001 (  1.5%)  VerifierAnalysis
-   0.0000 (  0.4%)   0.0000 (  0.4%)   0.0000 (  0.3%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.3%)   0.0000 (  0.3%)   0.0000 (  0.2%)  TargetLibraryAnalysis
-   0.0076 (100.0%)   0.0076 (100.0%)   0.0079 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0012 ( 90.7%)   0.0058 ( 94.9%)   0.0070 ( 94.1%)   0.0073 ( 94.3%)  SCCPPass
+   0.0000 (  0.0%)   0.0002 (  2.8%)   0.0002 (  2.3%)   0.0002 (  2.2%)  PrintModulePass
+   0.0000 (  3.6%)   0.0001 (  1.2%)   0.0001 (  1.6%)   0.0001 (  1.6%)  VerifierPass
+   0.0000 (  3.2%)   0.0001 (  1.1%)   0.0001 (  1.5%)   0.0001 (  1.5%)  VerifierAnalysis
+   0.0000 (  2.2%)   0.0000 (  0.0%)   0.0000 (  0.4%)   0.0000 (  0.4%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.1%)  TargetLibraryAnalysis
+   0.0013 (100.0%)   0.0061 (100.0%)   0.0075 (100.0%)   0.0078 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
+  Total Execution Time: 0.0005 seconds (0.0005 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
-   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
+   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Parse IR
+   0.0005 (100.0%)   0.0005 (100.0%)   0.0005 (100.0%)  Total
 
