@@ -34,7 +34,7 @@ inline void createSpeculativeFunctionVal(Function &F) {
   FunctionType * functionType = FunctionType::get(
       returnType, Params, false);
   Function *function = Function::Create(functionType, 
-    Function::ExternalLinkage, "specCalls", M);
+    Function::ExternalLinkage, "assignSpecValue", M);
   
   Function::arg_iterator args = function->arg_begin();
   Value *x = args++;
@@ -64,10 +64,10 @@ inline void insertSpeculativeValues(Function &F,
 
   IRBuilder<> builder(I);
   builder.SetInsertPoint(I->getNextNode());
-  llvm::errs() << M->getFunction("specCalls") << "\n\n";
+  // llvm::errs() << M->getFunction("specCalls") << "\n\n";
 
   CallInst* SpecTau = CallInst::Create(
-    M->getFunction("specCalls"), 
+    M->getFunction("assignSpecValue"), 
     Args, "call", I->getNextNode()
   );
 

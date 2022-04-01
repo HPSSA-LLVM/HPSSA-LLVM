@@ -123,7 +123,7 @@
 	disparate data-structures, one for \textbf{program representation} and other for \textbf{profile information}.
 	\end{tcolorbox}
 	\centering
-	\includegraphics[width=11cm, height=4.5cm]{dotfiles/docs.pdf}
+	\includegraphics[width=11.5cm, height=5cm]{dotfiles/docs.pdf}
 \end{frame}
 {
 	\setbeamercolor{background canvas}{bg=}
@@ -137,17 +137,20 @@
 	\frametitle{... and PGO is easy with the Hot Path SSA (HPSSA) Form!}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
-	\begin{minted}[xleftmargin=1.2em, tabsize=2, numbersep=0.4em, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1}]{cpp}
+	\begin{minted}[xleftmargin=1.2em, tabsize=2, numbersep=0.4em, fontsize=\tiny, linenos, highlightcolor=yellow, highlightlines={1},escapeinside=||]{cpp}
 // Function to process "llvm.tau" function intrinsic.
 void SpecSCCPInstVisitor::visitTauNode(Instruction &Tau) {
-	...
+	// Code similar to that in visitPHINode(...).
+	if (Tau.getType()->isStructTy())
+    	return (void)markOverdefined(&Tau);
+	if (TauState.isOverdefined())
+		return (void)markOverdefined(&Tau);
+	// additional code.
+	unsigned NumActiveIncoming = 0;
 	SpecValueLatticeElement &TauState = getValueState(&Tau), 
 		beta = getValueState(Tau.getOperand(1)), 
 		x0 = getValueState(Tau.getOperand(0));
-		
-	if (TauState.isOverdefined())
-		return (void)markOverdefined(&Tau);
-		
+	
 	for (unsigned i = 1, e = (Tau.getNumOperands() - 1); i != e; ++i){
 		SpecValueLatticeElement IV = getValueState(Tau.getOperand(i));
 		beta.mergeIn(IV);
@@ -157,22 +160,19 @@ void SpecSCCPInstVisitor::visitTauNode(Instruction &Tau) {
 	}
 	 
 	if (beta.isConstantRange() 
-		&& beta.getConstantRange().isSingleElement())
+			&& beta.getConstantRange().isSingleElement())
 		beta.markSpeculativeConstantRange(beta.getConstantRange());
 	if (beta.isConstant())
 		beta.markSpeculativeConstant(beta.getConstant());
 		
-	beta.mergeInSpec(x0);
-	if (x0.isOverdefined())
-		TauState.mergeIn(beta);
-		
+	|\colorprog{x0.mergeInSpec(beta, TauState)};|
 	... // futher processing similar to visitPHINode();
 }
 \end{minted}
 		\end{column}
 	\begin{column}{0.01\textwidth} \end{column}
 		\begin{column}{0.4\textwidth}  
-			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={1,2,13}]{cpp}
+			\begin{minted}[fontsize=\tiny, xleftmargin=1em, tabsize=2, numbersep=0.5em, linenos, highlightcolor=yellow, highlightlines={1,2,13}, escapeinside=||]{cpp}
 // Omit handling of "llvm.tau" intrinsic 
 // as a regular Instruction.
 void SpecSCCPInstVisitor::solve() {
@@ -335,7 +335,6 @@ int main() {
 	\centering
 	\includegraphics[width=10.2cm, height=9.5cm]{dotfiles/specSCCP_HPSSA_next.dot.pdf}
 \end{frame}
-
 \begin{frame}[fragile]
 	\frametitle{SCCP vs SpecSCCP}
 	Standard SCCP VS. Speculative SCCP Pass.
@@ -366,7 +365,7 @@ Output:
 		\end{minted}
 	\end{column}
 	\begin{column}{0.5\textwidth}  
-		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightcolor=aquamarine, highlightlines={3,20,21,22,23}]{c}
+		\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightlines={3,20,21,22,23}]{c}
 # Running HPSSA Transformation followed by Speculative SCCP Pass.
 $ opt -load build/SCCPSolverTau.cpp.so 
 	-load build/HPSSA.cpp.so \
@@ -435,6 +434,31 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={31,32}]{summary.pdf}
 }
+\begin{frame}[fragile]
+	\frametitle{From \texttt{SpecSCCP} Pass}
+	Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.
+	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={3,4}, escapeinside=||]{css}
+	if.else:                                          ; preds = %sw.epilog
+		%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+		|\colorpred{%tau10}| = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)	
+		|\colorpred{%tau10\_spec}| = call i32 @assignSpecValue(i32 5)
+		%mul11 = mul nsw i32 3, undef
+		%add12 = add nsw i32 |\colorpred{%tau10\_spec}|, %mul11
+		switch i32 %add12, label %sw.default13 [
+			i32 200, label %sw.bb14
+			i32 300, label %sw.bb15
+		]
+	\end{minted}
+	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={2,3}, escapeinside=||]{css}
+	if.end:                                           ; preds = %sw.epilog, %if.else
+		|\colorpred{%tau11}| = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
+		|\colorpred{%tau11\_spec}| = call i32 @assignSpecValue(i32 7)
+		%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
+		%add17 = add nsw i32 undef, |\colorpred{%tau11\_spec}|
+		store i32 %add17, i32* %m, align 4
+		br label %end
+	\end{minted}
+\end{frame}
 \footnotesize
 
 \section{How is HPSSA Implemented?}
@@ -452,7 +476,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 \begin{frame}[fragile]
 	\frametitle{What we modified in LLVM Source?}
 	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
+		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, linenos]{python}
 	+ //===---------- intrinsic for tau ---------------=====//
@@ -462,7 +486,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\end{minted}
 	\pause
 	\begin{itemize}
-		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
+		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
 	+ //===---------- Changes for tau.intrinsic ---------------=====//
@@ -486,15 +510,16 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 		\begin{itemize}
 			\footnotesize
 			\item Implemented \mintinline[]{css}{llvm::HPSSAPass} pass using the new LLVM Pass Manager. 
-			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function &F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe arguments at strategic positions in the LLVM IR and handles argument allocation for  \mintinline[]{css}{"llvm.tau"} intrinsic calls as described in the previous slides. \pause
+			\item Function \mintinline[fontsize=\footnotesize]{css}{HPSSAPass::run(Function &F, ...)}  runs over a \mintinline[]{css}{llvm::Function} and inserts \mintinline[]{css}{"llvm.tau"} intrinsic calls with speculative and safe argument at strategic positions in the LLVM IR and handles argument allocation for \mintinline[]{css}{"llvm.tau"} intrinsic calls. \pause
 		\end{itemize}
-		\item Key HPSSA Data Structures :  \pause
+		\item Key HPSSA Data Structures and Functions:  \pause
 		\begin{itemize}
 			\footnotesize
-			\item Hot Path Set using \mintinline[]{css}{llvm::BitVector} for maintaining \color{red} hot paths \color{black} in the program. \pause
-			\item Definition Accumalator, \mintinline[]{css}{defAccumulator(op, currBB)} function. %\mintinline[]{python}{std::map<{PHINode*,BasicBlock*}, {Value*,BitVector}>}. 
-			The argument "op" is a phi argument that reaches basic-block "currBB" via \color{red} hot path \color{black}. \pause
-			\item A stack of map values \mintinline[]{css}{std::map<Value*,Value*>} to store the most "recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming. 
+			\item \fcolorbox{blue}{white}{Hot Path Set using \mintinline[]{css}{llvm::BitVector}} \pause for maintaining \color{red} hot paths \color{black} in the program. \pause
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::BasicBlock*, llvm::BitVector> HotPathSet}} \pause used to track \color{red} hot paths \color{black} that pass through a given basic block. \pause
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<std::pair<llvm::BasicBlock *, Value *>, frame> defAcc}} \pause keeps track of the \color{red} hot \color{black} definitions for a variable that reaches a given basic block. \pause
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::Value *, std::vector<llvm::Value *>> renaming_stack}} \pause used to store the most ``recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming phase. \pause
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN)}} \pause handles argument allocation for $\tau$-functions inserted.
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -506,9 +531,21 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 		\begin{itemize}
 			\item A seperate pass using the new LLVM Pass Manager. \mintinline[]{css}{class TDSTRPass : public PassInfoMixin<TDSTRPass>} \pause
 			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function &F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR.
-			\item The LLVM IR becomes identical to what it was before running the HPSSA Pass. 
+			\item The LLVM IR becomes identical to what it was before running the HPSSA Pass. \pause
 		\end{itemize}
 	\end{itemize}
+\begin{figure}[]
+	\centering
+	\begin{minipage}{0.4\textwidth}
+		\centering
+	\fbox{$x_3 = \tau(x_0, x_1, x_2)$, $\tau$-function}
+	\end{minipage}
+	\begin{minipage}{0.4\textwidth}
+		\centering
+	\fbox{$x_3 = x_0, \quad$ Replace all use of $x_3$ with $x_0$.}
+	\end{minipage}
+\end{figure}
+
 \end{frame}
 
 \footnotesize
@@ -518,7 +555,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\frametitle{Conclusion}
 	\begin{itemize}
 		\item The Hot Path SSA form opens up an exciting opportunity for compiler writers to ``port" exisiting standard analyses to their profile guided variants. \pause
-		\item We plan to push this work to LLVM main branch soon. 
+		\item We plan to open source our work soon and push it to the LLVM ``main" branch.
 	\end{itemize}
 \end{frame}
 

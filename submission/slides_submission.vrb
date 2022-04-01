@@ -1,6 +1,6 @@
 \frametitle{What we modified in LLVM Source?}
 	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation.
+		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, linenos]{python}
 	+ //===---------- intrinsic for tau ---------------=====//
@@ -10,7 +10,7 @@
 	\end{minted}
 	\pause
 	\begin{itemize}
-		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.
+		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
 	+ //===---------- Changes for tau.intrinsic ---------------=====//

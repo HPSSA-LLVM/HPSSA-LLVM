@@ -1,0 +1,437 @@
+Caloric Connector and BuddySet Information
+entry: sw.epilog is a Caloric Connector
+if.else is a Caloric Connector
+sw.bb14 is a Caloric Connector
+if.end is a Caloric Connector
+  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.0)
+  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+  %tau = call i32 (...) @llvm.tau.i32(i32 %n.0)
+  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+  %tau6 = call i32 (...) @llvm.tau.i32(i32 %tau8)
+  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
+  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau9)
+  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
+  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau8)
+  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
+  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau9)
+  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+Speculative SCCP on function 'main'
+Marking Block Executable: entry
+
+Popped off BBWL: 
+entry:
+  %m = alloca i32, align 4
+  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+  %i = load i32, i32* %m, align 4
+  switch i32 %i, label %sw.default [
+    i32 2, label %sw.bb
+    i32 4, label %sw.bb1
+    i32 6, label %sw.bb4
+  ]
+
+	[Taulog] Visiting Other Instruction :   %m = alloca i32, align 4
+Spec SCCP: Don't know how to handle:   %m = alloca i32, align 4
+markOverdefined:   %m = alloca i32, align 4
+	[Taulog] Visiting Call Instruction :   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+Merged overdefined into   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m) : overdefined
+	[Taulog] Visiting Other Instruction :   %i = load i32, i32* %m, align 4
+Merged overdefined into   %i = load i32, i32* %m, align 4 : overdefined
+	[Taulog] Visiting Other Instruction :   switch i32 %i, label %sw.default [
+    i32 2, label %sw.bb
+    i32 4, label %sw.bb1
+    i32 6, label %sw.bb4
+  ]
+Marking Block Executable: sw.default
+Marking Block Executable: sw.bb
+Marking Block Executable: sw.bb1
+Marking Block Executable: sw.bb4
+
+Popped off BBWL: 
+sw.bb4:                                           ; preds = %entry
+  %mul5 = mul nsw i32 2, 1
+  %add6 = add nsw i32 %mul5, 1
+  %add7 = add nsw i32 %add6, 2
+  br label %sw.epilog
+
+	[Taulog] Visiting Other Instruction :   %mul5 = mul nsw i32 2, 1
+	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
+		Unknown LHS
+Merged constantrange<2, 3> into   %mul5 = mul nsw i32 2, 1 : constantrange<2, 3>
+	[Taulog] Visiting Other Instruction :   %add6 = add nsw i32 %mul5, 1
+	[Taulog] mul5 : constantrange<2, 3>, 1 : constantrange<1, 2>
+		Unknown LHS
+Merged constantrange<3, 4> into   %add6 = add nsw i32 %mul5, 1 : constantrange<3, 4>
+	[Taulog] Visiting Other Instruction :   %add7 = add nsw i32 %add6, 2
+	[Taulog] add6 : constantrange<3, 4>, 2 : constantrange<2, 3>
+		Unknown LHS
+Merged constantrange<5, 6> into   %add7 = add nsw i32 %add6, 2 : constantrange<5, 6>
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog
+Marking Block Executable: sw.epilog
+
+Popped off BBWL: 
+sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
+  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+  %mul8 = mul nsw i32 2, %tau8
+  %add9 = add nsw i32 %mul8, 10
+  %add10 = add nsw i32 9, %tau8
+  %cmp = icmp sle i32 %add9, %add10
+  br i1 %cmp, label %if.then, label %if.else
+
+	[Taulog] Visiting Other Instruction :   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<5, 6> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange<5, 6>
+	[Taulog] Visiting Other Instruction :   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 4>
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6))
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<3, 4>
+		Tau Operand (L) : add, unknown
+		Tau Operand (L) : add3, unknown
+		Unknown LHS
+		Tau Operand (L) : add6, constantrange<3, 4>
+		ValueLattice (TauState) tau8 : unknown
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10))
+		Tau State init : unknown
+		x0 (phi-state) n.0 : constantrange<5, 6>
+		Tau Operand (L) : sub, unknown
+		Unknown LHS
+		Tau Operand (L) : add7, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau9 : unknown
+	[Taulog] Visiting Other Instruction :   %mul8 = mul nsw i32 2, %tau8
+	[Taulog] 2 : constantrange<2, 3>, tau8 : unknown
+	[Taulog] Visiting Other Instruction :   %add9 = add nsw i32 %mul8, 10
+	[Taulog] mul8 : unknown, 10 : constantrange<10, 11>
+	[Taulog] Visiting Other Instruction :   %add10 = add nsw i32 9, %tau8
+	[Taulog] 9 : constantrange<9, 10>, tau8 : unknown
+	[Taulog] Visiting Other Instruction :   %cmp = icmp sle i32 %add9, %add10
+	[Taulog] Visiting Other Instruction :   br i1 %cmp, label %if.then, label %if.else
+
+Popped off BBWL: 
+sw.bb1:                                           ; preds = %entry
+  %mul2 = mul nsw i32 2, 1
+  %add3 = add nsw i32 %mul2, 5
+  %sub = sub nsw i32 %add3, 2
+  br label %sw.epilog
+
+	[Taulog] Visiting Other Instruction :   %mul2 = mul nsw i32 2, 1
+	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
+		Unknown LHS
+Merged constantrange<2, 3> into   %mul2 = mul nsw i32 2, 1 : constantrange<2, 3>
+	[Taulog] Visiting Other Instruction :   %add3 = add nsw i32 %mul2, 5
+	[Taulog] mul2 : constantrange<2, 3>, 5 : constantrange<5, 6>
+		Unknown LHS
+Merged constantrange<7, 8> into   %add3 = add nsw i32 %mul2, 5 : constantrange<7, 8>
+	[Taulog] Visiting Other Instruction :   %sub = sub nsw i32 %add3, 2
+	[Taulog] add3 : constantrange<7, 8>, 2 : constantrange<2, 3>
+		Unknown LHS
+Merged constantrange<5, 6> into   %sub = sub nsw i32 %add3, 2 : constantrange<5, 6>
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog
+Marking Edge Executable: sw.bb1 -> sw.epilog
+Marking Spec PHINode exec.
+Marking Spec PHINode exec.
+Merged constantrange<3, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 8>
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<3, 8>
+		Tau Operand (L) : add, unknown
+		Unknown LHS
+		Tau Operand (L) : add3, constantrange<7, 8>
+		Tau Operand (L) : add6, constantrange<3, 4>
+		ValueLattice (TauState) tau8 : unknown
+		Tau State init : unknown
+		x0 (phi-state) n.0 : constantrange<5, 6>
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : add7, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau9 : unknown
+
+Popped off BBWL: 
+sw.bb:                                            ; preds = %entry
+  %mul = mul nsw i32 2, 1
+  %add = add nsw i32 %mul, 5
+  br label %sw.epilog
+
+	[Taulog] Visiting Other Instruction :   %mul = mul nsw i32 2, 1
+	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
+		Unknown LHS
+Merged constantrange<2, 3> into   %mul = mul nsw i32 2, 1 : constantrange<2, 3>
+	[Taulog] Visiting Other Instruction :   %add = add nsw i32 %mul, 5
+	[Taulog] mul : constantrange<2, 3>, 5 : constantrange<5, 6>
+		Unknown LHS
+Merged constantrange<7, 8> into   %add = add nsw i32 %mul, 5 : constantrange<7, 8>
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog
+Marking Edge Executable: sw.bb -> sw.epilog
+Marking Spec PHINode exec.
+Merged constantrange<5, 11> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange<5, 11>
+Marking Spec PHINode exec.
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<3, 8>
+		Tau Operand (L) : add, constantrange<7, 8>
+		Tau Operand (L) : add3, constantrange<7, 8>
+		Tau Operand (L) : add6, constantrange<3, 4>
+		ValueLattice (TauState) tau8 : unknown
+		Tau State init : unknown
+		x0 (phi-state) n.0 : constantrange<5, 11>
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : add7, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau9 : unknown
+
+Popped off BBWL: 
+sw.default:                                       ; preds = %entry
+  br label %sw.epilog
+
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog
+Marking Edge Executable: sw.default -> sw.epilog
+Marking Spec PHINode exec.
+Merged constantrange incl. undef <5, 11> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange incl. undef <5, 11>
+Marking Spec PHINode exec.
+Merged constantrange<2, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<2, 8>
+		Tau State init : unknown
+		x0 (phi-state) x.0 : constantrange<2, 8>
+		Tau Operand (L) : add, constantrange<7, 8>
+		Tau Operand (L) : add3, constantrange<7, 8>
+		Tau Operand (L) : add6, constantrange<3, 4>
+		ValueLattice (TauState) tau8 : unknown
+		Tau State init : unknown
+		x0 (phi-state) n.0 : constantrange incl. undef <5, 11>
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : add7, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau9 : unknown
+
+Popped off OI-WL:   %i = load i32, i32* %m, align 4
+
+Popped off OI-WL:   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+
+Popped off OI-WL:   %m = alloca i32, align 4
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+Merged overdefined into   %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6) : overdefined
+
+Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+Merged overdefined into   %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10) : overdefined
+
+Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+
+Popped off I-WL:   %add = add nsw i32 %mul, 5
+Marking Spec PHINode exec.
+
+Popped off I-WL:   %mul = mul nsw i32 2, 1
+	[Taulog] mul : constantrange<2, 3>, 5 : constantrange<5, 6>
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+
+Popped off I-WL:   %sub = sub nsw i32 %add3, 2
+Marking Spec PHINode exec.
+
+Popped off I-WL:   %add3 = add nsw i32 %mul2, 5
+Marking Spec PHINode exec.
+	[Taulog] add3 : constantrange<7, 8>, 2 : constantrange<2, 3>
+
+Popped off I-WL:   %mul2 = mul nsw i32 2, 1
+	[Taulog] mul2 : constantrange<2, 3>, 5 : constantrange<5, 6>
+
+Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+
+Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+
+Popped off I-WL:   %add7 = add nsw i32 %add6, 2
+Marking Spec PHINode exec.
+
+Popped off I-WL:   %add6 = add nsw i32 %mul5, 1
+Marking Spec PHINode exec.
+	[Taulog] add6 : constantrange<3, 4>, 2 : constantrange<2, 3>
+
+Popped off I-WL:   %mul5 = mul nsw i32 2, 1
+	[Taulog] mul5 : constantrange<2, 3>, 1 : constantrange<1, 2>
+
+Popped off OI-WL:   %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+
+Popped off OI-WL:   %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+	[Taulog] 2 : constantrange<2, 3>, tau8 : overdefined
+Merged overdefined into   %mul8 = mul nsw i32 2, %tau8 : overdefined
+	[Taulog] 9 : constantrange<9, 10>, tau8 : overdefined
+Merged overdefined into   %add10 = add nsw i32 9, %tau8 : overdefined
+
+Popped off OI-WL:   %add10 = add nsw i32 9, %tau8
+
+Popped off OI-WL:   %mul8 = mul nsw i32 2, %tau8
+	[Taulog] mul8 : overdefined, 10 : constantrange<10, 11>
+Merged overdefined into   %add9 = add nsw i32 %mul8, 10 : overdefined
+
+Popped off OI-WL:   %add9 = add nsw i32 %mul8, 10
+markOverdefined:   %cmp = icmp sle i32 %add9, %add10
+
+Popped off OI-WL:   %cmp = icmp sle i32 %add9, %add10
+Marking Block Executable: if.then
+Marking Block Executable: if.else
+
+Popped off BBWL: 
+if.else:                                          ; preds = %sw.epilog
+  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
+  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
+  %mul11 = mul nsw i32 3, %tau
+  %add12 = add nsw i32 %tau10, %mul11
+  switch i32 %add12, label %sw.default13 [
+    i32 200, label %sw.bb14
+    i32 300, label %sw.bb15
+  ]
+
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6))
+		Tau State init : unknown
+		x0 (phi-state) tau8 : overdefined
+		Tau Operand (L) : add3, constantrange<7, 8>
+		Tau Operand (L) : add6, constantrange<3, 4>
+		ValueLattice (TauState) tau : unknown
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7))
+		Tau State init : unknown
+		x0 (phi-state) tau9 : overdefined
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : add7, constantrange<5, 6>
+		ValueLattice (TauState) tau10 : speculative constantrange<5, 6>
+	[Taulog] Visiting Other Instruction :   %mul11 = mul nsw i32 3, %tau
+	[Taulog] 3 : constantrange<3, 4>, tau : unknown
+	[Taulog] Visiting Other Instruction :   %add12 = add nsw i32 %tau10, %mul11
+	[Taulog] tau10 : constantrange<5, 6>, mul11 : unknown
+	[Taulog] Visiting Other Instruction :   switch i32 %add12, label %sw.default13 [
+    i32 200, label %sw.bb14
+    i32 300, label %sw.bb15
+  ]
+
+Popped off BBWL: 
+if.then:                                          ; preds = %sw.epilog
+  br label %if.end
+
+	[Taulog] Visiting Other Instruction :   br label %if.end
+Marking Block Executable: if.end
+
+Popped off BBWL: 
+if.end:                                           ; preds = %sw.epilog16, %if.then
+  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
+  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+  %add17 = add nsw i32 %tau12, %tau11
+  store i32 %add17, i32* %m, align 4
+  br label %end
+
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3))
+		Tau State init : unknown
+		x0 (phi-state) tau8 : overdefined
+		Tau Operand (L) : add, constantrange<7, 8>
+		Tau Operand (L) : add3, constantrange<7, 8>
+		ValueLattice (TauState) tau11 : speculative constantrange<7, 8>
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10))
+		Tau State init : unknown
+		x0 (phi-state) tau9 : overdefined
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau12 : unknown
+	[Taulog] Visiting Other Instruction :   %add17 = add nsw i32 %tau12, %tau11
+	[Taulog] tau12 : unknown, tau11 : constantrange<7, 8>
+	[Taulog] Visiting Other Instruction :   store i32 %add17, i32* %m, align 4
+	[Taulog] Visiting Other Instruction :   br label %end
+Marking Block Executable: end
+
+Popped off BBWL: 
+end:                                              ; preds = %if.end, %sw.bb14
+  ret i32 0
+
+	[Taulog] Visiting Other Instruction :   ret i32 0
+RESOLVING UNDEFs
+markOverdefined:   %mul11 = mul nsw i32 3, %tau
+markOverdefined:   %add12 = add nsw i32 %tau10, %mul11
+markOverdefined:   %add17 = add nsw i32 %tau12, %tau11
+
+Popped off OI-WL:   %add17 = add nsw i32 %tau12, %tau11
+
+Popped off OI-WL:   %add12 = add nsw i32 %tau10, %mul11
+Marking Block Executable: sw.default13
+Marking Block Executable: sw.bb14
+Marking Block Executable: sw.bb15
+
+Popped off OI-WL:   %mul11 = mul nsw i32 3, %tau
+	[Taulog] tau10 : constantrange<5, 6>, mul11 : overdefined
+
+Popped off BBWL: 
+sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #7
+  unreachable
+
+	[Taulog] Visiting Call Instruction :   call void @exit(i32 0) #7
+	[Taulog] Visiting Other Instruction :   unreachable
+
+Popped off BBWL: 
+sw.bb14:                                          ; preds = %if.else
+  br label %end
+
+	[Taulog] Visiting Other Instruction :   br label %end
+Marking Edge Executable: sw.bb14 -> end
+
+Popped off BBWL: 
+sw.default13:                                     ; preds = %if.else
+  br label %sw.epilog16
+
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog16
+Marking Block Executable: sw.epilog16
+
+Popped off BBWL: 
+sw.epilog16:                                      ; preds = %sw.default13
+  br label %if.end
+
+	[Taulog] Visiting Other Instruction :   br label %if.end
+Marking Edge Executable: sw.epilog16 -> if.end
+		Tau State init : unknown
+		x0 (phi-state) tau8 : overdefined
+		Tau Operand (L) : add, constantrange<7, 8>
+		Tau Operand (L) : add3, constantrange<7, 8>
+		ValueLattice (TauState) tau11 : speculative constantrange<7, 8>
+		Tau State init : unknown
+		x0 (phi-state) tau9 : overdefined
+		Tau Operand (L) : sub, constantrange<5, 6>
+		Tau Operand (L) : 10, constantrange<10, 11>
+		ValueLattice (TauState) tau12 : unknown
+RESOLVING UNDEFs
+  Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
+  Constant: i32 3 =   %add6 = add nsw i32 2, 1
+  Constant: i32 5 =   %add7 = add nsw i32 3, 2
+  Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
+  Constant: i32 7 =   %add3 = add nsw i32 2, 5
+  Constant: i32 5 =   %sub = sub nsw i32 7, 2
+  Constant: i32 2 =   %mul = mul nsw i32 2, 1
+  Constant: i32 7 =   %add = add nsw i32 2, 5
+  Constant: i32 undef =   %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+  Speculative Constant: i32 5 =   %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)
+  Speculative Constant: i32 7 =   %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
+  Constant: i32 undef =   %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
+===-------------------------------------------------------------------------===
+                      ... Pass execution timing report ...
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0196 seconds (0.0197 wall clock)
+
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0154 ( 97.3%)   0.0036 ( 93.4%)   0.0190 ( 96.5%)   0.0190 ( 96.5%)  SCCPTauPass
+   0.0002 (  1.1%)   0.0001 (  2.3%)   0.0003 (  1.4%)   0.0003 (  1.4%)  PrintModulePass
+   0.0001 (  0.7%)   0.0001 (  2.0%)   0.0002 (  1.0%)   0.0002 (  1.0%)  VerifierPass
+   0.0001 (  0.7%)   0.0001 (  1.8%)   0.0002 (  0.9%)   0.0002 (  0.9%)  VerifierAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.3%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.1%)   0.0000 (  0.2%)   0.0000 (  0.1%)   0.0000 (  0.1%)  DominatorTreeAnalysis
+   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  TargetLibraryAnalysis
+   0.0158 (100.0%)   0.0039 (100.0%)   0.0196 (100.0%)   0.0197 (100.0%)  Total
+
+===-------------------------------------------------------------------------===
+                                LLVM IR Parsing
+===-------------------------------------------------------------------------===
+  Total Execution Time: 0.0007 seconds (0.0006 wall clock)
+
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0003 (100.0%)   0.0003 (100.0%)   0.0007 (100.0%)   0.0006 (100.0%)  Parse IR
+   0.0003 (100.0%)   0.0003 (100.0%)   0.0007 (100.0%)   0.0006 (100.0%)  Total
+
