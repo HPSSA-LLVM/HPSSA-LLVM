@@ -18,12 +18,12 @@ build: src/SCCPSolverTau.cpp src/SCCPTau.cpp include/SpecValueLattice.h
 	$(CXX) $(CXXFLAGS) -shared src/SCCPSolverTau.cpp -o build/SCCPSolverTau.cpp.so $(LDFLAGS)
 	$(CXX) $(CXXFLAGS) -shared src/SCCPTau.cpp -o build/SCCPTau.cpp.so $(LDFLAGS)
 
-# test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
-# 	# use the same test case which was profiled 
-# 	cp BBProfiler/tests/test.cpp tests/test.cpp
-# 	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
-# 	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
-# 	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
+test: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
+	# use the same test case which was profiled 
+	cp BBProfiler/tests/test.cpp tests/test.cpp
+	$(CXX) -c -emit-llvm tests/test.cpp -o IR/BC/test.bc
+	$(CXX) -S -emit-llvm tests/test.cpp -o IR/LL/test.ll
+	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
 
 baseline: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	$(BUILD_PATH)/opt -dot-cfg -cfg-func-name=main IR/LL/test_mem2reg.ll -enable-new-pm=0 -disable-output
@@ -32,12 +32,12 @@ baseline: BBProfiler/profileInfo.txt BBProfiler/tests/test.cpp
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 	
 runpass:  
-	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA.cpp.so -passes=hpssa -time-passes \
+	$(BUILD_PATH)/opt -load-pass-plugin=build/HPSSA_new.cpp.so -passes=hpssa_new -time-passes \
 		IR/LL/test_mem2reg.ll -S -o IR/LL/test_hpssa.ll \
 		-f 2> output/custom_hpssa.log
 	
-	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA.cpp.so \
-	-load-pass-plugin=build/HPSSA.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes="tausccp" \
+	$(BUILD_PATH)/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA_new.cpp.so \
+	-load-pass-plugin=build/HPSSA_new.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes=tausccp \
 		-time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_spec_sccp.ll \
 		-f 2> output/custom_speculative_sccp.log
 

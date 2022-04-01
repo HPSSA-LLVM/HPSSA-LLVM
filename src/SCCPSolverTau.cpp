@@ -34,7 +34,6 @@
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/GlobalValue.h>
 #include <llvm/IR/Instruction.h>
-// #include <SpecTauInsertion.h>
 #include <utility>
 #include <vector>
 
@@ -888,13 +887,15 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
     beta.markSpeculativeConstant(beta.getConstant());
   }
 
-  if (x0.isOverdefined()) {
+  if (x0.isOverdefined() || x0.isNotConstant() 
+    || (x0.isConstantRange() && x0.getConstantRange() != beta.getConstantRange())) {
     if (beta.isSpecConstant())
       TauState.markSpeculativeConstant(beta.getConstant());
     if (beta.isSpecRange())
       TauState.markSpeculativeConstantRange(beta.getConstantRange());
   }
 
+  // For Logging purpose
   LLVM_DEBUG(dbgs() << "\tBeta : " << beta << ", x0 : " << x0 << "\n");
   LLVM_DEBUG(dbgs() << "\tLattice (Tau) : " << Tau.getNameOrAsOperand() << ", " <<
     getLatticeValueFor(&Tau) << ", (TauState) : " << TauState << " \n");
@@ -910,13 +911,15 @@ void SCCPTauInstVisitor::visitTauNode(Instruction &Tau) {
   LLVM_DEBUG(dbgs() << "\t\tValueLattice (TauState) " << Tau.getNameOrAsOperand() 
       << " : " << TauStateRefElem << "\n"); 
   
-  if (TauStateRefElem.isSpecRange() && beta.isSpecRange()) {
+  // Auxilliary code just for logging.
+  if (TauStateRefElem.isSpecRange()) {
     specConstsMap.insert(
       std::make_pair(Tau.getNameOrAsOperand(), 
         beta.getConstantRange().getLower().getZExtValue())
     );
   }
   
+  // Auxilliary code just for logging.
   LLVM_DEBUG(dbgs() << "\n");
   for (const auto &k : specConstsMap){
     LLVM_DEBUG(dbgs() << "\t\t" << "%spec_" << k.first << 
@@ -1151,6 +1154,16 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
   // COMMENT : Handle operation on speculative constants.
   if (V1State.isSpecConstant() || V2State.isSpecConstant())
     return (void)markSpeculativeConstant(&I);
+
+  if (V1State.isSpecRange()) {
+    if (V2State.isConstantRange())
+      V2State.markSpeculativeConstantRange(V2State.getConstantRange());
+  }
+
+  if (V2State.isSpecRange()) {
+    if (V1State.isConstantRange())
+      V1State.markSpeculativeConstantRange(V1State.getConstantRange());
+  }
 
   // If either of the operands is a constant, try to fold it to a constant.
   // TODO: Use information from notconstant better.

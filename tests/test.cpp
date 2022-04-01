@@ -1,36 +1,25 @@
-#include <bits/stdc++.h>
+#include <iostream>
 
-// 1
-// 6
-// entry sw.bb1 label_4 end if.else if.end
-
-int main() {
-  int x = 2, m, n, y = 0, z = 9, c = 1;
-  std::cin >> m;
-  switch(m) {   
-    case 2 : x = 2 * c + 5; n = 10; break;
-    case 4 : x = 2 * c + 5; n = x - 2; break;
-    case 6 : x = 2 * c + 1; n = x + 2; break;
-    default : break;
-  }
-  
-  y = 2 * x + 10;
-
-  if (y <= z + x) {
+int main(void) {
+  int x = 0, y = 0, b = 0, a = 0, c = 0, z = 0, d = 0;
+  x = 5;
+  y = 10;
+  std::cin >> z;
+  if (z > 900) {
+    b = 9;
   } else {
-    z = n + 3 * x;
-    switch (z) {
-      default : break;
-      case 200 : { 
-        goto end;
-      }
-      case 300 : exit(0);
-    }
+    x = 15;
   }
 
-  m = n + x;  
-  end:
-    z = x;
+  a = b + 1;
+  c = a + 1;
 
+  if (z > a) {
+    z = a * c;
+  } else {
+    d = x + 1;
+  }
+
+  a = y + 1;
   return 0;
 }
