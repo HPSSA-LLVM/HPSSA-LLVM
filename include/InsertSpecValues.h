@@ -16,33 +16,62 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include <bits/stdc++.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/Support/Casting.h>
+#include <llvm/IR/Verifier.h>
 using namespace std;
 using namespace llvm;
 
 namespace llvm {
 
-inline void insertSpeculativeValues(Function &F, llvm::Value* tau, uint64_t specVal) {
-  // assuming spec function signature takes a pointer to tau (Value*)
-  // and an integer (speculative argument)
+inline void createSpeculativeFunctionVal(Function &F) {
+
   Module *M = F.getParent();
-  vector<Type*> Params{Type::getInt32PtrTy(M->getContext()),
-                       Type::getInt32Ty(M->getContext())};
-  FunctionType* fccType =
-      FunctionType::get(Type::getVoidTy(M->getContext()), Params, false);
+  
+  Type *returnType = Type::getInt32Ty(M->getContext());
+  vector<Type*> Params{Type::getInt32Ty(M->getContext())};
 
-  Function* specFun =
-      Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7speci", M);
+  FunctionType * functionType = FunctionType::get(
+      returnType, Params, false);
+  Function *function = Function::Create(functionType, 
+    Function::ExternalLinkage, "specCalls", M);
+  
+  Function::arg_iterator args = function->arg_begin();
+  Value *x = args++;
+  x->setName("specConstVal");
 
-  Instruction* I = dyn_cast<Instruction>(tau);
-  CallInst* CI = dyn_cast<CallInst>(I);
-  Function* CF = CI->getCalledFunction();
-  errs() << "Speculative Tau: " << CF->getName() << "\t\n";
+  BasicBlock* BB = BasicBlock::Create(M->getContext(), 
+    "entry", function);
+  IRBuilder<> builder(BB);
+  builder.SetInsertPoint(BB);
+  builder.CreateRet(x);
+
+}
+
+inline void insertSpeculativeValues(Function &F, 
+    llvm::Value* tau, uint64_t specVal) {
+  
+  Module *M = F.getParent();
+
   std::vector<Value*> Args;
-  Args.push_back(I);
-  Args.push_back(
-      ConstantInt::get(Type::getInt32Ty(M->getContext()), specVal));
-  CallInst* SpecTau;
-  SpecTau = CallInst::Create(specFun, Args, "", I->getNextNode());
+  Instruction* I = dyn_cast<Instruction>(tau);
+
+  Args.emplace_back(
+    ConstantInt::get(
+      Type::getInt32Ty(M->getContext()), 
+      specVal
+  ));
+
+  IRBuilder<> builder(I);
+  builder.SetInsertPoint(I->getNextNode());
+  llvm::errs() << M->getFunction("specCalls") << "\n\n";
+
+  CallInst* SpecTau = CallInst::Create(
+    M->getFunction("specCalls"), 
+    Args, "call", I->getNextNode()
+  );
+
+  SpecTau->setName(tau->getNameOrAsOperand() + "_spec");
   I->replaceAllUsesWith(SpecTau);
 }
 

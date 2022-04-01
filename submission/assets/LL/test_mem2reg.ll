@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'IR/BC/test.bc'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -42,7 +42,7 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 ; Function Attrs: nounwind
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
-; Function Attrs: mustprogress noinline norecurse uwtable
+; Function Attrs: noinline norecurse uwtable mustprogress
 define i32 @main() #4 {
 entry:
   %m = alloca i32, align 4
@@ -77,11 +77,9 @@ sw.default:                                       ; preds = %entry
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
-  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
-  %mul8 = mul nsw i32 2, %tau8
+  %mul8 = mul nsw i32 2, %x.0
   %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %tau8
+  %add10 = add nsw i32 9, %x.0
   %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.then, label %if.else
 
@@ -89,10 +87,8 @@ if.then:                                          ; preds = %sw.epilog
   br label %if.end
 
 if.else:                                          ; preds = %sw.epilog
-  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
-  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
-  %mul11 = mul nsw i32 3, %tau
-  %add12 = add nsw i32 %tau10, %mul11
+  %mul11 = mul nsw i32 3, %x.0
+  %add12 = add nsw i32 %n.0, %mul11
   switch i32 %add12, label %sw.default13 [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
@@ -105,16 +101,14 @@ sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
-  call void @exit(i32 0) #7
+  call void @exit(i32 0) #6
   unreachable
 
 sw.epilog16:                                      ; preds = %sw.default13
   br label %if.end
 
 if.end:                                           ; preds = %sw.epilog16, %if.then
-  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
-  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
-  %add17 = add nsw i32 %tau12, %tau11
+  %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
 
@@ -134,17 +128,13 @@ entry:
   ret void
 }
 
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #6
-
 attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
-attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { noinline norecurse uwtable mustprogress "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { nofree nosync nounwind willreturn }
-attributes #7 = { noreturn nounwind }
+attributes #6 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

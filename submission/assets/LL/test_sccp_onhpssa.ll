@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'IR/LL/test_hpssa.ll'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -55,30 +55,22 @@ entry:
   ]
 
 sw.bb:                                            ; preds = %entry
-  %mul = mul nsw i32 2, 1
-  %add = add nsw i32 %mul, 5
   br label %sw.epilog
 
 sw.bb1:                                           ; preds = %entry
-  %mul2 = mul nsw i32 2, 1
-  %add3 = add nsw i32 %mul2, 5
-  %sub = sub nsw i32 %add3, 2
   br label %sw.epilog
 
 sw.bb4:                                           ; preds = %entry
-  %mul5 = mul nsw i32 2, 1
-  %add6 = add nsw i32 %mul5, 1
-  %add7 = add nsw i32 %add6, 2
   br label %sw.epilog
 
 sw.default:                                       ; preds = %entry
   br label %sw.epilog
 
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
-  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+  %n.0 = phi i32 [ undef, %sw.default ], [ 5, %sw.bb4 ], [ 5, %sw.bb1 ], [ 10, %sw.bb ]
+  %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
+  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 7, i32 7, i32 3)
+  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 5, i32 5, i32 10)
   %mul8 = mul nsw i32 2, %tau8
   %add9 = add nsw i32 %mul8, 10
   %add10 = add nsw i32 9, %tau8
@@ -89,8 +81,8 @@ if.then:                                          ; preds = %sw.epilog
   br label %if.end
 
 if.else:                                          ; preds = %sw.epilog
-  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
-  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
+  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)
   %mul11 = mul nsw i32 3, %tau
   %add12 = add nsw i32 %tau10, %mul11
   switch i32 %add12, label %sw.default13 [
@@ -112,8 +104,8 @@ sw.epilog16:                                      ; preds = %sw.default13
   br label %if.end
 
 if.end:                                           ; preds = %sw.epilog16, %if.then
-  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
-  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
+  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
   %add17 = add nsw i32 %tau12, %tau11
   store i32 %add17, i32* %m, align 4
   br label %end

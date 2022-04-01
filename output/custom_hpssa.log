@@ -18,23 +18,23 @@ if.end is a Caloric Connector
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0037 seconds (0.0037 wall clock)
+  Total Execution Time: 0.0028 seconds (0.0029 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
-   0.0030 ( 82.0%)   0.0030 ( 82.0%)   0.0030 ( 82.0%)  HPSSAPass
-   0.0003 (  7.5%)   0.0003 (  7.5%)   0.0003 (  7.5%)  PrintModulePass
-   0.0002 (  4.9%)   0.0002 (  4.9%)   0.0002 (  4.9%)  VerifierPass
-   0.0002 (  4.6%)   0.0002 (  4.6%)   0.0002 (  4.5%)  VerifierAnalysis
-   0.0000 (  0.6%)   0.0000 (  0.6%)   0.0000 (  0.7%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.4%)   0.0000 (  0.4%)   0.0000 (  0.4%)  DominatorTreeAnalysis
-   0.0037 (100.0%)   0.0037 (100.0%)   0.0037 (100.0%)  Total
+   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0023 ( 81.0%)   0.0023 ( 81.0%)   0.0024 ( 81.4%)  HPSSAPass
+   0.0002 (  7.7%)   0.0002 (  7.7%)   0.0002 (  7.6%)  PrintModulePass
+   0.0002 (  5.4%)   0.0002 (  5.4%)   0.0002 (  5.3%)  VerifierPass
+   0.0001 (  5.1%)   0.0001 (  5.1%)   0.0001 (  5.0%)  VerifierAnalysis
+   0.0000 (  0.5%)   0.0000 (  0.5%)   0.0000 (  0.5%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.3%)   0.0000 (  0.3%)  DominatorTreeAnalysis
+   0.0028 (100.0%)   0.0028 (100.0%)   0.0029 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0006 seconds (0.0006 wall clock)
+  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0002 (100.0%)   0.0004 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Parse IR
-   0.0002 (100.0%)   0.0004 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
+   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
+   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
 
