@@ -425,6 +425,18 @@ public:
     return true;
   }
 
+  // COMMENT : Add for beta <---> x0 merging
+  void mergeInSpec(const SpecValueLatticeElement &beta, 
+    SpecValueLatticeElement &TauState) {
+    if (isOverdefined() || isNotConstant() 
+      || (isConstantRange() && getConstantRange() != beta.getConstantRange())) {
+      if (beta.isSpecConstant())
+        TauState.markSpeculativeConstant(beta.getConstant());
+      if (beta.isSpecRange())
+        TauState.markSpeculativeConstantRange(beta.getConstantRange());
+    }
+  }
+
   // COMMENT : Add a shadow Tag.
   bool markSpeculativeConstantRange(ConstantRange NewR,
                          MergeOptions Opts = MergeOptions()) {

@@ -42,7 +42,7 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 ; Function Attrs: nounwind
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
-; Function Attrs: mustprogress noinline norecurse uwtable
+; Function Attrs: noinline norecurse uwtable mustprogress
 define i32 @main() #4 {
 entry:
   %m = alloca i32, align 4
@@ -83,7 +83,7 @@ if.then:                                          ; preds = %sw.epilog
 if.else:                                          ; preds = %sw.epilog
   %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
   %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)
-  %tau10_spec = call i32 @specCalls(i32 5)
+  %tau10_spec = call i32 @assignSpecValue(i32 5)
   %mul11 = mul nsw i32 3, undef
   %add12 = add nsw i32 %tau10_spec, %mul11
   switch i32 %add12, label %sw.default13 [
@@ -106,7 +106,7 @@ sw.epilog16:                                      ; preds = %sw.default13
 
 if.end:                                           ; preds = %sw.epilog16, %if.then
   %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
-  %tau11_spec = call i32 @specCalls(i32 7)
+  %tau11_spec = call i32 @assignSpecValue(i32 7)
   %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
   %add17 = add nsw i32 undef, %tau11_spec
   store i32 %add17, i32* %m, align 4
@@ -128,7 +128,7 @@ entry:
   ret void
 }
 
-define i32 @specCalls(i32 %specConstVal) {
+define i32 @assignSpecValue(i32 %specConstVal) {
 entry:
   ret i32 %specConstVal
 }
@@ -140,7 +140,7 @@ attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
-attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { noinline norecurse uwtable mustprogress "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #6 = { nofree nosync nounwind willreturn }
 attributes #7 = { noreturn nounwind }

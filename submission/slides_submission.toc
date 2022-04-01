@@ -1,10 +1,10 @@
 \beamer@sectionintoc {1}{HPSSA : Why another SSA Form?}{4}{0}{1}
 \beamer@subsectionintoc {1}{1}{Introduction to Path Profile Guided Optimizations}{5}{0}{1}
 \beamer@subsectionintoc {1}{2}{Profile Guided SpecSCCP Analysis using HPSSA Form}{22}{0}{1}
-\beamer@sectionintoc {2}{What is HPSSA form?}{29}{0}{2}
-\beamer@subsectionintoc {2}{1}{Hot Path SSA Form}{30}{0}{2}
-\beamer@subsectionintoc {2}{2}{Profile Guided SpecSCCP Pass}{36}{0}{2}
-\beamer@sectionintoc {3}{How is HPSSA Implemented?}{39}{0}{3}
-\beamer@subsectionintoc {3}{1}{Constructing HPSSA Form}{40}{0}{3}
-\beamer@subsectionintoc {3}{2}{Implementing HPSSA Form in LLVM}{45}{0}{3}
-\beamer@sectionintoc {4}{Conclusion}{55}{0}{4}
+\beamer@sectionintoc {2}{What is HPSSA form?}{30}{0}{2}
+\beamer@subsectionintoc {2}{1}{Hot Path SSA Form}{31}{0}{2}
+\beamer@subsectionintoc {2}{2}{Profile Guided SpecSCCP Pass}{37}{0}{2}
+\beamer@sectionintoc {3}{How is HPSSA Implemented?}{40}{0}{3}
+\beamer@subsectionintoc {3}{1}{Constructing HPSSA Form}{41}{0}{3}
+\beamer@subsectionintoc {3}{2}{Implementing HPSSA Form in LLVM}{46}{0}{3}
+\beamer@sectionintoc {4}{Conclusion}{63}{0}{4}
