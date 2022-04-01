@@ -21,6 +21,8 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   // BasicBlock* Exit = *po_begin(&F); // ? Exit will be the last block in post
   // order iterator. Will it be inefficient?
   Graph AbstractGraph;
+  AbstractGraph.Entry = &F.getEntryBlock();
+  AbstractGraph.Exit = Exit;
   SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
   FindFunctionBackedges(F, result); // backedges in this function
   map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;

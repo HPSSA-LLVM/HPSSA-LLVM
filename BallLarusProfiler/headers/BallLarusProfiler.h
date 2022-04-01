@@ -32,10 +32,15 @@ struct Edge {
 
 class Graph {
 public:
+  BasicBlock* Entry;
+  BasicBlock* Exit;
   map<BasicBlock*, vector<Edge>> G;
   // map<std::pair<BasicBlock*, BasicBlock*>, vector<Edge>> Edges;
   map<uint, std::pair<Edge, Edge>> Backedge;
   // map<std::pair<BasicBlock*, BasicBlock*>, uint> BackedgeNumber;
+
+  BasicBlock* getEntryBlock() { return Entry; }
+  BasicBlock* getExitBlock() { return Exit; }
 };
 class BallLarusProfilerPass : public PassInfoMixin<BallLarusProfilerPass> {
 public:
