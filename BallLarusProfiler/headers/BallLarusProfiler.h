@@ -45,6 +45,7 @@ public:
   PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
   void insertInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar, int inc); 
   void regInc(Function* regIncF, GlobalVariable* gVar, Instruction* insertBefore, Module* M, bool dump = false);
+  void resetInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar, int resetValue);
 };
 
 } // namespace llvm

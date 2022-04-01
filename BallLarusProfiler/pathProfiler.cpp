@@ -2,12 +2,12 @@
 using namespace std;
 
 map<int, int> pathCounter;
-void counter(int n, bool dump) {
+void counter(int n, int dump) {
   pathCounter[n]++;
   if(dump) {
     FILE* pathData = fopen("pathData.txt", "a");
-    for(auto [pathNum, freq]: pathCounter) {
-      fprintf(pathData, "%d\t%d\n", pathNum, freq);
+    for(auto path : pathCounter) {
+      fprintf(pathData, "%d\t%d\n", abs(path.first), path.second);
     }
     fclose(pathData);
   }

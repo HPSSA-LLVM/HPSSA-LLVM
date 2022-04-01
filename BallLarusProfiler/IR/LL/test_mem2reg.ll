@@ -23,123 +23,93 @@ target triple = "x86_64-unknown-linux-gnu"
 
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
-@_ZSt3cin = external dso_local global %"class.std::basic_istream", align 8
+@_ZSt3cin = external global %"class.std::basic_istream", align 8
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_test.cpp, i8* null }]
 
-; Function Attrs: noinline uwtable
-define internal void @__cxx_global_var_init() #0 section ".text.startup" {
-entry:
-  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
-  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3
-  ret void
-}
-
-declare dso_local void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
+declare void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #0
 
 ; Function Attrs: nounwind
-declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #2
+declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1)) unnamed_addr #1
 
-; Function Attrs: nounwind
-declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
+; Function Attrs: nofree nounwind
+declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
 
-; Function Attrs: mustprogress noinline norecurse uwtable
-define dso_local i32 @main() #4 {
+; Function Attrs: norecurse uwtable mustprogress
+define i32 @main() local_unnamed_addr #3 {
 entry:
-  %m = alloca i32, align 4
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
-  %i = load i32, i32* %m, align 4
-  switch i32 %i, label %sw.default [
-    i32 2, label %sw.bb
-    i32 4, label %sw.bb1
-    i32 6, label %sw.bb4
-  ]
+  %a = alloca i32, align 4
+  %b = alloca i32, align 4
+  %d = alloca i32, align 4
+  %i = bitcast i32* %a to i8*
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
+  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
+  %i1 = bitcast i32* %b to i8*
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
+  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %b)
+  %i2 = load i32, i32* %a, align 4, !tbaa !4
+  %i3 = bitcast i32* %d to i8*
+  %i4 = load i32, i32* %b, align 4, !tbaa !4
+  %cmp12 = icmp slt i32 %i2, %i4
+  br i1 %cmp12, label %for.body, label %cleanup5
 
-sw.bb:                                            ; preds = %entry
-  %mul = mul nsw i32 2, 1
-  %add = add nsw i32 %mul, 5
-  br label %sw.epilog
+for.body:                                         ; preds = %entry, %for.body
+  %i.013 = phi i32 [ %inc, %for.body ], [ %i2, %entry ]
+  %call2 = call i32 @rand() #6
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #6
+  %call3 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %d)
+  %i5 = load i32, i32* %d, align 4, !tbaa !4
+  %cmp4 = icmp slt i32 %i5, 1
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #6
+  %inc = add nsw i32 %i.013, 1
+  %i6 = load i32, i32* %b, align 4
+  %cmp = icmp slt i32 %inc, %i6
+  %or.cond = select i1 %cmp4, i1 %cmp, i1 false
+  br i1 %or.cond, label %for.body, label %cleanup5, !llvm.loop !8
 
-sw.bb1:                                           ; preds = %entry
-  %mul2 = mul nsw i32 2, 1
-  %add3 = add nsw i32 %mul2, 5
-  %sub = sub nsw i32 %add3, 2
-  br label %sw.epilog
-
-sw.bb4:                                           ; preds = %entry
-  %mul5 = mul nsw i32 2, 1
-  %add6 = add nsw i32 %mul5, 1
-  %add7 = add nsw i32 %add6, 2
-  br label %sw.epilog
-
-sw.default:                                       ; preds = %entry
-  br label %sw.epilog
-
-sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %mul8 = mul nsw i32 2, %x.0
-  %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %x.0
-  %cmp = icmp sle i32 %add9, %add10
-  br i1 %cmp, label %if.end, label %if.else
-
-; if.then:                                          ; preds = %sw.epilog
-;   br label %if.end
-
-if.else:                                          ; preds = %sw.epilog
-  %mul11 = mul nsw i32 3, %x.0
-  %add12 = add nsw i32 %n.0, %mul11
-  switch i32 %add12, label %if.end [
-    i32 200, label %sw.bb14
-    i32 300, label %sw.bb15
-  ]
-
-; sw.default13:                                     ; preds = %if.else
-;   br label %sw.epilog16
-
-sw.bb14:                                          ; preds = %if.else
-  br label %end
-
-sw.bb15:                                          ; preds = %if.else
-  call void @exit(i32 0) #6
-  unreachable
-
-; sw.epilog16:                                      ; preds = %sw.default13
-;   br label %if.end
-
-if.end:                                           ; preds = %sw.epilog16, %if.then
-  %add17 = add nsw i32 %n.0, %x.0
-  store i32 %add17, i32* %m, align 4
-  br label %end
-
-end:                                              ; preds = %if.end, %sw.bb14
+cleanup5:                                         ; preds = %for.body, %entry
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
   ret i32 0
 }
 
-declare dso_local nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) #1
+; Function Attrs: argmemonly nofree nosync nounwind willreturn
+declare void @llvm.lifetime.start.p0i8(i64 immarg, i8* nocapture) #4
 
-; Function Attrs: noreturn nounwind
-declare dso_local void @exit(i32) #5
+declare nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) local_unnamed_addr #0
 
-; Function Attrs: noinline uwtable
-define internal void @_GLOBAL__sub_I_test.cpp() #0 section ".text.startup" {
+; Function Attrs: nounwind
+declare i32 @rand() local_unnamed_addr #1
+
+; Function Attrs: argmemonly nofree nosync nounwind willreturn
+declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
+
+; Function Attrs: uwtable
+define internal void @_GLOBAL__sub_I_test.cpp() #5 section ".text.startup" {
 entry:
-  call void @__cxx_global_var_init()
+  call void @_ZNSt8ios_base4InitC1Ev(%"class.std::ios_base::Init"* nonnull align 1 dereferenceable(1) @_ZStL8__ioinit)
+  %i = call i32 @__cxa_atexit(void (i8*)* bitcast (void (%"class.std::ios_base::Init"*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%"class.std::ios_base::Init", %"class.std::ios_base::Init"* @_ZStL8__ioinit, i64 0, i32 0), i8* nonnull @__dso_handle) #6
   ret void
 }
 
-attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #3 = { nounwind }
-attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { noreturn nounwind }
+attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #2 = { nofree nounwind }
+attributes #3 = { norecurse uwtable mustprogress "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { argmemonly nofree nosync nounwind willreturn }
+attributes #5 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{i32 7, !"uwtable", i32 1}
-!2 = !{i32 7, !"frame-pointer", i32 2}
-!3 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!1 = !{i32 7, !"PIC Level", i32 2}
+!2 = !{i32 7, !"uwtable", i32 1}
+!3 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!4 = !{!5, !5, i64 0}
+!5 = !{!"int", !6, i64 0}
+!6 = !{!"omnipotent char", !7, i64 0}
+!7 = !{!"Simple C++ TBAA"}
+!8 = distinct !{!8, !9, !10}
+!9 = !{!"llvm.loop.mustprogress"}
+!10 = !{!"llvm.loop.unroll.disable"}

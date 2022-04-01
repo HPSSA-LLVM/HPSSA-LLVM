@@ -1,51 +1,38 @@
-Basic Blocks in Topological order: entry sw.bb4 sw.bb1 sw.bb sw.default sw.epilog if.else sw.bb15 sw.bb14 if.end end 
-entry -> sw.default
-entry -> sw.bb
-entry -> sw.bb1
-entry -> sw.bb4
-if.else -> sw.epilog
-end -> if.end
-sw.bb15 -> if.else
-if.else -> sw.bb14
-end -> sw.bb15
-entry -> end
-entry sw.default 0 false
-entry sw.bb 4 false
-entry sw.bb1 8 false
-entry sw.bb4 12 false
-sw.default sw.epilog -3 true
-sw.bb sw.epilog -7 true
-sw.bb1 sw.epilog -11 true
-sw.bb4 sw.epilog -15 true
-sw.epilog if.end 3 true
-sw.epilog if.else 1 false
-if.end end 0 false
-if.else if.end 2 true
-if.else sw.bb14 1 false
-if.else sw.bb15 2 false
-sw.bb14 end 1 true
-sw.bb15 end 0 false
-end entry 0 false
+Basic Blocks in Topological order: entry for.body cleanup5 
+entry -> for.body
+entry -> cleanup5
+entry -> for.body = 3
+entry -> cleanup5 = 2
+for.body -> entry = -3
+for.body -> cleanup5 = -1
+cleanup5 -> entry = -2
+cleanup5 -> for.body = 1
+entry for.body 3 false
+entry cleanup5 2 false
+entry for.body 3 false
+for.body cleanup5 -1 true
+for.body cleanup5 -1 true
+cleanup5 entry -2 false
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0014 seconds (0.0014 wall clock)
+  Total Execution Time: 0.0010 seconds (0.0010 wall clock)
 
    --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0008 ( 54.3%)   0.0008 ( 54.3%)   0.0008 ( 54.3%)  BallLarusProfilerPass
-   0.0003 ( 20.2%)   0.0003 ( 20.2%)   0.0003 ( 20.2%)  PrintModulePass
-   0.0002 ( 12.2%)   0.0002 ( 12.2%)   0.0002 ( 12.4%)  VerifierPass
-   0.0002 ( 11.5%)   0.0002 ( 11.5%)   0.0002 ( 11.4%)  VerifierAnalysis
-   0.0000 (  1.3%)   0.0000 (  1.3%)   0.0000 (  1.3%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.6%)   0.0000 (  0.6%)   0.0000 (  0.5%)  UnifyFunctionExitNodesPass
-   0.0014 (100.0%)   0.0014 (100.0%)   0.0014 (100.0%)  Total
+   0.0004 ( 42.7%)   0.0004 ( 42.7%)   0.0004 ( 42.7%)  BallLarusProfilerPass
+   0.0002 ( 24.7%)   0.0002 ( 24.7%)   0.0002 ( 24.7%)  PrintModulePass
+   0.0002 ( 16.4%)   0.0002 ( 16.4%)   0.0002 ( 16.4%)  VerifierPass
+   0.0001 ( 15.1%)   0.0001 ( 15.1%)   0.0001 ( 15.0%)  VerifierAnalysis
+   0.0000 (  0.8%)   0.0000 (  0.8%)   0.0000 (  0.9%)  PreservedCFGCheckerAnalysis
+   0.0000 (  0.3%)   0.0000 (  0.3%)   0.0000 (  0.4%)  UnifyFunctionExitNodesPass
+   0.0010 (100.0%)   0.0010 (100.0%)   0.0010 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
   Total Execution Time: 0.0006 seconds (0.0006 wall clock)
 
-   ---User Time---   --User+System--   ---Wall Time---  --- Name ---
+   --System Time--   --User+System--   ---Wall Time---  --- Name ---
    0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Parse IR
    0.0006 (100.0%)   0.0006 (100.0%)   0.0006 (100.0%)  Total
 

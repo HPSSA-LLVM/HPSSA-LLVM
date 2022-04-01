@@ -236,9 +236,23 @@ void BallLarusProfilerPass::insertInc(Module* M, Instruction* insertBefore,
   Value* store = Builder.CreateStore(newInst, gVar);
 }
 
+void BallLarusProfilerPass::resetInc(Module* M, Instruction* insertBefore,
+                                      GlobalVariable* gVar, int resetValue) {
+  IRBuilder<> Builder(M->getContext());
+  Builder.SetInsertPoint(insertBefore);
+  BasicBlock* BB = insertBefore->getParent();
+  // Value* load = Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
+  Value *reset =
+      ConstantInt::get(Type::getInt32Ty(BB->getContext()),
+      resetValue);
+  // Value* newInst = Builder.CreateAdd(ConstantIn, Builder.getInt32(resetValue));
+
+  Value* store = Builder.CreateStore(reset, gVar);
+}
+
 void BallLarusProfilerPass::regInc(Function* regIncF, GlobalVariable* gVar,
                                    Instruction* insertBefore, Module* M,
-                                   bool dump = false) {
+                                   bool dump) {
   std::vector<Value*> Args;
   IRBuilder<> Builder(M->getContext());
   auto BB = insertBefore->getParent();
@@ -271,12 +285,6 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
   // ! Not optmized as of now
   // FunctionPassManager fpm;
   // fpm.addPass(UnifyFunctionExitNodesPass());
-  auto M = F.getParent();
-  vector<Type*> Params{Type::getInt32Ty(M->getContext())};
-  FunctionType* fccType =
-      FunctionType::get(Type::getVoidTy(M->getContext()), Params, false);
-  Function* sampleFun =
-      Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7counteri", M);
 
   if (F.isDeclaration())
     return PreservedAnalyses::none();
@@ -284,6 +292,13 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
   // Assuming one function only
   if (F.getName() != "main")
     return PreservedAnalyses::none();
+
+  auto M = F.getParent();
+  vector<Type*> Params{Type::getInt32Ty(M->getContext()), Type::getInt32Ty(M->getContext())};
+  FunctionType* fccType =
+      FunctionType::get(Type::getVoidTy(M->getContext()), Params, false);
+  Function* sampleFun =
+      Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7counterii", M);
 
   Graph AbstractGraph = getAbstractGraph(F);
   getEdgeValues(F, AbstractGraph);
@@ -295,6 +310,9 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
   // }
   vector<Edge> chords; // all the edges here are chord edges
   auto Inc = getIncValues(AbstractGraph, F); // got annotated edges also
+  for(auto &[BBPair, BBVal]: Inc){
+    errs() << BBPair.first->getName() << " -> " << BBPair.second->getName() << " = " << BBVal << "\n";
+  }
   for (auto& [BB, EdgeList] : AbstractGraph.G) {
     for (auto& Edge : EdgeList) {
       if (Edge.chordEdge) {
@@ -314,7 +332,7 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
                                         0)); // initialize r to 0
 
   for (auto chord : chords) {
-    if (chord.backedge_number == 0) {
+    if (chord.backedge_number == 0) { //  not a backedge
       if (chord.to == &F.getEntryBlock()) { // Exit to Entry edge
         insertInc(M, Exit->getTerminator(), gVar, Inc[{chord.from, chord.to}]);
         continue;
@@ -323,7 +341,7 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
       BasicBlock* instrumentBlock = SplitEdge(chord.from, chord.to);
       insertInc(M, instrumentBlock->getTerminator(), gVar,
                 Inc[{chord.from, chord.to}]);
-    } else {
+    } else { // is a backedge
       auto [edge1, edge2] = AbstractGraph.Backedge[chord.backedge_number];
       // edge1 is entry to loop header and edge2 is loop tail to exit
       BasicBlock* instrumentBlock = SplitEdge(edge2.from, edge1.to);
@@ -331,12 +349,13 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
       int reset_value = Inc[{edge2.from, edge2.to}];
       insertInc(M, instrumentBlock->getTerminator(), gVar, inc_value);
       regInc(sampleFun, gVar, instrumentBlock->getTerminator(), M);
-      gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M->getContext()),
-                                            reset_value)); // initialize r to 0
+      resetInc(M, instrumentBlock->getTerminator(), gVar, reset_value);
+      // gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M->getContext()),
+      //                                       reset_value)); // initialize r to 0
     }
   }
 
-  regInc(sampleFun, gVar, Exit->getTerminator(), M);
+  regInc(sampleFun, gVar, Exit->getTerminator(), M, true);
 
   // for(auto [Edge, ])
   // separate chord edges and instrument
