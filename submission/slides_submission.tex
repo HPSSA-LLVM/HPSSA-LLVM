@@ -394,32 +394,6 @@ Speculative Constant: i32 7 = %tau7 = call i32 (...)
 \end{columns}
 \end{frame}
 \begin{frame}[fragile]
-	\frametitle{From \texttt{SpecSCCP} Pass}
-	\fbox{Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.}
-	\begin{minted}[fontsize=\tiny, tabsize=2, linenos, highlightlines={4,5,16,17}, escapeinside=||]{css}
-		...
-		if.else:                                          ; preds = %sw.epilog
-			%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
-			%tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)	
-			%tau10_spec = call i32 @assignSpecValue(i32 5)
-			%mul11 = mul nsw i32 3, undef
-			%add12 = add nsw i32 %tau10_spec, %mul11
-			switch i32 %add12, label %sw.default13 [
-				i32 200, label %sw.bb14
-				i32 300, label %sw.bb15
-			]
-		...
-		...
-		if.end:                                           ; preds = %sw.epilog, %if.else
-			%tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
-			%tau11_spec = call i32 @assignSpecValue(i32 7)
-			%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
-			%add17 = add nsw i32 undef, %tau11_spec
-			store i32 %add17, i32* %m, align 4
-			br label %end
-	\end{minted}
-\end{frame}
-\begin{frame}[fragile]
 	\frametitle{Using the HPSSA Form for writing new analyses}
 	\begin{itemize}
 		\item Include the header file \mintinline[]{python}{HPSSA.h} to use  \mintinline[]{css}{llvm::HPSSAPass} class.
@@ -460,6 +434,31 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={31,32}]{summary.pdf}
 }
+\begin{frame}[fragile]
+	\frametitle{From \texttt{SpecSCCP} Pass}
+	Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.
+	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={3,4}, escapeinside=||]{css}
+	if.else:                                          ; preds = %sw.epilog
+		%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+		|\colorpred{%tau10}| = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)	
+		|\colorpred{%tau10\_spec}| = call i32 @assignSpecValue(i32 5)
+		%mul11 = mul nsw i32 3, undef
+		%add12 = add nsw i32 |\colorpred{%tau10\_spec}|, %mul11
+		switch i32 %add12, label %sw.default13 [
+			i32 200, label %sw.bb14
+			i32 300, label %sw.bb15
+		]
+	\end{minted}
+	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={2,3}, escapeinside=||]{css}
+	if.end:                                           ; preds = %sw.epilog, %if.else
+		|\colorpred{%tau11}| = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
+		|\colorpred{%tau11\_spec}| = call i32 @assignSpecValue(i32 7)
+		%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
+		%add17 = add nsw i32 undef, |\colorpred{%tau11\_spec}|
+		store i32 %add17, i32* %m, align 4
+		br label %end
+	\end{minted}
+\end{frame}
 \footnotesize
 
 \section{How is HPSSA Implemented?}
@@ -477,7 +476,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 \begin{frame}[fragile]
 	\frametitle{What we modified in LLVM Source?}
 	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. 
+		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, linenos]{python}
 	+ //===---------- intrinsic for tau ---------------=====//
@@ -487,7 +486,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\end{minted}
 	\pause
 	\begin{itemize}
-		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  
+		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  \pause
 	\end{itemize}
 	\begin{minted}[fontsize=\footnotesize, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
 	+ //===---------- Changes for tau.intrinsic ---------------=====//
@@ -520,7 +519,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::BasicBlock*, llvm::BitVector> HotPathSet}} \pause used to track \color{red} hot paths \color{black} that pass through a given basic block. \pause
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<std::pair<llvm::BasicBlock *, Value *>, frame> defAcc}} \pause keeps track of the \color{red} hot \color{black} definitions for a variable that reaches a given basic block. \pause
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::Value *, std::vector<llvm::Value *>> renaming_stack}} \pause used to store the most ``recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming phase. \pause
-			\item \fcolorbox{blue}{white}{\mintinline[]{css}{HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN)}} handles argument allocation for $\tau$-functions inserted.
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN)}} \pause handles argument allocation for $\tau$-functions inserted.
 		\end{itemize}
 	\end{itemize}
 \end{frame}
