@@ -41,28 +41,35 @@ public:
 map<BasicBlock*, BitVector> HotPathSet;
 
 // Hot Path Information
-void HPSSAPass::getProfileInfo(Function& F) {
+void HPSSAPass::getProfileInfo(Function& F, FunctionAnalysisManager& AM) {
   map<StringRef, BasicBlock*> getPointer;
   for (auto& BB : F) {
     getPointer[BB.getName()] = &BB;
   }
-  ifstream reader;
-  reader.open("BBProfiler/profileInfo.txt");
-  int n, numNodes;
-  string node;
-  reader >> n;
-  for (int i = 0; i < n; i++) {
-    reader >> numNodes;
+
+  BallLarusProfilerPass BLP;
+  BLP.run(F, AM);
+
+  // threshold in percentage
+  vector<vector<string>> hotPathList = GP::hotPathInfo(30);
+
+  int hotPathCount = hotPathList.size();
+  for (int i = 0; i < hotPathCount; i++) {
+
+    auto BBNameList = hotPathList[i];
+    int numNodes = BBNameList.size();
     for (int j = 0; j < numNodes; j++) {
-      reader >> node;
+
+      string node = BBNameList[j];
       if (HotPathSet[getPointer[node]].size() == 0) {
-        HotPathSet[getPointer[node]].resize(n);
+        HotPathSet[getPointer[node]].resize(hotPathCount);
       }
+
       HotPathSet[getPointer[node]].set(i);
     }
   }
-  reader.close();
 }
+
 // After Buddy set creation check if it is a loop header
 // if yes :
 //            Union the incubating hot paths with every buddy set
@@ -94,7 +101,8 @@ void HPSSAPass::fillTopologicalNumbering(
 }
 
 map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
-void HPSSAPass::FillFunctionBackedges(Function& F) { // fill the isBackedge map to be used in AllocateArgs()
+void HPSSAPass::FillFunctionBackedges(
+    Function& F) { // fill the isBackedge map to be used in AllocateArgs()
   SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
   FindFunctionBackedges(F,
                         result); // backedges in this function
@@ -179,21 +187,23 @@ BitVector getIncubationPaths(BasicBlock* BB) {
   return BBVector;
 }
 
-map<pair<BasicBlock*, Value*>, frame> defAcc; // ! Convincing evidence that defAcc is for all variables, not only phis
+map<pair<BasicBlock*, Value*>, frame>
+    defAcc; // ! Convincing evidence that defAcc is for all variables, not only
+            // phis
 map<PHINode*, pStack> phiStack;
 map<Value*, Value*> corrPhi; // phi corresponding to a tau
 void HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN) {
-  
+
   auto currHotPath = HotPathSet[BB];
   BitVector incubationPaths = getIncubationPaths(BB);
 
   for (auto& phi : BB->phis()) {
 
-    for(auto& arg: phi.operands()) {
+    for (auto& arg : phi.operands()) {
       auto from = phi.getIncomingBlock(arg);
       auto pathInt = HotPathSet[from];
       pathInt &= currHotPath;
-      if(pathInt.any()) {
+      if (pathInt.any()) {
         defAcc[{BB, &phi}].add(arg, pathInt); // ! Our idea, not in paper
       }
     }
@@ -416,7 +426,7 @@ PreservedAnalyses HPSSAPass::run(Function& F, FunctionAnalysisManager& AM) {
   }
 
   DominatorTree& DT = AM.getResult<DominatorTreeAnalysis>(F);
-  getProfileInfo(F);
+  getProfileInfo(F, AM);
   auto isCaloric = getCaloricConnector(F);
   map<pair<Instruction*, BasicBlock*>, bool> isInserted;
 

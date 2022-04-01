@@ -4,38 +4,99 @@
 > ; ModuleID = 'IR/LL/test_mem2reg.ll'
 27a28
 > @counter = global i32 0
-55,56c56,57
-< for.body:                                         ; preds = %entry, %for.body
-<   %i.013 = phi i32 [ %inc, %for.body ], [ %i2, %entry ]
----
-> for.body:                                         ; preds = %for.body.for.body_crit_edge, %entry
->   %i.013 = phi i32 [ %inc, %for.body.for.body_crit_edge ], [ %i2, %entry ]
-67c68
-<   br i1 %or.cond, label %for.body, label %cleanup5, !llvm.loop !8
----
->   br i1 %or.cond, label %for.body.for.body_crit_edge, label %for.body.cleanup5_crit_edge, !llvm.loop !8
-69c70,85
-< cleanup5:                                         ; preds = %for.body, %entry
----
-> for.body.cleanup5_crit_edge:                      ; preds = %for.body
+58a60,65
+>   br label %if.then.split
+> 
+> if.then.split:                                    ; preds = %if.then
 >   %0 = load i32, i32* @counter, align 4
->   %1 = add i32 %0, -1
+>   %1 = add i32 %0, -5
 >   store i32 %1, i32* @counter, align 4
->   br label %cleanup5
+65a73,78
+>   br label %if.else.split
 > 
-> for.body.for.body_crit_edge:                      ; preds = %for.body
+> if.else.split:                                    ; preds = %if.else
 >   %2 = load i32, i32* @counter, align 4
->   %3 = add i32 %2, 3
+>   %3 = add i32 %2, -11
 >   store i32 %3, i32* @counter, align 4
->   %4 = load i32, i32* @counter, align 4
->   call void @_Z7counterii(i32 %4, i32 0)
->   store i32 -1, i32* @counter, align 4
->   br label %for.body
+68,69c81,82
+< if.end:                                           ; preds = %if.else, %if.then
+<   %storemerge = phi i32 [ %add5, %if.else ], [ %add3, %if.then ]
+---
+> if.end:                                           ; preds = %if.else.split, %if.then.split
+>   %storemerge = phi i32 [ %add5, %if.else.split ], [ %add3, %if.then.split ]
+77c90,96
+<   br i1 %cmp8, label %end_label, label %if.else10
+---
+>   br i1 %cmp8, label %if.end.end_label_crit_edge, label %if.else10
 > 
-> cleanup5:                                         ; preds = %for.body.cleanup5_crit_edge, %entry
-71a88,89
->   %5 = load i32, i32* @counter, align 4
->   call void @_Z7counterii(i32 %5, i32 1)
-92a111,112
+> if.end.end_label_crit_edge:                       ; preds = %if.end
+>   %4 = load i32, i32* @counter, align 4
+>   %5 = add i32 %4, 5
+>   store i32 %5, i32* @counter, align 4
+>   br label %end_label
+81c100,106
+<   br i1 %cmp11, label %if.then12, label %if.else30
+---
+>   br i1 %cmp11, label %if.then12.split, label %if.else30
+> 
+> if.then12.split:                                  ; preds = %if.else10
+>   %6 = load i32, i32* @counter, align 4
+>   %7 = add i32 %6, 2
+>   store i32 %7, i32* @counter, align 4
+>   br label %if.then12
+83c108
+< if.then12:                                        ; preds = %if.else10
+---
+> if.then12:                                        ; preds = %if.then12.split
+89c114,120
+<   br i1 %cmp15, label %new_label, label %if.end17
+---
+>   br i1 %cmp15, label %if.then12.new_label_crit_edge, label %if.end17
+> 
+> if.then12.new_label_crit_edge:                    ; preds = %if.then12
+>   %8 = load i32, i32* @counter, align 4
+>   %9 = add i32 %8, 2
+>   store i32 %9, i32* @counter, align 4
+>   br label %new_label
+93c124,130
+<   br i1 %cmp18, label %if.then19, label %if.else22
+---
+>   br i1 %cmp18, label %if.then19.split, label %if.else22
+> 
+> if.then19.split:                                  ; preds = %if.end17
+>   %10 = load i32, i32* @counter, align 4
+>   %11 = add i32 %10, 1
+>   store i32 %11, i32* @counter, align 4
+>   br label %if.then19
+95c132
+< if.then19:                                        ; preds = %if.end17
+---
+> if.then19:                                        ; preds = %if.then19.split
+125c162
+<   br i1 %cmp33, label %if.then34, label %if.else37
+---
+>   br i1 %cmp33, label %if.then34.split, label %if.else37
+127c164,170
+< if.then34:                                        ; preds = %if.else30
+---
+> if.then34.split:                                  ; preds = %if.else30
+>   %12 = load i32, i32* @counter, align 4
+>   %13 = add i32 %12, 1
+>   store i32 %13, i32* @counter, align 4
+>   br label %if.then34
+> 
+> if.then34:                                        ; preds = %if.then34.split
+141c184
+< new_label:                                        ; preds = %if.then34, %if.else37, %if.then12
+---
+> new_label:                                        ; preds = %if.then12.new_label_crit_edge, %if.else37, %if.then34
+150c193
+< end_label:                                        ; preds = %new_label, %if.end27, %if.end
+---
+> end_label:                                        ; preds = %if.end.end_label_crit_edge, %new_label, %if.end27
+152a196,197
+>   %14 = load i32, i32* @counter, align 4
+>   call void @_Z7counterii(i32 %14, i32 1)
+170a216,217
 > 
 > declare void @_Z7counterii(i32, i32)

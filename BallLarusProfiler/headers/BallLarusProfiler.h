@@ -23,7 +23,7 @@ namespace llvm {
 
 struct Edge {
   int val; // value of the edge
-  int inc;  // the value needed to be incremented with, if a chord edge
+  int inc; // the value needed to be incremented with, if a chord edge
   uint backedge_number;
   bool chordEdge; // chord edge of the minimal spanning tree
   BasicBlock* from;
@@ -49,9 +49,12 @@ public:
   Graph getAbstractGraph(Function& F);
   void getEdgeValues(Function& F, Graph& AG);
   PreservedAnalyses run(Function& F, FunctionAnalysisManager& AM);
-  void insertInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar, int inc); 
-  void regInc(Function* regIncF, GlobalVariable* gVar, Instruction* insertBefore, Module* M, bool dump = false);
-  void resetInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar, int resetValue);
+  void insertInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar,
+                 int inc);
+  void regInc(Function* regIncF, GlobalVariable* gVar,
+              Instruction* insertBefore, Module* M, bool dump = false);
+  void resetInc(Module* M, Instruction* insertBefore, GlobalVariable* gVar,
+                int resetValue);
 };
 
 } // namespace llvm

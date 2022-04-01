@@ -1,4 +1,32 @@
-3
-entry  for.body 0  cleanup5 2  for.body 3 
-for.body  cleanup5 0  cleanup5 1 
-cleanup5  entry 0 
+entry end_label
+15
+entry 2
+if.then 0 if.else 6 
+if.then 1
+if.end 0 
+if.else 1
+if.end 0 
+if.end 2
+end_label 0 if.else10 1 
+end_label 1
+entry 0 
+if.else10 2
+if.then12 0 if.else30 3 
+if.then12 2
+new_label 0 if.end17 1 
+if.else30 2
+if.then34 0 if.else37 1 
+new_label 1
+end_label 0 
+if.end17 2
+if.then19 0 if.else22 1 
+if.then19 1
+if.end27 0 
+if.else22 1
+if.end27 0 
+if.end27 1
+end_label 0 
+if.then34 1
+new_label 0 
+if.else37 1
+new_label 0 

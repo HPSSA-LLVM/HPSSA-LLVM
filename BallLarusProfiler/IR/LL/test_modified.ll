@@ -40,53 +40,161 @@ define i32 @main() local_unnamed_addr #3 {
 entry:
   %a = alloca i32, align 4
   %b = alloca i32, align 4
-  %d = alloca i32, align 4
   %i = bitcast i32* %a to i8*
   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i) #6
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
   %i1 = bitcast i32* %b to i8*
   call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i1) #6
-  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %b)
+  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %a)
+  %call1 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) %call, i32* nonnull align 4 dereferenceable(4) %b)
   %i2 = load i32, i32* %a, align 4, !tbaa !4
-  %i3 = bitcast i32* %d to i8*
-  %i4 = load i32, i32* %b, align 4, !tbaa !4
-  %cmp12 = icmp slt i32 %i2, %i4
-  br i1 %cmp12, label %for.body, label %cleanup5
+  %cmp = icmp sgt i32 %i2, 5
+  br i1 %cmp, label %if.then, label %if.else
 
-for.body:                                         ; preds = %for.body.for.body_crit_edge, %entry
-  %i.013 = phi i32 [ %inc, %for.body.for.body_crit_edge ], [ %i2, %entry ]
-  %call2 = call i32 @rand() #6
-  call void @llvm.lifetime.start.p0i8(i64 4, i8* nonnull %i3) #6
-  %call3 = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %d)
-  %i5 = load i32, i32* %d, align 4, !tbaa !4
-  %cmp4 = icmp slt i32 %i5, 1
-  call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i3) #6
-  %inc = add nsw i32 %i.013, 1
-  %i6 = load i32, i32* %b, align 4
-  %cmp = icmp slt i32 %inc, %i6
-  %or.cond = select i1 %cmp4, i1 %cmp, i1 false
-  br i1 %or.cond, label %for.body.for.body_crit_edge, label %for.body.cleanup5_crit_edge, !llvm.loop !8
+if.then:                                          ; preds = %entry
+  %mul = mul nsw i32 %i2, 9
+  %add = add nsw i32 %mul, 6
+  store i32 %add, i32* %a, align 4, !tbaa !4
+  %i3 = load i32, i32* %b, align 4, !tbaa !4
+  %mul2 = mul nsw i32 %i3, 3
+  %add3 = add nsw i32 %mul2, 1
+  br label %if.then.split
 
-for.body.cleanup5_crit_edge:                      ; preds = %for.body
+if.then.split:                                    ; preds = %if.then
   %0 = load i32, i32* @counter, align 4
-  %1 = add i32 %0, -1
+  %1 = add i32 %0, -5
   store i32 %1, i32* @counter, align 4
-  br label %cleanup5
+  br label %if.end
 
-for.body.for.body_crit_edge:                      ; preds = %for.body
+if.else:                                          ; preds = %entry
+  %add4 = add nsw i32 %i2, 8
+  store i32 %add4, i32* %a, align 4, !tbaa !4
+  %i4 = load i32, i32* %b, align 4, !tbaa !4
+  %add5 = add nsw i32 %i4, 9
+  br label %if.else.split
+
+if.else.split:                                    ; preds = %if.else
   %2 = load i32, i32* @counter, align 4
-  %3 = add i32 %2, 3
+  %3 = add i32 %2, -11
   store i32 %3, i32* @counter, align 4
-  %4 = load i32, i32* @counter, align 4
-  call void @_Z7counterii(i32 %4, i32 0)
-  store i32 -1, i32* @counter, align 4
-  br label %for.body
+  br label %if.end
 
-cleanup5:                                         ; preds = %for.body.cleanup5_crit_edge, %entry
+if.end:                                           ; preds = %if.else.split, %if.then.split
+  %storemerge = phi i32 [ %add5, %if.else.split ], [ %add3, %if.then.split ]
+  store i32 %storemerge, i32* %b, align 4, !tbaa !4
+  %i5 = load i32, i32* %a, align 4, !tbaa !4
+  %add6 = add nsw i32 %i5, 7
+  store i32 %add6, i32* %a, align 4, !tbaa !4
+  %mul7 = mul nsw i32 %storemerge, 6
+  store i32 %mul7, i32* %b, align 4, !tbaa !4
+  %cmp8 = icmp sgt i32 %mul7, 6
+  br i1 %cmp8, label %if.end.end_label_crit_edge, label %if.else10
+
+if.end.end_label_crit_edge:                       ; preds = %if.end
+  %4 = load i32, i32* @counter, align 4
+  %5 = add i32 %4, 5
+  store i32 %5, i32* @counter, align 4
+  br label %end_label
+
+if.else10:                                        ; preds = %if.end
+  %cmp11 = icmp sgt i32 %i5, 2
+  br i1 %cmp11, label %if.then12.split, label %if.else30
+
+if.then12.split:                                  ; preds = %if.else10
+  %6 = load i32, i32* @counter, align 4
+  %7 = add i32 %6, 2
+  store i32 %7, i32* @counter, align 4
+  br label %if.then12
+
+if.then12:                                        ; preds = %if.then12.split
+  %add13 = add nsw i32 %i5, 14
+  store i32 %add13, i32* %a, align 4, !tbaa !4
+  %mul14 = mul i32 %storemerge, 36
+  store i32 %mul14, i32* %b, align 4, !tbaa !4
+  %cmp15 = icmp eq i32 %add6, 10
+  br i1 %cmp15, label %if.then12.new_label_crit_edge, label %if.end17
+
+if.then12.new_label_crit_edge:                    ; preds = %if.then12
+  %8 = load i32, i32* @counter, align 4
+  %9 = add i32 %8, 2
+  store i32 %9, i32* @counter, align 4
+  br label %new_label
+
+if.end17:                                         ; preds = %if.then12
+  %cmp18 = icmp sgt i32 %mul14, 15
+  br i1 %cmp18, label %if.then19.split, label %if.else22
+
+if.then19.split:                                  ; preds = %if.end17
+  %10 = load i32, i32* @counter, align 4
+  %11 = add i32 %10, 1
+  store i32 %11, i32* @counter, align 4
+  br label %if.then19
+
+if.then19:                                        ; preds = %if.then19.split
+  %mul20 = mul nsw i32 %add13, 7
+  store i32 %mul20, i32* %a, align 4, !tbaa !4
+  %mul21 = mul i32 %storemerge, 144
+  br label %if.end27
+
+if.else22:                                        ; preds = %if.end17
+  %mul23 = mul nsw i32 %add13, 5
+  %add24 = add nsw i32 %mul23, 4
+  store i32 %add24, i32* %a, align 4, !tbaa !4
+  %mul25 = mul i32 %storemerge, 144
+  %add26 = or i32 %mul25, 3
+  br label %if.end27
+
+if.end27:                                         ; preds = %if.else22, %if.then19
+  %storemerge48 = phi i32 [ %add26, %if.else22 ], [ %mul21, %if.then19 ]
+  store i32 %storemerge48, i32* %b, align 4, !tbaa !4
+  %i6 = load i32, i32* %a, align 4, !tbaa !4
+  %add28 = add nsw i32 %i6, %storemerge48
+  store i32 %add28, i32* %a, align 4, !tbaa !4
+  %mul29 = mul nsw i32 %add28, %storemerge48
+  store i32 %mul29, i32* %b, align 4, !tbaa !4
+  br label %end_label
+
+if.else30:                                        ; preds = %if.else10
+  %add31 = add nsw i32 %i5, 12
+  store i32 %add31, i32* %a, align 4, !tbaa !4
+  %mul32 = mul i32 %storemerge, 36
+  store i32 %mul32, i32* %b, align 4, !tbaa !4
+  %cmp33 = icmp sgt i32 %mul32, 16
+  br i1 %cmp33, label %if.then34.split, label %if.else37
+
+if.then34.split:                                  ; preds = %if.else30
+  %12 = load i32, i32* @counter, align 4
+  %13 = add i32 %12, 1
+  store i32 %13, i32* @counter, align 4
+  br label %if.then34
+
+if.then34:                                        ; preds = %if.then34.split
+  %add35 = add nsw i32 %i5, 17
+  store i32 %add35, i32* %a, align 4, !tbaa !4
+  %add36 = add nsw i32 %mul32, 7
+  store i32 %add36, i32* %b, align 4, !tbaa !4
+  br label %new_label
+
+if.else37:                                        ; preds = %if.else30
+  %mul38 = shl nsw i32 %add31, 2
+  store i32 %mul38, i32* %a, align 4, !tbaa !4
+  %mul39 = mul i32 %storemerge, 216
+  store i32 %mul39, i32* %b, align 4, !tbaa !4
+  br label %new_label
+
+new_label:                                        ; preds = %if.then12.new_label_crit_edge, %if.else37, %if.then34
+  %i7 = load i32, i32* %a, align 4, !tbaa !4
+  %add41 = add nsw i32 %i7, 7
+  store i32 %add41, i32* %a, align 4, !tbaa !4
+  %i8 = load i32, i32* %b, align 4, !tbaa !4
+  %add42 = add nsw i32 %i8, 6
+  store i32 %add42, i32* %b, align 4, !tbaa !4
+  br label %end_label
+
+end_label:                                        ; preds = %if.end.end_label_crit_edge, %new_label, %if.end27
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i1) #6
   call void @llvm.lifetime.end.p0i8(i64 4, i8* nonnull %i) #6
-  %5 = load i32, i32* @counter, align 4
-  call void @_Z7counterii(i32 %5, i32 1)
+  %14 = load i32, i32* @counter, align 4
+  call void @_Z7counterii(i32 %14, i32 1)
   ret i32 0
 }
 
@@ -94,9 +202,6 @@ cleanup5:                                         ; preds = %for.body.cleanup5_c
 declare void @llvm.lifetime.start.p0i8(i64 immarg, i8* nocapture) #4
 
 declare nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) local_unnamed_addr #0
-
-; Function Attrs: nounwind
-declare i32 @rand() local_unnamed_addr #1
 
 ; Function Attrs: argmemonly nofree nosync nounwind willreturn
 declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
@@ -125,11 +230,8 @@ attributes #6 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"PIC Level", i32 2}
 !2 = !{i32 7, !"uwtable", i32 1}
-!3 = !{!"clang version 13.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
+!3 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}
 !7 = !{!"Simple C++ TBAA"}
-!8 = distinct !{!8, !9, !10}
-!9 = !{!"llvm.loop.mustprogress"}
-!10 = !{!"llvm.loop.unroll.disable"}

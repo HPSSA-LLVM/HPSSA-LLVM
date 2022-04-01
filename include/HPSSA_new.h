@@ -16,13 +16,16 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include <bits/stdc++.h>
+
+#include "../BallLarusProfiler/headers/GeneratePath.h"
+#include "../BallLarusProfiler/headers/BallLarusProfiler.h"
 using namespace std;
 namespace llvm {
 
 class HPSSAPass : public PassInfoMixin<HPSSAPass> {
   void FillFunctionBackedges(Function& F);
   void fillTopologicalNumbering(ReversePostOrderTraversal<Function*> RPOT);
-  void getProfileInfo(Function& F);
+  void getProfileInfo(Function& F, FunctionAnalysisManager& AM);
   map<BasicBlock*, bool> getCaloricConnector(Function& F);
   void Search(BasicBlock& X, DomTreeNode& DTN);
   void AllocateArgs(BasicBlock* BB, DomTreeNode& DTN);
