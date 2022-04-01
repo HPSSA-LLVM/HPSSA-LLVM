@@ -5,6 +5,21 @@ using namespace std;
 
 // ! Assuming no of paths <= INT_MAX, Modify if needed
 
+void BallLarusProfilerPass::dumpAbstractGraph(Graph& AG) {
+  ofstream f;
+  f.open("AbstractGraph.ag");
+  // f<<AG.getEntryBlock()->getName()<<" "AG.getExitBlock()->getName()<<endl;
+  f<<AG.G.size()<<endl;
+  for(auto &[BB, Edges]: AG.G) {
+    f<<(string)BB->getName()<<" ";
+    for(auto &E: Edges) {
+      f<<" "<<(string)E.to->getName()<<" "<<E.val<<" ";
+    }
+    f<<endl;
+  }
+  f.close();
+}
+
 BasicBlock* Exit;
 map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
 Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
@@ -29,7 +44,6 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   for (auto [from, to] : result) {
     isBackedge[make_pair(from, to)] = true;
   }
-
   uint backedge_ctr = 1;
   for (auto& BB : F) {
     if (succ_empty(&BB) && &BB != Exit) { // Unreachable block
@@ -359,6 +373,8 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
 
   regInc(sampleFun, gVar, Exit->getTerminator(), M, true);
 
+
+  dumpAbstractGraph(AbstractGraph); // to regenerate the path
   // for(auto [Edge, ])
   // separate chord edges and instrument
 

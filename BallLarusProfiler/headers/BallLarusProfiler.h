@@ -44,6 +44,7 @@ public:
 };
 class BallLarusProfilerPass : public PassInfoMixin<BallLarusProfilerPass> {
 public:
+  void dumpAbstractGraph(Graph& AG);
   void getAnalysisUsage(AnalysisUsage& Info);
   Graph getAbstractGraph(Function& F);
   void getEdgeValues(Function& F, Graph& AG);
