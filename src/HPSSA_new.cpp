@@ -430,7 +430,7 @@ PreservedAnalyses HPSSAPass::run(Function& F, FunctionAnalysisManager& AM) {
   auto isCaloric = getCaloricConnector(F);
   map<pair<Instruction*, BasicBlock*>, bool> isInserted;
 
-  // ! Is RPOT same as Topological?
+  // ! Is RPOT same as Topological? Yes!
   ReversePostOrderTraversal<Function*> RPOT(&F);
 
   for (auto J = RPOT.begin(); J != RPOT.end(); ++J) {

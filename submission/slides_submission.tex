@@ -518,7 +518,7 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 			\item \fcolorbox{blue}{white}{Hot Path Set using \mintinline[]{css}{llvm::BitVector}} \pause for maintaining \color{red} hot paths \color{black} in the program. \pause
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::BasicBlock*, llvm::BitVector> HotPathSet}} \pause used to track \color{red} hot paths \color{black} that pass through a given basic block. \pause
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<std::pair<llvm::BasicBlock *, Value *>, frame> defAcc}} \pause keeps track of the \color{red} hot \color{black} definitions for a variable that reaches a given basic block. \pause
-			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::Value *, std::vector<llvm::Value *>> renaming_stack}} \pause used to store the most ``recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming phase. \pause
+			\item \fcolorbox{blue}{white}{\mintinline[]{css}{std::map<llvm::Value *, std::vector<llvm::Value *>> renaming_stack}} \pause used to store the most ``recent" tau definition encountered so far corresponding for a tau variable used later in variable renaming phase in \texttt{Search(...)} function. \pause
 			\item \fcolorbox{blue}{white}{\mintinline[]{css}{HPSSAPass::AllocateArgs(BasicBlock* BB, DomTreeNode& DTN)}} \pause handles argument allocation for $\tau$-functions inserted.
 		\end{itemize}
 	\end{itemize}
@@ -556,9 +556,15 @@ PreservedAnalyses YourPGOPass::run(Function &F,
 	\begin{itemize}
 		\item The Hot Path SSA form opens up an exciting opportunity for compiler writers to ``port" exisiting standard analyses to their profile guided variants. \pause
 		\item We plan to open source our work soon and push it to the LLVM ``main" branch.
+		\item \color{blue}\href{https://github.com/HPSSA-LLVM/HPSSA-LLVM}{
+			\texttt{Link: https://github.com/HPSSA-LLVM/HPSSA-LLVM}}\color{black}
 	\end{itemize}
 \end{frame}
-
+\begin{frame}
+	\frametitle{Thanks!}
+	\centering
+	\includegraphics[width=0.9\columnwidth,height=0.9\textheight]{dotfiles/questions.pdf}
+\end{frame}
 \begin{frame}
 	\frametitle{LLVM Implementation : Profile Guided SpecSCCP Pass}
 	\begin{itemize}
