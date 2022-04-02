@@ -493,16 +493,16 @@ public:
 
     
     // COMMENT : LHS meet RHS 
-    if (RHS.isSpecRange()) {
-      if (isConstantRange() && getConstantRange() == RHS.getConstantRange())
-        return markSpeculativeConstantRange(RHS.getConstantRange());
+    if (RHS.isSpecRange() && RHS.getConstantRange().isSingleElement()) {
+      if (isConstantRange() && getConstantRange().isSingleElement())
+        return markSpeculativeConstantRange(getConstantRange());
       return false;
     }
 
     // COMMENT : LHS meet RHS 
     if (RHS.isSpecConstant()) {
-      if (isConstant() && getConstant() == RHS.getConstant())
-        return markSpeculativeConstant(RHS.getConstant());
+      if (isConstant())
+        return markSpeculativeConstant(getConstant());
       return false;
     }
 
