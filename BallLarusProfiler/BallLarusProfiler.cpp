@@ -69,7 +69,7 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
 
 void BallLarusProfilerPass::dumpAbstractGraph(Graph& AG) {
   ofstream abstream;
-  abstream.open("AbstractGraph.ag");
+  abstream.open("AbstractGraph.txt");
 
   abstream << (string)AG.Entry->getName() << " " << (string)AG.Exit->getName()
            << endl;

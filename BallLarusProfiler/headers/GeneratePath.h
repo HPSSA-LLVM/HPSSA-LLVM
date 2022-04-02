@@ -1,12 +1,6 @@
 #ifndef LLVM_TRANSFORMS_GeneratePath_GeneratePath_H
 #define LLVM_TRANSFORMS_GeneratePath_GeneratePath_H
 
-#include "llvm/Analysis/CFG.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/Module.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include <bits/stdc++.h>
 using namespace std;
 

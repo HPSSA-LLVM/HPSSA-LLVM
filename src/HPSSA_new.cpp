@@ -41,33 +41,27 @@ public:
 map<BasicBlock*, BitVector> HotPathSet;
 
 // Hot Path Information
-void HPSSAPass::getProfileInfo(Function& F, FunctionAnalysisManager& AM) {
+void HPSSAPass::getProfileInfo(Function& F) {
   map<StringRef, BasicBlock*> getPointer;
   for (auto& BB : F) {
     getPointer[BB.getName()] = &BB;
   }
-
-  BallLarusProfilerPass BLP;
-  BLP.run(F, AM);
-
-  // threshold in percentage
-  vector<vector<string>> hotPathList = GP::hotPathInfo(30);
-
-  int hotPathCount = hotPathList.size();
-  for (int i = 0; i < hotPathCount; i++) {
-
-    auto BBNameList = hotPathList[i];
-    int numNodes = BBNameList.size();
+  ifstream reader;
+  reader.open("BallLarusProfiler/hotPathInfo.txt");
+  int n, numNodes;
+  string node;
+  reader >> n;
+  for (int i = 0; i < n; i++) {
+    reader >> numNodes;
     for (int j = 0; j < numNodes; j++) {
-
-      string node = BBNameList[j];
+      reader >> node;
       if (HotPathSet[getPointer[node]].size() == 0) {
-        HotPathSet[getPointer[node]].resize(hotPathCount);
+        HotPathSet[getPointer[node]].resize(n);
       }
-
       HotPathSet[getPointer[node]].set(i);
     }
   }
+  reader.close();
 }
 
 // After Buddy set creation check if it is a loop header
@@ -426,7 +420,7 @@ PreservedAnalyses HPSSAPass::run(Function& F, FunctionAnalysisManager& AM) {
   }
 
   DominatorTree& DT = AM.getResult<DominatorTreeAnalysis>(F);
-  getProfileInfo(F, AM);
+  getProfileInfo(F);
   auto isCaloric = getCaloricConnector(F);
   map<pair<Instruction*, BasicBlock*>, bool> isInserted;
 
