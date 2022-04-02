@@ -28,22 +28,25 @@ test: build tests/test.cpp
 	# echo ${LLVM_BIN_PATH}
 	$(CXX) -c -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/BC/test.bc
 	$(CXX) -S -emit-llvm $(CXXFLAGS) tests/test.cpp -o IR/LL/test.ll
-	$(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
-	$(BUILD_PATH)/opt -load-pass-plugin=build/BallLarusProfiler.cpp.so -passes=blprofiler -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
+	# $(BUILD_PATH)/opt -instnamer -mem2reg IR/BC/test.bc -S -o IR/LL/test_mem2reg.ll
+	# $(BUILD_PATH)/opt -load-pass-plugin=build/BallLarusProfiler.cpp.so -passes=blprofiler -time-passes IR/LL/test_mem2reg.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
+	$(BUILD_PATH)/opt -load-pass-plugin=build/BallLarusProfiler.cpp.so -passes=blprofiler -time-passes IR/LL/test_mem2reg_sumit.ll -S -o IR/LL/test_modified.ll -f 2> output/custom.log
 	# Handle exit code of diff(1 if changes found).
-	 diff IR/LL/test_mem2reg.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
+	 diff IR/LL/test_mem2reg_sumit.ll IR/LL/test_modified.ll > output/changes.log; [ $$? -eq 1 ]
 
-profile: test pathProfiler.cpp bbReader.cpp runTest.py
+profile: test pathProfiler.cpp getHotPathInfo.cpp 
 	rm -f pathData.txt
-	$(CXX) $(CXXFLAGS) pathProfiler.cpp IR/LL/test_modified.ll
-	python3 runTest.py
-	$(CXX) $(CXXFLAGS) bbReader.cpp -o bbReader.o
-	./bbReader.o $(limit) 
+	$(CXX) $(CXXFLAGS) pathProfiler.cpp IR/LL/test_modified.ll -o instprogram.o
+
+profile_hot:
+	$(CXX) $(CXXFLAGS) GeneratePath.cpp getHotPathInfo.cpp -o getHotPathInfo.o
+	rm -f hotPathInfo.txt
+	./getHotPathInfo.o 50 
       
 cfg: cfg_before cfg_after
 
 cfg_before: build tests/test.cpp
-	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg.ll -o IR/BC/test_mem2reg.bc 
+	$(BUILD_PATH)/opt --dot-cfg IR/LL/test_mem2reg_sumit.ll -o IR/BC/test_mem2reg.bc 
 	make dot2png
 	mv ./IR/cfg/.main.dot.png ./IR/cfg/cfg_before.png
 
@@ -57,7 +60,8 @@ dot2png:
 	find IR/cfg/ -name .*.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 
-	rm -rf output && mkdir output 
-	rm -rf IR && mkdir IR && mkdir IR/BC && mkdir IR/LL && mkdir IR/cfg 
-	rm -f *.s *.out *.log *.txt
+	rm -rf output/*
+	rm -rf IR/cfg/*
+	rm -rf IR/BC/*
+	rm -f *.s *.out *.log  
 	

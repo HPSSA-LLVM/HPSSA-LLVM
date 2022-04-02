@@ -78,6 +78,7 @@ topng:
 	find IR/cfg/ -name *.dot | xargs -I name dot -Tpng name -o name.png
 
 clean: 
-	rm -rf build output && mkdir output 
-	rm -rf IR && mkdir IR && mkdir IR/BC && mkdir IR/LL && mkdir IR/cfg 
-	rm -f *.s *.out *.log *.txt
+	rm -rf output/*
+	rm -rf IR/cfg/*
+	rm -rf IR/BC/*
+	rm -f *.s *.out *.log 
