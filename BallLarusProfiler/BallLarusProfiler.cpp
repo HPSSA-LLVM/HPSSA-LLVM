@@ -5,45 +5,34 @@ using namespace std;
 
 // ! Assuming no of paths <= INT_MAX, Modify if needed
 
-void BallLarusProfilerPass::dumpAbstractGraph(Graph& AG) {
-  ofstream f;
-  f.open("AbstractGraph.ag");
-  // f<<AG.getEntryBlock()->getName()<<" "AG.getExitBlock()->getName()<<endl;
-  f<<AG.G.size()<<endl;
-  for(auto &[BB, Edges]: AG.G) {
-    f<<(string)BB->getName()<<" ";
-    for(auto &E: Edges) {
-      f<<" "<<(string)E.to->getName()<<" "<<E.val<<" ";
-    }
-    f<<endl;
-  }
-  f.close();
-}
-
 BasicBlock* Exit;
 map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
 Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   for (auto& BB : F) {
-    if (succ_empty(&BB)) {
-      for (auto& I : BB) {
-        if (auto* RI = dyn_cast<ReturnInst>(&I)) {
-          Exit = &BB;
-          break;
-        }
+    if (!succ_empty(&BB))
+      continue;
+    for (auto& I : BB) {
+      if (auto* RI = dyn_cast<ReturnInst>(&I)) {
+        Exit = &BB;
+        break;
       }
     }
   }
   // BasicBlock* Exit = *po_begin(&F); // ? Exit will be the last block in post
   // order iterator. Will it be inefficient?
   Graph AbstractGraph;
+
   AbstractGraph.Entry = &F.getEntryBlock();
   AbstractGraph.Exit = Exit;
+
   SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
   FindFunctionBackedges(F, result); // backedges in this function
+
   map<std::pair<const BasicBlock*, const BasicBlock*>, bool> isBackedge;
   for (auto [from, to] : result) {
     isBackedge[make_pair(from, to)] = true;
   }
+
   uint backedge_ctr = 1;
   for (auto& BB : F) {
     if (succ_empty(&BB) && &BB != Exit) { // Unreachable block
@@ -78,8 +67,29 @@ Graph BallLarusProfilerPass::getAbstractGraph(Function& F) {
   return AbstractGraph;
 }
 
+void BallLarusProfilerPass::dumpAbstractGraph(Graph& AG) {
+  ofstream abstream;
+  abstream.open("AbstractGraph.txt");
+
+  abstream << (string)AG.Entry->getName() << " " << (string)AG.Exit->getName()
+           << endl;
+  abstream << AG.G.size() << endl;
+
+  for (auto& [BB, Edges] : AG.G) {
+    abstream << (string)BB->getName() << " ";
+    abstream << Edges.size() << endl;
+    for (auto& E : Edges) {
+      abstream << (string)E.to->getName() << " " << E.val << " ";
+    }
+    abstream << endl;
+  }
+
+  abstream.close();
+}
+
 Graph transposeGraph(Graph& AG) {
   Graph TAG;
+
   for (auto& [BB, BBEdgeList] : AG.G) {
     for (auto& Edge : BBEdgeList) {
       TAG.G[Edge.to].push_back(Edge);
@@ -91,6 +101,7 @@ Graph transposeGraph(Graph& AG) {
 void DFS(Graph& AG, BasicBlock* BB, map<BasicBlock*, int>& visited,
          map<BasicBlock*, int>& start, map<BasicBlock*, int>& finish,
          int& cntr) {
+
   visited[BB] = true;
   start[BB] = cntr++;
   for (auto outEdge : AG.G[BB]) {
@@ -98,35 +109,43 @@ void DFS(Graph& AG, BasicBlock* BB, map<BasicBlock*, int>& visited,
       continue;
     DFS(AG, outEdge.to, visited, start, finish, cntr);
   }
+
   finish[BB] = cntr++;
 }
 
 vector<BasicBlock*> TopoSort(Graph& AG, BasicBlock* BBEntry) {
   int cntr = 0;
+
   map<BasicBlock*, int> visited, start, finish;
   DFS(AG, BBEntry, visited, start, finish, cntr);
+
   vector<BasicBlock*> BBList;
   for (auto& [BB, outEdge] : AG.G)
     BBList.push_back(BB);
+
   // Sort in decreasing order of finishing time
   std::sort(BBList.begin(), BBList.end(),
             [&](BasicBlock* BB1, BasicBlock* BB2) {
               return finish[BB1] > finish[BB2];
             });
+
   return BBList;
 }
 
 void BallLarusProfilerPass::getEdgeValues(Function& F, Graph& AG) {
+
   map<BasicBlock*, int32_t> NumPaths;
   vector<BasicBlock*> bbInPOrder = TopoSort(AG, &F.getEntryBlock());
+
   errs() << "Basic Blocks in Topological order: ";
   for (auto& BB : bbInPOrder)
     errs() << BB->getName() << " ";
   errs() << "\n";
 
-  //   // Post Order Traversal--Reverse Topological
+  //   Post Order Traversal--Reverse Topological
   for (auto it = bbInPOrder.rbegin(); it != bbInPOrder.rend(); ++it) {
     BasicBlock* BB = *it;
+
     if (AG.G[BB].empty()) { // Leaf Node
       NumPaths[BB] = 1;
     } else {
@@ -142,6 +161,7 @@ void BallLarusProfilerPass::getEdgeValues(Function& F, Graph& AG) {
 
 map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
   BasicBlock& Entry = F.getEntryBlock();
+
   Edge nedge;
   nedge.backedge_number = 0; // ! See to it
   nedge.from = Exit;
@@ -150,13 +170,16 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
   AG.G[Exit].push_back(nedge);
 
   Graph TAG = transposeGraph(AG);
+
   set<pair<int, BasicBlock*>, greater<pair<int, BasicBlock*>>>
       notInMST; // set sorted in descending order
   set<BasicBlock*> inMST;
   map<BasicBlock*, int> distance;
   map<BasicBlock*, pair<BasicBlock*, bool>>
       parent; // true: positive sign, false: negative sign
+
   map<pair<BasicBlock*, BasicBlock*>, int> Inc; // for each vertex pair
+
   bool flag = true;
   for (auto& [BB, BBEdgeList] : AG.G) {
     if (flag) {
@@ -180,14 +203,14 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
         // ? unique numbering but negative numbering
         Inc[{BBMST, BB}] = (parent[BB].second ? distance[BB] : -distance[BB]);
         Inc[{BB, BBMST}] = -Inc[{BBMST, BB}];
-        // errs()<<Inc[{BBMST, BB}]<<" ";
       } else {
         Inc[{BBMST, BB}] = Inc[{BBMST, parent[BB].first}] +
                            (parent[BB].second ? distance[BB] : -distance[BB]);
         Inc[{BB, BBMST}] = -Inc[{BBMST, BB}];
       }
     }
-    //==============Done===============//
+
+    // Creating MST
 
     inMST.insert(BB);
     notInMST.erase(notInMST.begin());
@@ -199,13 +222,13 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
         continue;
 
       if (EdgeVal > distance[Succ]) {
-        // errs()<<"helo";
         notInMST.erase({distance[Succ], Succ});
         distance[Succ] = EdgeVal;
         parent[Succ] = {BB, true};
         notInMST.insert({distance[Succ], Succ});
       }
     }
+
     for (auto& SuccEdge : TAG.G[BB]) {
       auto Succ = SuccEdge.from; // from and to is maintained in edge struct
       auto EdgeVal = SuccEdge.val;
@@ -221,14 +244,17 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
       }
     }
   }
+
   for (auto& [BB, BBEdgeList] : AG.G) {
     if (parent[BB].first == NULL)
       continue;
-    errs() << parent[BB].first->getName() << " -> " << BB->getName() << "\n";
+    // errs() << parent[BB].first->getName() << " -> " << BB->getName() << "\n";
   }
+
   for (auto& [BB, BBEdgeList] : AG.G) {
     for (auto& Edge : BBEdgeList) {
       Edge.inc = Inc[{Edge.from, Edge.to}];
+
       if (Edge.from != parent[Edge.to].first &&
           parent[Edge.from].first != Edge.to) {
         Edge.chordEdge = true;
@@ -241,66 +267,52 @@ map<pair<BasicBlock*, BasicBlock*>, int> getIncValues(Graph& AG, Function& F) {
 
 void BallLarusProfilerPass::insertInc(Module* M, Instruction* insertBefore,
                                       GlobalVariable* gVar, int inc) {
+
   IRBuilder<> Builder(M->getContext());
   Builder.SetInsertPoint(insertBefore);
+
   BasicBlock* BB = insertBefore->getParent();
   Value* load = Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
-  // Value *second =
-  //     ConstantInt::get(Type::getInt32Ty(instrument->getContext()),
-  //     NumPaths[BB]);
   Value* newInst = Builder.CreateAdd(load, Builder.getInt32(inc));
   Value* store = Builder.CreateStore(newInst, gVar);
 }
 
 void BallLarusProfilerPass::resetInc(Module* M, Instruction* insertBefore,
-                                      GlobalVariable* gVar, int resetValue) {
+                                     GlobalVariable* gVar, int resetValue) {
+
   IRBuilder<> Builder(M->getContext());
   Builder.SetInsertPoint(insertBefore);
-  BasicBlock* BB = insertBefore->getParent();
-  // Value* load = Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
-  Value *reset =
-      ConstantInt::get(Type::getInt32Ty(BB->getContext()),
-      resetValue);
-  // Value* newInst = Builder.CreateAdd(ConstantIn, Builder.getInt32(resetValue));
 
+  BasicBlock* BB = insertBefore->getParent();
+  Value* reset =
+      ConstantInt::get(Type::getInt32Ty(BB->getContext()), resetValue);
   Value* store = Builder.CreateStore(reset, gVar);
 }
 
 void BallLarusProfilerPass::regInc(Function* regIncF, GlobalVariable* gVar,
                                    Instruction* insertBefore, Module* M,
                                    bool dump) {
-  std::vector<Value*> Args;
+
   IRBuilder<> Builder(M->getContext());
-  auto BB = insertBefore->getParent();
   Builder.SetInsertPoint(insertBefore);
+
+  auto BB = insertBefore->getParent();
   Value* load = Builder.CreateLoad(Type::getInt32Ty(BB->getContext()), gVar);
+
+  std::vector<Value*> Args;
   Args.push_back(load);
+
   Value* todump = ConstantInt::get(Type::getInt32Ty(M->getContext()), dump);
   Args.push_back(todump);
+
   // inserting in the end of the basic block
   CallInst::Create(regIncF, Args, "", insertBefore);
 }
 
 // ? Should we add the edge exit -> entry for mst
 
-// void BallLarusProfilerPass::convertToDAG(Function& F) {
-// SmallVector<std::pair<const BasicBlock*, const BasicBlock*>> result;
-// FindFunctionBackedges(F, result); // backedges in this function
-// }
-
-// void BallLarusProfilerPass::getAnalysisUsage(AnalysisUsage& Info) {
-//   Info.addRequired<
-//       UnifyFunctionExitNodesLegacyPass>(); // This is required as the paper
-//                                            // requires exactly one exit block
-//   // Used legacy pass for now, will change to new pass
-// }
-
 PreservedAnalyses BallLarusProfilerPass::run(Function& F,
                                              FunctionAnalysisManager& AM) {
-  // ! Assuming the function to be a DAG for now
-  // ! Not optmized as of now
-  // FunctionPassManager fpm;
-  // fpm.addPass(UnifyFunctionExitNodesPass());
 
   if (F.isDeclaration())
     return PreservedAnalyses::none();
@@ -310,11 +322,14 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
     return PreservedAnalyses::none();
 
   auto M = F.getParent();
-  vector<Type*> Params{Type::getInt32Ty(M->getContext()), Type::getInt32Ty(M->getContext())};
+
+  vector<Type*> Params{Type::getInt32Ty(M->getContext()),
+                       Type::getInt32Ty(M->getContext())};
   FunctionType* fccType =
       FunctionType::get(Type::getVoidTy(M->getContext()), Params, false);
-  Function* sampleFun =
-      Function::Create(fccType, GlobalValue::ExternalLinkage, "_Z7counterii", M);
+
+  Function* counterFunc = Function::Create(
+      fccType, GlobalValue::ExternalLinkage, "_Z7counterii", M);
 
   Graph AbstractGraph = getAbstractGraph(F);
   getEdgeValues(F, AbstractGraph);
@@ -326,8 +341,9 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
   // }
   vector<Edge> chords; // all the edges here are chord edges
   auto Inc = getIncValues(AbstractGraph, F); // got annotated edges also
-  for(auto &[BBPair, BBVal]: Inc){
-    errs() << BBPair.first->getName() << " -> " << BBPair.second->getName() << " = " << BBVal << "\n";
+  for (auto& [BBPair, BBVal] : Inc) {
+    // errs() << BBPair.first->getName() << " -> " << BBPair.second->getName()
+    //        << " = " << BBVal << "\n";
   }
   for (auto& [BB, EdgeList] : AbstractGraph.G) {
     for (auto& Edge : EdgeList) {
@@ -348,7 +364,7 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
                                         0)); // initialize r to 0
 
   for (auto chord : chords) {
-    if (chord.backedge_number == 0) { //  not a backedge
+    if (chord.backedge_number == 0) {       //  not a backedge
       if (chord.to == &F.getEntryBlock()) { // Exit to Entry edge
         insertInc(M, Exit->getTerminator(), gVar, Inc[{chord.from, chord.to}]);
         continue;
@@ -361,30 +377,18 @@ PreservedAnalyses BallLarusProfilerPass::run(Function& F,
       auto [edge1, edge2] = AbstractGraph.Backedge[chord.backedge_number];
       // edge1 is entry to loop header and edge2 is loop tail to exit
       BasicBlock* instrumentBlock = SplitEdge(edge2.from, edge1.to);
+
       int inc_value = Inc[{edge1.from, edge1.to}];
       int reset_value = Inc[{edge2.from, edge2.to}];
       insertInc(M, instrumentBlock->getTerminator(), gVar, inc_value);
-      regInc(sampleFun, gVar, instrumentBlock->getTerminator(), M);
+      regInc(counterFunc, gVar, instrumentBlock->getTerminator(), M);
       resetInc(M, instrumentBlock->getTerminator(), gVar, reset_value);
-      // gVar->setInitializer(ConstantInt::get(Type::getInt32Ty(M->getContext()),
-      //                                       reset_value)); // initialize r to 0
     }
   }
 
-  regInc(sampleFun, gVar, Exit->getTerminator(), M, true);
-
-
+  regInc(counterFunc, gVar, Exit->getTerminator(), M, true);
   dumpAbstractGraph(AbstractGraph); // to regenerate the path
-  // for(auto [Edge, ])
-  // separate chord edges and instrument
 
-  // // Inside main function
-  // // Printf function
-  // vector<Type*> Params{Type::getInt32Ty(M.getContext())};
-  // FunctionType* fccType =
-  //     FunctionType::get(Type::getVoidTy(M.getContext()), Params, false);
-  // Function* sampleFun = Function::Create(
-  //     fccType, GlobalValue::ExternalLinkage, "_Z7counteri", &M);
   return PreservedAnalyses::none();
 }
 

@@ -1148,13 +1148,13 @@ void SCCPTauInstVisitor::visitBinaryOperator(Instruction &I) {
   if (V1State.isSpecConstant() || V2State.isSpecConstant())
     return (void)markSpeculativeConstant(&I);
 
-  if (V1State.isSpecRange()) {
-    if (V2State.isConstantRange())
+  if (V1State.isSpecRange() && V1State.getConstantRange().isSingleElement()) {
+    if (V2State.isConstantRange() && V2State.getConstantRange().isSingleElement())
       V2State.markSpeculativeConstantRange(V2State.getConstantRange());
   }
 
-  if (V2State.isSpecRange()) {
-    if (V1State.isConstantRange())
+  if (V2State.isSpecRange() && V2State.getConstantRange().isSingleElement()) {
+    if (V1State.isConstantRange() && V1State.getConstantRange().isSingleElement())
       V1State.markSpeculativeConstantRange(V1State.getConstantRange());
   }
 
