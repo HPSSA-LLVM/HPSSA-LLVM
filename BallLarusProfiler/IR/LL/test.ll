@@ -34,7 +34,7 @@ declare void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* nonnull alig
 ; Function Attrs: nofree nounwind
 declare i32 @__cxa_atexit(void (i8*)*, i8*, i8*) local_unnamed_addr #2
 
-; Function Attrs: norecurse uwtable mustprogress
+; Function Attrs: mustprogress norecurse uwtable
 define i32 @main() local_unnamed_addr #3 {
 entry:
   %a = alloca i32, align 4
@@ -153,12 +153,12 @@ end_label:                                        ; preds = %new_label, %if.end2
   ret i32 0
 }
 
-; Function Attrs: argmemonly nofree nosync nounwind willreturn mustprogress
+; Function Attrs: argmemonly mustprogress nofree nosync nounwind willreturn
 declare void @llvm.lifetime.start.p0i8(i64 immarg, i8* nocapture) #4
 
 declare nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16), i32* nonnull align 4 dereferenceable(4)) local_unnamed_addr #0
 
-; Function Attrs: argmemonly nofree nosync nounwind willreturn mustprogress
+; Function Attrs: argmemonly mustprogress nofree nosync nounwind willreturn
 declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #4
 
 ; Function Attrs: uwtable
@@ -172,8 +172,8 @@ entry:
 attributes #0 = { "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nounwind "frame-pointer"="none" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nofree nounwind }
-attributes #3 = { norecurse uwtable mustprogress "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #4 = { argmemonly nofree nosync nounwind willreturn mustprogress }
+attributes #3 = { mustprogress norecurse uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { argmemonly mustprogress nofree nosync nounwind willreturn }
 attributes #5 = { uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #6 = { nounwind }
 
@@ -183,7 +183,7 @@ attributes #6 = { nounwind }
 !0 = !{i32 1, !"wchar_size", i32 4}
 !1 = !{i32 7, !"PIC Level", i32 2}
 !2 = !{i32 7, !"uwtable", i32 1}
-!3 = !{!"clang version 13.0.0 (git@github.com:HPSSA-LLVM/llvm-project.git 4d11ba38b47de1da1cee156a8bf8b5d3447326b9)"}
+!3 = !{!"clang version 14.0.0 (https://github.com/HPSSA-LLVM/llvm-project.git ddda52ce3cf2936d9ee05e06ed70e7d270cfcd73)"}
 !4 = !{!5, !5, i64 0}
 !5 = !{!"int", !6, i64 0}
 !6 = !{!"omnipotent char", !7, i64 0}

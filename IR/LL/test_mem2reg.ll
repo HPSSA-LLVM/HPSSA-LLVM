@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'IR/BC/test.bc'
 source_filename = "tests/test.cpp"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -55,25 +55,36 @@ entry:
   ]
 
 sw.bb:                                            ; preds = %entry
+  %mul = mul nsw i32 2, 1
+  %add = add nsw i32 %mul, 5
   br label %sw.epilog
 
 sw.bb1:                                           ; preds = %entry
+  %mul2 = mul nsw i32 2, 1
+  %add3 = add nsw i32 %mul2, 5
+  %sub = sub nsw i32 %add3, 2
   br label %sw.epilog
 
 sw.bb4:                                           ; preds = %entry
+  %mul5 = mul nsw i32 2, 1
+  %add6 = add nsw i32 %mul5, 1
+  %add7 = add nsw i32 %add6, 2
   br label %sw.epilog
 
 sw.default:                                       ; preds = %entry
   br label %sw.epilog
 
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-  %n.0 = phi i32 [ undef, %sw.default ], [ 5, %sw.bb4 ], [ 5, %sw.bb1 ], [ 10, %sw.bb ]
-  %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
+  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
   %mul8 = mul nsw i32 2, %x.0
   %add9 = add nsw i32 %mul8, 10
   %add10 = add nsw i32 9, %x.0
   %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.end, label %if.else
+
+; if.then:                                          ; preds = %sw.epilog
+;   br label %if.end
 
 if.else:                                          ; preds = %sw.epilog
   %mul11 = mul nsw i32 3, %x.0
@@ -83,13 +94,20 @@ if.else:                                          ; preds = %sw.epilog
     i32 300, label %sw.bb15
   ]
 
+; sw.default13:                                     ; preds = %if.else
+;   br label %sw.epilog16
+
 sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #6
   unreachable
 
-if.end:                                           ; preds = %if.else, %sw.epilog
+; sw.epilog16:                                      ; preds = %sw.default13
+;   br label %if.end
+
+if.end:                                           ; preds = %sw.epilog16, %if.then
   %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
@@ -116,6 +134,7 @@ attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stac
 attributes #3 = { nounwind }
 attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}

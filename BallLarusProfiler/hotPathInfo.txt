@@ -1,3 +1,7 @@
-1
+3
+5
+entry sw.bb sw.epilog if.end end
 6
-entry sw.default sw.epilog if.else if.end end 
+entry sw.bb1 sw.epilog if.else if.end end
+6
+entry sw.bb4 sw.epilog if.else sw.bb14 end

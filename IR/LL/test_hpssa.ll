@@ -55,29 +55,41 @@ entry:
   ]
 
 sw.bb:                                            ; preds = %entry
+  %mul = mul nsw i32 2, 1
+  %add = add nsw i32 %mul, 5
   br label %sw.epilog
 
 sw.bb1:                                           ; preds = %entry
+  %mul2 = mul nsw i32 2, 1
+  %add3 = add nsw i32 %mul2, 5
+  %sub = sub nsw i32 %add3, 2
   br label %sw.epilog
 
 sw.bb4:                                           ; preds = %entry
+  %mul5 = mul nsw i32 2, 1
+  %add6 = add nsw i32 %mul5, 1
+  %add7 = add nsw i32 %add6, 2
   br label %sw.epilog
 
 sw.default:                                       ; preds = %entry
   br label %sw.epilog
 
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-  %n.0 = phi i32 [ undef, %sw.default ], [ 5, %sw.bb4 ], [ 5, %sw.bb1 ], [ 10, %sw.bb ]
-  %x.0 = phi i32 [ 2, %sw.default ], [ 3, %sw.bb4 ], [ 7, %sw.bb1 ], [ 7, %sw.bb ]
-  %mul8 = mul nsw i32 2, %x.0
+  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
+  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
+  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
+  %mul8 = mul nsw i32 2, %tau8
   %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %x.0
+  %add10 = add nsw i32 9, %tau8
   %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.end, label %if.else
 
 if.else:                                          ; preds = %sw.epilog
-  %mul11 = mul nsw i32 3, %x.0
-  %add12 = add nsw i32 %n.0, %mul11
+  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
+  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
+  %mul11 = mul nsw i32 3, %tau
+  %add12 = add nsw i32 %tau10, %mul11
   switch i32 %add12, label %if.end [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
@@ -87,10 +99,13 @@ sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
+  call void @exit(i32 0) #7
   unreachable
 
 if.end:                                           ; preds = %if.else, %sw.epilog
-  %add17 = add nsw i32 %n.0, %x.0
+  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
+  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+  %add17 = add nsw i32 %tau12, %tau11
   store i32 %add17, i32* %m, align 4
   br label %end
 
@@ -110,12 +125,17 @@ entry:
   ret void
 }
 
+; Function Attrs: nofree nosync nounwind willreturn
+declare i32 @llvm.tau.i32(...) #6
+
 attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
 attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #6 = { nofree nosync nounwind willreturn }
+attributes #7 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
