@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="false"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.2461303"
-     inkscape:cx="752.32903"
-     inkscape:cy="1009.124"
+     inkscape:zoom="0.62306515"
+     inkscape:cx="851.43584"
+     inkscape:cy="963.78364"
      inkscape:window-width="2560"
      inkscape:window-height="1330"
      inkscape:window-x="1440"
@@ -1903,6 +1903,28 @@
              x="-289.17291"
              y="328.45636"
              sodipodi:role="line">%tau7 = call i32 (...) @llvm.tau.i32(i32 %tau4, i32 7, i32 7)</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:17.9185px;line-height:1.25;font-family:'Cascadia Code PL';-inkscape-font-specification:'Cascadia Code PL, @wght=377';font-variation-settings:'wght' 377;letter-spacing:0px;word-spacing:0px;stroke-width:0.279994;fill:#0000ff"
+           x="98.63015"
+           y="237.12543"
+           id="text6078"><tspan
+             sodipodi:role="line"
+             id="tspan6076"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:17.9185px;font-family:'Cascadia Code PL';-inkscape-font-specification:'Cascadia Code PL Bold';stroke-width:0.279994;fill:#0000ff"
+             x="98.63015"
+             y="237.12543">A</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:17.9185px;line-height:1.25;font-family:'Cascadia Code PL';-inkscape-font-specification:'Cascadia Code PL, @wght=377';font-variation-settings:'wght' 377;letter-spacing:0px;word-spacing:0px;stroke-width:0.279994"
+           x="-39.618591"
+           y="315.78409"
+           id="text16906"><tspan
+             sodipodi:role="line"
+             id="tspan16904"
+             style="font-size:17.9185px;stroke-width:0.279994"
+             x="-39.618591"
+             y="315.78409">B</tspan></text>
       </g>
       <g
          transform="matrix(5.4014582,0,0,5.4014582,805.0699,154.91214)"

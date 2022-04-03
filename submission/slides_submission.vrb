@@ -1,27 +1,23 @@
-\frametitle{What we modified in LLVM Source?}
-	\begin{itemize}
-		\item New \mintinline[]{css}{llvm::intrinsic} signature, \mintinline[]{css}{"llvm.tau"} to support addition and removal of $\tau$-functions to the LLVM SSA IR representation. \pause
-	\end{itemize}
-	\begin{minted}[fontsize=\footnotesize, tabsize=4, linenos]{python}
-	+ //===---------- intrinsic for tau ---------------=====//
-	+ def int_tau : DefaultAttrsIntrinsic<[llvm_any_ty],
-	+                   [llvm_vararg_ty],
-	+                   []>;
+\frametitle{From \texttt{SpecSCCP} Pass (Aggressive Pass)}
+	Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.
+	\begin{minted}[frame=single,framesep=0pt,fontsize=\footnotesize, tabsize=2, highlightlines={3,4}, escapeinside=||]{css}
+		|\colorbox{pink}{if.else:}|       // Basic Block A             		; preds = %sw.epilog
+			%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+			|\colorpred{%tau10}| = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 |\colorbox{yellow}{5}|, i32 |\colorbox{yellow}{5}|)	
+			|\colorpred{%tau10\_spec}| = call i32 @assgnSpecVal(i32 |\colorbox{yellow}{5}|) // set speculative value
+			%mul11 = mul nsw i32 3, undef
+			%add12 = add nsw i32 |\colorpred{%tau10\_spec}|, %mul11
+			switch i32 %add12, label %sw.default13 [
+				i32 200, label %sw.bb14
+				i32 300, label %sw.bb15
+			]
 	\end{minted}
-	\pause
-	\begin{itemize}
-		\item Modified \mintinline[]{css}{Verifier::verifyDominatesUse()} function since we don't want our intrinsic to interfere with \mintinline[]{css}{dominators} computation.  \pause
-	\end{itemize}
-	\begin{minted}[fontsize=\footnotesize, tabsize=4, highlightlines={4,5,6,7,8,9,10}, linenos]{python}
-	+ //===---------- Changes for tau.intrinsic ---------------=====//
-	void Verifier::verifyDominatesUse(Instruction &I, unsigned i) {
-		Instruction *Op = cast<Instruction>(I.getOperand(i));
-		+	if (CallInst *CI = dyn_cast<CallInst>(&I)) {
-		+	Function *CallFunction = CI->getCalledFunction();
-		+	if (CallFunction != NULL && CallFunction->getIntrinsicID()==
-		+		Function::lookupIntrinsicID("llvm.tau")) {
-		+			return;
-		+		}
-		+	}
-		...
+	\begin{minted}[frame=single,framesep=0pt,fontsize=\footnotesize, tabsize=2, highlightlines={2,3}, escapeinside=||]{css}
+		|\colorbox{pink}{if.end:}|       // Basic Block B	   		     ; preds = %sw.epilog, %if.else
+			|\colorpred{%tau11}| = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 |\colorbox{yellow}{7}|, i32 |\colorbox{yellow}{7}|)
+			|\colorpred{%tau11\_spec}| = call i32 @assgnSpecVal(i32 |\colorbox{yellow}{7}|) // set speculative value
+			%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
+			%add17 = add nsw i32 undef, |\colorpred{%tau11\_spec}|
+			store i32 %add17, i32* %m, align 4
+			br label %end
 	\end{minted}

@@ -46,9 +46,9 @@
 	\usebeamerfont{footline}%
 	\usebeamercolor[fg]{footline}%
 	\hspace{-50em}%
-	\raisebox{20pt}[0pt][0pt]{\small{pg.\insertpagenumber}}
+	\raisebox{22pt}[1pt][1pt]{\footnotesize{pg.\insertpagenumber}}
 }
-\setbeamercolor{footline}{fg=red}
+\setbeamercolor{footline}{fg=blue}
 \setbeamerfont{footline}{series=\bfseries}
 
 \AtBeginSection[]
@@ -105,7 +105,7 @@
 \subsection{Introduction to Path Profile Guided Optimizations}
 {
 	\setbeamercolor{background canvas}{bg=}
-	\includepdf[pages={5,6,7,8,9,10,11}]{summary.pdf}
+	\includepdf[pages={5,6,6,7,8,9,10,11}]{summary.pdf}
 }
 \begin{frame}
 	\frametitle{Why is path-profile-guided analysis hard?}
@@ -434,31 +434,6 @@ PreservedAnalyses |\fbox{YourPGOPass}|::run(Function &F,
 	\setbeamercolor{background canvas}{bg=}
 	\includepdf[pages={31,32}]{summary.pdf}
 }
-\begin{frame}[fragile]
-	\frametitle{From \texttt{SpecSCCP} Pass}
-	Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.
-	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={3,4}, escapeinside=||]{css}
-	if.else:                                          ; preds = %sw.epilog
-		%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
-		|\colorpred{%tau10}| = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)	
-		|\colorpred{%tau10\_spec}| = call i32 @assignSpecValue(i32 5)
-		%mul11 = mul nsw i32 3, undef
-		%add12 = add nsw i32 |\colorpred{%tau10\_spec}|, %mul11
-		switch i32 %add12, label %sw.default13 [
-			i32 200, label %sw.bb14
-			i32 300, label %sw.bb15
-		]
-	\end{minted}
-	\begin{minted}[frame=single,framesep=0.1pt,fontsize=\footnotesize, tabsize=2, linenos, highlightlines={2,3}, escapeinside=||]{css}
-	if.end:                                           ; preds = %sw.epilog, %if.else
-		|\colorpred{%tau11}| = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
-		|\colorpred{%tau11\_spec}| = call i32 @assignSpecValue(i32 7)
-		%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
-		%add17 = add nsw i32 undef, |\colorpred{%tau11\_spec}|
-		store i32 %add17, i32* %m, align 4
-		br label %end
-	\end{minted}
-\end{frame}
 \footnotesize
 
 \section{How is HPSSA Implemented?}
@@ -530,7 +505,7 @@ PreservedAnalyses |\fbox{YourPGOPass}|::run(Function &F,
 		\item Out of HPSSA Form. 
 		\begin{itemize}
 			\item A seperate pass using the new LLVM Pass Manager. \mintinline[]{css}{class TDSTRPass : public PassInfoMixin<TDSTRPass>} \pause
-			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function &F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR.
+			\item Using \mintinline[fontsize=\footnotesize]{css}{TDSTRPass::run(Function &F, ...)}, we replace all use of existing tau operands with first argument of  \mintinline[]{css}{"llvm.tau"} intrinsic (corresponds to the safe argument) and remove the \mintinline[]{css}{"llvm.tau"} intrinsic calll from the LLVM IR. \pause
 			\item The LLVM IR becomes identical to what it was before running the HPSSA Pass. \pause
 		\end{itemize}
 	\end{itemize}
@@ -556,12 +531,13 @@ PreservedAnalyses |\fbox{YourPGOPass}|::run(Function &F,
 	\begin{itemize}
 		\item The Hot Path SSA form opens up an exciting opportunity for compiler writers to ``port" exisiting standard analyses to their profile guided variants. \pause
 		\item We plan to open source our work soon and push it to the LLVM ``main" branch.
-		\item \color{blue}\href{https://github.com/HPSSA-LLVM/HPSSA-LLVM}{
-			\texttt{Link: https://github.com/HPSSA-LLVM/HPSSA-LLVM}}\color{black}
+		\pause
+		\item \large{\color{blue}\href{https://github.com/HPSSA-LLVM/HPSSA-LLVM}{
+				\texttt{https://github.com/HPSSA-LLVM/HPSSA-LLVM}}\color{black}}
 	\end{itemize}
 \end{frame}
 \begin{frame}
-	\frametitle{Thanks!}
+	\frametitle{\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad Thank You !}
 	\centering
 	\includegraphics[width=0.9\columnwidth,height=0.9\textheight]{dotfiles/questions.pdf}
 \end{frame}
@@ -576,7 +552,31 @@ PreservedAnalyses |\fbox{YourPGOPass}|::run(Function &F,
 	\tiny 
 	\footnotetext[1]{Since we added the $\tau$-functions as an \mintinline[fontsize=\footnotesize]{css}{"llvm.tau"} intrinsic, we blocked processing it as a regular LLVM Instruction.}
 \end{frame}
-
+\begin{frame}[fragile]
+	\frametitle{From \texttt{SpecSCCP} Pass (Aggressive Pass)}
+	Basic blocks from the transformed IR after the \texttt{SpecSCCP} pass with \texttt{assignSpecValue()} calls added.
+	\begin{minted}[frame=single,framesep=0pt,fontsize=\footnotesize, tabsize=2, highlightlines={3,4}, escapeinside=||]{css}
+		|\colorbox{pink}{if.else:}|       // Basic Block A             		; preds = %sw.epilog
+			%tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
+			|\colorpred{%tau10}| = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 |\colorbox{yellow}{5}|, i32 |\colorbox{yellow}{5}|)	
+			|\colorpred{%tau10\_spec}| = call i32 @assgnSpecVal(i32 |\colorbox{yellow}{5}|) // set speculative value
+			%mul11 = mul nsw i32 3, undef
+			%add12 = add nsw i32 |\colorpred{%tau10\_spec}|, %mul11
+			switch i32 %add12, label %sw.default13 [
+				i32 200, label %sw.bb14
+				i32 300, label %sw.bb15
+			]
+	\end{minted}
+	\begin{minted}[frame=single,framesep=0pt,fontsize=\footnotesize, tabsize=2, highlightlines={2,3}, escapeinside=||]{css}
+		|\colorbox{pink}{if.end:}|       // Basic Block B	   		     ; preds = %sw.epilog, %if.else
+			|\colorpred{%tau11}| = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 |\colorbox{yellow}{7}|, i32 |\colorbox{yellow}{7}|)
+			|\colorpred{%tau11\_spec}| = call i32 @assgnSpecVal(i32 |\colorbox{yellow}{7}|) // set speculative value
+			%tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
+			%add17 = add nsw i32 undef, |\colorpred{%tau11\_spec}|
+			store i32 %add17, i32* %m, align 4
+			br label %end
+	\end{minted}
+\end{frame}
 \begin{frame}
 	\frametitle{\texttt{HPSSAPass} : Details of \texttt{run(...)}}
 	\begin{itemize}
