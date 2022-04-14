@@ -1,41 +1,214 @@
-Basic Blocks in Topological order: entry sw.bb4 sw.bb1 sw.bb sw.default sw.epilog if.else sw.bb15 sw.bb14 if.end end 
-entry sw.default 0 false
-entry sw.bb 4 false
-entry sw.bb1 8 false
-entry sw.bb4 12 false
-sw.default sw.epilog -3 true
-sw.bb sw.epilog -7 true
-sw.bb1 sw.epilog -11 true
-sw.bb4 sw.epilog -15 true
-sw.epilog if.end 3 true
-sw.epilog if.else 1 false
-if.end end 0 false
-if.else if.end 2 true
-if.else sw.bb14 1 false
-if.else sw.bb15 2 false
-sw.bb14 end 1 true
-sw.bb15 end 0 false
-end entry 0 false
+Basic Blocks in Topological order: entry while.cond while.body if.end sw.bb50 sw.bb49 sw.bb48 sw.bb32 if.end36 land.lhs.true if.end41 if.end44 if.then46 if.end47 if.then43 if.then40 if.then35 sw.bb31 sw.bb30 sw.bb29 sw.bb28 sw.bb23 if.end27 if.then26 sw.bb18 if.end22 if.then21 sw.bb17 sw.bb16 sw.bb15 sw.bb14 sw.bb13 sw.bb8 if.end12 if.then11 sw.bb3 if.end7 if.then6 sw.bb sw.epilog sw.default if.then cleanup while.end if.then54 if.else if.then56 if.end62 if.end63 lor.lhs.false if.else69 if.else72 if.then74 if.end75 if.then71 if.end76 if.then68 if.end77 for.cond for.end92 if.end95 if.then94 cleanup96 cleanup.cont99 cond.false cond.true cond.end if.then104 for.cond107 for.cond.cleanup for.end127 if.end128 lor.lhs.false131 lor.lhs.false134 lor.lhs.false137 lor.rhs lor.end if.then145 lor.lhs.false148 lor.lhs.false151 lor.lhs.false154 lor.lhs.false157 if.then160 if.end161 if.end166 if.then168 if.end169 if.else192 if.then171 for.cond173 for.cond.cleanup176 for.end191 if.end193 if.else202 if.end207 if.then205 if.then195 if.then197 if.end201 if.end208 for.body177 if.then181 if.end187 for.inc188 for.body110 if.then118 if.end124 for.inc125 for.body for.cond79 for.body81 if.end89 for.inc if.then86 for.end for.inc90 cleanup.cont unreachable UnifiedUnreachableBlock cleanup209 unreachable.cont 
+if.then21 UnifiedUnreachableBlock 0 false
+if.end22 sw.epilog 253003 true
+entry while.cond 927685 false
+entry while.cond 927685 false
+entry for.cond79 1855370 false
+entry for.cond 1855373 false
+entry for.cond107 1858184 false
+entry for.cond173 1858886 false
+while.cond while.body 130024 true
+cleanup.cont cleanup209 42872 true
+while.body if.then 758308 true
+while.body if.end 42167 false
+sw.bb16 sw.epilog 337338 true
+if.then cleanup 0 false
+if.end sw.default 759014 true
+if.end sw.bb 1 false
+if.end sw.bb3 42168 false
+if.end sw.bb8 84336 false
+if.end sw.bb13 126504 false
+if.end sw.bb14 168671 false
+if.end sw.bb15 210838 false
+if.end sw.bb16 253005 false
+if.end sw.bb17 295172 false
+if.end sw.bb18 337339 false
+if.end sw.bb23 379507 false
+if.end sw.bb28 421675 false
+if.end sw.bb29 463842 false
+if.end sw.bb30 548176 false
+if.end sw.bb30 548176 false
+if.end sw.epilog 590343 false
+if.end sw.bb31 632510 false
+if.end sw.bb32 674677 false
+if.end sw.bb48 843349 false
+if.end sw.bb49 885516 false
+if.end sw.bb50 885517 false
+cleanup unreachable 42873 true
+cleanup cleanup.cont 1 false
+cleanup while.end 2 false
+sw.default UnifiedUnreachableBlock 0 false
+sw.bb sw.epilog 590342 true
+sw.bb3 if.then6 716846 true
+sw.bb3 if.end7 1 false
+sw.bb8 if.then11 674678 true
+sw.bb8 if.end12 1 false
+sw.bb13 sw.epilog 463839 true
+sw.bb14 sw.epilog 421672 true
+sw.bb15 sw.epilog 379505 true
+sw.bb17 sw.epilog 295171 true
+sw.bb18 if.then21 421675 true
+sw.bb18 if.end22 1 false
+sw.bb23 if.then26 379507 true
+sw.bb23 if.end27 1 false
+sw.bb28 sw.epilog 168668 true
+land.lhs.true if.then40 1 true
+land.lhs.true if.end41 1 false
+sw.bb29 sw.epilog 126501 true
+sw.bb30 sw.epilog 42167 true
+sw.epilog cleanup 125798 true
+sw.bb31 sw.epilog -42167 true
+sw.bb32 if.then35 84337 true
+sw.bb32 if.end36 1 false
+sw.bb48 sw.epilog -253006 true
+sw.bb49 UnifiedUnreachableBlock -126502 true
+sw.bb50 UnifiedUnreachableBlock -126503 true
+if.then6 UnifiedUnreachableBlock 0 false
+if.end7 sw.epilog 548174 true
+if.then11 UnifiedUnreachableBlock 0 false
+if.end62 if.end63 0 false
+if.end12 sw.epilog 506006 true
+if.then26 UnifiedUnreachableBlock 0 false
+if.end27 sw.epilog 210835 true
+if.then35 UnifiedUnreachableBlock 0 false
+if.end36 land.lhs.true 84335 true
+if.end36 if.end41 84336 false
+if.end41 if.then43 0 false
+if.end41 if.end44 1 false
+if.then40 UnifiedUnreachableBlock 0 false
+if.then43 UnifiedUnreachableBlock 0 false
+if.end44 if.then46 0 false
+if.end44 if.end47 42167 false
+if.then46 if.end47 42167 true
+if.end47 sw.epilog -210839 true
+unreachable UnifiedUnreachableBlock 0 false
+while.end if.then54 0 false
+while.end if.end63 28110 false
+if.then54 if.then56 0 false
+if.then54 if.else 14055 false
+if.end63 if.then68 11244 true
+if.end63 lor.lhs.false 2811 false
+if.then56 if.end62 28110 true
+if.else if.end62 14055 true
+if.then68 if.end77 0 false
+lor.lhs.false if.then68 8433 true
+lor.lhs.false if.else69 2811 false
+if.else69 if.then71 5622 true
+if.else69 if.else72 2811 false
+if.end77 for.cond 0 false
+if.then71 if.end76 0 false
+if.else72 if.then74 2811 true
+if.else72 if.end75 2811 false
+if.end76 if.end77 0 false
+if.then74 if.end75 0 false
+if.end75 if.end76 0 false
+for.cond for.body 0 false
+for.cond for.end92 3 false
+for.inc90 cleanup209 3518 true
+for.body for.cond79 -3 true
+for.end92 if.then94 0 false
+for.end92 if.end95 1404 false
+for.cond79 for.body81 0 false
+for.cond79 for.end 2 false
+for.inc cleanup209 0 false
+for.body81 if.then86 2 true
+for.body81 if.end89 1 false
+for.end for.inc90 0 false
+if.then86 for.end 0 false
+if.end89 for.inc 3519 true
+if.then94 cleanup96 2111 true
+if.end95 cleanup96 707 true
+cleanup96 cleanup209 1403 true
+cleanup96 cleanup.cont99 1 false
+cleanup209 entry -1858890 true
+cleanup.cont99 cond.true 2 true
+cleanup.cont99 cond.false 1402 false
+cond.true cond.end 0 false
+cond.false UnifiedUnreachableBlock 0 false
+cond.end if.then104 694 true
+cond.end if.end128 702 false
+unreachable.cont cond.end 0 false
+if.then104 for.cond107 0 false
+if.end128 lor.end 560 true
+if.end128 lor.lhs.false131 140 false
+for.cond107 for.body110 0 false
+for.cond107 for.cond.cleanup 2 false
+for.inc125 cleanup209 705 true
+for.body110 if.then118 0 false
+for.body110 if.end124 1 false
+for.cond.cleanup for.end127 0 false
+for.end127 if.end128 6 true
+if.then118 if.end124 1 true
+if.end124 for.inc125 0 false
+lor.end if.then145 20 true
+lor.end if.end166 120 false
+lor.lhs.false131 lor.end 420 true
+lor.lhs.false131 lor.lhs.false134 140 false
+lor.lhs.false134 lor.end 280 true
+lor.lhs.false134 lor.lhs.false137 140 false
+lor.lhs.false137 lor.end 140 true
+lor.lhs.false137 lor.rhs 140 false
+lor.rhs lor.end 0 false
+if.then145 lor.lhs.false148 20 true
+if.then145 if.then160 100 false
+if.end166 if.then168 10 true
+if.end166 if.end169 10 false
+lor.lhs.false148 if.then160 80 true
+lor.lhs.false148 lor.lhs.false151 20 false
+if.then160 if.end161 0 false
+lor.lhs.false151 if.then160 60 true
+lor.lhs.false151 lor.lhs.false154 20 false
+lor.lhs.false154 if.then160 40 true
+lor.lhs.false154 lor.lhs.false157 20 false
+lor.lhs.false157 if.then160 20 true
+lor.lhs.false157 if.end161 20 false
+if.end161 if.end166 0 false
+if.then168 if.end169 0 false
+if.end169 if.then171 4 true
+if.end169 if.else192 6 false
+if.then171 for.cond173 0 false
+if.else192 if.end193 0 false
+for.cond173 for.body177 0 false
+for.cond173 for.cond.cleanup176 2 false
+for.inc188 cleanup209 3 true
+for.body177 if.then181 0 false
+for.body177 if.end187 1 false
+for.cond.cleanup176 for.end191 0 false
+for.end191 if.end193 0 false
+if.then181 if.end187 1 true
+if.end187 for.inc188 0 false
+if.end193 if.then195 2 true
+if.end193 if.else202 2 false
+if.then195 if.then197 1 true
+if.then195 if.end201 1 false
+if.else202 if.then205 0 false
+if.else202 if.end207 1 false
+if.then197 if.end201 0 false
+if.end201 if.end208 0 false
+if.end208 cleanup209 -1 true
+if.then205 UnifiedUnreachableBlock 0 false
+if.end207 if.end208 0 false
+UnifiedUnreachableBlock cleanup209 0 false
 ===-------------------------------------------------------------------------===
                       ... Pass execution timing report ...
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0011 seconds (0.0011 wall clock)
+  Total Execution Time: 0.0925 seconds (0.0928 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0007 ( 59.2%)   0.0007 ( 59.2%)   0.0007 ( 59.2%)  BallLarusProfilerPass
-   0.0002 ( 19.9%)   0.0002 ( 19.9%)   0.0002 ( 19.9%)  PrintModulePass
-   0.0001 ( 10.3%)   0.0001 ( 10.3%)   0.0001 ( 10.4%)  VerifierPass
-   0.0001 (  8.7%)   0.0001 (  8.7%)   0.0001 (  8.7%)  VerifierAnalysis
-   0.0000 (  1.4%)   0.0000 (  1.4%)   0.0000 (  1.5%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.5%)   0.0000 (  0.5%)   0.0000 (  0.4%)  UnifyFunctionExitNodesPass
-   0.0011 (100.0%)   0.0011 (100.0%)   0.0011 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0362 ( 40.9%)   0.0000 (  0.0%)   0.0362 ( 39.1%)   0.0362 ( 39.0%)  PrintModulePass
+   0.0215 ( 24.3%)   0.0000 (  0.0%)   0.0215 ( 23.2%)   0.0216 ( 23.3%)  VerifierPass
+   0.0215 ( 24.3%)   0.0000 (  0.0%)   0.0215 ( 23.2%)   0.0216 ( 23.3%)  VerifierAnalysis
+   0.0069 (  7.8%)   0.0039 ( 97.6%)   0.0108 ( 11.7%)   0.0108 ( 11.7%)  BallLarusProfilerPass
+   0.0021 (  2.3%)   0.0001 (  2.1%)   0.0021 (  2.3%)   0.0021 (  2.3%)  PreservedCFGCheckerAnalysis
+   0.0003 (  0.4%)   0.0000 (  0.3%)   0.0003 (  0.4%)   0.0003 (  0.4%)  UnifyFunctionExitNodesPass
+   0.0885 (100.0%)   0.0040 (100.0%)   0.0925 (100.0%)   0.0928 (100.0%)  Total
 
 ===-------------------------------------------------------------------------===
                                 LLVM IR Parsing
 ===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
+  Total Execution Time: 0.0890 seconds (0.0891 wall clock)
 
-   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
-   0.0004 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
+   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
+   0.0888 (100.0%)   0.0002 (100.0%)   0.0890 (100.0%)   0.0891 (100.0%)  Parse IR
+   0.0888 (100.0%)   0.0002 (100.0%)   0.0890 (100.0%)   0.0891 (100.0%)  Total
 

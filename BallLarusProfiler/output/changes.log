@@ -1,91 +1,1088 @@
 1c1
-< ; ModuleID = 'IR/BC/test.bc'
+< ; ModuleID = 'df.bc'
 ---
 > ; ModuleID = 'IR/LL/test_mem2reg_sumit.ll'
-27a28
+343a344
 > @counter = global i32 0
-59a61,66
->   br label %sw.bb.split
+571,572c572,573
+< while.cond:                                       ; preds = %cleanup.cont, %entry
+<   %posix_format.0 = phi i8 [ 0, %entry ], [ %posix_format.2, %cleanup.cont ], !dbg !1207
+---
+> while.cond:                                       ; preds = %cleanup.cont.split, %entry
+>   %posix_format.0 = phi i8 [ 0, %entry ], [ %posix_format.2, %cleanup.cont.split ], !dbg !1207
+574c575
+<   br label %while.body, !dbg !1206
+---
+>   br label %while.body.split, !dbg !1206
+576c577,583
+< while.body:                                       ; preds = %while.cond
+---
+> while.body.split:                                 ; preds = %while.cond
+>   %0 = load i32, i32* @counter, align 4, !dbg !1208
+>   %1 = add i32 %0, 130024, !dbg !1208
+>   store i32 %1, i32* @counter, align 4, !dbg !1208
+>   br label %while.body, !dbg !1208
+> 
+> while.body:                                       ; preds = %while.body.split
+584c591
+<   br i1 %cmp, label %if.then, label %if.end, !dbg !1214
+---
+>   br i1 %cmp, label %if.then.split, label %if.end, !dbg !1214
+586c593,599
+< if.then:                                          ; preds = %while.body
+---
+> if.then.split:                                    ; preds = %while.body
+>   %2 = load i32, i32* @counter, align 4, !dbg !1215
+>   %3 = add i32 %2, 758308, !dbg !1215
+>   store i32 %3, i32* @counter, align 4, !dbg !1215
+>   br label %if.then, !dbg !1215
+> 
+> if.then:                                          ; preds = %if.then.split
+590c603
+<   switch i32 %call2, label %sw.default [
+---
+>   switch i32 %call2, label %sw.default.split [
+614a628,633
+>   br label %sw.bb.split, !dbg !1218
 > 
 > sw.bb.split:                                      ; preds = %sw.bb
->   %0 = load i32, i32* @counter, align 4
->   %1 = add i32 %0, -7
->   store i32 %1, i32* @counter, align 4
-65a73,78
->   br label %sw.bb1.split
+>   %4 = load i32, i32* @counter, align 4, !dbg !1218
+>   %5 = add i32 %4, 590342, !dbg !1218
+>   store i32 %5, i32* @counter, align 4, !dbg !1218
+622c641
+<   br i1 %cmp5, label %if.then6, label %if.end7, !dbg !1224
+---
+>   br i1 %cmp5, label %if.then6.split, label %if.end7, !dbg !1224
+624c643,649
+< if.then6:                                         ; preds = %sw.bb3
+---
+> if.then6.split:                                   ; preds = %sw.bb3
+>   %6 = load i32, i32* @counter, align 4, !dbg !1225
+>   %7 = add i32 %6, 716846, !dbg !1225
+>   store i32 %7, i32* @counter, align 4, !dbg !1225
+>   br label %if.then6, !dbg !1225
 > 
-> sw.bb1.split:                                     ; preds = %sw.bb1
->   %2 = load i32, i32* @counter, align 4
->   %3 = add i32 %2, -11
->   store i32 %3, i32* @counter, align 4
-71a85,90
->   br label %sw.bb4.split
+> if.then6:                                         ; preds = %if.then6.split
+629c654
+<   unreachable, !dbg !1228
+---
+>   br label %UnifiedUnreachableBlock
+631a657,662
+>   br label %if.end7.split, !dbg !1229
 > 
-> sw.bb4.split:                                     ; preds = %sw.bb4
->   %4 = load i32, i32* @counter, align 4
->   %5 = add i32 %4, -15
->   store i32 %5, i32* @counter, align 4
-74a94,99
->   br label %sw.default.split
+> if.end7.split:                                    ; preds = %if.end7
+>   %8 = load i32, i32* @counter, align 4, !dbg !1229
+>   %9 = add i32 %8, 548174, !dbg !1229
+>   store i32 %9, i32* @counter, align 4, !dbg !1229
+637c668,674
+<   br i1 %cmp9, label %if.then11, label %if.end12, !dbg !1233
+---
+>   br i1 %cmp9, label %if.then11.split, label %if.end12, !dbg !1233
 > 
-> sw.default.split:                                 ; preds = %sw.default
->   %6 = load i32, i32* @counter, align 4
->   %7 = add i32 %6, -3
->   store i32 %7, i32* @counter, align 4
-77,79c102,104
-< sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-<   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-<   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
+> if.then11.split:                                  ; preds = %sw.bb8
+>   %10 = load i32, i32* @counter, align 4, !dbg !1234
+>   %11 = add i32 %10, 674678, !dbg !1234
+>   store i32 %11, i32* @counter, align 4, !dbg !1234
+>   br label %if.then11, !dbg !1234
+639c676
+< if.then11:                                        ; preds = %sw.bb8
 ---
-> sw.epilog:                                        ; preds = %sw.default.split, %sw.bb4.split, %sw.bb1.split, %sw.bb.split
->   %n.0 = phi i32 [ undef, %sw.default.split ], [ %add7, %sw.bb4.split ], [ %sub, %sw.bb1.split ], [ 10, %sw.bb.split ]
->   %x.0 = phi i32 [ 2, %sw.default.split ], [ %add6, %sw.bb4.split ], [ %add3, %sw.bb1.split ], [ %add, %sw.bb.split ]
-84c109
-<   br i1 %cmp, label %if.end, label %if.else
+> if.then11:                                        ; preds = %if.then11.split
+642c679
+<   unreachable, !dbg !1236
 ---
->   br i1 %cmp, label %sw.epilog.if.end_crit_edge, label %if.else
-86,87c111,115
-< ; if.then:                                          ; preds = %sw.epilog
-< ;   br label %if.end
----
-> sw.epilog.if.end_crit_edge:                       ; preds = %sw.epilog
->   %8 = load i32, i32* @counter, align 4
->   %9 = add i32 %8, 3
->   store i32 %9, i32* @counter, align 4
->   br label %if.end
-92c120
-<   switch i32 %add12, label %if.end [
----
->   switch i32 %add12, label %if.else.if.end_crit_edge [
-97,98c125,129
-< ; sw.default13:                                     ; preds = %if.else
-< ;   br label %sw.epilog16
----
-> if.else.if.end_crit_edge:                         ; preds = %if.else
->   %10 = load i32, i32* @counter, align 4
->   %11 = add i32 %10, 2
->   store i32 %11, i32* @counter, align 4
->   br label %if.end
-100a132,137
->   br label %sw.bb14.split
+>   br label %UnifiedUnreachableBlock
+645a683,688
+>   br label %if.end12.split, !dbg !1238
+> 
+> if.end12.split:                                   ; preds = %if.end12
+>   %12 = load i32, i32* @counter, align 4, !dbg !1238
+>   %13 = add i32 %12, 506006, !dbg !1238
+>   store i32 %13, i32* @counter, align 4, !dbg !1238
+650a694,699
+>   br label %sw.bb13.split, !dbg !1242
+> 
+> sw.bb13.split:                                    ; preds = %sw.bb13
+>   %14 = load i32, i32* @counter, align 4, !dbg !1242
+>   %15 = add i32 %14, 463839, !dbg !1242
+>   store i32 %15, i32* @counter, align 4, !dbg !1242
+655a705,710
+>   br label %sw.bb14.split, !dbg !1245
 > 
 > sw.bb14.split:                                    ; preds = %sw.bb14
->   %12 = load i32, i32* @counter, align 4
->   %13 = add i32 %12, 1
->   store i32 %13, i32* @counter, align 4
-107,110c144
-< ; sw.epilog16:                                      ; preds = %sw.default13
-< ;   br label %if.end
-< 
-< if.end:                                           ; preds = %sw.epilog16, %if.then
+>   %16 = load i32, i32* @counter, align 4, !dbg !1245
+>   %17 = add i32 %16, 421672, !dbg !1245
+>   store i32 %17, i32* @counter, align 4, !dbg !1245
+660a716,721
+>   br label %sw.bb15.split, !dbg !1248
+> 
+> sw.bb15.split:                                    ; preds = %sw.bb15
+>   %18 = load i32, i32* @counter, align 4, !dbg !1248
+>   %19 = add i32 %18, 379505, !dbg !1248
+>   store i32 %19, i32* @counter, align 4, !dbg !1248
+664a726,731
+>   br label %sw.bb16.split, !dbg !1250
+> 
+> sw.bb16.split:                                    ; preds = %sw.bb16
+>   %20 = load i32, i32* @counter, align 4, !dbg !1250
+>   %21 = add i32 %20, 337338, !dbg !1250
+>   store i32 %21, i32* @counter, align 4, !dbg !1250
+669a737,742
+>   br label %sw.bb17.split, !dbg !1253
+> 
+> sw.bb17.split:                                    ; preds = %sw.bb17
+>   %22 = load i32, i32* @counter, align 4, !dbg !1253
+>   %23 = add i32 %22, 295171, !dbg !1253
+>   store i32 %23, i32* @counter, align 4, !dbg !1253
+675c748
+<   br i1 %cmp19, label %if.then21, label %if.end22, !dbg !1257
 ---
-> if.end:                                           ; preds = %if.else.if.end_crit_edge, %sw.epilog.if.end_crit_edge
-115c149,151
-< end:                                              ; preds = %if.end, %sw.bb14
+>   br i1 %cmp19, label %if.then21.split, label %if.end22, !dbg !1257
+677c750,756
+< if.then21:                                        ; preds = %sw.bb18
 ---
-> end:                                              ; preds = %if.end, %sw.bb14.split
->   %14 = load i32, i32* @counter, align 4
->   call void @_Z7counterii(i32 %14, i32 1)
-129a166,167
+> if.then21.split:                                  ; preds = %sw.bb18
+>   %24 = load i32, i32* @counter, align 4, !dbg !1258
+>   %25 = add i32 %24, 421675, !dbg !1258
+>   store i32 %25, i32* @counter, align 4, !dbg !1258
+>   br label %if.then21, !dbg !1258
+> 
+> if.then21:                                        ; preds = %if.then21.split
+680c759
+<   unreachable, !dbg !1260
+---
+>   br label %UnifiedUnreachableBlock
+683a763,768
+>   br label %if.end22.split, !dbg !1262
+> 
+> if.end22.split:                                   ; preds = %if.end22
+>   %26 = load i32, i32* @counter, align 4, !dbg !1262
+>   %27 = add i32 %26, 253003, !dbg !1262
+>   store i32 %27, i32* @counter, align 4, !dbg !1262
+689c774,780
+<   br i1 %cmp24, label %if.then26, label %if.end27, !dbg !1266
+---
+>   br i1 %cmp24, label %if.then26.split, label %if.end27, !dbg !1266
+> 
+> if.then26.split:                                  ; preds = %sw.bb23
+>   %28 = load i32, i32* @counter, align 4, !dbg !1267
+>   %29 = add i32 %28, 379507, !dbg !1267
+>   store i32 %29, i32* @counter, align 4, !dbg !1267
+>   br label %if.then26, !dbg !1267
+691c782
+< if.then26:                                        ; preds = %sw.bb23
+---
+> if.then26:                                        ; preds = %if.then26.split
+694c785
+<   unreachable, !dbg !1269
+---
+>   br label %UnifiedUnreachableBlock
+697a789,794
+>   br label %if.end27.split, !dbg !1270
+> 
+> if.end27.split:                                   ; preds = %if.end27
+>   %30 = load i32, i32* @counter, align 4, !dbg !1270
+>   %31 = add i32 %30, 210835, !dbg !1270
+>   store i32 %31, i32* @counter, align 4, !dbg !1270
+701a799,804
+>   br label %sw.bb28.split, !dbg !1272
+> 
+> sw.bb28.split:                                    ; preds = %sw.bb28
+>   %32 = load i32, i32* @counter, align 4, !dbg !1272
+>   %33 = add i32 %32, 168668, !dbg !1272
+>   store i32 %33, i32* @counter, align 4, !dbg !1272
+705a809,814
+>   br label %sw.bb29.split, !dbg !1274
+> 
+> sw.bb29.split:                                    ; preds = %sw.bb29
+>   %34 = load i32, i32* @counter, align 4, !dbg !1274
+>   %35 = add i32 %34, 126501, !dbg !1274
+>   store i32 %35, i32* @counter, align 4, !dbg !1274
+710a820,825
+>   br label %sw.bb30.split, !dbg !1277
+> 
+> sw.bb30.split:                                    ; preds = %sw.bb30
+>   %36 = load i32, i32* @counter, align 4, !dbg !1277
+>   %37 = add i32 %36, 42167, !dbg !1277
+>   store i32 %37, i32* @counter, align 4, !dbg !1277
+715a831,836
+>   br label %sw.bb31.split, !dbg !1280
+> 
+> sw.bb31.split:                                    ; preds = %sw.bb31
+>   %38 = load i32, i32* @counter, align 4, !dbg !1280
+>   %39 = add i32 %38, -42167, !dbg !1280
+>   store i32 %39, i32* @counter, align 4, !dbg !1280
+721c842
+<   br i1 %cmp33, label %if.then35, label %if.end36, !dbg !1284
+---
+>   br i1 %cmp33, label %if.then35.split, label %if.end36, !dbg !1284
+723c844,850
+< if.then35:                                        ; preds = %sw.bb32
+---
+> if.then35.split:                                  ; preds = %sw.bb32
+>   %40 = load i32, i32* @counter, align 4, !dbg !1285
+>   %41 = add i32 %40, 84337, !dbg !1285
+>   store i32 %41, i32* @counter, align 4, !dbg !1285
+>   br label %if.then35, !dbg !1285
+> 
+> if.then35:                                        ; preds = %if.then35.split
+726c853
+<   unreachable, !dbg !1287
+---
+>   br label %UnifiedUnreachableBlock
+730c857,863
+<   br i1 %tobool, label %land.lhs.true, label %if.end41, !dbg !1290
+---
+>   br i1 %tobool, label %land.lhs.true.split, label %if.end41, !dbg !1290
+> 
+> land.lhs.true.split:                              ; preds = %if.end36
+>   %42 = load i32, i32* @counter, align 4, !dbg !1291
+>   %43 = add i32 %42, 84335, !dbg !1291
+>   store i32 %43, i32* @counter, align 4, !dbg !1291
+>   br label %land.lhs.true, !dbg !1291
+732c865
+< land.lhs.true:                                    ; preds = %if.end36
+---
+> land.lhs.true:                                    ; preds = %land.lhs.true.split
+735c868,874
+<   br i1 %cmp38, label %if.then40, label %if.end41, !dbg !1293
+---
+>   br i1 %cmp38, label %if.then40.split, label %if.end41, !dbg !1293
+> 
+> if.then40.split:                                  ; preds = %land.lhs.true
+>   %44 = load i32, i32* @counter, align 4, !dbg !1294
+>   %45 = add i32 %44, 1, !dbg !1294
+>   store i32 %45, i32* @counter, align 4, !dbg !1294
+>   br label %if.then40, !dbg !1294
+737c876
+< if.then40:                                        ; preds = %land.lhs.true
+---
+> if.then40:                                        ; preds = %if.then40.split
+740c879
+<   unreachable, !dbg !1296
+---
+>   br label %UnifiedUnreachableBlock
+750c889
+<   unreachable, !dbg !1303
+---
+>   br label %UnifiedUnreachableBlock
+760a900,905
+>   br label %if.then46.split, !dbg !1309
+> 
+> if.then46.split:                                  ; preds = %if.then46
+>   %46 = load i32, i32* @counter, align 4, !dbg !1309
+>   %47 = add i32 %46, 42167, !dbg !1309
+>   store i32 %47, i32* @counter, align 4, !dbg !1309
+763c908,914
+< if.end47:                                         ; preds = %if.then46, %if.end44
+---
+> if.end47:                                         ; preds = %if.then46.split, %if.end44
+>   br label %if.end47.split, !dbg !1310
+> 
+> if.end47.split:                                   ; preds = %if.end47
+>   %48 = load i32, i32* @counter, align 4, !dbg !1310
+>   %49 = add i32 %48, -210839, !dbg !1310
+>   store i32 %49, i32* @counter, align 4, !dbg !1310
+767a919,924
+>   br label %sw.bb48.split, !dbg !1312
+> 
+> sw.bb48.split:                                    ; preds = %sw.bb48
+>   %50 = load i32, i32* @counter, align 4, !dbg !1312
+>   %51 = add i32 %50, -253006, !dbg !1312
+>   store i32 %51, i32* @counter, align 4, !dbg !1312
+772c929,935
+<   unreachable, !dbg !1313
+---
+>   br label %sw.bb49.split
+> 
+> sw.bb49.split:                                    ; preds = %sw.bb49
+>   %52 = load i32, i32* @counter, align 4
+>   %53 = add i32 %52, -126502
+>   store i32 %53, i32* @counter, align 4
+>   br label %UnifiedUnreachableBlock
+779c942
+<   unreachable, !dbg !1314
+---
+>   br label %sw.bb50.split
+781c944,956
+< sw.default:                                       ; preds = %if.end
+---
+> sw.bb50.split:                                    ; preds = %sw.bb50
+>   %54 = load i32, i32* @counter, align 4
+>   %55 = add i32 %54, -126503
+>   store i32 %55, i32* @counter, align 4
+>   br label %UnifiedUnreachableBlock
+> 
+> sw.default.split:                                 ; preds = %if.end
+>   %56 = load i32, i32* @counter, align 4, !dbg !1315
+>   %57 = add i32 %56, 759014, !dbg !1315
+>   store i32 %57, i32* @counter, align 4, !dbg !1315
+>   br label %sw.default, !dbg !1315
+> 
+> sw.default:                                       ; preds = %sw.default.split
+783c958
+<   unreachable, !dbg !1315
+---
+>   br label %UnifiedUnreachableBlock
+785,786c960,961
+< sw.epilog:                                        ; preds = %sw.bb48, %if.end47, %sw.bb31, %if.end, %sw.bb30, %sw.bb29, %sw.bb28, %if.end27, %if.end22, %sw.bb17, %sw.bb16, %sw.bb15, %sw.bb14, %sw.bb13, %if.end12, %if.end7, %sw.bb
+<   %posix_format.1 = phi i8 [ %posix_format.0, %sw.bb48 ], [ %posix_format.0, %if.end47 ], [ %posix_format.0, %sw.bb31 ], [ %posix_format.0, %if.end ], [ %posix_format.0, %sw.bb30 ], [ %posix_format.0, %sw.bb29 ], [ %posix_format.0, %sw.bb28 ], [ 1, %if.end27 ], [ %posix_format.0, %if.end22 ], [ %posix_format.0, %sw.bb17 ], [ %posix_format.0, %sw.bb16 ], [ %posix_format.0, %sw.bb15 ], [ %posix_format.0, %sw.bb14 ], [ %posix_format.0, %sw.bb13 ], [ %posix_format.0, %if.end12 ], [ %posix_format.0, %if.end7 ], [ %posix_format.0, %sw.bb ], !dbg !1184
+---
+> sw.epilog:                                        ; preds = %sw.bb48.split, %if.end47.split, %sw.bb31.split, %sw.bb30.split, %sw.bb29.split, %sw.bb28.split, %if.end27.split, %if.end22.split, %sw.bb17.split, %sw.bb16.split, %sw.bb15.split, %sw.bb14.split, %sw.bb13.split, %if.end12.split, %if.end7.split, %sw.bb.split, %if.end
+>   %posix_format.1 = phi i8 [ %posix_format.0, %sw.bb48.split ], [ %posix_format.0, %if.end47.split ], [ %posix_format.0, %sw.bb31.split ], [ %posix_format.0, %if.end ], [ %posix_format.0, %sw.bb30.split ], [ %posix_format.0, %sw.bb29.split ], [ %posix_format.0, %sw.bb28.split ], [ 1, %if.end27.split ], [ %posix_format.0, %if.end22.split ], [ %posix_format.0, %sw.bb17.split ], [ %posix_format.0, %sw.bb16.split ], [ %posix_format.0, %sw.bb15.split ], [ %posix_format.0, %sw.bb14.split ], [ %posix_format.0, %sw.bb13.split ], [ %posix_format.0, %if.end12.split ], [ %posix_format.0, %if.end7.split ], [ %posix_format.0, %sw.bb.split ], !dbg !1184
+787a963,968
+>   br label %sw.epilog.split, !dbg !1316
+> 
+> sw.epilog.split:                                  ; preds = %sw.epilog
+>   %58 = load i32, i32* @counter, align 4, !dbg !1316
+>   %59 = add i32 %58, 125798, !dbg !1316
+>   store i32 %59, i32* @counter, align 4, !dbg !1316
+790,792c971,973
+< cleanup:                                          ; preds = %sw.epilog, %if.then
+<   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ]
+<   %posix_format.2 = phi i8 [ %posix_format.0, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1207
+---
+> cleanup:                                          ; preds = %sw.epilog.split, %if.then
+>   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog.split ]
+>   %posix_format.2 = phi i8 [ %posix_format.0, %if.then ], [ %posix_format.1, %sw.epilog.split ], !dbg !1207
+796c977
+<   switch i32 %cleanup.dest.slot.0, label %unreachable [
+---
+>   switch i32 %cleanup.dest.slot.0, label %unreachable.split [
+801a983,991
+>   br label %cleanup.cont.split, !dbg !1206
+> 
+> cleanup.cont.split:                               ; preds = %cleanup.cont
+>   %60 = load i32, i32* @counter, align 4, !dbg !1206
+>   %61 = add i32 %60, 927685, !dbg !1206
+>   store i32 %61, i32* @counter, align 4, !dbg !1206
+>   %62 = load i32, i32* @counter, align 4, !dbg !1206
+>   call void @_Z7counterii(i32 %62, i32 0)
+>   store i32 42872, i32* @counter, align 4, !dbg !1206
+820a1011,1016
+>   br label %if.then56.split, !dbg !1331
+> 
+> if.then56.split:                                  ; preds = %if.then56
+>   %63 = load i32, i32* @counter, align 4, !dbg !1331
+>   %64 = add i32 %63, 28110, !dbg !1331
+>   store i32 %64, i32* @counter, align 4, !dbg !1331
+825a1022,1027
+>   br label %if.else.split
+> 
+> if.else.split:                                    ; preds = %if.else
+>   %65 = load i32, i32* @counter, align 4
+>   %66 = add i32 %65, 14055
+>   store i32 %66, i32* @counter, align 4
+828c1030
+< if.end62:                                         ; preds = %if.else, %if.then56
+---
+> if.end62:                                         ; preds = %if.else.split, %if.then56.split
+834c1036,1042
+<   br i1 %cmp64, label %if.then68, label %lor.lhs.false, !dbg !1338
+---
+>   br i1 %cmp64, label %if.end63.if.then68_crit_edge, label %lor.lhs.false, !dbg !1338
+> 
+> if.end63.if.then68_crit_edge:                     ; preds = %if.end63
+>   %67 = load i32, i32* @counter, align 4, !dbg !1338
+>   %68 = add i32 %67, 11244, !dbg !1338
+>   store i32 %68, i32* @counter, align 4, !dbg !1338
+>   br label %if.then68, !dbg !1338
+839c1047,1053
+<   br i1 %cmp66, label %if.then68, label %if.else69, !dbg !1341
+---
+>   br i1 %cmp66, label %lor.lhs.false.if.then68_crit_edge, label %if.else69, !dbg !1341
+> 
+> lor.lhs.false.if.then68_crit_edge:                ; preds = %lor.lhs.false
+>   %69 = load i32, i32* @counter, align 4, !dbg !1341
+>   %70 = add i32 %69, 8433, !dbg !1341
+>   store i32 %70, i32* @counter, align 4, !dbg !1341
+>   br label %if.then68, !dbg !1341
+841c1055
+< if.then68:                                        ; preds = %lor.lhs.false, %if.end63
+---
+> if.then68:                                        ; preds = %lor.lhs.false.if.then68_crit_edge, %if.end63.if.then68_crit_edge
+848c1062
+<   br i1 %tobool70, label %if.then71, label %if.else72, !dbg !1345
+---
+>   br i1 %tobool70, label %if.then71.split, label %if.else72, !dbg !1345
+850c1064,1070
+< if.then71:                                        ; preds = %if.else69
+---
+> if.then71.split:                                  ; preds = %if.else69
+>   %71 = load i32, i32* @counter, align 4, !dbg !1346
+>   %72 = add i32 %71, 5622, !dbg !1346
+>   store i32 %72, i32* @counter, align 4, !dbg !1346
+>   br label %if.then71, !dbg !1346
+> 
+> if.then71:                                        ; preds = %if.then71.split
+856c1076,1082
+<   br i1 %tobool73, label %if.then74, label %if.end75, !dbg !1350
+---
+>   br i1 %tobool73, label %if.then74.split, label %if.end75, !dbg !1350
+> 
+> if.then74.split:                                  ; preds = %if.else72
+>   %73 = load i32, i32* @counter, align 4, !dbg !1351
+>   %74 = add i32 %73, 2811, !dbg !1351
+>   store i32 %74, i32* @counter, align 4, !dbg !1351
+>   br label %if.then74, !dbg !1351
+858c1084
+< if.then74:                                        ; preds = %if.else72
+---
+> if.then74:                                        ; preds = %if.then74.split
+874,876c1100,1102
+< for.cond:                                         ; preds = %for.inc90, %if.end77
+<   %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1353
+<   %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1356
+---
+> for.cond:                                         ; preds = %for.inc90.split, %if.end77
+>   %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90.split ], !dbg !1353
+>   %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90.split ], !dbg !1356
+884a1111,1116
+>   br label %for.body.split, !dbg !1361
+> 
+> for.body.split:                                   ; preds = %for.body
+>   %75 = load i32, i32* @counter, align 4, !dbg !1361
+>   %76 = add i32 %75, -3, !dbg !1361
+>   store i32 %76, i32* @counter, align 4, !dbg !1361
+887,888c1119,1120
+< for.cond79:                                       ; preds = %for.inc, %for.body
+<   %fs_excl.0 = phi %struct.fs_type_list* [ %i24, %for.body ], [ %i28, %for.inc ], !dbg !1362
+---
+> for.cond79:                                       ; preds = %for.inc, %for.body.split
+>   %fs_excl.0 = phi %struct.fs_type_list* [ %i24, %for.body.split ], [ %i28, %for.inc ], !dbg !1362
+900c1132
+<   br i1 %cmp84, label %if.then86, label %if.end89, !dbg !1370
+---
+>   br i1 %cmp84, label %if.then86.split, label %if.end89, !dbg !1370
+902c1134,1140
+< if.then86:                                        ; preds = %for.body81
+---
+> if.then86.split:                                  ; preds = %for.body81
+>   %77 = load i32, i32* @counter, align 4, !dbg !1371
+>   %78 = add i32 %77, 2, !dbg !1371
+>   store i32 %78, i32* @counter, align 4, !dbg !1371
+>   br label %if.then86, !dbg !1371
+> 
+> if.then86:                                        ; preds = %if.then86.split
+911c1149,1155
+<   br label %for.inc, !dbg !1376
+---
+>   br label %for.inc.split, !dbg !1376
+> 
+> for.inc.split:                                    ; preds = %if.end89
+>   %79 = load i32, i32* @counter, align 4, !dbg !1377
+>   %80 = add i32 %79, 3519, !dbg !1377
+>   store i32 %80, i32* @counter, align 4, !dbg !1377
+>   br label %for.inc, !dbg !1377
+913c1157
+< for.inc:                                          ; preds = %if.end89
+---
+> for.inc:                                          ; preds = %for.inc.split
+927a1172,1180
+>   br label %for.inc90.split, !dbg !1384
+> 
+> for.inc90.split:                                  ; preds = %for.inc90
+>   %81 = load i32, i32* @counter, align 4, !dbg !1384
+>   %82 = add i32 %81, 1855373, !dbg !1384
+>   store i32 %82, i32* @counter, align 4, !dbg !1384
+>   %83 = load i32, i32* @counter, align 4, !dbg !1384
+>   call void @_Z7counterii(i32 %83, i32 0)
+>   store i32 3518, i32* @counter, align 4, !dbg !1384
+934a1188,1193
+>   br label %if.then94.split, !dbg !1390
+> 
+> if.then94.split:                                  ; preds = %if.then94
+>   %84 = load i32, i32* @counter, align 4, !dbg !1390
+>   %85 = add i32 %84, 2111, !dbg !1390
+>   store i32 %85, i32* @counter, align 4, !dbg !1390
+937a1197,1202
+>   br label %if.end95.split, !dbg !1391
+> 
+> if.end95.split:                                   ; preds = %if.end95
+>   %86 = load i32, i32* @counter, align 4, !dbg !1391
+>   %87 = add i32 %86, 707, !dbg !1391
+>   store i32 %87, i32* @counter, align 4, !dbg !1391
+940,943c1205,1208
+< cleanup96:                                        ; preds = %if.end95, %if.then94
+<   %cleanup.dest.slot.1 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
+<   %retval.0 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
+<   switch i32 %cleanup.dest.slot.1, label %cleanup209 [
+---
+> cleanup96:                                        ; preds = %if.end95.split, %if.then94.split
+>   %cleanup.dest.slot.1 = phi i32 [ 1, %if.then94.split ], [ 0, %if.end95.split ]
+>   %retval.0 = phi i32 [ 1, %if.then94.split ], [ 0, %if.end95.split ]
+>   switch i32 %cleanup.dest.slot.1, label %cleanup96.cleanup209_crit_edge [
+946a1212,1217
+> cleanup96.cleanup209_crit_edge:                   ; preds = %cleanup96
+>   %88 = load i32, i32* @counter, align 4
+>   %89 = add i32 %88, 1403
+>   store i32 %89, i32* @counter, align 4
+>   br label %cleanup209
+> 
+950c1221,1227
+<   br i1 %cmp100, label %cond.true, label %cond.false, !dbg !1392
+---
+>   br i1 %cmp100, label %cond.true.split, label %cond.false, !dbg !1392
+> 
+> cond.true.split:                                  ; preds = %cleanup.cont99
+>   %90 = load i32, i32* @counter, align 4, !dbg !1392
+>   %91 = add i32 %90, 2, !dbg !1392
+>   store i32 %91, i32* @counter, align 4, !dbg !1392
+>   br label %cond.true, !dbg !1392
+952c1229
+< cond.true:                                        ; preds = %cleanup.cont99
+---
+> cond.true:                                        ; preds = %cond.true.split
+956c1233
+<   unreachable, !dbg !1392
+---
+>   br label %UnifiedUnreachableBlock
+964c1241,1247
+<   br i1 %cmp102, label %if.then104, label %if.end128, !dbg !1395
+---
+>   br i1 %cmp102, label %if.then104.split, label %if.end128, !dbg !1395
+> 
+> if.then104.split:                                 ; preds = %cond.end
+>   %92 = load i32, i32* @counter, align 4, !dbg !1396
+>   %93 = add i32 %92, 694, !dbg !1396
+>   store i32 %93, i32* @counter, align 4, !dbg !1396
+>   br label %if.then104, !dbg !1396
+966c1249
+< if.then104:                                       ; preds = %cond.end
+---
+> if.then104:                                       ; preds = %if.then104.split
+977,978c1260,1261
+< for.cond107:                                      ; preds = %for.inc125, %if.then104
+<   %i.0 = phi i32 [ %i34, %if.then104 ], [ %inc, %for.inc125 ], !dbg !1401
+---
+> for.cond107:                                      ; preds = %for.inc125.split, %if.then104
+>   %i.0 = phi i32 [ %i34, %if.then104 ], [ %inc, %for.inc125.split ], !dbg !1401
+1008a1292,1297
+>   br label %if.then118.split, !dbg !1420
+> 
+> if.then118.split:                                 ; preds = %if.then118
+>   %94 = load i32, i32* @counter, align 4, !dbg !1420
+>   %95 = add i32 %94, 1, !dbg !1420
+>   store i32 %95, i32* @counter, align 4, !dbg !1420
+1011c1300
+< if.end124:                                        ; preds = %if.then118, %for.body110
+---
+> if.end124:                                        ; preds = %if.then118.split, %for.body110
+1016a1306,1314
+>   br label %for.inc125.split, !dbg !1423
+> 
+> for.inc125.split:                                 ; preds = %for.inc125
+>   %96 = load i32, i32* @counter, align 4, !dbg !1423
+>   %97 = add i32 %96, 1858184, !dbg !1423
+>   store i32 %97, i32* @counter, align 4, !dbg !1423
+>   %98 = load i32, i32* @counter, align 4, !dbg !1423
+>   call void @_Z7counterii(i32 %98, i32 0)
+>   store i32 705, i32* @counter, align 4, !dbg !1423
+1019a1318,1323
+>   br label %for.end127.split, !dbg !1426
+> 
+> for.end127.split:                                 ; preds = %for.end127
+>   %99 = load i32, i32* @counter, align 4, !dbg !1426
+>   %100 = add i32 %99, 6, !dbg !1426
+>   store i32 %100, i32* @counter, align 4, !dbg !1426
+1022,1023c1326,1327
+< if.end128:                                        ; preds = %for.end127, %cond.end
+<   %stats.0 = phi %struct.stat* [ %i33, %for.end127 ], [ null, %cond.end ], !dbg !1184
+---
+> if.end128:                                        ; preds = %for.end127.split, %cond.end
+>   %stats.0 = phi %struct.stat* [ %i33, %for.end127.split ], [ null, %cond.end ], !dbg !1184
+1027c1331,1337
+<   br i1 %cmp129, label %lor.end, label %lor.lhs.false131, !dbg !1429
+---
+>   br i1 %cmp129, label %if.end128.lor.end_crit_edge, label %lor.lhs.false131, !dbg !1429
+> 
+> if.end128.lor.end_crit_edge:                      ; preds = %if.end128
+>   %101 = load i32, i32* @counter, align 4, !dbg !1429
+>   %102 = add i32 %101, 560, !dbg !1429
+>   store i32 %102, i32* @counter, align 4, !dbg !1429
+>   br label %lor.end, !dbg !1429
+1032c1342,1348
+<   br i1 %cmp132, label %lor.end, label %lor.lhs.false134, !dbg !1432
+---
+>   br i1 %cmp132, label %lor.lhs.false131.lor.end_crit_edge, label %lor.lhs.false134, !dbg !1432
+> 
+> lor.lhs.false131.lor.end_crit_edge:               ; preds = %lor.lhs.false131
+>   %103 = load i32, i32* @counter, align 4, !dbg !1432
+>   %104 = add i32 %103, 420, !dbg !1432
+>   store i32 %104, i32* @counter, align 4, !dbg !1432
+>   br label %lor.end, !dbg !1432
+1037c1353,1359
+<   br i1 %tobool135, label %lor.end, label %lor.lhs.false137, !dbg !1434
+---
+>   br i1 %tobool135, label %lor.lhs.false134.lor.end_crit_edge, label %lor.lhs.false137, !dbg !1434
+> 
+> lor.lhs.false134.lor.end_crit_edge:               ; preds = %lor.lhs.false134
+>   %105 = load i32, i32* @counter, align 4, !dbg !1434
+>   %106 = add i32 %105, 280, !dbg !1434
+>   store i32 %106, i32* @counter, align 4, !dbg !1434
+>   br label %lor.end, !dbg !1434
+1042c1364,1370
+<   br i1 %tobool138, label %lor.end, label %lor.rhs, !dbg !1438
+---
+>   br i1 %tobool138, label %lor.lhs.false137.lor.end_crit_edge, label %lor.rhs, !dbg !1438
+> 
+> lor.lhs.false137.lor.end_crit_edge:               ; preds = %lor.lhs.false137
+>   %107 = load i32, i32* @counter, align 4, !dbg !1438
+>   %108 = add i32 %107, 140, !dbg !1438
+>   store i32 %108, i32* @counter, align 4, !dbg !1438
+>   br label %lor.end, !dbg !1438
+1049,1050c1377,1378
+< lor.end:                                          ; preds = %lor.rhs, %lor.lhs.false137, %lor.lhs.false134, %lor.lhs.false131, %if.end128
+<   %i43 = phi i1 [ true, %lor.lhs.false137 ], [ true, %lor.lhs.false134 ], [ true, %lor.lhs.false131 ], [ true, %if.end128 ], [ %tobool140, %lor.rhs ]
+---
+> lor.end:                                          ; preds = %lor.lhs.false137.lor.end_crit_edge, %lor.lhs.false134.lor.end_crit_edge, %lor.lhs.false131.lor.end_crit_edge, %if.end128.lor.end_crit_edge, %lor.rhs
+>   %i43 = phi i1 [ true, %lor.lhs.false137.lor.end_crit_edge ], [ true, %lor.lhs.false134.lor.end_crit_edge ], [ true, %lor.lhs.false131.lor.end_crit_edge ], [ true, %if.end128.lor.end_crit_edge ], [ %tobool140, %lor.rhs ]
+1055c1383
+<   br i1 %cmp143, label %if.then145, label %if.end166, !dbg !1444
+---
+>   br i1 %cmp143, label %if.then145.split, label %if.end166, !dbg !1444
+1057c1385,1391
+< if.then145:                                       ; preds = %lor.end
+---
+> if.then145.split:                                 ; preds = %lor.end
+>   %109 = load i32, i32* @counter, align 4, !dbg !1445
+>   %110 = add i32 %109, 20, !dbg !1445
+>   store i32 %110, i32* @counter, align 4, !dbg !1445
+>   br label %if.then145, !dbg !1445
+> 
+> if.then145:                                       ; preds = %if.then145.split
+1061c1395,1401
+<   br i1 %cmp146, label %lor.lhs.false148, label %if.then160, !dbg !1449
+---
+>   br i1 %cmp146, label %lor.lhs.false148.split, label %if.then160, !dbg !1449
+> 
+> lor.lhs.false148.split:                           ; preds = %if.then145
+>   %111 = load i32, i32* @counter, align 4, !dbg !1450
+>   %112 = add i32 %111, 20, !dbg !1450
+>   store i32 %112, i32* @counter, align 4, !dbg !1450
+>   br label %lor.lhs.false148, !dbg !1450
+1063c1403
+< lor.lhs.false148:                                 ; preds = %if.then145
+---
+> lor.lhs.false148:                                 ; preds = %lor.lhs.false148.split
+1066c1406,1412
+<   br i1 %tobool149, label %if.then160, label %lor.lhs.false151, !dbg !1451
+---
+>   br i1 %tobool149, label %lor.lhs.false148.if.then160_crit_edge, label %lor.lhs.false151, !dbg !1451
+> 
+> lor.lhs.false148.if.then160_crit_edge:            ; preds = %lor.lhs.false148
+>   %113 = load i32, i32* @counter, align 4, !dbg !1451
+>   %114 = add i32 %113, 80, !dbg !1451
+>   store i32 %114, i32* @counter, align 4, !dbg !1451
+>   br label %if.then160, !dbg !1451
+1071c1417,1423
+<   br i1 %tobool152, label %if.then160, label %lor.lhs.false154, !dbg !1453
+---
+>   br i1 %tobool152, label %lor.lhs.false151.if.then160_crit_edge, label %lor.lhs.false154, !dbg !1453
+> 
+> lor.lhs.false151.if.then160_crit_edge:            ; preds = %lor.lhs.false151
+>   %115 = load i32, i32* @counter, align 4, !dbg !1453
+>   %116 = add i32 %115, 60, !dbg !1453
+>   store i32 %116, i32* @counter, align 4, !dbg !1453
+>   br label %if.then160, !dbg !1453
+1076c1428,1434
+<   br i1 %cmp155, label %if.then160, label %lor.lhs.false157, !dbg !1456
+---
+>   br i1 %cmp155, label %lor.lhs.false154.if.then160_crit_edge, label %lor.lhs.false157, !dbg !1456
+> 
+> lor.lhs.false154.if.then160_crit_edge:            ; preds = %lor.lhs.false154
+>   %117 = load i32, i32* @counter, align 4, !dbg !1456
+>   %118 = add i32 %117, 40, !dbg !1456
+>   store i32 %118, i32* @counter, align 4, !dbg !1456
+>   br label %if.then160, !dbg !1456
+1081c1439,1445
+<   br i1 %cmp158, label %if.then160, label %if.end161, !dbg !1459
+---
+>   br i1 %cmp158, label %lor.lhs.false157.if.then160_crit_edge, label %if.end161, !dbg !1459
+> 
+> lor.lhs.false157.if.then160_crit_edge:            ; preds = %lor.lhs.false157
+>   %119 = load i32, i32* @counter, align 4, !dbg !1459
+>   %120 = add i32 %119, 20, !dbg !1459
+>   store i32 %120, i32* @counter, align 4, !dbg !1459
+>   br label %if.then160, !dbg !1459
+1083c1447
+< if.then160:                                       ; preds = %lor.lhs.false157, %lor.lhs.false154, %lor.lhs.false151, %lor.lhs.false148, %if.then145
+---
+> if.then160:                                       ; preds = %lor.lhs.false157.if.then160_crit_edge, %lor.lhs.false154.if.then160_crit_edge, %lor.lhs.false151.if.then160_crit_edge, %lor.lhs.false148.if.then160_crit_edge, %if.then145
+1102c1466
+<   br i1 %tobool167, label %if.then168, label %if.end169, !dbg !1469
+---
+>   br i1 %tobool167, label %if.then168.split, label %if.end169, !dbg !1469
+1104c1468,1474
+< if.then168:                                       ; preds = %if.end166
+---
+> if.then168.split:                                 ; preds = %if.end166
+>   %121 = load i32, i32* @counter, align 4, !dbg !1470
+>   %122 = add i32 %121, 10, !dbg !1470
+>   store i32 %122, i32* @counter, align 4, !dbg !1470
+>   br label %if.then168, !dbg !1470
+> 
+> if.then168:                                       ; preds = %if.then168.split
+1112c1482,1488
+<   br i1 %tobool170, label %if.then171, label %if.else192, !dbg !1474
+---
+>   br i1 %tobool170, label %if.then171.split, label %if.else192, !dbg !1474
+> 
+> if.then171.split:                                 ; preds = %if.end169
+>   %123 = load i32, i32* @counter, align 4, !dbg !1475
+>   %124 = add i32 %123, 4, !dbg !1475
+>   store i32 %124, i32* @counter, align 4, !dbg !1475
+>   br label %if.then171, !dbg !1475
+1114c1490
+< if.then171:                                       ; preds = %if.end169
+---
+> if.then171:                                       ; preds = %if.then171.split
+1120,1121c1496,1497
+< for.cond173:                                      ; preds = %for.inc188, %if.then171
+<   %i172.0 = phi i32 [ %i53, %if.then171 ], [ %inc189, %for.inc188 ], !dbg !1477
+---
+> for.cond173:                                      ; preds = %for.inc188.split, %if.then171
+>   %i172.0 = phi i32 [ %i53, %if.then171 ], [ %inc189, %for.inc188.split ], !dbg !1477
+1144a1521,1526
+>   br label %if.then181.split, !dbg !1489
+> 
+> if.then181.split:                                 ; preds = %if.then181
+>   %125 = load i32, i32* @counter, align 4, !dbg !1489
+>   %126 = add i32 %125, 1, !dbg !1489
+>   store i32 %126, i32* @counter, align 4, !dbg !1489
+1147c1529
+< if.end187:                                        ; preds = %if.then181, %for.body177
+---
+> if.end187:                                        ; preds = %if.then181.split, %for.body177
+1152a1535,1543
+>   br label %for.inc188.split, !dbg !1492
+> 
+> for.inc188.split:                                 ; preds = %for.inc188
+>   %127 = load i32, i32* @counter, align 4, !dbg !1492
+>   %128 = add i32 %127, 1858886, !dbg !1492
+>   store i32 %128, i32* @counter, align 4, !dbg !1492
+>   %129 = load i32, i32* @counter, align 4, !dbg !1492
+>   call void @_Z7counterii(i32 %129, i32 0)
+>   store i32 3, i32* @counter, align 4, !dbg !1492
+1165c1556,1562
+<   br i1 %tobool194, label %if.then195, label %if.else202, !dbg !1499
+---
+>   br i1 %tobool194, label %if.then195.split, label %if.else202, !dbg !1499
+> 
+> if.then195.split:                                 ; preds = %if.end193
+>   %130 = load i32, i32* @counter, align 4, !dbg !1500
+>   %131 = add i32 %130, 2, !dbg !1500
+>   store i32 %131, i32* @counter, align 4, !dbg !1500
+>   br label %if.then195, !dbg !1500
+1167c1564
+< if.then195:                                       ; preds = %if.end193
+---
+> if.then195:                                       ; preds = %if.then195.split
+1170c1567
+<   br i1 %tobool196, label %if.then197, label %if.end201, !dbg !1503
+---
+>   br i1 %tobool196, label %if.then197.split, label %if.end201, !dbg !1503
+1172c1569,1575
+< if.then197:                                       ; preds = %if.then195
+---
+> if.then197.split:                                 ; preds = %if.then195
+>   %132 = load i32, i32* @counter, align 4, !dbg !1504
+>   %133 = add i32 %132, 1, !dbg !1504
+>   store i32 %133, i32* @counter, align 4, !dbg !1504
+>   br label %if.then197, !dbg !1504
+> 
+> if.then197:                                       ; preds = %if.then197.split
+1191c1594
+<   unreachable, !dbg !1514
+---
+>   br label %UnifiedUnreachableBlock
+1197a1601,1606
+>   br label %if.end208.split, !dbg !1515
+> 
+> if.end208.split:                                  ; preds = %if.end208
+>   %134 = load i32, i32* @counter, align 4, !dbg !1515
+>   %135 = add i32 %134, -1, !dbg !1515
+>   store i32 %135, i32* @counter, align 4, !dbg !1515
+1200,1201c1609,1615
+< cleanup209:                                       ; preds = %if.end208, %cleanup96
+<   %retval.1 = phi i32 [ %retval.0, %cleanup96 ], [ %i62, %if.end208 ], !dbg !1184
+---
+> cleanup209:                                       ; preds = %cleanup96.cleanup209_crit_edge, %if.end208.split
+>   %retval.1 = phi i32 [ %retval.0, %cleanup96.cleanup209_crit_edge ], [ %i62, %if.end208.split ], !dbg !1184
+>   %136 = load i32, i32* @counter, align 4, !dbg !1516
+>   %137 = add i32 %136, -1858890, !dbg !1516
+>   store i32 %137, i32* @counter, align 4, !dbg !1516
+>   %138 = load i32, i32* @counter, align 4, !dbg !1516
+>   call void @_Z7counterii(i32 %138, i32 1)
+1204c1618,1627
+< unreachable:                                      ; preds = %cleanup
+---
+> unreachable.split:                                ; preds = %cleanup
+>   %139 = load i32, i32* @counter, align 4
+>   %140 = add i32 %139, 42873
+>   store i32 %140, i32* @counter, align 4
+>   br label %unreachable
+> 
+> unreachable:                                      ; preds = %unreachable.split
+>   br label %UnifiedUnreachableBlock
+> 
+> UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then205, %cond.false, %sw.default, %sw.bb50.split, %sw.bb49.split, %if.then43, %if.then40, %if.then35, %if.then26, %if.then21, %if.then11, %if.then6
+1322c1745
+<   unreachable, !dbg !1603
+---
+>   br label %UnifiedUnreachableBlock
+1340c1763
+<   unreachable, !dbg !1613
+---
+>   br label %UnifiedUnreachableBlock
+1372c1795
+<   unreachable, !dbg !1622
+---
+>   br label %UnifiedUnreachableBlock
+1384a1808,1810
+> 
+> UnifiedUnreachableBlock:                          ; preds = %sw.default, %if.then17, %if.then11
+>   unreachable
+2312c2738
+<   unreachable, !dbg !2202
+---
+>   br label %UnifiedUnreachableBlock
+2587c3013
+<   unreachable, !dbg !2342
+---
+>   br label %UnifiedUnreachableBlock
+2604c3030
+<   unreachable, !dbg !2349
+---
+>   br label %UnifiedUnreachableBlock
+2613c3039
+<   unreachable, !dbg !2355
+---
+>   br label %UnifiedUnreachableBlock
+2684c3110
+< cleanup.cont:                                     ; preds = %if.then, %if.then9, %if.then12, %if.then19, %cleanup, %cleanup
+---
+> cleanup.cont:                                     ; preds = %cleanup, %cleanup, %if.then19, %if.then12, %if.then9, %if.then
+2687a3114,3116
+>   br label %UnifiedUnreachableBlock
+> 
+> UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then259, %sw.default256, %if.then250, %sw.default
+3521c3950
+< if.end22:                                         ; preds = %if.then, %if.then20, %if.end18
+---
+> if.end22:                                         ; preds = %if.then20, %if.end18, %if.then
+3614c4043
+<   unreachable, !dbg !2986
+---
+>   br label %UnifiedUnreachableBlock
+3894c4323
+<   unreachable, !dbg !3113
+---
+>   br label %UnifiedUnreachableBlock
+3950a4380,4382
+> 
+> UnifiedUnreachableBlock:                          ; preds = %if.then126, %if.then
+>   unreachable
+4866c5298
+< cleanup:                                          ; preds = %if.then20, %if.end23, %if.then14
+---
+> cleanup:                                          ; preds = %if.end23, %if.then20, %if.then14
+4934c5366
+< cleanup44:                                        ; preds = %if.then40, %if.then28, %if.end43, %if.then36
+---
+> cleanup44:                                        ; preds = %if.end43, %if.then40, %if.then36, %if.then28
+6019c6451
+< sw.bb22:                                          ; preds = %while.body, %if.end21
+---
+> sw.bb22:                                          ; preds = %if.end21, %while.body
+6021c6453
+<   unreachable, !dbg !4048
+---
+>   br label %UnifiedUnreachableBlock
+6260c6692
+<   unreachable, !dbg !4146
+---
+>   br label %UnifiedUnreachableBlock
+6308c6740
+<   unreachable, !dbg !4169
+---
+>   br label %UnifiedUnreachableBlock
+6398c6830
+< cleanup160:                                       ; preds = %if.end157, %if.then148, %if.end159, %if.then156
+---
+> cleanup160:                                       ; preds = %if.end159, %if.end157, %if.then156, %if.then148
+6476c6908
+<   unreachable, !dbg !4221
+---
+>   br label %UnifiedUnreachableBlock
+6496c6928
+<   unreachable, !dbg !4230
+---
+>   br label %UnifiedUnreachableBlock
+6662c7094
+< cleanup285:                                       ; preds = %if.then282, %if.end284, %cleanup160
+---
+> cleanup285:                                       ; preds = %if.end284, %if.then282, %cleanup160
+6827c7259
+<   unreachable, !dbg !4333
+---
+>   br label %UnifiedUnreachableBlock
+6846a7279,7281
+>   br label %UnifiedUnreachableBlock
+> 
+> UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then321, %if.then212, %if.then203, %if.then128, %if.then110, %sw.bb22
+7168c7603
+<   unreachable, !dbg !4537
+---
+>   br label %UnifiedUnreachableBlock
+7179c7614
+<   unreachable, !dbg !4544
+---
+>   br label %UnifiedUnreachableBlock
+7182a7618,7620
+> 
+> UnifiedUnreachableBlock:                          ; preds = %if.then12, %if.end
+>   unreachable
+7357c7795
+<   unreachable, !dbg !4685
+---
+>   br label %UnifiedUnreachableBlock
+7381a7820,7822
+>   br label %UnifiedUnreachableBlock
+> 
+> UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then6
+9279c9720
+<   unreachable, !dbg !6053
+---
+>   br label %UnifiedUnreachableBlock
+9383c9824
+<   unreachable, !dbg !6111
+---
+>   br label %UnifiedUnreachableBlock
+9455a9897,9899
+> 
+> UnifiedUnreachableBlock:                          ; preds = %if.then46, %if.then
+>   unreachable
+9955c10399
+< cleanup:                                          ; preds = %if.then21, %if.end22
+---
+> cleanup:                                          ; preds = %if.end22, %if.then21
+11201c11645
+< cleanup:                                          ; preds = %if.else15, %if.then14, %if.else, %if.then7, %if.end23
+---
+> cleanup:                                          ; preds = %if.end23, %if.else15, %if.then14, %if.else, %if.then7
+11290c11734
+< mbsalign_unibyte:                                 ; preds = %if.end49, %cleanup, %if.then44
+---
+> mbsalign_unibyte:                                 ; preds = %if.end49, %if.then44, %cleanup
+11350c11794
+< sw.default:                                       ; preds = %if.end58, %sw.bb60
+---
+> sw.default:                                       ; preds = %sw.bb60, %if.end58
+11423c11867
+< mbsalign_cleanup:                                 ; preds = %if.end79, %cleanup, %if.else45
+---
+> mbsalign_cleanup:                                 ; preds = %if.end79, %if.else45, %cleanup
+11942c12386
+< cleanup:                                          ; preds = %if.then39, %if.then28, %if.end45, %if.else43, %if.else16, %if.then14, %if.else, %if.then6
+---
+> cleanup:                                          ; preds = %if.end45, %if.else43, %if.then39, %if.then28, %if.else16, %if.then14, %if.else, %if.then6
+12076c12520
+< cleanup92:                                        ; preds = %if.then85, %if.then68, %if.end91, %if.else89
+---
+> cleanup92:                                        ; preds = %if.end91, %if.else89, %if.then85, %if.then68
+12578c13022
+< cleanup200:                                       ; preds = %if.then198, %if.end199, %if.then189
+---
+> cleanup200:                                       ; preds = %if.end199, %if.then198, %if.then189
+12907c13351
+< cleanup407:                                       ; preds = %if.then405, %if.end406, %if.then207
+---
+> cleanup407:                                       ; preds = %if.end406, %if.then405, %if.then207
+13553c13997
+< sw.bb3:                                           ; preds = %process_input, %sw.bb
+---
+> sw.bb3:                                           ; preds = %sw.bb, %process_input
+13674c14118
+< sw.bb28:                                          ; preds = %process_input, %sw.bb27
+---
+> sw.bb28:                                          ; preds = %sw.bb27, %process_input
+13680c14124
+< sw.bb29:                                          ; preds = %process_input, %sw.bb28
+---
+> sw.bb29:                                          ; preds = %sw.bb28, %process_input
+13697c14141
+< sw.bb33:                                          ; preds = %process_input, %if.end32
+---
+> sw.bb33:                                          ; preds = %if.end32, %process_input
+14479c14923
+< sw.bb296:                                         ; preds = %if.end82, %if.end82, %if.end295
+---
+> sw.bb296:                                         ; preds = %if.end295, %if.end82, %if.end82
+14489c14933
+< sw.bb301:                                         ; preds = %if.end82, %if.end300
+---
+> sw.bb301:                                         ; preds = %if.end300, %if.end82
+14493c14937
+< sw.bb302:                                         ; preds = %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %sw.bb301
+---
+> sw.bb302:                                         ; preds = %sw.bb301, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82
+14770c15214
+< cleanup:                                          ; preds = %sw.bb407, %for.end412
+---
+> cleanup:                                          ; preds = %for.end412, %sw.bb407
+15445c15889
+< store_c:                                          ; preds = %do.end662, %cleanup589, %if.then613, %if.then271, %if.end262
+---
+> store_c:                                          ; preds = %do.end662, %if.then613, %cleanup589, %if.then271, %if.end262
+15564c16008
+< cleanup702:                                       ; preds = %if.then617, %if.then315, %if.then308, %if.then278, %if.then261, %if.then203, %if.then182, %if.then90, %if.then80, %if.end701, %cleanup589, %if.then176
+---
+> cleanup702:                                       ; preds = %if.end701, %if.then617, %cleanup589, %if.then315, %if.then308, %if.then278, %if.then261, %if.then203, %if.then182, %if.then176, %if.then90, %if.then80
+15716c16160
+< force_outer_quoting_style:                        ; preds = %cleanup702, %if.then720
+---
+> force_outer_quoting_style:                        ; preds = %if.then720, %cleanup702
+18093c18537
+< sw.epilog:                                        ; preds = %if.then53, %sw.bb65, %if.end64
+---
+> sw.epilog:                                        ; preds = %sw.bb65, %if.end64, %if.then53
+19180c19624
+<   unreachable, !dbg !11017
+---
+>   br label %UnifiedUnreachableBlock
+19191c19635
+<   unreachable, !dbg !11021
+---
+>   br label %UnifiedUnreachableBlock
+19232c19676
+< cleanup:                                          ; preds = %if.then23, %if.end24, %if.then18
+---
+> cleanup:                                          ; preds = %if.end24, %if.then23, %if.then18
+19279c19723
+<   unreachable, !dbg !11062
+---
+>   br label %UnifiedUnreachableBlock
+19290c19734
+<   unreachable, !dbg !11066
+---
+>   br label %UnifiedUnreachableBlock
+19329c19773
+<   unreachable, !dbg !11083
+---
+>   br label %UnifiedUnreachableBlock
+19347c19791
+< cleanup75:                                        ; preds = %if.then71, %if.end72, %if.then57
+---
+> cleanup75:                                        ; preds = %if.end72, %if.then71, %if.then57
+19387c19831
+< Fail:                                             ; preds = %cleanup75, %cleanup, %if.then91, %if.then85, %if.then32
+---
+> Fail:                                             ; preds = %if.then91, %if.then85, %cleanup75, %if.then32, %cleanup
+19405a19850,19852
+> 
+> UnifiedUnreachableBlock:                          ; preds = %if.else66, %if.else45, %if.else40, %if.else9, %if.else
+>   unreachable
+20472a20920,20921
 > 
 > declare void @_Z7counterii(i32, i32)
