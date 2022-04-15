@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'df.bc'
 source_filename = "llvm-link"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -569,9 +569,8 @@ entry:
   br label %while.cond, !dbg !1206
 
 while.cond:                                       ; preds = %cleanup.cont, %entry
-  %posix_format.0 = phi i8 [ 0, %entry ], [ %tau, %cleanup.cont ], !dbg !1207
-  %tau88 = call i8 (...) @llvm.tau.i8(i8 %posix_format.0, i8 0)
-  call void @llvm.dbg.value(metadata i8 %tau88, metadata !1154, metadata !DIExpression()), !dbg !1184
+  %posix_format.0 = phi i8 [ 0, %entry ], [ %posix_format.2, %cleanup.cont ], !dbg !1207
+  call void @llvm.dbg.value(metadata i8 %posix_format.0, metadata !1154, metadata !DIExpression()), !dbg !1184
   br label %while.body, !dbg !1206
 
 while.body:                                       ; preds = %while.cond
@@ -727,7 +726,7 @@ if.then35:                                        ; preds = %sw.bb32
   unreachable, !dbg !1287
 
 if.end36:                                         ; preds = %sw.bb32
-  %tobool = trunc i8 %tau88 to i1, !dbg !1288
+  %tobool = trunc i8 %posix_format.0 to i1, !dbg !1288
   br i1 %tobool, label %land.lhs.true, label %if.end41, !dbg !1290
 
 land.lhs.true:                                    ; preds = %if.end36
@@ -783,20 +782,18 @@ sw.default:                                       ; preds = %if.end
   call void @usage(i32 1) #27, !dbg !1315
   unreachable, !dbg !1315
 
-sw.epilog:                                        ; preds = %sw.bb48, %if.end47, %sw.bb31, %sw.bb30, %sw.bb29, %sw.bb28, %if.end27, %if.end22, %sw.bb17, %sw.bb16, %sw.bb15, %sw.bb14, %sw.bb13, %if.end12, %if.end7, %sw.bb, %if.end
-  %posix_format.1 = phi i8 [ %tau88, %sw.bb48 ], [ %tau88, %if.end47 ], [ %tau88, %sw.bb31 ], [ %tau88, %if.end ], [ %tau88, %sw.bb30 ], [ %tau88, %sw.bb29 ], [ %tau88, %sw.bb28 ], [ 1, %if.end27 ], [ %tau88, %if.end22 ], [ %tau88, %sw.bb17 ], [ %tau88, %sw.bb16 ], [ %tau88, %sw.bb15 ], [ %tau88, %sw.bb14 ], [ %tau88, %sw.bb13 ], [ %tau88, %if.end12 ], [ %tau88, %if.end7 ], [ %tau88, %sw.bb ], !dbg !1184
+sw.epilog:                                        ; preds = %sw.bb48, %if.end47, %sw.bb31, %if.end, %sw.bb30, %sw.bb29, %sw.bb28, %if.end27, %if.end22, %sw.bb17, %sw.bb16, %sw.bb15, %sw.bb14, %sw.bb13, %if.end12, %if.end7, %sw.bb
+  %posix_format.1 = phi i8 [ %posix_format.0, %sw.bb48 ], [ %posix_format.0, %if.end47 ], [ %posix_format.0, %sw.bb31 ], [ %posix_format.0, %if.end ], [ %posix_format.0, %sw.bb30 ], [ %posix_format.0, %sw.bb29 ], [ %posix_format.0, %sw.bb28 ], [ 1, %if.end27 ], [ %posix_format.0, %if.end22 ], [ %posix_format.0, %sw.bb17 ], [ %posix_format.0, %sw.bb16 ], [ %posix_format.0, %sw.bb15 ], [ %posix_format.0, %sw.bb14 ], [ %posix_format.0, %sw.bb13 ], [ %posix_format.0, %if.end12 ], [ %posix_format.0, %if.end7 ], [ %posix_format.0, %sw.bb ], !dbg !1184
   call void @llvm.dbg.value(metadata i8 %posix_format.1, metadata !1154, metadata !DIExpression()), !dbg !1184
   br label %cleanup, !dbg !1316
 
 cleanup:                                          ; preds = %sw.epilog, %if.then
   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ]
-  %posix_format.2 = phi i8 [ %tau88, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1207
-  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.2, i8 %tau88)
-  %tau89 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0, i32 3)
-  call void @llvm.dbg.value(metadata i8 %tau, metadata !1154, metadata !DIExpression()), !dbg !1184
+  %posix_format.2 = phi i8 [ %posix_format.0, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1207
+  call void @llvm.dbg.value(metadata i8 %posix_format.2, metadata !1154, metadata !DIExpression()), !dbg !1184
   %i17 = bitcast i32* %oi to i8*, !dbg !1316
   call void @llvm.lifetime.end.p0i8(i64 4, i8* %i17) #25, !dbg !1316
-  switch i32 %tau89, label %unreachable [
+  switch i32 %cleanup.dest.slot.0, label %unreachable [
     i32 0, label %cleanup.cont
     i32 3, label %while.end
   ]
@@ -810,7 +807,7 @@ while.end:                                        ; preds = %cleanup
   br i1 %cmp52, label %if.then54, label %if.end63, !dbg !1321
 
 if.then54:                                        ; preds = %while.end
-  %tobool55 = trunc i8 %tau to i1, !dbg !1322
+  %tobool55 = trunc i8 %posix_format.2 to i1, !dbg !1322
   br i1 %tobool55, label %if.then56, label %if.else, !dbg !1325
 
 if.then56:                                        ; preds = %if.then54
@@ -855,7 +852,7 @@ if.then71:                                        ; preds = %if.else69
   br label %if.end76, !dbg !1347
 
 if.else72:                                        ; preds = %if.else69
-  %tobool73 = trunc i8 %tau to i1, !dbg !1348
+  %tobool73 = trunc i8 %posix_format.2 to i1, !dbg !1348
   br i1 %tobool73, label %if.then74, label %if.end75, !dbg !1350
 
 if.then74:                                        ; preds = %if.else72
@@ -877,11 +874,9 @@ if.end77:                                         ; preds = %if.end76, %if.then6
 for.cond:                                         ; preds = %for.inc90, %if.end77
   %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1353
   %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1356
-  %tau90 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0, %struct.fs_type_list* %i23)
-  %tau91 = call i8 (...) @llvm.tau.i8(i8 %match.0, i8 0)
-  call void @llvm.dbg.value(metadata %struct.fs_type_list* %tau90, metadata !1164, metadata !DIExpression()), !dbg !1353
-  call void @llvm.dbg.value(metadata i8 %tau91, metadata !1162, metadata !DIExpression()), !dbg !1353
-  %tobool78 = icmp ne %struct.fs_type_list* %tau90, null, !dbg !1357
+  call void @llvm.dbg.value(metadata %struct.fs_type_list* %fs_incl.0, metadata !1164, metadata !DIExpression()), !dbg !1353
+  call void @llvm.dbg.value(metadata i8 %match.0, metadata !1162, metadata !DIExpression()), !dbg !1353
+  %tobool78 = icmp ne %struct.fs_type_list* %fs_incl.0, null, !dbg !1357
   br i1 %tobool78, label %for.body, label %for.end92, !dbg !1357
 
 for.body:                                         ; preds = %for.cond
@@ -896,7 +891,7 @@ for.cond79:                                       ; preds = %for.inc, %for.body
   br i1 %tobool80, label %for.body81, label %for.end, !dbg !1363
 
 for.body81:                                       ; preds = %for.cond79
-  %fs_name = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 0, !dbg !1364
+  %fs_name = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 0, !dbg !1364
   %i25 = load i8*, i8** %fs_name, align 8, !dbg !1364, !tbaa !1368
   %fs_name82 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_excl.0, i32 0, i32 0, !dbg !1364
   %i26 = load i8*, i8** %fs_name82, align 8, !dbg !1364, !tbaa !1368
@@ -905,7 +900,7 @@ for.body81:                                       ; preds = %for.cond79
   br i1 %cmp84, label %if.then86, label %if.end89, !dbg !1370
 
 if.then86:                                        ; preds = %for.body81
-  %fs_name87 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 0, !dbg !1371
+  %fs_name87 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 0, !dbg !1371
   %i27 = load i8*, i8** %fs_name87, align 8, !dbg !1371, !tbaa !1368
   %call88 = call i8* @quote(i8* %i27), !dbg !1373
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @.str.26, i64 0, i64 0), i8* %call88), !dbg !1374
@@ -922,18 +917,18 @@ for.inc:                                          ; preds = %if.end89
   br label %for.cond79, !dbg !1379, !llvm.loop !1380
 
 for.end:                                          ; preds = %if.then86, %for.cond79
-  %match.1 = phi i8 [ 1, %if.then86 ], [ %tau91, %for.cond79 ], !dbg !1353
+  %match.1 = phi i8 [ 1, %if.then86 ], [ %match.0, %for.cond79 ], !dbg !1353
   call void @llvm.dbg.value(metadata i8 %match.1, metadata !1162, metadata !DIExpression()), !dbg !1353
   br label %for.inc90, !dbg !1382
 
 for.inc90:                                        ; preds = %for.end
-  %fs_next91 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 1, !dbg !1383
+  %fs_next91 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 1, !dbg !1383
   %i29 = load %struct.fs_type_list*, %struct.fs_type_list** %fs_next91, align 8, !dbg !1383, !tbaa !1378
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i29, metadata !1164, metadata !DIExpression()), !dbg !1353
   br label %for.cond, !dbg !1384, !llvm.loop !1385
 
 for.end92:                                        ; preds = %for.cond
-  %tobool93 = trunc i8 %tau91 to i1, !dbg !1387
+  %tobool93 = trunc i8 %match.0 to i1, !dbg !1387
   br i1 %tobool93, label %if.then94, label %if.end95, !dbg !1389
 
 if.then94:                                        ; preds = %for.end92
@@ -945,9 +940,7 @@ if.end95:                                         ; preds = %for.end92
 cleanup96:                                        ; preds = %if.end95, %if.then94
   %cleanup.dest.slot.1 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
   %retval.0 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
-  %tau92 = call i32 (...) @llvm.tau.i32(i32 %retval.0, i32 0)
-  %tau93 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.1, i32 0)
-  switch i32 %tau93, label %cleanup209 [
+  switch i32 %cleanup.dest.slot.1, label %cleanup209 [
     i32 0, label %cleanup.cont99
   ]
 
@@ -1028,8 +1021,7 @@ for.end127:                                       ; preds = %for.cond.cleanup
 
 if.end128:                                        ; preds = %for.end127, %cond.end
   %stats.0 = phi %struct.stat* [ %i33, %for.end127 ], [ null, %cond.end ], !dbg !1184
-  %tau94 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %stats.0, %struct.stat* null)
-  call void @llvm.dbg.value(metadata %struct.stat* %tau94, metadata !1119, metadata !DIExpression()), !dbg !1184
+  call void @llvm.dbg.value(metadata %struct.stat* %stats.0, metadata !1119, metadata !DIExpression()), !dbg !1184
   %i38 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1427, !tbaa !957
   %cmp129 = icmp ne %struct.fs_type_list* %i38, null, !dbg !1428
   br i1 %cmp129, label %lor.end, label %lor.lhs.false131, !dbg !1429
@@ -1105,7 +1097,6 @@ if.end161:                                        ; preds = %if.then160, %lor.lh
   br label %if.end166, !dbg !1466
 
 if.end166:                                        ; preds = %if.end161, %lor.end
-  %tau95 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau94, %struct.stat* null)
   %i52 = load i8, i8* @require_sync, align 1, !dbg !1467, !tbaa !1192, !range !1299
   %tobool167 = trunc i8 %i52 to i1, !dbg !1467
   br i1 %tobool167, label %if.then168, label %if.end169, !dbg !1469
@@ -1115,10 +1106,9 @@ if.then168:                                       ; preds = %if.end166
   br label %if.end169, !dbg !1470
 
 if.end169:                                        ; preds = %if.then168, %if.end166
-  %tau96 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau95, %struct.stat* null)
   call void @get_field_list(), !dbg !1471
   call void @get_header(), !dbg !1472
-  %tobool170 = icmp ne %struct.stat* %tau96, null, !dbg !1473
+  %tobool170 = icmp ne %struct.stat* %stats.0, null, !dbg !1473
   br i1 %tobool170, label %if.then171, label %if.else192, !dbg !1474
 
 if.then171:                                       ; preds = %if.end169
@@ -1150,7 +1140,7 @@ if.then181:                                       ; preds = %for.body177
   %i56 = load i32, i32* @optind, align 4, !dbg !1486, !tbaa !1196
   %sub184 = sub nsw i32 %i172.0, %i56, !dbg !1487
   %idxprom185 = sext i32 %sub184 to i64, !dbg !1488
-  %arrayidx186 = getelementptr inbounds %struct.stat, %struct.stat* %tau96, i64 %idxprom185, !dbg !1488
+  %arrayidx186 = getelementptr inbounds %struct.stat, %struct.stat* %stats.0, i64 %idxprom185, !dbg !1488
   call void @get_entry(i8* %i55, %struct.stat* %arrayidx186), !dbg !1489
   br label %if.end187, !dbg !1489
 
@@ -1208,7 +1198,7 @@ if.end208:                                        ; preds = %if.end207, %if.end2
   br label %cleanup209, !dbg !1515
 
 cleanup209:                                       ; preds = %if.end208, %cleanup96
-  %retval.1 = phi i32 [ %tau92, %cleanup96 ], [ %i62, %if.end208 ], !dbg !1184
+  %retval.1 = phi i32 [ %retval.0, %cleanup96 ], [ %i62, %if.end208 ], !dbg !1184
   ret i32 %retval.1, !dbg !1516
 
 unreachable:                                      ; preds = %cleanup
@@ -2691,7 +2681,7 @@ cleanup:                                          ; preds = %for.end, %if.then90
     i32 1, label %cleanup.cont
   ]
 
-cleanup.cont:                                     ; preds = %cleanup, %cleanup, %if.then19, %if.then12, %if.then9, %if.then
+cleanup.cont:                                     ; preds = %if.then, %if.then9, %if.then12, %if.then19, %cleanup, %cleanup
   ret void, !dbg !2378
 
 unreachable:                                      ; preds = %cleanup
@@ -3528,7 +3518,7 @@ if.then20:                                        ; preds = %if.end18
   store i64 %sub21, i64* %dest, align 8, !dbg !2906, !tbaa !1241
   br label %if.end22, !dbg !2907
 
-if.end22:                                         ; preds = %if.then20, %if.end18, %if.then
+if.end22:                                         ; preds = %if.then, %if.then20, %if.end18
   ret void, !dbg !2908
 }
 
@@ -4873,7 +4863,7 @@ if.then20:                                        ; preds = %if.end17
 if.end23:                                         ; preds = %if.end17
   br label %cleanup, !dbg !3673
 
-cleanup:                                          ; preds = %if.end23, %if.then20, %if.then14
+cleanup:                                          ; preds = %if.then20, %if.end23, %if.then14
   %cleanup.dest.slot.0 = phi i32 [ 1, %if.then14 ], [ 4, %if.then20 ], [ 0, %if.end23 ]
   switch i32 %cleanup.dest.slot.0, label %cleanup55 [
     i32 0, label %cleanup.cont
@@ -4941,7 +4931,7 @@ if.end43:                                         ; preds = %if.end37
   call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %i17, i8* align 8 %i18, i64 144, i1 false), !dbg !3706, !tbaa.struct !3637
   br label %cleanup44, !dbg !3707
 
-cleanup44:                                        ; preds = %if.end43, %if.then40, %if.then36, %if.then28
+cleanup44:                                        ; preds = %if.then40, %if.then28, %if.end43, %if.then36
   %cleanup.dest.slot.1 = phi i32 [ 4, %if.then28 ], [ 6, %if.then36 ], [ 4, %if.then40 ], [ 0, %if.end43 ]
   %i19 = bitcast %struct.stat* %st to i8*, !dbg !3707
   call void @llvm.lifetime.end.p0i8(i64 144, i8* %i19) #25, !dbg !3707
@@ -6026,7 +6016,7 @@ if.then20:                                        ; preds = %sw.bb
 if.end21:                                         ; preds = %sw.bb
   br label %sw.bb22, !dbg !4047
 
-sw.bb22:                                          ; preds = %if.end21, %while.body
+sw.bb22:                                          ; preds = %while.body, %if.end21
   call void @xalloc_die() #27, !dbg !4048
   unreachable, !dbg !4048
 
@@ -6405,7 +6395,7 @@ if.end157:                                        ; preds = %if.then153
 if.end159:                                        ; preds = %if.end149
   br label %cleanup160, !dbg !4207
 
-cleanup160:                                       ; preds = %if.end159, %if.end157, %if.then156, %if.then148
+cleanup160:                                       ; preds = %if.end157, %if.then148, %if.end159, %if.then156
   %cleanup.dest.slot.1 = phi i32 [ 5, %if.then148 ], [ 8, %if.then156 ], [ 5, %if.end157 ], [ 0, %if.end159 ]
   %i30 = bitcast %struct.stat* %st to i8*, !dbg !4207
   call void @llvm.lifetime.end.p0i8(i64 144, i8* %i30) #25, !dbg !4207
@@ -6669,7 +6659,7 @@ if.end284:                                        ; preds = %if.end283, %if.end2
   call void @llvm.dbg.value(metadata i8 %end_in_extra_buffer.1, metadata !3936, metadata !DIExpression()), !dbg !3992
   br label %cleanup285, !dbg !4295
 
-cleanup285:                                       ; preds = %if.end284, %if.then282, %cleanup160
+cleanup285:                                       ; preds = %if.then282, %if.end284, %cleanup160
   %end_in_extra_buffer.2 = phi i8 [ %end_in_extra_buffer.1, %if.end284 ], [ %end_in_extra_buffer.0, %cleanup160 ], [ %end_in_extra_buffer.0, %if.then282 ], !dbg !3992
   %prefix_len.4 = phi i64 [ %prefix_len.3, %if.end284 ], [ %prefix_len.1, %cleanup160 ], [ %prefix_len.1, %if.then282 ], !dbg !3992
   %cleanup.dest.slot.2 = phi i32 [ 0, %if.end284 ], [ %cleanup.dest.slot.1, %cleanup160 ], [ 5, %if.then282 ]
@@ -9962,7 +9952,7 @@ if.then21:                                        ; preds = %if.then18
 if.end22:                                         ; preds = %if.then18
   br label %cleanup, !dbg !6528
 
-cleanup:                                          ; preds = %if.end22, %if.then21
+cleanup:                                          ; preds = %if.then21, %if.end22
   %cleanup.dest.slot.0 = phi i32 [ 2, %if.then21 ], [ 0, %if.end22 ]
   call void @llvm.dbg.value(metadata i32 0, metadata !6408, metadata !DIExpression()), !dbg !6484
   call void @llvm.dbg.value(metadata i32 0, metadata !6414, metadata !DIExpression()), !dbg !6484
@@ -11208,7 +11198,7 @@ if.end23:                                         ; preds = %if.then19, %if.end1
   call void @llvm.dbg.value(metadata i8 %conversion.0, metadata !7134, metadata !DIExpression()), !dbg !7148
   br label %cleanup, !dbg !7193
 
-cleanup:                                          ; preds = %if.end23, %if.else15, %if.then14, %if.else, %if.then7
+cleanup:                                          ; preds = %if.else15, %if.then14, %if.else, %if.then7, %if.end23
   %conversion.1 = phi i8 [ 0, %if.then7 ], [ 0, %if.else ], [ 0, %if.then14 ], [ 0, %if.else15 ], [ %conversion.0, %if.end23 ], !dbg !7148
   %n_cols.1 = phi i64 [ %sub, %if.then7 ], [ %sub, %if.else ], [ %sub, %if.then14 ], [ %sub, %if.else15 ], [ %n_cols.0, %if.end23 ], !dbg !7148
   %str_wc.0 = phi i32* [ null, %if.then7 ], [ null, %if.else ], [ %i, %if.then14 ], [ %i, %if.else15 ], [ %i, %if.end23 ], !dbg !7148
@@ -11297,7 +11287,7 @@ if.end49:                                         ; preds = %if.end46, %lor.lhs.
   call void @llvm.dbg.value(metadata i64 %n_used_bytes.0, metadata !7132, metadata !DIExpression()), !dbg !7148
   br label %mbsalign_unibyte, !dbg !7230
 
-mbsalign_unibyte:                                 ; preds = %if.end49, %if.then44, %cleanup
+mbsalign_unibyte:                                 ; preds = %if.end49, %cleanup, %if.then44
   %n_used_bytes.1 = phi i64 [ %sub, %if.then44 ], [ %n_used_bytes.0, %if.end49 ], [ %sub, %cleanup ], !dbg !7148
   %n_cols.4 = phi i64 [ %n_cols.2, %if.then44 ], [ %n_cols.3, %if.end49 ], [ %n_cols.1, %cleanup ], !dbg !7148
   %str_to_print.1 = phi i8* [ %src, %if.then44 ], [ %str_to_print.0, %if.end49 ], [ %src, %cleanup ], !dbg !7148
@@ -11357,7 +11347,7 @@ sw.bb59:                                          ; preds = %if.end58
 sw.bb60:                                          ; preds = %if.end58
   br label %sw.default, !dbg !7252
 
-sw.default:                                       ; preds = %sw.bb60, %if.end58
+sw.default:                                       ; preds = %if.end58, %sw.bb60
   %div = udiv i64 %n_spaces.0, 2, !dbg !7253
   %rem = urem i64 %n_spaces.0, 2, !dbg !7254
   %add61 = add i64 %div, %rem, !dbg !7255
@@ -11430,7 +11420,7 @@ if.end79:                                         ; preds = %cond.end, %if.end70
   call void @llvm.dbg.value(metadata i64 %add82, metadata !7126, metadata !DIExpression()), !dbg !7148
   br label %mbsalign_cleanup, !dbg !7281
 
-mbsalign_cleanup:                                 ; preds = %if.end79, %if.else45, %cleanup
+mbsalign_cleanup:                                 ; preds = %if.end79, %cleanup, %if.else45
   %str_wc.3 = phi i32* [ %str_wc.2, %if.end79 ], [ %str_wc.1, %if.else45 ], [ %str_wc.0, %cleanup ], !dbg !7197
   %newstr.2 = phi i8* [ %newstr.1, %if.end79 ], [ %call38, %if.else45 ], [ null, %cleanup ], !dbg !7148
   %ret.0 = phi i64 [ %add82, %if.end79 ], [ -1, %if.else45 ], [ -1, %cleanup ], !dbg !7148
@@ -11949,7 +11939,7 @@ if.end45:                                         ; preds = %if.end44, %if.end29
   call void @llvm.dbg.value(metadata i8* %add.ptr46, metadata !7439, metadata !DIExpression()), !dbg !7464
   br label %cleanup, !dbg !7545
 
-cleanup:                                          ; preds = %if.end45, %if.else43, %if.then39, %if.then28, %if.else16, %if.then14, %if.else, %if.then6
+cleanup:                                          ; preds = %if.then39, %if.then28, %if.end45, %if.else43, %if.else16, %if.then14, %if.else, %if.then6
   %p.2 = phi i8* [ %p.1, %if.else ], [ %incdec.ptr7, %if.then6 ], [ %p.1, %if.else16 ], [ %add.ptr, %if.then14 ], [ %p.1, %if.then28 ], [ %add.ptr46, %if.end45 ], [ %p.1, %if.else43 ], [ %p.1, %if.then39 ], !dbg !7464
   %width.4 = phi i32 [ %width.1, %if.else ], [ %inc8, %if.then6 ], [ %width.1, %if.else16 ], [ %inc15, %if.then14 ], [ %width.1, %if.then28 ], [ %width.3, %if.end45 ], [ %width.1, %if.else43 ], [ %width.1, %if.then39 ], !dbg !7464
   %cleanup.dest.slot.0 = phi i32 [ 1, %if.else ], [ 5, %if.then6 ], [ 1, %if.else16 ], [ 5, %if.then14 ], [ 7, %if.then28 ], [ 0, %if.end45 ], [ 1, %if.else43 ], [ 7, %if.then39 ]
@@ -12083,7 +12073,7 @@ if.end91:                                         ; preds = %if.end90, %if.end69
   call void @llvm.dbg.value(metadata i32 %width.8, metadata !7441, metadata !DIExpression()), !dbg !7464
   br label %cleanup92, !dbg !7589
 
-cleanup92:                                        ; preds = %if.end91, %if.else89, %if.then85, %if.then68
+cleanup92:                                        ; preds = %if.then85, %if.then68, %if.end91, %if.else89
   %width.9 = phi i32 [ %width.6, %if.then68 ], [ %width.8, %if.end91 ], [ %width.6, %if.else89 ], [ %width.6, %if.then85 ], !dbg !7464
   %cleanup.dest.slot.2 = phi i32 [ 7, %if.then68 ], [ 0, %if.end91 ], [ 1, %if.else89 ], [ 7, %if.then85 ]
   %retval.5 = phi i32 [ %retval.4, %if.then68 ], [ %retval.4, %if.end91 ], [ -1, %if.else89 ], [ %retval.4, %if.then85 ]
@@ -12585,7 +12575,7 @@ if.then198:                                       ; preds = %if.end194
 if.end199:                                        ; preds = %if.end194
   br label %cleanup200, !dbg !7801
 
-cleanup200:                                       ; preds = %if.end199, %if.then198, %if.then189
+cleanup200:                                       ; preds = %if.then198, %if.end199, %if.then189
   %cleanup.dest.slot.6 = phi i32 [ 4, %if.then189 ], [ 4, %if.then198 ], [ 0, %if.end199 ]
   %i54 = bitcast i64* %buf_size to i8*, !dbg !7801
   call void @llvm.lifetime.end.p0i8(i64 8, i8* %i54) #25, !dbg !7801
@@ -12914,7 +12904,7 @@ if.then405:                                       ; preds = %while.end401
 if.end406:                                        ; preds = %while.end401
   br label %cleanup407, !dbg !7855
 
-cleanup407:                                       ; preds = %if.end406, %if.then405, %if.then207
+cleanup407:                                       ; preds = %if.then405, %if.end406, %if.then207
   %cleanup.dest.slot.7 = phi i32 [ 1, %if.then207 ], [ 4, %if.then405 ], [ 0, %if.end406 ]
   %mtail.8 = phi %struct.mount_entry** [ %mount_list, %if.then207 ], [ %mtail.7, %if.then405 ], [ %mtail.7, %if.end406 ], !dbg !7707
   call void @llvm.dbg.value(metadata %struct.mount_entry** %mtail.8, metadata !7619, metadata !DIExpression()), !dbg !7694
@@ -13560,7 +13550,7 @@ sw.bb:                                            ; preds = %process_input
   call void @llvm.dbg.value(metadata i8 1, metadata !8257, metadata !DIExpression()), !dbg !8305
   br label %sw.bb3, !dbg !8322
 
-sw.bb3:                                           ; preds = %sw.bb, %process_input
+sw.bb3:                                           ; preds = %process_input, %sw.bb
   %elide_outer_quotes.1 = phi i8 [ %elide_outer_quotes.0, %process_input ], [ 1, %sw.bb ], !dbg !8305
   %quoting_style.addr.1 = phi i32 [ %quoting_style.addr.0, %process_input ], [ 5, %sw.bb ]
   call void @llvm.dbg.value(metadata i32 %quoting_style.addr.1, metadata !8245, metadata !DIExpression()), !dbg !8305
@@ -13681,13 +13671,13 @@ sw.bb27:                                          ; preds = %process_input
   call void @llvm.dbg.value(metadata i8 1, metadata !8255, metadata !DIExpression()), !dbg !8305
   br label %sw.bb28, !dbg !8363
 
-sw.bb28:                                          ; preds = %sw.bb27, %process_input
+sw.bb28:                                          ; preds = %process_input, %sw.bb27
   %backslash_escapes.1 = phi i8 [ %backslash_escapes.0, %process_input ], [ 1, %sw.bb27 ], !dbg !8305
   call void @llvm.dbg.value(metadata i8 %backslash_escapes.1, metadata !8255, metadata !DIExpression()), !dbg !8305
   call void @llvm.dbg.value(metadata i8 1, metadata !8257, metadata !DIExpression()), !dbg !8305
   br label %sw.bb29, !dbg !8364
 
-sw.bb29:                                          ; preds = %sw.bb28, %process_input
+sw.bb29:                                          ; preds = %process_input, %sw.bb28
   %elide_outer_quotes.2 = phi i8 [ %elide_outer_quotes.0, %process_input ], [ 1, %sw.bb28 ], !dbg !8305
   %backslash_escapes.2 = phi i8 [ %backslash_escapes.0, %process_input ], [ %backslash_escapes.1, %sw.bb28 ], !dbg !8316
   call void @llvm.dbg.value(metadata i8 %backslash_escapes.2, metadata !8255, metadata !DIExpression()), !dbg !8305
@@ -13704,7 +13694,7 @@ if.end32:                                         ; preds = %if.then31, %sw.bb29
   call void @llvm.dbg.value(metadata i8 %backslash_escapes.3, metadata !8255, metadata !DIExpression()), !dbg !8305
   br label %sw.bb33, !dbg !8365
 
-sw.bb33:                                          ; preds = %if.end32, %process_input
+sw.bb33:                                          ; preds = %process_input, %if.end32
   %elide_outer_quotes.3 = phi i8 [ %elide_outer_quotes.0, %process_input ], [ %elide_outer_quotes.2, %if.end32 ], !dbg !8311
   %backslash_escapes.4 = phi i8 [ %backslash_escapes.0, %process_input ], [ %backslash_escapes.3, %if.end32 ], !dbg !8316
   call void @llvm.dbg.value(metadata i8 %backslash_escapes.4, metadata !8255, metadata !DIExpression()), !dbg !8305
@@ -14486,7 +14476,7 @@ if.then294:                                       ; preds = %cond.false291, %con
 if.end295:                                        ; preds = %cond.false291, %cond.true286
   br label %sw.bb296, !dbg !8583
 
-sw.bb296:                                         ; preds = %if.end295, %if.end82, %if.end82
+sw.bb296:                                         ; preds = %if.end82, %if.end82, %if.end295
   %cmp297 = icmp ne i64 %i.0, 0, !dbg !8584
   br i1 %cmp297, label %if.then299, label %if.end300, !dbg !8586
 
@@ -14496,11 +14486,11 @@ if.then299:                                       ; preds = %sw.bb296
 if.end300:                                        ; preds = %sw.bb296
   br label %sw.bb301, !dbg !8588
 
-sw.bb301:                                         ; preds = %if.end300, %if.end82
+sw.bb301:                                         ; preds = %if.end82, %if.end300
   call void @llvm.dbg.value(metadata i8 1, metadata !8268, metadata !DIExpression()), !dbg !8389
   br label %sw.bb302, !dbg !8589
 
-sw.bb302:                                         ; preds = %sw.bb301, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82
+sw.bb302:                                         ; preds = %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %if.end82, %sw.bb301
   %c_and_shell_quote_compat.0 = phi i8 [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 0, %if.end82 ], [ 1, %sw.bb301 ], !dbg !8389
   call void @llvm.dbg.value(metadata i8 %c_and_shell_quote_compat.0, metadata !8268, metadata !DIExpression()), !dbg !8389
   %cmp303 = icmp eq i32 %quoting_style.addr.2, 2, !dbg !8590
@@ -14777,7 +14767,7 @@ for.inc410:                                       ; preds = %sw.epilog409
 for.end412:                                       ; preds = %for.cond399
   br label %cleanup, !dbg !8701
 
-cleanup:                                          ; preds = %for.end412, %sw.bb407
+cleanup:                                          ; preds = %sw.bb407, %for.end412
   %cleanup.dest.slot.0 = phi i32 [ 16, %sw.bb407 ], [ 0, %for.end412 ]
   switch i32 %cleanup.dest.slot.0, label %cleanup422 [
     i32 0, label %cleanup.cont
@@ -15452,7 +15442,7 @@ do.cond661:                                       ; preds = %do.end660
 do.end662:                                        ; preds = %do.cond661
   br label %store_c, !dbg !8850
 
-store_c:                                          ; preds = %do.end662, %if.then613, %cleanup589, %if.then271, %if.end262
+store_c:                                          ; preds = %do.end662, %cleanup589, %if.then613, %if.then271, %if.end262
   %escaping.6 = phi i8 [ %escaping.4, %cleanup589 ], [ 1, %do.end662 ], [ %escaping.5, %if.then613 ], [ 0, %if.end262 ], [ 0, %if.then271 ], !dbg !8389
   %c.10 = phi i8 [ %c.7, %cleanup589 ], [ %c.9, %do.end662 ], [ %c.8, %if.then613 ], [ %i3, %if.end262 ], [ %i3, %if.then271 ], !dbg !8531
   %encountered_single_quote.4 = phi i8 [ %encountered_single_quote.1, %cleanup589 ], [ %encountered_single_quote.3, %do.end662 ], [ %encountered_single_quote.2, %if.then613 ], [ %encountered_single_quote.1, %if.end262 ], [ %encountered_single_quote.1, %if.then271 ], !dbg !8314
@@ -15571,7 +15561,7 @@ if.end701:                                        ; preds = %if.then700, %do.end
   call void @llvm.dbg.value(metadata i8 %all_c_and_shell_quote_compat.2, metadata !8260, metadata !DIExpression()), !dbg !8305
   br label %cleanup702, !dbg !8896
 
-cleanup702:                                       ; preds = %if.end701, %if.then617, %cleanup589, %if.then315, %if.then308, %if.then278, %if.then261, %if.then203, %if.then182, %if.then176, %if.then90, %if.then80
+cleanup702:                                       ; preds = %if.then617, %if.then315, %if.then308, %if.then278, %if.then261, %if.then203, %if.then182, %if.then90, %if.then80, %if.end701, %cleanup589, %if.then176
   %all_c_and_shell_quote_compat.3 = phi i8 [ %all_c_and_shell_quote_compat.1, %if.then80 ], [ %all_c_and_shell_quote_compat.1, %cleanup589 ], [ %all_c_and_shell_quote_compat.2, %if.end701 ], [ %all_c_and_shell_quote_compat.1, %if.then617 ], [ %all_c_and_shell_quote_compat.1, %if.then315 ], [ %all_c_and_shell_quote_compat.1, %if.then308 ], [ %all_c_and_shell_quote_compat.1, %if.then261 ], [ %all_c_and_shell_quote_compat.1, %if.then278 ], [ %all_c_and_shell_quote_compat.1, %if.then203 ], [ %all_c_and_shell_quote_compat.1, %if.then182 ], [ %all_c_and_shell_quote_compat.1, %if.then90 ], [ %all_c_and_shell_quote_compat.1, %if.then176 ], !dbg !8313
   %encountered_single_quote.5 = phi i8 [ %encountered_single_quote.1, %if.then80 ], [ %encountered_single_quote.1, %cleanup589 ], [ %encountered_single_quote.4, %if.end701 ], [ %encountered_single_quote.3, %if.then617 ], [ 1, %if.then315 ], [ %encountered_single_quote.1, %if.then308 ], [ %encountered_single_quote.1, %if.then261 ], [ %encountered_single_quote.1, %if.then278 ], [ %encountered_single_quote.1, %if.then203 ], [ %encountered_single_quote.1, %if.then182 ], [ %encountered_single_quote.1, %if.then90 ], [ %encountered_single_quote.1, %if.then176 ], !dbg !8305
   %pending_shell_escape_end.16 = phi i8 [ %pending_shell_escape_end.1, %if.then80 ], [ %pending_shell_escape_end.10, %cleanup589 ], [ %pending_shell_escape_end.15, %if.end701 ], [ %pending_shell_escape_end.12, %if.then617 ], [ %pending_shell_escape_end.1, %if.then315 ], [ %pending_shell_escape_end.1, %if.then308 ], [ %pending_shell_escape_end.1, %if.then261 ], [ %pending_shell_escape_end.1, %if.then278 ], [ %pending_shell_escape_end.1, %if.then203 ], [ %pending_shell_escape_end.1, %if.then182 ], [ %pending_shell_escape_end.1, %if.then90 ], [ %pending_shell_escape_end.1, %if.then176 ], !dbg !8315
@@ -15723,7 +15713,7 @@ if.then763:                                       ; preds = %if.end760
 if.end765:                                        ; preds = %if.then763, %if.end760
   br label %cleanup775, !dbg !8955
 
-force_outer_quoting_style:                        ; preds = %if.then720, %cleanup702
+force_outer_quoting_style:                        ; preds = %cleanup702, %if.then720
   %argsize.addr.11 = phi i64 [ %argsize.addr.10, %cleanup702 ], [ %argsize.addr.1, %if.then720 ]
   %buffersize.addr.8 = phi i64 [ %buffersize.addr.7, %cleanup702 ], [ %buffersize.addr.1, %if.then720 ]
   call void @llvm.dbg.value(metadata i64 %buffersize.addr.8, metadata !8242, metadata !DIExpression()), !dbg !8305
@@ -18100,7 +18090,7 @@ sw.bb65:                                          ; preds = %if.then53, %if.then
   call void @llvm.dbg.value(metadata i32 %inc, metadata !10306, metadata !DIExpression()), !dbg !10377
   br label %sw.epilog, !dbg !10406
 
-sw.epilog:                                        ; preds = %sw.bb65, %if.end64, %if.then53
+sw.epilog:                                        ; preds = %if.then53, %sw.bb65, %if.end64
   %base.0 = phi i32 [ 1024, %if.then53 ], [ 1000, %sw.bb65 ], [ 1024, %if.end64 ], !dbg !10377
   %suffixes.1 = phi i32 [ 1, %if.then53 ], [ %inc, %sw.bb65 ], [ %suffixes.0, %if.end64 ], !dbg !10377
   call void @llvm.dbg.value(metadata i32 %suffixes.1, metadata !10306, metadata !DIExpression()), !dbg !10377
@@ -19239,7 +19229,7 @@ if.end24:                                         ; preds = %if.end20
   call void @llvm.dbg.value(metadata i8* %call26, metadata !10982, metadata !DIExpression()), !dbg !11002
   br label %cleanup, !dbg !11049
 
-cleanup:                                          ; preds = %if.end24, %if.then23, %if.then18
+cleanup:                                          ; preds = %if.then23, %if.end24, %if.then18
   %cleanup.dest.slot.0 = phi i32 [ 1, %if.then18 ], [ 2, %if.then23 ], [ 0, %if.end24 ]
   %dir.addr.0 = phi i8* [ %dir, %if.then18 ], [ %dir, %if.then23 ], [ %call26, %if.end24 ]
   call void @llvm.dbg.value(metadata i8* %dir.addr.0, metadata !10982, metadata !DIExpression()), !dbg !11002
@@ -19354,7 +19344,7 @@ if.end72:                                         ; preds = %if.end67
   call void @llvm.dbg.value(metadata i8* %call74, metadata !10982, metadata !DIExpression()), !dbg !11002
   br label %cleanup75, !dbg !11095
 
-cleanup75:                                        ; preds = %if.end72, %if.then71, %if.then57
+cleanup75:                                        ; preds = %if.then71, %if.end72, %if.then57
   %cleanup.dest.slot.1 = phi i32 [ 1, %if.then57 ], [ 2, %if.then71 ], [ 0, %if.end72 ]
   %dir.addr.4 = phi i8* [ %dir.addr.3, %if.then57 ], [ %dir.addr.3, %if.then71 ], [ %call74, %if.end72 ]
   %retval.3 = phi i32 [ -1, %if.then57 ], [ %retval.2, %if.then71 ], [ %retval.2, %if.end72 ], !dbg !11012
@@ -19394,7 +19384,7 @@ if.end92:                                         ; preds = %if.end87
   call void @cdb_free(%union.anon* %cdb), !dbg !11112
   br label %cleanup96, !dbg !11113
 
-Fail:                                             ; preds = %if.then91, %if.then85, %cleanup75, %if.then32, %cleanup
+Fail:                                             ; preds = %cleanup75, %cleanup, %if.then91, %if.then85, %if.then32
   call void @llvm.dbg.label(metadata !11001), !dbg !11114
   %call93 = call i32* @__errno_location() #29, !dbg !11115
   %i3 = load i32, i32* %call93, align 4, !dbg !11115, !tbaa !1196
@@ -20480,21 +20470,6 @@ declare !dbg !11883 dso_local i32 @fcntl(i32, i32, ...) #2
 
 ; Function Attrs: nofree nosync nounwind readnone speculatable willreturn
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i8 @llvm.tau.i8(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare %struct.fs_type_list* @llvm.tau.p0s_struct.fs_type_lists(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare %struct.stat* @llvm.tau.p0s_struct.stats(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i1 @llvm.tau.i1(...) #17
 
 attributes #0 = { noreturn nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nofree nosync nounwind readnone speculatable willreturn }

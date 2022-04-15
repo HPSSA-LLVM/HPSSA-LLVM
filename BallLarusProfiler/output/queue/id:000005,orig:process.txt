@@ -1,0 +1,5 @@
+1. test.cpp links to the source code being tested
+2. Run makefile
+3. clang++ pathProfiler IR/LL/test_modified.ll
+4. give input to a.out multiple times ( Using script )
+5. run bbReader which will produce profileInfo in proper format

@@ -6,13 +6,16 @@
 BUILD_PATH=${LLVM_BIN_PATH}
 LLVM_CONFIG=llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -O1
-# CXX=$(BUILD_PATH)/clang++ -std=c++17 -O0
+
+## For Fuzzer.
+# CXX=afl-clang++ -std=c++17 -O0
+
 # removed -g flag, add if needed
 # CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
 CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti -Xclang -disable-O0-optnone
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
-ifndef VERBOSE
+ifdef VERBOSE
 .SILENT:
 endif
 

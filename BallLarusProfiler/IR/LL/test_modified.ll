@@ -1,4 +1,4 @@
-; ModuleID = 'IR/LL/test_mem2reg.ll'
+; ModuleID = 'IR/LL/test_mem2reg_sumit.ll'
 source_filename = "llvm-link"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -341,6 +341,7 @@ target triple = "x86_64-unknown-linux-gnu"
 @.str.385 = private unnamed_addr constant [1 x i8] zeroinitializer, align 1
 @.str.1.386 = private unnamed_addr constant [6 x i8] c"ASCII\00", align 1
 @rpl_fcntl_DUPFD_CLOEXEC.have_dupfd_cloexec = internal global i32 0, align 4, !dbg !404
+@counter = global i32 0
 
 ; Function Attrs: noreturn nounwind uwtable
 define dso_local void @usage(i32 %status) #0 !dbg !945 {
@@ -568,13 +569,18 @@ entry:
   call void @llvm.dbg.value(metadata i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), metadata !1155, metadata !DIExpression()), !dbg !1184
   br label %while.cond, !dbg !1206
 
-while.cond:                                       ; preds = %cleanup.cont, %entry
-  %posix_format.0 = phi i8 [ 0, %entry ], [ %tau, %cleanup.cont ], !dbg !1207
-  %tau88 = call i8 (...) @llvm.tau.i8(i8 %posix_format.0, i8 0)
-  call void @llvm.dbg.value(metadata i8 %tau88, metadata !1154, metadata !DIExpression()), !dbg !1184
-  br label %while.body, !dbg !1206
+while.cond:                                       ; preds = %cleanup.cont.split, %entry
+  %posix_format.0 = phi i8 [ 0, %entry ], [ %posix_format.2, %cleanup.cont.split ], !dbg !1207
+  call void @llvm.dbg.value(metadata i8 %posix_format.0, metadata !1154, metadata !DIExpression()), !dbg !1184
+  br label %while.body.split, !dbg !1206
 
-while.body:                                       ; preds = %while.cond
+while.body.split:                                 ; preds = %while.cond
+  %0 = load i32, i32* @counter, align 4, !dbg !1208
+  %1 = add i32 %0, 130024, !dbg !1208
+  store i32 %1, i32* @counter, align 4, !dbg !1208
+  br label %while.body, !dbg !1208
+
+while.body:                                       ; preds = %while.body.split
   %i1 = bitcast i32* %oi to i8*, !dbg !1208
   call void @llvm.lifetime.start.p0i8(i64 4, i8* %i1) #25, !dbg !1208
   call void @llvm.dbg.declare(metadata i32* %oi, metadata !1156, metadata !DIExpression()), !dbg !1209
@@ -582,13 +588,19 @@ while.body:                                       ; preds = %while.cond
   %call2 = call i32 @getopt_long(i32 %argc, i8** %argv, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.15, i64 0, i64 0), %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i32* %oi) #25, !dbg !1210
   call void @llvm.dbg.value(metadata i32 %call2, metadata !1158, metadata !DIExpression()), !dbg !1211
   %cmp = icmp eq i32 %call2, -1, !dbg !1212
-  br i1 %cmp, label %if.then, label %if.end, !dbg !1214
+  br i1 %cmp, label %if.then.split, label %if.end, !dbg !1214
 
-if.then:                                          ; preds = %while.body
+if.then.split:                                    ; preds = %while.body
+  %2 = load i32, i32* @counter, align 4, !dbg !1215
+  %3 = add i32 %2, 758308, !dbg !1215
+  store i32 %3, i32* @counter, align 4, !dbg !1215
+  br label %if.then, !dbg !1215
+
+if.then:                                          ; preds = %if.then.split
   br label %cleanup, !dbg !1215
 
 if.end:                                           ; preds = %while.body
-  switch i32 %call2, label %sw.default [
+  switch i32 %call2, label %sw.default.split [
     i32 97, label %sw.bb
     i32 66, label %sw.bb3
     i32 105, label %sw.bb8
@@ -613,6 +625,12 @@ if.end:                                           ; preds = %while.body
 
 sw.bb:                                            ; preds = %if.end
   store i8 1, i8* @show_all_fs, align 1, !dbg !1217, !tbaa !1192
+  br label %sw.bb.split, !dbg !1218
+
+sw.bb.split:                                      ; preds = %sw.bb
+  %4 = load i32, i32* @counter, align 4, !dbg !1218
+  %5 = add i32 %4, 590342, !dbg !1218
+  store i32 %5, i32* @counter, align 4, !dbg !1218
   br label %sw.epilog, !dbg !1218
 
 sw.bb3:                                           ; preds = %if.end
@@ -620,125 +638,245 @@ sw.bb3:                                           ; preds = %if.end
   %call4 = call i32 @human_options(i8* %i2, i32* @human_output_opts, i64* @output_block_size), !dbg !1220
   call void @llvm.dbg.value(metadata i32 %call4, metadata !1159, metadata !DIExpression()), !dbg !1221
   %cmp5 = icmp ne i32 %call4, 0, !dbg !1222
-  br i1 %cmp5, label %if.then6, label %if.end7, !dbg !1224
+  br i1 %cmp5, label %if.then6.split, label %if.end7, !dbg !1224
 
-if.then6:                                         ; preds = %sw.bb3
+if.then6.split:                                   ; preds = %sw.bb3
+  %6 = load i32, i32* @counter, align 4, !dbg !1225
+  %7 = add i32 %6, 716846, !dbg !1225
+  store i32 %7, i32* @counter, align 4, !dbg !1225
+  br label %if.then6, !dbg !1225
+
+if.then6:                                         ; preds = %if.then6.split
   %i3 = load i32, i32* %oi, align 4, !dbg !1225, !tbaa !1196
   %conv = trunc i32 %call2 to i8, !dbg !1226
   %i4 = load i8*, i8** @optarg, align 8, !dbg !1227, !tbaa !957
   call void @xstrtol_fatal(i32 %call4, i32 %i3, i8 signext %conv, %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i8* %i4) #27, !dbg !1228
-  unreachable, !dbg !1228
+  br label %UnifiedUnreachableBlock
 
 if.end7:                                          ; preds = %sw.bb3
+  br label %if.end7.split, !dbg !1229
+
+if.end7.split:                                    ; preds = %if.end7
+  %8 = load i32, i32* @counter, align 4, !dbg !1229
+  %9 = add i32 %8, 548174, !dbg !1229
+  store i32 %9, i32* @counter, align 4, !dbg !1229
   br label %sw.epilog, !dbg !1229
 
 sw.bb8:                                           ; preds = %if.end
   %i5 = load i32, i32* @header_mode, align 4, !dbg !1230, !tbaa !1196
   %cmp9 = icmp eq i32 %i5, 4, !dbg !1232
-  br i1 %cmp9, label %if.then11, label %if.end12, !dbg !1233
+  br i1 %cmp9, label %if.then11.split, label %if.end12, !dbg !1233
 
-if.then11:                                        ; preds = %sw.bb8
+if.then11.split:                                  ; preds = %sw.bb8
+  %10 = load i32, i32* @counter, align 4, !dbg !1234
+  %11 = add i32 %10, 674678, !dbg !1234
+  store i32 %11, i32* @counter, align 4, !dbg !1234
+  br label %if.then11, !dbg !1234
+
+if.then11:                                        ; preds = %if.then11.split
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1234
   call void @usage(i32 1) #27, !dbg !1236
-  unreachable, !dbg !1236
+  br label %UnifiedUnreachableBlock
 
 if.end12:                                         ; preds = %sw.bb8
   store i32 1, i32* @header_mode, align 4, !dbg !1237, !tbaa !1196
+  br label %if.end12.split, !dbg !1238
+
+if.end12.split:                                   ; preds = %if.end12
+  %12 = load i32, i32* @counter, align 4, !dbg !1238
+  %13 = add i32 %12, 506006, !dbg !1238
+  store i32 %13, i32* @counter, align 4, !dbg !1238
   br label %sw.epilog, !dbg !1238
 
 sw.bb13:                                          ; preds = %if.end
   store i32 176, i32* @human_output_opts, align 4, !dbg !1239, !tbaa !1196
   store i64 1, i64* @output_block_size, align 8, !dbg !1240, !tbaa !1241
+  br label %sw.bb13.split, !dbg !1242
+
+sw.bb13.split:                                    ; preds = %sw.bb13
+  %14 = load i32, i32* @counter, align 4, !dbg !1242
+  %15 = add i32 %14, 463839, !dbg !1242
+  store i32 %15, i32* @counter, align 4, !dbg !1242
   br label %sw.epilog, !dbg !1242
 
 sw.bb14:                                          ; preds = %if.end
   store i32 144, i32* @human_output_opts, align 4, !dbg !1243, !tbaa !1196
   store i64 1, i64* @output_block_size, align 8, !dbg !1244, !tbaa !1241
+  br label %sw.bb14.split, !dbg !1245
+
+sw.bb14.split:                                    ; preds = %sw.bb14
+  %16 = load i32, i32* @counter, align 4, !dbg !1245
+  %17 = add i32 %16, 421672, !dbg !1245
+  store i32 %17, i32* @counter, align 4, !dbg !1245
   br label %sw.epilog, !dbg !1245
 
 sw.bb15:                                          ; preds = %if.end
   store i32 0, i32* @human_output_opts, align 4, !dbg !1246, !tbaa !1196
   store i64 1024, i64* @output_block_size, align 8, !dbg !1247, !tbaa !1241
+  br label %sw.bb15.split, !dbg !1248
+
+sw.bb15.split:                                    ; preds = %sw.bb15
+  %18 = load i32, i32* @counter, align 4, !dbg !1248
+  %19 = add i32 %18, 379505, !dbg !1248
+  store i32 %19, i32* @counter, align 4, !dbg !1248
   br label %sw.epilog, !dbg !1248
 
 sw.bb16:                                          ; preds = %if.end
   store i8 1, i8* @show_local_fs, align 1, !dbg !1249, !tbaa !1192
+  br label %sw.bb16.split, !dbg !1250
+
+sw.bb16.split:                                    ; preds = %sw.bb16
+  %20 = load i32, i32* @counter, align 4, !dbg !1250
+  %21 = add i32 %20, 337338, !dbg !1250
+  store i32 %21, i32* @counter, align 4, !dbg !1250
   br label %sw.epilog, !dbg !1250
 
 sw.bb17:                                          ; preds = %if.end
   store i32 0, i32* @human_output_opts, align 4, !dbg !1251, !tbaa !1196
   store i64 1048576, i64* @output_block_size, align 8, !dbg !1252, !tbaa !1241
+  br label %sw.bb17.split, !dbg !1253
+
+sw.bb17.split:                                    ; preds = %sw.bb17
+  %22 = load i32, i32* @counter, align 4, !dbg !1253
+  %23 = add i32 %22, 295171, !dbg !1253
+  store i32 %23, i32* @counter, align 4, !dbg !1253
   br label %sw.epilog, !dbg !1253
 
 sw.bb18:                                          ; preds = %if.end
   %i6 = load i32, i32* @header_mode, align 4, !dbg !1254, !tbaa !1196
   %cmp19 = icmp eq i32 %i6, 4, !dbg !1256
-  br i1 %cmp19, label %if.then21, label %if.end22, !dbg !1257
+  br i1 %cmp19, label %if.then21.split, label %if.end22, !dbg !1257
 
-if.then21:                                        ; preds = %sw.bb18
+if.then21.split:                                  ; preds = %sw.bb18
+  %24 = load i32, i32* @counter, align 4, !dbg !1258
+  %25 = add i32 %24, 421675, !dbg !1258
+  store i32 %25, i32* @counter, align 4, !dbg !1258
+  br label %if.then21, !dbg !1258
+
+if.then21:                                        ; preds = %if.then21.split
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.18, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1258
   call void @usage(i32 1) #27, !dbg !1260
-  unreachable, !dbg !1260
+  br label %UnifiedUnreachableBlock
 
 if.end22:                                         ; preds = %sw.bb18
   store i8 1, i8* @print_type, align 1, !dbg !1261, !tbaa !1192
+  br label %if.end22.split, !dbg !1262
+
+if.end22.split:                                   ; preds = %if.end22
+  %26 = load i32, i32* @counter, align 4, !dbg !1262
+  %27 = add i32 %26, 253003, !dbg !1262
+  store i32 %27, i32* @counter, align 4, !dbg !1262
   br label %sw.epilog, !dbg !1262
 
 sw.bb23:                                          ; preds = %if.end
   %i7 = load i32, i32* @header_mode, align 4, !dbg !1263, !tbaa !1196
   %cmp24 = icmp eq i32 %i7, 4, !dbg !1265
-  br i1 %cmp24, label %if.then26, label %if.end27, !dbg !1266
+  br i1 %cmp24, label %if.then26.split, label %if.end27, !dbg !1266
 
-if.then26:                                        ; preds = %sw.bb23
+if.then26.split:                                  ; preds = %sw.bb23
+  %28 = load i32, i32* @counter, align 4, !dbg !1267
+  %29 = add i32 %28, 379507, !dbg !1267
+  store i32 %29, i32* @counter, align 4, !dbg !1267
+  br label %if.then26, !dbg !1267
+
+if.then26:                                        ; preds = %if.then26.split
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.19, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1267
   call void @usage(i32 1) #27, !dbg !1269
-  unreachable, !dbg !1269
+  br label %UnifiedUnreachableBlock
 
 if.end27:                                         ; preds = %sw.bb23
   call void @llvm.dbg.value(metadata i8 1, metadata !1154, metadata !DIExpression()), !dbg !1184
+  br label %if.end27.split, !dbg !1270
+
+if.end27.split:                                   ; preds = %if.end27
+  %30 = load i32, i32* @counter, align 4, !dbg !1270
+  %31 = add i32 %30, 210835, !dbg !1270
+  store i32 %31, i32* @counter, align 4, !dbg !1270
   br label %sw.epilog, !dbg !1270
 
 sw.bb28:                                          ; preds = %if.end
   store i8 1, i8* @require_sync, align 1, !dbg !1271, !tbaa !1192
+  br label %sw.bb28.split, !dbg !1272
+
+sw.bb28.split:                                    ; preds = %sw.bb28
+  %32 = load i32, i32* @counter, align 4, !dbg !1272
+  %33 = add i32 %32, 168668, !dbg !1272
+  store i32 %33, i32* @counter, align 4, !dbg !1272
   br label %sw.epilog, !dbg !1272
 
 sw.bb29:                                          ; preds = %if.end
   store i8 0, i8* @require_sync, align 1, !dbg !1273, !tbaa !1192
+  br label %sw.bb29.split, !dbg !1274
+
+sw.bb29.split:                                    ; preds = %sw.bb29
+  %34 = load i32, i32* @counter, align 4, !dbg !1274
+  %35 = add i32 %34, 126501, !dbg !1274
+  store i32 %35, i32* @counter, align 4, !dbg !1274
   br label %sw.epilog, !dbg !1274
 
 sw.bb30:                                          ; preds = %if.end, %if.end
   %i8 = load i8*, i8** @optarg, align 8, !dbg !1275, !tbaa !957
   call void @add_fs_type(i8* %i8), !dbg !1276
+  br label %sw.bb30.split, !dbg !1277
+
+sw.bb30.split:                                    ; preds = %sw.bb30
+  %36 = load i32, i32* @counter, align 4, !dbg !1277
+  %37 = add i32 %36, 42167, !dbg !1277
+  store i32 %37, i32* @counter, align 4, !dbg !1277
   br label %sw.epilog, !dbg !1277
 
 sw.bb31:                                          ; preds = %if.end
   %i9 = load i8*, i8** @optarg, align 8, !dbg !1278, !tbaa !957
   call void @add_excluded_fs_type(i8* %i9), !dbg !1279
+  br label %sw.bb31.split, !dbg !1280
+
+sw.bb31.split:                                    ; preds = %sw.bb31
+  %38 = load i32, i32* @counter, align 4, !dbg !1280
+  %39 = add i32 %38, -42167, !dbg !1280
+  store i32 %39, i32* @counter, align 4, !dbg !1280
   br label %sw.epilog, !dbg !1280
 
 sw.bb32:                                          ; preds = %if.end
   %i10 = load i32, i32* @header_mode, align 4, !dbg !1281, !tbaa !1196
   %cmp33 = icmp eq i32 %i10, 1, !dbg !1283
-  br i1 %cmp33, label %if.then35, label %if.end36, !dbg !1284
+  br i1 %cmp33, label %if.then35.split, label %if.end36, !dbg !1284
 
-if.then35:                                        ; preds = %sw.bb32
+if.then35.split:                                  ; preds = %sw.bb32
+  %40 = load i32, i32* @counter, align 4, !dbg !1285
+  %41 = add i32 %40, 84337, !dbg !1285
+  store i32 %41, i32* @counter, align 4, !dbg !1285
+  br label %if.then35, !dbg !1285
+
+if.then35:                                        ; preds = %if.then35.split
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1285
   call void @usage(i32 1) #27, !dbg !1287
-  unreachable, !dbg !1287
+  br label %UnifiedUnreachableBlock
 
 if.end36:                                         ; preds = %sw.bb32
-  %tobool = trunc i8 %tau88 to i1, !dbg !1288
-  br i1 %tobool, label %land.lhs.true, label %if.end41, !dbg !1290
+  %tobool = trunc i8 %posix_format.0 to i1, !dbg !1288
+  br i1 %tobool, label %land.lhs.true.split, label %if.end41, !dbg !1290
 
-land.lhs.true:                                    ; preds = %if.end36
+land.lhs.true.split:                              ; preds = %if.end36
+  %42 = load i32, i32* @counter, align 4, !dbg !1291
+  %43 = add i32 %42, 84335, !dbg !1291
+  store i32 %43, i32* @counter, align 4, !dbg !1291
+  br label %land.lhs.true, !dbg !1291
+
+land.lhs.true:                                    ; preds = %land.lhs.true.split
   %i11 = load i32, i32* @header_mode, align 4, !dbg !1291, !tbaa !1196
   %cmp38 = icmp eq i32 %i11, 0, !dbg !1292
-  br i1 %cmp38, label %if.then40, label %if.end41, !dbg !1293
+  br i1 %cmp38, label %if.then40.split, label %if.end41, !dbg !1293
 
-if.then40:                                        ; preds = %land.lhs.true
+if.then40.split:                                  ; preds = %land.lhs.true
+  %44 = load i32, i32* @counter, align 4, !dbg !1294
+  %45 = add i32 %44, 1, !dbg !1294
+  store i32 %45, i32* @counter, align 4, !dbg !1294
+  br label %if.then40, !dbg !1294
+
+if.then40:                                        ; preds = %if.then40.split
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.19, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1294
   call void @usage(i32 1) #27, !dbg !1296
-  unreachable, !dbg !1296
+  br label %UnifiedUnreachableBlock
 
 if.end41:                                         ; preds = %land.lhs.true, %if.end36
   %i12 = load i8, i8* @print_type, align 1, !dbg !1297, !tbaa !1192, !range !1299
@@ -748,7 +886,7 @@ if.end41:                                         ; preds = %land.lhs.true, %if.
 if.then43:                                        ; preds = %if.end41
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.18, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1301
   call void @usage(i32 1) #27, !dbg !1303
-  unreachable, !dbg !1303
+  br label %UnifiedUnreachableBlock
 
 if.end44:                                         ; preds = %if.end41
   store i32 4, i32* @header_mode, align 4, !dbg !1304, !tbaa !1196
@@ -759,49 +897,98 @@ if.end44:                                         ; preds = %if.end41
 if.then46:                                        ; preds = %if.end44
   %i14 = load i8*, i8** @optarg, align 8, !dbg !1308, !tbaa !957
   call void @decode_output_arg(i8* %i14), !dbg !1309
+  br label %if.then46.split, !dbg !1309
+
+if.then46.split:                                  ; preds = %if.then46
+  %46 = load i32, i32* @counter, align 4, !dbg !1309
+  %47 = add i32 %46, 42167, !dbg !1309
+  store i32 %47, i32* @counter, align 4, !dbg !1309
   br label %if.end47, !dbg !1309
 
-if.end47:                                         ; preds = %if.then46, %if.end44
+if.end47:                                         ; preds = %if.then46.split, %if.end44
+  br label %if.end47.split, !dbg !1310
+
+if.end47.split:                                   ; preds = %if.end47
+  %48 = load i32, i32* @counter, align 4, !dbg !1310
+  %49 = add i32 %48, -210839, !dbg !1310
+  store i32 %49, i32* @counter, align 4, !dbg !1310
   br label %sw.epilog, !dbg !1310
 
 sw.bb48:                                          ; preds = %if.end
   store i8 1, i8* @print_grand_total, align 1, !dbg !1311, !tbaa !1192
+  br label %sw.bb48.split, !dbg !1312
+
+sw.bb48.split:                                    ; preds = %sw.bb48
+  %50 = load i32, i32* @counter, align 4, !dbg !1312
+  %51 = add i32 %50, -253006, !dbg !1312
+  store i32 %51, i32* @counter, align 4, !dbg !1312
   br label %sw.epilog, !dbg !1312
 
 sw.bb49:                                          ; preds = %if.end
   call void @usage(i32 0) #27, !dbg !1313
-  unreachable, !dbg !1313
+  br label %sw.bb49.split
+
+sw.bb49.split:                                    ; preds = %sw.bb49
+  %52 = load i32, i32* @counter, align 4
+  %53 = add i32 %52, -126502
+  store i32 %53, i32* @counter, align 4
+  br label %UnifiedUnreachableBlock
 
 sw.bb50:                                          ; preds = %if.end
   %i15 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !dbg !1314, !tbaa !957
   %i16 = load i8*, i8** @Version, align 8, !dbg !1314, !tbaa !957
   call void (%struct._IO_FILE*, i8*, i8*, i8*, ...) @version_etc(%struct._IO_FILE* %i15, i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.12, i64 0, i64 0), i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.20, i64 0, i64 0), i8* %i16, i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.21, i64 0, i64 0), i8* getelementptr inbounds ([16 x i8], [16 x i8]* @.str.22, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.23, i64 0, i64 0), i8* null), !dbg !1314
   call void @exit(i32 0) #24, !dbg !1314
-  unreachable, !dbg !1314
+  br label %sw.bb50.split
 
-sw.default:                                       ; preds = %if.end
+sw.bb50.split:                                    ; preds = %sw.bb50
+  %54 = load i32, i32* @counter, align 4
+  %55 = add i32 %54, -126503
+  store i32 %55, i32* @counter, align 4
+  br label %UnifiedUnreachableBlock
+
+sw.default.split:                                 ; preds = %if.end
+  %56 = load i32, i32* @counter, align 4, !dbg !1315
+  %57 = add i32 %56, 759014, !dbg !1315
+  store i32 %57, i32* @counter, align 4, !dbg !1315
+  br label %sw.default, !dbg !1315
+
+sw.default:                                       ; preds = %sw.default.split
   call void @usage(i32 1) #27, !dbg !1315
-  unreachable, !dbg !1315
+  br label %UnifiedUnreachableBlock
 
-sw.epilog:                                        ; preds = %sw.bb48, %if.end47, %sw.bb31, %sw.bb30, %sw.bb29, %sw.bb28, %if.end27, %if.end22, %sw.bb17, %sw.bb16, %sw.bb15, %sw.bb14, %sw.bb13, %if.end12, %if.end7, %sw.bb, %if.end
-  %posix_format.1 = phi i8 [ %tau88, %sw.bb48 ], [ %tau88, %if.end47 ], [ %tau88, %sw.bb31 ], [ %tau88, %if.end ], [ %tau88, %sw.bb30 ], [ %tau88, %sw.bb29 ], [ %tau88, %sw.bb28 ], [ 1, %if.end27 ], [ %tau88, %if.end22 ], [ %tau88, %sw.bb17 ], [ %tau88, %sw.bb16 ], [ %tau88, %sw.bb15 ], [ %tau88, %sw.bb14 ], [ %tau88, %sw.bb13 ], [ %tau88, %if.end12 ], [ %tau88, %if.end7 ], [ %tau88, %sw.bb ], !dbg !1184
+sw.epilog:                                        ; preds = %sw.bb48.split, %if.end47.split, %sw.bb31.split, %sw.bb30.split, %sw.bb29.split, %sw.bb28.split, %if.end27.split, %if.end22.split, %sw.bb17.split, %sw.bb16.split, %sw.bb15.split, %sw.bb14.split, %sw.bb13.split, %if.end12.split, %if.end7.split, %sw.bb.split, %if.end
+  %posix_format.1 = phi i8 [ %posix_format.0, %sw.bb48.split ], [ %posix_format.0, %if.end47.split ], [ %posix_format.0, %sw.bb31.split ], [ %posix_format.0, %if.end ], [ %posix_format.0, %sw.bb30.split ], [ %posix_format.0, %sw.bb29.split ], [ %posix_format.0, %sw.bb28.split ], [ 1, %if.end27.split ], [ %posix_format.0, %if.end22.split ], [ %posix_format.0, %sw.bb17.split ], [ %posix_format.0, %sw.bb16.split ], [ %posix_format.0, %sw.bb15.split ], [ %posix_format.0, %sw.bb14.split ], [ %posix_format.0, %sw.bb13.split ], [ %posix_format.0, %if.end12.split ], [ %posix_format.0, %if.end7.split ], [ %posix_format.0, %sw.bb.split ], !dbg !1184
   call void @llvm.dbg.value(metadata i8 %posix_format.1, metadata !1154, metadata !DIExpression()), !dbg !1184
+  br label %sw.epilog.split, !dbg !1316
+
+sw.epilog.split:                                  ; preds = %sw.epilog
+  %58 = load i32, i32* @counter, align 4, !dbg !1316
+  %59 = add i32 %58, 125798, !dbg !1316
+  store i32 %59, i32* @counter, align 4, !dbg !1316
   br label %cleanup, !dbg !1316
 
-cleanup:                                          ; preds = %sw.epilog, %if.then
-  %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ]
-  %posix_format.2 = phi i8 [ %tau88, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1207
-  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.2, i8 %tau88)
-  %tau89 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0, i32 3)
-  call void @llvm.dbg.value(metadata i8 %tau, metadata !1154, metadata !DIExpression()), !dbg !1184
+cleanup:                                          ; preds = %sw.epilog.split, %if.then
+  %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog.split ]
+  %posix_format.2 = phi i8 [ %posix_format.0, %if.then ], [ %posix_format.1, %sw.epilog.split ], !dbg !1207
+  call void @llvm.dbg.value(metadata i8 %posix_format.2, metadata !1154, metadata !DIExpression()), !dbg !1184
   %i17 = bitcast i32* %oi to i8*, !dbg !1316
   call void @llvm.lifetime.end.p0i8(i64 4, i8* %i17) #25, !dbg !1316
-  switch i32 %tau89, label %unreachable [
+  switch i32 %cleanup.dest.slot.0, label %unreachable.split [
     i32 0, label %cleanup.cont
     i32 3, label %while.end
   ]
 
 cleanup.cont:                                     ; preds = %cleanup
+  br label %cleanup.cont.split, !dbg !1206
+
+cleanup.cont.split:                               ; preds = %cleanup.cont
+  %60 = load i32, i32* @counter, align 4, !dbg !1206
+  %61 = add i32 %60, 927685, !dbg !1206
+  store i32 %61, i32* @counter, align 4, !dbg !1206
+  %62 = load i32, i32* @counter, align 4, !dbg !1206
+  call void @_Z7counterii(i32 %62, i32 0)
+  store i32 42872, i32* @counter, align 4, !dbg !1206
   br label %while.cond, !dbg !1206, !llvm.loop !1317
 
 while.end:                                        ; preds = %cleanup
@@ -810,7 +997,7 @@ while.end:                                        ; preds = %cleanup
   br i1 %cmp52, label %if.then54, label %if.end63, !dbg !1321
 
 if.then54:                                        ; preds = %while.end
-  %tobool55 = trunc i8 %tau to i1, !dbg !1322
+  %tobool55 = trunc i8 %posix_format.2 to i1, !dbg !1322
   br i1 %tobool55, label %if.then56, label %if.else, !dbg !1325
 
 if.then56:                                        ; preds = %if.then54
@@ -821,44 +1008,80 @@ if.then56:                                        ; preds = %if.then54
   %cond = select i1 %tobool58, i32 512, i32 1024, !dbg !1328
   %conv59 = sext i32 %cond to i64, !dbg !1329
   store i64 %conv59, i64* @output_block_size, align 8, !dbg !1330, !tbaa !1241
+  br label %if.then56.split, !dbg !1331
+
+if.then56.split:                                  ; preds = %if.then56
+  %63 = load i32, i32* @counter, align 4, !dbg !1331
+  %64 = add i32 %63, 28110, !dbg !1331
+  store i32 %64, i32* @counter, align 4, !dbg !1331
   br label %if.end62, !dbg !1331
 
 if.else:                                          ; preds = %if.then54
   %call60 = call i8* @getenv(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.25, i64 0, i64 0)) #25, !dbg !1332
   %call61 = call i32 @human_options(i8* %call60, i32* @human_output_opts, i64* @output_block_size), !dbg !1333
+  br label %if.else.split
+
+if.else.split:                                    ; preds = %if.else
+  %65 = load i32, i32* @counter, align 4
+  %66 = add i32 %65, 14055
+  store i32 %66, i32* @counter, align 4
   br label %if.end62
 
-if.end62:                                         ; preds = %if.else, %if.then56
+if.end62:                                         ; preds = %if.else.split, %if.then56.split
   br label %if.end63, !dbg !1334
 
 if.end63:                                         ; preds = %if.end62, %while.end
   %i20 = load i32, i32* @header_mode, align 4, !dbg !1335, !tbaa !1196
   %cmp64 = icmp eq i32 %i20, 1, !dbg !1337
-  br i1 %cmp64, label %if.then68, label %lor.lhs.false, !dbg !1338
+  br i1 %cmp64, label %if.end63.if.then68_crit_edge, label %lor.lhs.false, !dbg !1338
+
+if.end63.if.then68_crit_edge:                     ; preds = %if.end63
+  %67 = load i32, i32* @counter, align 4, !dbg !1338
+  %68 = add i32 %67, 11244, !dbg !1338
+  store i32 %68, i32* @counter, align 4, !dbg !1338
+  br label %if.then68, !dbg !1338
 
 lor.lhs.false:                                    ; preds = %if.end63
   %i21 = load i32, i32* @header_mode, align 4, !dbg !1339, !tbaa !1196
   %cmp66 = icmp eq i32 %i21, 4, !dbg !1340
-  br i1 %cmp66, label %if.then68, label %if.else69, !dbg !1341
+  br i1 %cmp66, label %lor.lhs.false.if.then68_crit_edge, label %if.else69, !dbg !1341
 
-if.then68:                                        ; preds = %lor.lhs.false, %if.end63
+lor.lhs.false.if.then68_crit_edge:                ; preds = %lor.lhs.false
+  %69 = load i32, i32* @counter, align 4, !dbg !1341
+  %70 = add i32 %69, 8433, !dbg !1341
+  store i32 %70, i32* @counter, align 4, !dbg !1341
+  br label %if.then68, !dbg !1341
+
+if.then68:                                        ; preds = %lor.lhs.false.if.then68_crit_edge, %if.end63.if.then68_crit_edge
   br label %if.end77, !dbg !1341
 
 if.else69:                                        ; preds = %lor.lhs.false
   %i22 = load i32, i32* @human_output_opts, align 4, !dbg !1342, !tbaa !1196
   %and = and i32 %i22, 16, !dbg !1344
   %tobool70 = icmp ne i32 %and, 0, !dbg !1344
-  br i1 %tobool70, label %if.then71, label %if.else72, !dbg !1345
+  br i1 %tobool70, label %if.then71.split, label %if.else72, !dbg !1345
 
-if.then71:                                        ; preds = %if.else69
+if.then71.split:                                  ; preds = %if.else69
+  %71 = load i32, i32* @counter, align 4, !dbg !1346
+  %72 = add i32 %71, 5622, !dbg !1346
+  store i32 %72, i32* @counter, align 4, !dbg !1346
+  br label %if.then71, !dbg !1346
+
+if.then71:                                        ; preds = %if.then71.split
   store i32 2, i32* @header_mode, align 4, !dbg !1346, !tbaa !1196
   br label %if.end76, !dbg !1347
 
 if.else72:                                        ; preds = %if.else69
-  %tobool73 = trunc i8 %tau to i1, !dbg !1348
-  br i1 %tobool73, label %if.then74, label %if.end75, !dbg !1350
+  %tobool73 = trunc i8 %posix_format.2 to i1, !dbg !1348
+  br i1 %tobool73, label %if.then74.split, label %if.end75, !dbg !1350
 
-if.then74:                                        ; preds = %if.else72
+if.then74.split:                                  ; preds = %if.else72
+  %73 = load i32, i32* @counter, align 4, !dbg !1351
+  %74 = add i32 %73, 2811, !dbg !1351
+  store i32 %74, i32* @counter, align 4, !dbg !1351
+  br label %if.then74, !dbg !1351
+
+if.then74:                                        ; preds = %if.then74.split
   store i32 3, i32* @header_mode, align 4, !dbg !1351, !tbaa !1196
   br label %if.end75, !dbg !1352
 
@@ -874,38 +1097,48 @@ if.end77:                                         ; preds = %if.end76, %if.then6
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i23, metadata !1164, metadata !DIExpression()), !dbg !1353
   br label %for.cond, !dbg !1355
 
-for.cond:                                         ; preds = %for.inc90, %if.end77
-  %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1353
-  %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1356
-  %tau90 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0, %struct.fs_type_list* %i23)
-  %tau91 = call i8 (...) @llvm.tau.i8(i8 %match.0, i8 0)
-  call void @llvm.dbg.value(metadata %struct.fs_type_list* %tau90, metadata !1164, metadata !DIExpression()), !dbg !1353
-  call void @llvm.dbg.value(metadata i8 %tau91, metadata !1162, metadata !DIExpression()), !dbg !1353
-  %tobool78 = icmp ne %struct.fs_type_list* %tau90, null, !dbg !1357
+for.cond:                                         ; preds = %for.inc90.split, %if.end77
+  %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90.split ], !dbg !1353
+  %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90.split ], !dbg !1356
+  call void @llvm.dbg.value(metadata %struct.fs_type_list* %fs_incl.0, metadata !1164, metadata !DIExpression()), !dbg !1353
+  call void @llvm.dbg.value(metadata i8 %match.0, metadata !1162, metadata !DIExpression()), !dbg !1353
+  %tobool78 = icmp ne %struct.fs_type_list* %fs_incl.0, null, !dbg !1357
   br i1 %tobool78, label %for.body, label %for.end92, !dbg !1357
 
 for.body:                                         ; preds = %for.cond
   %i24 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_exclude_list, align 8, !dbg !1358, !tbaa !957
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i24, metadata !1165, metadata !DIExpression()), !dbg !1360
+  br label %for.body.split, !dbg !1361
+
+for.body.split:                                   ; preds = %for.body
+  %75 = load i32, i32* @counter, align 4, !dbg !1361
+  %76 = add i32 %75, -3, !dbg !1361
+  store i32 %76, i32* @counter, align 4, !dbg !1361
   br label %for.cond79, !dbg !1361
 
-for.cond79:                                       ; preds = %for.inc, %for.body
-  %fs_excl.0 = phi %struct.fs_type_list* [ %i24, %for.body ], [ %i28, %for.inc ], !dbg !1362
+for.cond79:                                       ; preds = %for.inc, %for.body.split
+  %fs_excl.0 = phi %struct.fs_type_list* [ %i24, %for.body.split ], [ %i28, %for.inc ], !dbg !1362
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %fs_excl.0, metadata !1165, metadata !DIExpression()), !dbg !1360
   %tobool80 = icmp ne %struct.fs_type_list* %fs_excl.0, null, !dbg !1363
   br i1 %tobool80, label %for.body81, label %for.end, !dbg !1363
 
 for.body81:                                       ; preds = %for.cond79
-  %fs_name = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 0, !dbg !1364
+  %fs_name = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 0, !dbg !1364
   %i25 = load i8*, i8** %fs_name, align 8, !dbg !1364, !tbaa !1368
   %fs_name82 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_excl.0, i32 0, i32 0, !dbg !1364
   %i26 = load i8*, i8** %fs_name82, align 8, !dbg !1364, !tbaa !1368
   %call83 = call i32 @strcmp(i8* %i25, i8* %i26) #26, !dbg !1364
   %cmp84 = icmp eq i32 %call83, 0, !dbg !1364
-  br i1 %cmp84, label %if.then86, label %if.end89, !dbg !1370
+  br i1 %cmp84, label %if.then86.split, label %if.end89, !dbg !1370
 
-if.then86:                                        ; preds = %for.body81
-  %fs_name87 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 0, !dbg !1371
+if.then86.split:                                  ; preds = %for.body81
+  %77 = load i32, i32* @counter, align 4, !dbg !1371
+  %78 = add i32 %77, 2, !dbg !1371
+  store i32 %78, i32* @counter, align 4, !dbg !1371
+  br label %if.then86, !dbg !1371
+
+if.then86:                                        ; preds = %if.then86.split
+  %fs_name87 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 0, !dbg !1371
   %i27 = load i8*, i8** %fs_name87, align 8, !dbg !1371, !tbaa !1368
   %call88 = call i8* @quote(i8* %i27), !dbg !1373
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([47 x i8], [47 x i8]* @.str.26, i64 0, i64 0), i8* %call88), !dbg !1374
@@ -913,54 +1146,91 @@ if.then86:                                        ; preds = %for.body81
   br label %for.end, !dbg !1375
 
 if.end89:                                         ; preds = %for.body81
-  br label %for.inc, !dbg !1376
+  br label %for.inc.split, !dbg !1376
 
-for.inc:                                          ; preds = %if.end89
+for.inc.split:                                    ; preds = %if.end89
+  %79 = load i32, i32* @counter, align 4, !dbg !1377
+  %80 = add i32 %79, 3519, !dbg !1377
+  store i32 %80, i32* @counter, align 4, !dbg !1377
+  br label %for.inc, !dbg !1377
+
+for.inc:                                          ; preds = %for.inc.split
   %fs_next = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_excl.0, i32 0, i32 1, !dbg !1377
   %i28 = load %struct.fs_type_list*, %struct.fs_type_list** %fs_next, align 8, !dbg !1377, !tbaa !1378
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i28, metadata !1165, metadata !DIExpression()), !dbg !1360
   br label %for.cond79, !dbg !1379, !llvm.loop !1380
 
 for.end:                                          ; preds = %if.then86, %for.cond79
-  %match.1 = phi i8 [ 1, %if.then86 ], [ %tau91, %for.cond79 ], !dbg !1353
+  %match.1 = phi i8 [ 1, %if.then86 ], [ %match.0, %for.cond79 ], !dbg !1353
   call void @llvm.dbg.value(metadata i8 %match.1, metadata !1162, metadata !DIExpression()), !dbg !1353
   br label %for.inc90, !dbg !1382
 
 for.inc90:                                        ; preds = %for.end
-  %fs_next91 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %tau90, i32 0, i32 1, !dbg !1383
+  %fs_next91 = getelementptr inbounds %struct.fs_type_list, %struct.fs_type_list* %fs_incl.0, i32 0, i32 1, !dbg !1383
   %i29 = load %struct.fs_type_list*, %struct.fs_type_list** %fs_next91, align 8, !dbg !1383, !tbaa !1378
   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i29, metadata !1164, metadata !DIExpression()), !dbg !1353
+  br label %for.inc90.split, !dbg !1384
+
+for.inc90.split:                                  ; preds = %for.inc90
+  %81 = load i32, i32* @counter, align 4, !dbg !1384
+  %82 = add i32 %81, 1855373, !dbg !1384
+  store i32 %82, i32* @counter, align 4, !dbg !1384
+  %83 = load i32, i32* @counter, align 4, !dbg !1384
+  call void @_Z7counterii(i32 %83, i32 0)
+  store i32 3518, i32* @counter, align 4, !dbg !1384
   br label %for.cond, !dbg !1384, !llvm.loop !1385
 
 for.end92:                                        ; preds = %for.cond
-  %tobool93 = trunc i8 %tau91 to i1, !dbg !1387
+  %tobool93 = trunc i8 %match.0 to i1, !dbg !1387
   br i1 %tobool93, label %if.then94, label %if.end95, !dbg !1389
 
 if.then94:                                        ; preds = %for.end92
+  br label %if.then94.split, !dbg !1390
+
+if.then94.split:                                  ; preds = %if.then94
+  %84 = load i32, i32* @counter, align 4, !dbg !1390
+  %85 = add i32 %84, 2111, !dbg !1390
+  store i32 %85, i32* @counter, align 4, !dbg !1390
   br label %cleanup96, !dbg !1390
 
 if.end95:                                         ; preds = %for.end92
+  br label %if.end95.split, !dbg !1391
+
+if.end95.split:                                   ; preds = %if.end95
+  %86 = load i32, i32* @counter, align 4, !dbg !1391
+  %87 = add i32 %86, 707, !dbg !1391
+  store i32 %87, i32* @counter, align 4, !dbg !1391
   br label %cleanup96, !dbg !1391
 
-cleanup96:                                        ; preds = %if.end95, %if.then94
-  %cleanup.dest.slot.1 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
-  %retval.0 = phi i32 [ 1, %if.then94 ], [ 0, %if.end95 ]
-  %tau92 = call i32 (...) @llvm.tau.i32(i32 %retval.0, i32 0)
-  %tau93 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.1, i32 0)
-  switch i32 %tau93, label %cleanup209 [
+cleanup96:                                        ; preds = %if.end95.split, %if.then94.split
+  %cleanup.dest.slot.1 = phi i32 [ 1, %if.then94.split ], [ 0, %if.end95.split ]
+  %retval.0 = phi i32 [ 1, %if.then94.split ], [ 0, %if.end95.split ]
+  switch i32 %cleanup.dest.slot.1, label %cleanup96.cleanup209_crit_edge [
     i32 0, label %cleanup.cont99
   ]
+
+cleanup96.cleanup209_crit_edge:                   ; preds = %cleanup96
+  %88 = load i32, i32* @counter, align 4
+  %89 = add i32 %88, 1403
+  store i32 %89, i32* @counter, align 4
+  br label %cleanup209
 
 cleanup.cont99:                                   ; preds = %cleanup96
   %i30 = load i32, i32* @optind, align 4, !dbg !1392, !tbaa !1196
   %cmp100 = icmp slt i32 0, %i30, !dbg !1392
-  br i1 %cmp100, label %cond.true, label %cond.false, !dbg !1392
+  br i1 %cmp100, label %cond.true.split, label %cond.false, !dbg !1392
 
-cond.true:                                        ; preds = %cleanup.cont99
+cond.true.split:                                  ; preds = %cleanup.cont99
+  %90 = load i32, i32* @counter, align 4, !dbg !1392
+  %91 = add i32 %90, 2, !dbg !1392
+  store i32 %91, i32* @counter, align 4, !dbg !1392
+  br label %cond.true, !dbg !1392
+
+cond.true:                                        ; preds = %cond.true.split
   br label %cond.end, !dbg !1392
 
 cond.false:                                       ; preds = %cleanup.cont99
-  unreachable, !dbg !1392
+  br label %UnifiedUnreachableBlock
 
 unreachable.cont:                                 ; No predecessors!
   br label %cond.end, !dbg !1392
@@ -968,9 +1238,15 @@ unreachable.cont:                                 ; No predecessors!
 cond.end:                                         ; preds = %unreachable.cont, %cond.true
   %i31 = load i32, i32* @optind, align 4, !dbg !1393, !tbaa !1196
   %cmp102 = icmp slt i32 %i31, %argc, !dbg !1394
-  br i1 %cmp102, label %if.then104, label %if.end128, !dbg !1395
+  br i1 %cmp102, label %if.then104.split, label %if.end128, !dbg !1395
 
-if.then104:                                       ; preds = %cond.end
+if.then104.split:                                 ; preds = %cond.end
+  %92 = load i32, i32* @counter, align 4, !dbg !1396
+  %93 = add i32 %92, 694, !dbg !1396
+  store i32 %93, i32* @counter, align 4, !dbg !1396
+  br label %if.then104, !dbg !1396
+
+if.then104:                                       ; preds = %if.then104.split
   %i32 = load i32, i32* @optind, align 4, !dbg !1396, !tbaa !1196
   %sub = sub nsw i32 %argc, %i32, !dbg !1397
   %conv105 = sext i32 %sub to i64, !dbg !1398
@@ -981,8 +1257,8 @@ if.then104:                                       ; preds = %cond.end
   call void @llvm.dbg.value(metadata i32 %i34, metadata !1169, metadata !DIExpression()), !dbg !1401
   br label %for.cond107, !dbg !1402
 
-for.cond107:                                      ; preds = %for.inc125, %if.then104
-  %i.0 = phi i32 [ %i34, %if.then104 ], [ %inc, %for.inc125 ], !dbg !1401
+for.cond107:                                      ; preds = %for.inc125.split, %if.then104
+  %i.0 = phi i32 [ %i34, %if.then104 ], [ %inc, %for.inc125.split ], !dbg !1401
   call void @llvm.dbg.value(metadata i32 %i.0, metadata !1169, metadata !DIExpression()), !dbg !1401
   %cmp108 = icmp slt i32 %i.0, %argc, !dbg !1403
   br i1 %cmp108, label %for.body110, label %for.cond.cleanup, !dbg !1404
@@ -1013,82 +1289,162 @@ if.then118:                                       ; preds = %for.body110
   %idxprom122 = sext i32 %i.0 to i64, !dbg !1418
   %arrayidx123 = getelementptr inbounds i8*, i8** %argv, i64 %idxprom122, !dbg !1418
   store i8* null, i8** %arrayidx123, align 8, !dbg !1419, !tbaa !957
+  br label %if.then118.split, !dbg !1420
+
+if.then118.split:                                 ; preds = %if.then118
+  %94 = load i32, i32* @counter, align 4, !dbg !1420
+  %95 = add i32 %94, 1, !dbg !1420
+  store i32 %95, i32* @counter, align 4, !dbg !1420
   br label %if.end124, !dbg !1420
 
-if.end124:                                        ; preds = %if.then118, %for.body110
+if.end124:                                        ; preds = %if.then118.split, %for.body110
   br label %for.inc125, !dbg !1421
 
 for.inc125:                                       ; preds = %if.end124
   %inc = add nsw i32 %i.0, 1, !dbg !1422
   call void @llvm.dbg.value(metadata i32 %inc, metadata !1169, metadata !DIExpression()), !dbg !1401
+  br label %for.inc125.split, !dbg !1423
+
+for.inc125.split:                                 ; preds = %for.inc125
+  %96 = load i32, i32* @counter, align 4, !dbg !1423
+  %97 = add i32 %96, 1858184, !dbg !1423
+  store i32 %97, i32* @counter, align 4, !dbg !1423
+  %98 = load i32, i32* @counter, align 4, !dbg !1423
+  call void @_Z7counterii(i32 %98, i32 0)
+  store i32 705, i32* @counter, align 4, !dbg !1423
   br label %for.cond107, !dbg !1423, !llvm.loop !1424
 
 for.end127:                                       ; preds = %for.cond.cleanup
+  br label %for.end127.split, !dbg !1426
+
+for.end127.split:                                 ; preds = %for.end127
+  %99 = load i32, i32* @counter, align 4, !dbg !1426
+  %100 = add i32 %99, 6, !dbg !1426
+  store i32 %100, i32* @counter, align 4, !dbg !1426
   br label %if.end128, !dbg !1426
 
-if.end128:                                        ; preds = %for.end127, %cond.end
-  %stats.0 = phi %struct.stat* [ %i33, %for.end127 ], [ null, %cond.end ], !dbg !1184
-  %tau94 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %stats.0, %struct.stat* null)
-  call void @llvm.dbg.value(metadata %struct.stat* %tau94, metadata !1119, metadata !DIExpression()), !dbg !1184
+if.end128:                                        ; preds = %for.end127.split, %cond.end
+  %stats.0 = phi %struct.stat* [ %i33, %for.end127.split ], [ null, %cond.end ], !dbg !1184
+  call void @llvm.dbg.value(metadata %struct.stat* %stats.0, metadata !1119, metadata !DIExpression()), !dbg !1184
   %i38 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1427, !tbaa !957
   %cmp129 = icmp ne %struct.fs_type_list* %i38, null, !dbg !1428
-  br i1 %cmp129, label %lor.end, label %lor.lhs.false131, !dbg !1429
+  br i1 %cmp129, label %if.end128.lor.end_crit_edge, label %lor.lhs.false131, !dbg !1429
+
+if.end128.lor.end_crit_edge:                      ; preds = %if.end128
+  %101 = load i32, i32* @counter, align 4, !dbg !1429
+  %102 = add i32 %101, 560, !dbg !1429
+  store i32 %102, i32* @counter, align 4, !dbg !1429
+  br label %lor.end, !dbg !1429
 
 lor.lhs.false131:                                 ; preds = %if.end128
   %i39 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_exclude_list, align 8, !dbg !1430, !tbaa !957
   %cmp132 = icmp ne %struct.fs_type_list* %i39, null, !dbg !1431
-  br i1 %cmp132, label %lor.end, label %lor.lhs.false134, !dbg !1432
+  br i1 %cmp132, label %lor.lhs.false131.lor.end_crit_edge, label %lor.lhs.false134, !dbg !1432
+
+lor.lhs.false131.lor.end_crit_edge:               ; preds = %lor.lhs.false131
+  %103 = load i32, i32* @counter, align 4, !dbg !1432
+  %104 = add i32 %103, 420, !dbg !1432
+  store i32 %104, i32* @counter, align 4, !dbg !1432
+  br label %lor.end, !dbg !1432
 
 lor.lhs.false134:                                 ; preds = %lor.lhs.false131
   %i40 = load i8, i8* @print_type, align 1, !dbg !1433, !tbaa !1192, !range !1299
   %tobool135 = trunc i8 %i40 to i1, !dbg !1433
-  br i1 %tobool135, label %lor.end, label %lor.lhs.false137, !dbg !1434
+  br i1 %tobool135, label %lor.lhs.false134.lor.end_crit_edge, label %lor.lhs.false137, !dbg !1434
+
+lor.lhs.false134.lor.end_crit_edge:               ; preds = %lor.lhs.false134
+  %105 = load i32, i32* @counter, align 4, !dbg !1434
+  %106 = add i32 %105, 280, !dbg !1434
+  store i32 %106, i32* @counter, align 4, !dbg !1434
+  br label %lor.end, !dbg !1434
 
 lor.lhs.false137:                                 ; preds = %lor.lhs.false134
   %i41 = load i8, i8* getelementptr inbounds ([12 x %struct.field_data_t], [12 x %struct.field_data_t]* @field_data, i64 0, i64 1, i32 6), align 4, !dbg !1435, !tbaa !1436, !range !1299
   %tobool138 = trunc i8 %i41 to i1, !dbg !1435
-  br i1 %tobool138, label %lor.end, label %lor.rhs, !dbg !1438
+  br i1 %tobool138, label %lor.lhs.false137.lor.end_crit_edge, label %lor.rhs, !dbg !1438
+
+lor.lhs.false137.lor.end_crit_edge:               ; preds = %lor.lhs.false137
+  %107 = load i32, i32* @counter, align 4, !dbg !1438
+  %108 = add i32 %107, 140, !dbg !1438
+  store i32 %108, i32* @counter, align 4, !dbg !1438
+  br label %lor.end, !dbg !1438
 
 lor.rhs:                                          ; preds = %lor.lhs.false137
   %i42 = load i8, i8* @show_local_fs, align 1, !dbg !1439, !tbaa !1192, !range !1299
   %tobool140 = trunc i8 %i42 to i1, !dbg !1439
   br label %lor.end, !dbg !1438
 
-lor.end:                                          ; preds = %lor.rhs, %lor.lhs.false137, %lor.lhs.false134, %lor.lhs.false131, %if.end128
-  %i43 = phi i1 [ true, %lor.lhs.false137 ], [ true, %lor.lhs.false134 ], [ true, %lor.lhs.false131 ], [ true, %if.end128 ], [ %tobool140, %lor.rhs ]
+lor.end:                                          ; preds = %lor.lhs.false137.lor.end_crit_edge, %lor.lhs.false134.lor.end_crit_edge, %lor.lhs.false131.lor.end_crit_edge, %if.end128.lor.end_crit_edge, %lor.rhs
+  %i43 = phi i1 [ true, %lor.lhs.false137.lor.end_crit_edge ], [ true, %lor.lhs.false134.lor.end_crit_edge ], [ true, %lor.lhs.false131.lor.end_crit_edge ], [ true, %if.end128.lor.end_crit_edge ], [ %tobool140, %lor.rhs ]
   %call142 = call noalias %struct.mount_entry* @read_file_system_list(i1 zeroext %i43), !dbg !1440
   store %struct.mount_entry* %call142, %struct.mount_entry** @mount_list, align 8, !dbg !1441, !tbaa !957
   %i44 = load %struct.mount_entry*, %struct.mount_entry** @mount_list, align 8, !dbg !1442, !tbaa !957
   %cmp143 = icmp eq %struct.mount_entry* %i44, null, !dbg !1443
-  br i1 %cmp143, label %if.then145, label %if.end166, !dbg !1444
+  br i1 %cmp143, label %if.then145.split, label %if.end166, !dbg !1444
 
-if.then145:                                       ; preds = %lor.end
+if.then145.split:                                 ; preds = %lor.end
+  %109 = load i32, i32* @counter, align 4, !dbg !1445
+  %110 = add i32 %109, 20, !dbg !1445
+  store i32 %110, i32* @counter, align 4, !dbg !1445
+  br label %if.then145, !dbg !1445
+
+if.then145:                                       ; preds = %if.then145.split
   call void @llvm.dbg.value(metadata i32 0, metadata !1176, metadata !DIExpression()), !dbg !1445
   %i45 = load i32, i32* @optind, align 4, !dbg !1446, !tbaa !1196
   %cmp146 = icmp slt i32 %i45, %argc, !dbg !1448
-  br i1 %cmp146, label %lor.lhs.false148, label %if.then160, !dbg !1449
+  br i1 %cmp146, label %lor.lhs.false148.split, label %if.then160, !dbg !1449
 
-lor.lhs.false148:                                 ; preds = %if.then145
+lor.lhs.false148.split:                           ; preds = %if.then145
+  %111 = load i32, i32* @counter, align 4, !dbg !1450
+  %112 = add i32 %111, 20, !dbg !1450
+  store i32 %112, i32* @counter, align 4, !dbg !1450
+  br label %lor.lhs.false148, !dbg !1450
+
+lor.lhs.false148:                                 ; preds = %lor.lhs.false148.split
   %i46 = load i8, i8* @show_all_fs, align 1, !dbg !1450, !tbaa !1192, !range !1299
   %tobool149 = trunc i8 %i46 to i1, !dbg !1450
-  br i1 %tobool149, label %if.then160, label %lor.lhs.false151, !dbg !1451
+  br i1 %tobool149, label %lor.lhs.false148.if.then160_crit_edge, label %lor.lhs.false151, !dbg !1451
+
+lor.lhs.false148.if.then160_crit_edge:            ; preds = %lor.lhs.false148
+  %113 = load i32, i32* @counter, align 4, !dbg !1451
+  %114 = add i32 %113, 80, !dbg !1451
+  store i32 %114, i32* @counter, align 4, !dbg !1451
+  br label %if.then160, !dbg !1451
 
 lor.lhs.false151:                                 ; preds = %lor.lhs.false148
   %i47 = load i8, i8* @show_local_fs, align 1, !dbg !1452, !tbaa !1192, !range !1299
   %tobool152 = trunc i8 %i47 to i1, !dbg !1452
-  br i1 %tobool152, label %if.then160, label %lor.lhs.false154, !dbg !1453
+  br i1 %tobool152, label %lor.lhs.false151.if.then160_crit_edge, label %lor.lhs.false154, !dbg !1453
+
+lor.lhs.false151.if.then160_crit_edge:            ; preds = %lor.lhs.false151
+  %115 = load i32, i32* @counter, align 4, !dbg !1453
+  %116 = add i32 %115, 60, !dbg !1453
+  store i32 %116, i32* @counter, align 4, !dbg !1453
+  br label %if.then160, !dbg !1453
 
 lor.lhs.false154:                                 ; preds = %lor.lhs.false151
   %i48 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1454, !tbaa !957
   %cmp155 = icmp ne %struct.fs_type_list* %i48, null, !dbg !1455
-  br i1 %cmp155, label %if.then160, label %lor.lhs.false157, !dbg !1456
+  br i1 %cmp155, label %lor.lhs.false154.if.then160_crit_edge, label %lor.lhs.false157, !dbg !1456
+
+lor.lhs.false154.if.then160_crit_edge:            ; preds = %lor.lhs.false154
+  %117 = load i32, i32* @counter, align 4, !dbg !1456
+  %118 = add i32 %117, 40, !dbg !1456
+  store i32 %118, i32* @counter, align 4, !dbg !1456
+  br label %if.then160, !dbg !1456
 
 lor.lhs.false157:                                 ; preds = %lor.lhs.false154
   %i49 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_exclude_list, align 8, !dbg !1457, !tbaa !957
   %cmp158 = icmp ne %struct.fs_type_list* %i49, null, !dbg !1458
-  br i1 %cmp158, label %if.then160, label %if.end161, !dbg !1459
+  br i1 %cmp158, label %lor.lhs.false157.if.then160_crit_edge, label %if.end161, !dbg !1459
 
-if.then160:                                       ; preds = %lor.lhs.false157, %lor.lhs.false154, %lor.lhs.false151, %lor.lhs.false148, %if.then145
+lor.lhs.false157.if.then160_crit_edge:            ; preds = %lor.lhs.false157
+  %119 = load i32, i32* @counter, align 4, !dbg !1459
+  %120 = add i32 %119, 20, !dbg !1459
+  store i32 %120, i32* @counter, align 4, !dbg !1459
+  br label %if.then160, !dbg !1459
+
+if.then160:                                       ; preds = %lor.lhs.false157.if.then160_crit_edge, %lor.lhs.false154.if.then160_crit_edge, %lor.lhs.false151.if.then160_crit_edge, %lor.lhs.false148.if.then160_crit_edge, %if.then145
   call void @llvm.dbg.value(metadata i32 1, metadata !1176, metadata !DIExpression()), !dbg !1445
   br label %if.end161, !dbg !1460
 
@@ -1105,30 +1461,40 @@ if.end161:                                        ; preds = %if.then160, %lor.lh
   br label %if.end166, !dbg !1466
 
 if.end166:                                        ; preds = %if.end161, %lor.end
-  %tau95 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau94, %struct.stat* null)
   %i52 = load i8, i8* @require_sync, align 1, !dbg !1467, !tbaa !1192, !range !1299
   %tobool167 = trunc i8 %i52 to i1, !dbg !1467
-  br i1 %tobool167, label %if.then168, label %if.end169, !dbg !1469
+  br i1 %tobool167, label %if.then168.split, label %if.end169, !dbg !1469
 
-if.then168:                                       ; preds = %if.end166
+if.then168.split:                                 ; preds = %if.end166
+  %121 = load i32, i32* @counter, align 4, !dbg !1470
+  %122 = add i32 %121, 10, !dbg !1470
+  store i32 %122, i32* @counter, align 4, !dbg !1470
+  br label %if.then168, !dbg !1470
+
+if.then168:                                       ; preds = %if.then168.split
   call void @sync() #25, !dbg !1470
   br label %if.end169, !dbg !1470
 
 if.end169:                                        ; preds = %if.then168, %if.end166
-  %tau96 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau95, %struct.stat* null)
   call void @get_field_list(), !dbg !1471
   call void @get_header(), !dbg !1472
-  %tobool170 = icmp ne %struct.stat* %tau96, null, !dbg !1473
-  br i1 %tobool170, label %if.then171, label %if.else192, !dbg !1474
+  %tobool170 = icmp ne %struct.stat* %stats.0, null, !dbg !1473
+  br i1 %tobool170, label %if.then171.split, label %if.else192, !dbg !1474
 
-if.then171:                                       ; preds = %if.end169
+if.then171.split:                                 ; preds = %if.end169
+  %123 = load i32, i32* @counter, align 4, !dbg !1475
+  %124 = add i32 %123, 4, !dbg !1475
+  store i32 %124, i32* @counter, align 4, !dbg !1475
+  br label %if.then171, !dbg !1475
+
+if.then171:                                       ; preds = %if.then171.split
   store i8 1, i8* @show_listed_fs, align 1, !dbg !1475, !tbaa !1192
   %i53 = load i32, i32* @optind, align 4, !dbg !1476, !tbaa !1196
   call void @llvm.dbg.value(metadata i32 %i53, metadata !1180, metadata !DIExpression()), !dbg !1477
   br label %for.cond173, !dbg !1478
 
-for.cond173:                                      ; preds = %for.inc188, %if.then171
-  %i172.0 = phi i32 [ %i53, %if.then171 ], [ %inc189, %for.inc188 ], !dbg !1477
+for.cond173:                                      ; preds = %for.inc188.split, %if.then171
+  %i172.0 = phi i32 [ %i53, %if.then171 ], [ %inc189, %for.inc188.split ], !dbg !1477
   call void @llvm.dbg.value(metadata i32 %i172.0, metadata !1180, metadata !DIExpression()), !dbg !1477
   %cmp174 = icmp slt i32 %i172.0, %argc, !dbg !1479
   br i1 %cmp174, label %for.body177, label %for.cond.cleanup176, !dbg !1481
@@ -1150,16 +1516,31 @@ if.then181:                                       ; preds = %for.body177
   %i56 = load i32, i32* @optind, align 4, !dbg !1486, !tbaa !1196
   %sub184 = sub nsw i32 %i172.0, %i56, !dbg !1487
   %idxprom185 = sext i32 %sub184 to i64, !dbg !1488
-  %arrayidx186 = getelementptr inbounds %struct.stat, %struct.stat* %tau96, i64 %idxprom185, !dbg !1488
+  %arrayidx186 = getelementptr inbounds %struct.stat, %struct.stat* %stats.0, i64 %idxprom185, !dbg !1488
   call void @get_entry(i8* %i55, %struct.stat* %arrayidx186), !dbg !1489
+  br label %if.then181.split, !dbg !1489
+
+if.then181.split:                                 ; preds = %if.then181
+  %125 = load i32, i32* @counter, align 4, !dbg !1489
+  %126 = add i32 %125, 1, !dbg !1489
+  store i32 %126, i32* @counter, align 4, !dbg !1489
   br label %if.end187, !dbg !1489
 
-if.end187:                                        ; preds = %if.then181, %for.body177
+if.end187:                                        ; preds = %if.then181.split, %for.body177
   br label %for.inc188, !dbg !1490
 
 for.inc188:                                       ; preds = %if.end187
   %inc189 = add nsw i32 %i172.0, 1, !dbg !1491
   call void @llvm.dbg.value(metadata i32 %inc189, metadata !1180, metadata !DIExpression()), !dbg !1477
+  br label %for.inc188.split, !dbg !1492
+
+for.inc188.split:                                 ; preds = %for.inc188
+  %127 = load i32, i32* @counter, align 4, !dbg !1492
+  %128 = add i32 %127, 1858886, !dbg !1492
+  store i32 %128, i32* @counter, align 4, !dbg !1492
+  %129 = load i32, i32* @counter, align 4, !dbg !1492
+  call void @_Z7counterii(i32 %129, i32 0)
+  store i32 3, i32* @counter, align 4, !dbg !1492
   br label %for.cond173, !dbg !1492, !llvm.loop !1493
 
 for.end191:                                       ; preds = %for.cond.cleanup176
@@ -1172,14 +1553,26 @@ if.else192:                                       ; preds = %if.end169
 if.end193:                                        ; preds = %if.else192, %for.end191
   %i57 = load i8, i8* @file_systems_processed, align 1, !dbg !1497, !tbaa !1192, !range !1299
   %tobool194 = trunc i8 %i57 to i1, !dbg !1497
-  br i1 %tobool194, label %if.then195, label %if.else202, !dbg !1499
+  br i1 %tobool194, label %if.then195.split, label %if.else202, !dbg !1499
 
-if.then195:                                       ; preds = %if.end193
+if.then195.split:                                 ; preds = %if.end193
+  %130 = load i32, i32* @counter, align 4, !dbg !1500
+  %131 = add i32 %130, 2, !dbg !1500
+  store i32 %131, i32* @counter, align 4, !dbg !1500
+  br label %if.then195, !dbg !1500
+
+if.then195:                                       ; preds = %if.then195.split
   %i58 = load i8, i8* @print_grand_total, align 1, !dbg !1500, !tbaa !1192, !range !1299
   %tobool196 = trunc i8 %i58 to i1, !dbg !1500
-  br i1 %tobool196, label %if.then197, label %if.end201, !dbg !1503
+  br i1 %tobool196, label %if.then197.split, label %if.end201, !dbg !1503
 
-if.then197:                                       ; preds = %if.then195
+if.then197.split:                                 ; preds = %if.then195
+  %132 = load i32, i32* @counter, align 4, !dbg !1504
+  %133 = add i32 %132, 1, !dbg !1504
+  store i32 %133, i32* @counter, align 4, !dbg !1504
+  br label %if.then197, !dbg !1504
+
+if.then197:                                       ; preds = %if.then197.split
   %i59 = load i8, i8* getelementptr inbounds ([12 x %struct.field_data_t], [12 x %struct.field_data_t]* @field_data, i64 0, i64 0, i32 6), align 4, !dbg !1504, !tbaa !1436, !range !1299
   %tobool198 = trunc i8 %i59 to i1, !dbg !1504
   %i60 = zext i1 %tobool198 to i64, !dbg !1505
@@ -1198,20 +1591,40 @@ if.else202:                                       ; preds = %if.end193
 
 if.then205:                                       ; preds = %if.else202
   call void (i32, i32, i8*, ...) @error(i32 1, i32 0, i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.33, i64 0, i64 0)), !dbg !1514
-  unreachable, !dbg !1514
+  br label %UnifiedUnreachableBlock
 
 if.end207:                                        ; preds = %if.else202
   br label %if.end208
 
 if.end208:                                        ; preds = %if.end207, %if.end201
   %i62 = load i32, i32* @exit_status, align 4, !dbg !1515, !tbaa !1196
+  br label %if.end208.split, !dbg !1515
+
+if.end208.split:                                  ; preds = %if.end208
+  %134 = load i32, i32* @counter, align 4, !dbg !1515
+  %135 = add i32 %134, -1, !dbg !1515
+  store i32 %135, i32* @counter, align 4, !dbg !1515
   br label %cleanup209, !dbg !1515
 
-cleanup209:                                       ; preds = %if.end208, %cleanup96
-  %retval.1 = phi i32 [ %tau92, %cleanup96 ], [ %i62, %if.end208 ], !dbg !1184
+cleanup209:                                       ; preds = %cleanup96.cleanup209_crit_edge, %if.end208.split
+  %retval.1 = phi i32 [ %retval.0, %cleanup96.cleanup209_crit_edge ], [ %i62, %if.end208.split ], !dbg !1184
+  %136 = load i32, i32* @counter, align 4, !dbg !1516
+  %137 = add i32 %136, -1858890, !dbg !1516
+  store i32 %137, i32* @counter, align 4, !dbg !1516
+  %138 = load i32, i32* @counter, align 4, !dbg !1516
+  call void @_Z7counterii(i32 %138, i32 1)
   ret i32 %retval.1, !dbg !1516
 
-unreachable:                                      ; preds = %cleanup
+unreachable.split:                                ; preds = %cleanup
+  %139 = load i32, i32* @counter, align 4
+  %140 = add i32 %139, 42873
+  store i32 %140, i32* @counter, align 4
+  br label %unreachable
+
+unreachable:                                      ; preds = %unreachable.split
+  br label %UnifiedUnreachableBlock
+
+UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then205, %cond.false, %sw.default, %sw.bb50.split, %sw.bb49.split, %if.then43, %if.then40, %if.then35, %if.then26, %if.then21, %if.then11, %if.then6
   unreachable
 }
 
@@ -1329,7 +1742,7 @@ if.then11:                                        ; preds = %for.end
   %call12 = call i8* @quote(i8* %s.0), !dbg !1600
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([34 x i8], [34 x i8]* @.str.69, i64 0, i64 0), i8* %call12), !dbg !1602
   call void @usage(i32 1) #27, !dbg !1603
-  unreachable, !dbg !1603
+  br label %UnifiedUnreachableBlock
 
 if.end13:                                         ; preds = %for.end
   %idxprom14 = zext i32 %field.0 to i64, !dbg !1604
@@ -1347,7 +1760,7 @@ if.then17:                                        ; preds = %if.end13
   %call21 = call i8* @quote(i8* %i2), !dbg !1611
   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([46 x i8], [46 x i8]* @.str.70, i64 0, i64 0), i8* %call21), !dbg !1612
   call void @usage(i32 1) #27, !dbg !1613
-  unreachable, !dbg !1613
+  br label %UnifiedUnreachableBlock
 
 if.end22:                                         ; preds = %if.end13
   switch i32 %field.0, label %sw.default [
@@ -1379,7 +1792,7 @@ sw.bb24:                                          ; preds = %if.end22
 
 sw.default:                                       ; preds = %if.end22
   call void @__assert_fail(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @.str.73, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.74, i64 0, i64 0), i32 496, i8* getelementptr inbounds ([37 x i8], [37 x i8]* @__PRETTY_FUNCTION__.decode_output_arg, i64 0, i64 0)) #24, !dbg !1622
-  unreachable, !dbg !1622
+  br label %UnifiedUnreachableBlock
 
 sw.epilog:                                        ; preds = %sw.bb24, %sw.bb23, %sw.bb
   call void @llvm.dbg.value(metadata i8* %comma.0, metadata !1561, metadata !DIExpression()), !dbg !1567
@@ -1392,6 +1805,9 @@ do.cond:                                          ; preds = %sw.epilog
 do.end:                                           ; preds = %do.cond
   call void @rpl_free(i8* %call), !dbg !1628
   ret void, !dbg !1629
+
+UnifiedUnreachableBlock:                          ; preds = %sw.default, %if.then17, %if.then11
+  unreachable
 }
 
 ; Function Attrs: nounwind
@@ -2319,7 +2735,7 @@ sw.bb125:                                         ; preds = %for.body
 sw.default:                                       ; preds = %for.body
   call void @llvm.dbg.value(metadata %struct.field_values_t* null, metadata !1987, metadata !DIExpression()), !dbg !2197
   call void @__assert_fail(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.106, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.74, i64 0, i64 0), i32 1152, i8* getelementptr inbounds ([129 x i8], [129 x i8]* @__PRETTY_FUNCTION__.get_dev, i64 0, i64 0)) #24, !dbg !2202
-  unreachable, !dbg !2202
+  br label %UnifiedUnreachableBlock
 
 sw.epilog:                                        ; preds = %sw.bb125, %sw.bb124, %sw.bb
   %v.0 = phi %struct.field_values_t* [ null, %sw.bb125 ], [ %inode_values, %sw.bb124 ], [ %block_values, %sw.bb ], !dbg !2205
@@ -2594,7 +3010,7 @@ if.end248:                                        ; preds = %if.else246, %if.end
 
 if.then250:                                       ; preds = %if.end248
   call void @xalloc_die() #27, !dbg !2342
-  unreachable, !dbg !2342
+  br label %UnifiedUnreachableBlock
 
 if.end251:                                        ; preds = %if.end248
   br label %sw.epilog257
@@ -2611,7 +3027,7 @@ sw.bb254:                                         ; preds = %sw.epilog
 
 sw.default256:                                    ; preds = %sw.epilog
   call void @__assert_fail(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.108, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.74, i64 0, i64 0), i32 1254, i8* getelementptr inbounds ([129 x i8], [129 x i8]* @__PRETTY_FUNCTION__.get_dev, i64 0, i64 0)) #24, !dbg !2349
-  unreachable, !dbg !2349
+  br label %UnifiedUnreachableBlock
 
 sw.epilog257:                                     ; preds = %sw.bb254, %sw.bb252, %if.end251, %sw.bb141, %sw.bb134, %sw.bb131, %sw.bb129, %sw.bb127
   %i62 = load i8*, i8** %cell, align 8, !dbg !2352, !tbaa !957
@@ -2620,7 +3036,7 @@ sw.epilog257:                                     ; preds = %sw.bb254, %sw.bb252
 
 if.then259:                                       ; preds = %sw.epilog257
   call void @__assert_fail(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.109, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.74, i64 0, i64 0), i32 1258, i8* getelementptr inbounds ([129 x i8], [129 x i8]* @__PRETTY_FUNCTION__.get_dev, i64 0, i64 0)) #24, !dbg !2355
-  unreachable, !dbg !2355
+  br label %UnifiedUnreachableBlock
 
 if.end260:                                        ; preds = %sw.epilog257
   %i63 = load i8*, i8** %cell, align 8, !dbg !2358, !tbaa !957
@@ -2695,6 +3111,9 @@ cleanup.cont:                                     ; preds = %cleanup, %cleanup, 
   ret void, !dbg !2378
 
 unreachable:                                      ; preds = %cleanup
+  br label %UnifiedUnreachableBlock
+
+UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then259, %sw.default256, %if.then250, %sw.default
   unreachable
 }
 
@@ -3621,7 +4040,7 @@ for.end:                                          ; preds = %for.cond
 
 if.then:                                          ; preds = %for.end
   call void @xalloc_die() #27, !dbg !2986
-  unreachable, !dbg !2986
+  br label %UnifiedUnreachableBlock
 
 if.end:                                           ; preds = %for.end
   %i3 = load %struct.mount_entry*, %struct.mount_entry** @mount_list, align 8, !dbg !2987, !tbaa !957
@@ -3901,7 +4320,7 @@ if.else119:                                       ; preds = %if.end112
 
 if.then126:                                       ; preds = %if.else119
   call void @xalloc_die() #27, !dbg !3113
-  unreachable, !dbg !3113
+  br label %UnifiedUnreachableBlock
 
 if.end127:                                        ; preds = %if.else119
   %seen_last = getelementptr inbounds %struct.devlist, %struct.devlist* %i43, i32 0, i32 3, !dbg !3114
@@ -3958,6 +4377,9 @@ while.end:                                        ; preds = %while.cond
 
 if.end138:                                        ; preds = %while.end, %for.end130
   ret void, !dbg !3141
+
+UnifiedUnreachableBlock:                          ; preds = %if.then126, %if.then
+  unreachable
 }
 
 ; Function Attrs: nounwind uwtable
@@ -6028,7 +6450,7 @@ if.end21:                                         ; preds = %sw.bb
 
 sw.bb22:                                          ; preds = %if.end21, %while.body
   call void @xalloc_die() #27, !dbg !4048
-  unreachable, !dbg !4048
+  br label %UnifiedUnreachableBlock
 
 sw.default:                                       ; preds = %while.body
   call void @llvm.dbg.value(metadata i8* %rname.0, metadata !3925, metadata !DIExpression()), !dbg !3992
@@ -6267,7 +6689,7 @@ while.body105:                                    ; preds = %while.cond97
 
 if.then110:                                       ; preds = %while.body105
   call void @xalloc_die() #27, !dbg !4146
-  unreachable, !dbg !4146
+  br label %UnifiedUnreachableBlock
 
 if.end111:                                        ; preds = %while.body105
   %data112 = getelementptr inbounds %struct.scratch_buffer, %struct.scratch_buffer* %rname_buf, i32 0, i32 0, !dbg !4147
@@ -6315,7 +6737,7 @@ if.end126:                                        ; preds = %while.body118
 
 if.then128:                                       ; preds = %if.end126
   call void @xalloc_die() #27, !dbg !4169
-  unreachable, !dbg !4169
+  br label %UnifiedUnreachableBlock
 
 if.end129:                                        ; preds = %if.end126
   br label %cleanup, !dbg !4170
@@ -6483,7 +6905,7 @@ cond.false199:                                    ; preds = %cond.false192
 
 if.then203:                                       ; preds = %cond.false199, %cond.true195, %cond.true188, %cond.false181, %cond.true177
   call void @xalloc_die() #27, !dbg !4221
-  unreachable, !dbg !4221
+  br label %UnifiedUnreachableBlock
 
 if.end204:                                        ; preds = %cond.false199, %cond.true195, %cond.true188, %cond.false181, %cond.true177
   br label %while.cond205, !dbg !4222
@@ -6503,7 +6925,7 @@ while.body210:                                    ; preds = %while.cond205
 
 if.then212:                                       ; preds = %while.body210
   call void @xalloc_die() #27, !dbg !4230
-  unreachable, !dbg !4230
+  br label %UnifiedUnreachableBlock
 
 if.end213:                                        ; preds = %while.body210
   %data214 = getelementptr inbounds %struct.scratch_buffer, %struct.scratch_buffer* %extra_buffer, i32 0, i32 0, !dbg !4231
@@ -6834,7 +7256,7 @@ if.end314:                                        ; preds = %if.end311
 
 if.then321:                                       ; preds = %if.end314
   call void @xalloc_die() #27, !dbg !4333
-  unreachable, !dbg !4333
+  br label %UnifiedUnreachableBlock
 
 if.end322:                                        ; preds = %if.end314
   br label %cleanup323, !dbg !4334
@@ -6854,6 +7276,9 @@ cleanup330:                                       ; preds = %cleanup323, %if.the
   ret i8* %retval.1, !dbg !4335
 
 unreachable:                                      ; preds = %cleanup
+  br label %UnifiedUnreachableBlock
+
+UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then321, %if.then212, %if.then203, %if.then128, %if.then110, %sw.bb22
   unreachable
 }
 
@@ -7175,7 +7600,7 @@ if.else:                                          ; preds = %if.then
 if.end:                                           ; preds = %if.else, %if.then5
   %i7 = load volatile i32, i32* @exit_failure, align 4, !dbg !4536, !tbaa !1196
   call void @_exit(i32 %i7) #27, !dbg !4537
-  unreachable, !dbg !4537
+  br label %UnifiedUnreachableBlock
 
 if.end9:                                          ; preds = %land.lhs.true1, %entry
   %i8 = load %struct._IO_FILE*, %struct._IO_FILE** @stderr, align 8, !dbg !4538, !tbaa !957
@@ -7186,10 +7611,13 @@ if.end9:                                          ; preds = %land.lhs.true1, %en
 if.then12:                                        ; preds = %if.end9
   %i9 = load volatile i32, i32* @exit_failure, align 4, !dbg !4543, !tbaa !1196
   call void @_exit(i32 %i9) #27, !dbg !4544
-  unreachable, !dbg !4544
+  br label %UnifiedUnreachableBlock
 
 if.end13:                                         ; preds = %if.end9
   ret void, !dbg !4545
+
+UnifiedUnreachableBlock:                          ; preds = %if.then12, %if.end
+  unreachable
 }
 
 ; Function Attrs: noreturn
@@ -7364,7 +7792,7 @@ if.end:                                           ; preds = %entry
 
 if.then6:                                         ; preds = %if.end
   call void @xalloc_die() #27, !dbg !4685
-  unreachable, !dbg !4685
+  br label %UnifiedUnreachableBlock
 
 if.end7:                                          ; preds = %if.end
   %cmp8 = icmp ne %struct.F_triple* %i4, %i, !dbg !4687
@@ -7389,6 +7817,9 @@ cleanup.cont:                                     ; preds = %cleanup, %cleanup
   ret void, !dbg !4694
 
 unreachable:                                      ; preds = %cleanup
+  br label %UnifiedUnreachableBlock
+
+UnifiedUnreachableBlock:                          ; preds = %unreachable, %if.then6
   unreachable
 }
 
@@ -9286,7 +9717,7 @@ entry:
 
 if.then:                                          ; preds = %entry
   call void @abort() #24, !dbg !6053
-  unreachable, !dbg !6053
+  br label %UnifiedUnreachableBlock
 
 if.end:                                           ; preds = %entry
   %call = call i8* @hash_find_entry(%struct.hash_table* %table, i8* %entry1, %struct.hash_entry** %bucket, i1 zeroext false), !dbg !6054
@@ -9390,7 +9821,7 @@ if.end42:                                         ; preds = %if.end38
 
 if.then46:                                        ; preds = %if.end42
   call void @abort() #24, !dbg !6111
-  unreachable, !dbg !6111
+  br label %UnifiedUnreachableBlock
 
 if.end47:                                         ; preds = %if.end42
   br label %cleanup, !dbg !6112
@@ -9463,6 +9894,9 @@ cleanup69:                                        ; preds = %if.end63, %cleanup6
   %i25 = bitcast %struct.hash_entry** %bucket to i8*, !dbg !6144
   call void @llvm.lifetime.end.p0i8(i64 8, i8* %i25) #25, !dbg !6144
   ret i32 %retval.2, !dbg !6144
+
+UnifiedUnreachableBlock:                          ; preds = %if.then46, %if.then
+  unreachable
 }
 
 ; Function Attrs: nounwind uwtable
@@ -19187,7 +19621,7 @@ if.then5:                                         ; preds = %if.end
 
 if.else:                                          ; preds = %if.end
   call void @__assert_fail(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.349, i64 0, i64 0), i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str.1.350, i64 0, i64 0), i32 126, i8* getelementptr inbounds ([23 x i8], [23 x i8]* @__PRETTY_FUNCTION__.chdir_long, i64 0, i64 0)) #24, !dbg !11017
-  unreachable, !dbg !11017
+  br label %UnifiedUnreachableBlock
 
 if.end6:                                          ; preds = %if.then5
   %cmp7 = icmp ule i64 4096, %call3, !dbg !11021
@@ -19198,7 +19632,7 @@ if.then8:                                         ; preds = %if.end6
 
 if.else9:                                         ; preds = %if.end6
   call void @__assert_fail(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.2.351, i64 0, i64 0), i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str.1.350, i64 0, i64 0), i32 127, i8* getelementptr inbounds ([23 x i8], [23 x i8]* @__PRETTY_FUNCTION__.chdir_long, i64 0, i64 0)) #24, !dbg !11021
-  unreachable, !dbg !11021
+  br label %UnifiedUnreachableBlock
 
 if.end10:                                         ; preds = %if.then8
   %call11 = call i64 @strspn(i8* %dir, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.3.352, i64 0, i64 0)) #26, !dbg !11025
@@ -19286,7 +19720,7 @@ if.then39:                                        ; preds = %if.end36
 
 if.else40:                                        ; preds = %if.end36
   call void @__assert_fail(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.4.353, i64 0, i64 0), i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str.1.350, i64 0, i64 0), i32 162, i8* getelementptr inbounds ([23 x i8], [23 x i8]* @__PRETTY_FUNCTION__.chdir_long, i64 0, i64 0)) #24, !dbg !11062
-  unreachable, !dbg !11062
+  br label %UnifiedUnreachableBlock
 
 if.end41:                                         ; preds = %if.then39
   %cmp42 = icmp ule i8* %dir.addr.2, %add.ptr, !dbg !11066
@@ -19297,7 +19731,7 @@ if.then44:                                        ; preds = %if.end41
 
 if.else45:                                        ; preds = %if.end41
   call void @__assert_fail(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @.str.5.354, i64 0, i64 0), i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str.1.350, i64 0, i64 0), i32 163, i8* getelementptr inbounds ([23 x i8], [23 x i8]* @__PRETTY_FUNCTION__.chdir_long, i64 0, i64 0)) #24, !dbg !11066
-  unreachable, !dbg !11066
+  br label %UnifiedUnreachableBlock
 
 if.end46:                                         ; preds = %if.then44
   br label %while.cond, !dbg !11070
@@ -19336,7 +19770,7 @@ if.then65:                                        ; preds = %if.end59
 
 if.else66:                                        ; preds = %if.end59
   call void @__assert_fail(i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.6.355, i64 0, i64 0), i8* getelementptr inbounds ([20 x i8], [20 x i8]* @.str.1.350, i64 0, i64 0), i32 179, i8* getelementptr inbounds ([23 x i8], [23 x i8]* @__PRETTY_FUNCTION__.chdir_long, i64 0, i64 0)) #24, !dbg !11083
-  unreachable, !dbg !11083
+  br label %UnifiedUnreachableBlock
 
 if.end67:                                         ; preds = %if.then65
   %call68 = call i32 @cdb_advance_fd(%union.anon* %cdb, i8* %dir.addr.3), !dbg !11087
@@ -19413,6 +19847,9 @@ cleanup96:                                        ; preds = %Fail, %if.end92, %c
 cleanup100:                                       ; preds = %cleanup96, %if.then
   %retval.5 = phi i32 [ %call, %if.then ], [ %retval.4, %cleanup96 ], !dbg !11002
   ret i32 %retval.5, !dbg !11121
+
+UnifiedUnreachableBlock:                          ; preds = %if.else66, %if.else45, %if.else40, %if.else9, %if.else
+  unreachable
 }
 
 ; Function Attrs: nounwind uwtable
@@ -20481,20 +20918,7 @@ declare !dbg !11883 dso_local i32 @fcntl(i32, i32, ...) #2
 ; Function Attrs: nofree nosync nounwind readnone speculatable willreturn
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-; Function Attrs: nofree nosync nounwind willreturn
-declare i8 @llvm.tau.i8(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare %struct.fs_type_list* @llvm.tau.p0s_struct.fs_type_lists(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare %struct.stat* @llvm.tau.p0s_struct.stats(...) #17
-
-; Function Attrs: nofree nosync nounwind willreturn
-declare i1 @llvm.tau.i1(...) #17
+declare void @_Z7counterii(i32, i32)
 
 attributes #0 = { noreturn nounwind uwtable "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { nofree nosync nounwind readnone speculatable willreturn }

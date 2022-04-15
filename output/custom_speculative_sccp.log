@@ -1,416 +1,806 @@
 Caloric Connector and BuddySet Information
-entry: sw.epilog is a Caloric Connector
-if.else is a Caloric Connector
-sw.bb14 is a Caloric Connector
-if.end is a Caloric Connector
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.0)
-  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
-  %tau = call i32 (...) @llvm.tau.i32(i32 %n.0)
-  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
-  %tau6 = call i32 (...) @llvm.tau.i32(i32 %tau8)
-  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
-  %tau2 = call i32 (...) @llvm.tau.i32(i32 %tau9)
-  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %tau8)
-  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
-  %tau1 = call i32 (...) @llvm.tau.i32(i32 %tau9)
-  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
+entry: while.cond is a Caloric Connector
+cleanup is a Caloric Connector
+if.end62 is a Caloric Connector
+if.end75 is a Caloric Connector
+if.end76 is a Caloric Connector
+if.end77 is a Caloric Connector
+for.cond is a Caloric Connector
+cleanup96 is a Caloric Connector
+cond.end is a Caloric Connector
+if.end128 is a Caloric Connector
+if.end166 is a Caloric Connector
+if.end169 is a Caloric Connector
+if.end193 is a Caloric Connector
+if.end201 is a Caloric Connector
+if.end208 is a Caloric Connector
+  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.0)
+  %tau88 = call i8 (...) @llvm.tau.i8(i8 %posix_format.0, i8 0)
+  %tau29 = call i8 (...) @llvm.tau.i8(i8 %posix_format.2)
+  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.2, i8 %tau88)
+  %tau15 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0)
+  %tau89 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0, i32 3)
+  %tau52 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0)
+  %tau90 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0, %struct.fs_type_list* %i23)
+  %tau43 = call i8 (...) @llvm.tau.i8(i8 %match.0)
+  %tau91 = call i8 (...) @llvm.tau.i8(i8 %match.0, i8 0)
+  %tau69 = call i32 (...) @llvm.tau.i32(i32 %retval.0)
+  %tau92 = call i32 (...) @llvm.tau.i32(i32 %retval.0, i32 0)
+  %tau61 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.1)
+  %tau93 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.1, i32 0)
+  %tau77 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %stats.0)
+  %tau94 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %stats.0, %struct.stat* null)
+  %tau78 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau94)
+  %tau95 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau94, %struct.stat* null)
+  %tau79 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau95)
+  %tau96 = call %struct.stat* (...) @llvm.tau.p0s_struct.stats(%struct.stat* %tau95, %struct.stat* null)
 Speculative SCCP on function 'main'
 Marking Block Executable: entry
+markOverdefined: i32 %argc
+markOverdefined: i8** %argv
+
+Popped off OI-WL: i8** %argv
+markOverdefined:   %arrayidx = getelementptr inbounds i8*, i8** %argv, i64 0, !dbg !1018
+
+Popped off OI-WL:   %arrayidx = getelementptr inbounds i8*, i8** %argv, i64 0, !dbg !1018
+Merged overdefined into   %i = load i8*, i8** %arrayidx, align 8, !dbg !1018, !tbaa !1019 : overdefined
+
+Popped off OI-WL:   %i = load i8*, i8** %arrayidx, align 8, !dbg !1018, !tbaa !1019
+
+Popped off OI-WL: i32 %argc
 
 Popped off BBWL: 
 entry:
-  %m = alloca i32, align 4
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
-  %i = load i32, i32* %m, align 4
-  switch i32 %i, label %sw.default [
-    i32 2, label %sw.bb
-    i32 4, label %sw.bb1
-    i32 6, label %sw.bb4
-  ]
+  %oi = alloca i32, align 4
+  call void @llvm.dbg.value(metadata i32 %argc, metadata !949, metadata !DIExpression()), !dbg !1017
+  call void @llvm.dbg.value(metadata i8** %argv, metadata !950, metadata !DIExpression()), !dbg !1017
+  call void @llvm.dbg.value(metadata %struct.stat* null, metadata !951, metadata !DIExpression()), !dbg !1017
+  %arrayidx = getelementptr inbounds i8*, i8** %argv, i64 0, !dbg !1018
+  %i = load i8*, i8** %arrayidx, align 8, !dbg !1018, !tbaa !1019
+  call void @set_program_name(i8* %i), !dbg !1023
+  %call = call i8* @setlocale(i32 6, i8* getelementptr inbounds ([1 x i8], [1 x i8]* @.str.13, i64 0, i64 0)) #24, !dbg !1024
+  %call1 = call i32 @atexit(void ()* @close_stdout) #24, !dbg !1025
+  store %struct.fs_type_list* null, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1026, !tbaa !1019
+  store %struct.fs_type_list* null, %struct.fs_type_list** @fs_exclude_list, align 8, !dbg !1027, !tbaa !1019
+  store i8 0, i8* @show_all_fs, align 1, !dbg !1028, !tbaa !1029
+  store i8 0, i8* @show_listed_fs, align 1, !dbg !1031, !tbaa !1029
+  store i32 -1, i32* @human_output_opts, align 4, !dbg !1032, !tbaa !1033
+  store i8 0, i8* @print_type, align 1, !dbg !1035, !tbaa !1029
+  store i8 0, i8* @file_systems_processed, align 1, !dbg !1036, !tbaa !1029
+  store i32 0, i32* @exit_status, align 4, !dbg !1037, !tbaa !1033
+  store i8 0, i8* @print_grand_total, align 1, !dbg !1038, !tbaa !1029
+  store i64 1, i64* getelementptr inbounds (%struct.fs_usage, %struct.fs_usage* @grand_fsu, i32 0, i32 0), align 8, !dbg !1039, !tbaa !1040
+  call void @llvm.dbg.value(metadata i8 0, metadata !987, metadata !DIExpression()), !dbg !1017
+  call void @llvm.dbg.value(metadata i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), metadata !988, metadata !DIExpression()), !dbg !1017
+  br label %while.cond, !dbg !1043
 
-	[Taulog] Visiting Other Instruction :   %m = alloca i32, align 4
-Spec SCCP: Don't know how to handle:   %m = alloca i32, align 4
-markOverdefined:   %m = alloca i32, align 4
-	[Taulog] Visiting Call Instruction :   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
-Merged overdefined into   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m) : overdefined
-	[Taulog] Visiting Other Instruction :   %i = load i32, i32* %m, align 4
-Merged overdefined into   %i = load i32, i32* %m, align 4 : overdefined
-	[Taulog] Visiting Other Instruction :   switch i32 %i, label %sw.default [
-    i32 2, label %sw.bb
-    i32 4, label %sw.bb1
-    i32 6, label %sw.bb4
-  ]
+	[Taulog] Visiting Other Instruction :   %oi = alloca i32, align 4
+Spec SCCP: Don't know how to handle:   %oi = alloca i32, align 4
+markOverdefined:   %oi = alloca i32, align 4
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i32 %argc, metadata !1117, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8** %argv, metadata !1118, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata %struct.stat* null, metadata !1119, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   %arrayidx = getelementptr inbounds i8*, i8** %argv, i64 0, !dbg !1018
+	[Taulog] Visiting Other Instruction :   %i = load i8*, i8** %arrayidx, align 8, !dbg !1018, !tbaa !1019
+	[Taulog] Visiting Call Instruction :   call void @set_program_name(i8* %i), !dbg !1023
+	[Taulog] Visiting Call Instruction :   %call = call i8* @setlocale(i32 6, i8* getelementptr inbounds ([1 x i8], [1 x i8]* @.str.13, i64 0, i64 0)) #24, !dbg !1024
+Merged overdefined into   %call = call i8* @setlocale(i32 6, i8* getelementptr inbounds ([1 x i8], [1 x i8]* @.str.13, i64 0, i64 0)) #24, !dbg !1024 : overdefined
+	[Taulog] Visiting Call Instruction :   %call1 = call i32 @atexit(void ()* @close_stdout) #24, !dbg !1025
+Merged overdefined into   %call1 = call i32 @atexit(void ()* @close_stdout) #24, !dbg !1025 : overdefined
+	[Taulog] Visiting Other Instruction :   store %struct.fs_type_list* null, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1026, !tbaa !1019
+	[Taulog] Visiting Other Instruction :   store %struct.fs_type_list* null, %struct.fs_type_list** @fs_exclude_list, align 8, !dbg !1027, !tbaa !1019
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @show_all_fs, align 1, !dbg !1028, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @show_listed_fs, align 1, !dbg !1031, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   store i32 -1, i32* @human_output_opts, align 4, !dbg !1032, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @print_type, align 1, !dbg !1035, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @file_systems_processed, align 1, !dbg !1036, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   store i32 0, i32* @exit_status, align 4, !dbg !1037, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @print_grand_total, align 1, !dbg !1038, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   store i64 1, i64* getelementptr inbounds (%struct.fs_usage, %struct.fs_usage* @grand_fsu, i32 0, i32 0), align 8, !dbg !1039, !tbaa !1040
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 0, metadata !1154, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), metadata !1155, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   br label %while.cond, !dbg !1043
+Marking Block Executable: while.cond
+
+Popped off BBWL: 
+while.cond:                                       ; preds = %cleanup.cont, %entry
+  %posix_format.0 = phi i8 [ 0, %entry ], [ %tau, %cleanup.cont ], !dbg !1044
+  %tau88 = call i8 (...) @llvm.tau.i8(i8 %posix_format.0, i8 0)
+  call void @llvm.dbg.value(metadata i8 %tau88, metadata !987, metadata !DIExpression()), !dbg !1017
+  br label %while.body, !dbg !1043
+
+	[Taulog] Visiting Other Instruction :   %posix_format.0 = phi i8 [ 0, %entry ], [ %tau, %cleanup.cont ], !dbg !1044
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<0, 1> into   %posix_format.0 = phi i8 [ 0, %entry ], [ %tau, %cleanup.cont ], !dbg !1044 : constantrange<0, 1>
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau88 = call i8 (...) @llvm.tau.i8(i8 %posix_format.0, i8 0))
+		Tau State init : unknown
+		x0 (phi-state) posix_format.0 : constantrange<0, 1>
+		Tau Operand (L) : 0, constantrange<0, 1>
+		ValueLattice (TauState) tau88 : unknown
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 %tau88, metadata !1154, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   br label %while.body, !dbg !1043
+Marking Block Executable: while.body
+
+Popped off BBWL: 
+while.body:                                       ; preds = %while.cond
+  %i1 = bitcast i32* %oi to i8*, !dbg !1045
+  call void @llvm.lifetime.start.p0i8(i64 4, i8* %i1) #24, !dbg !1045
+  call void @llvm.dbg.declare(metadata i32* %oi, metadata !989, metadata !DIExpression()), !dbg !1046
+  store i32 -1, i32* %oi, align 4, !dbg !1046, !tbaa !1033
+  %call2 = call i32 @getopt_long(i32 %argc, i8** %argv, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.15, i64 0, i64 0), %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i32* %oi) #24, !dbg !1047
+  call void @llvm.dbg.value(metadata i32 %call2, metadata !991, metadata !DIExpression()), !dbg !1048
+  %cmp = icmp eq i32 %call2, -1, !dbg !1049
+  br i1 %cmp, label %if.then, label %if.end, !dbg !1051
+
+	[Taulog] Visiting Other Instruction :   %i1 = bitcast i32* %oi to i8*, !dbg !1045
+markOverdefined:   %i1 = bitcast i32* %oi to i8*, !dbg !1045
+	[Taulog] Visiting Call Instruction :   call void @llvm.lifetime.start.p0i8(i64 4, i8* %i1) #24, !dbg !1045
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.declare(metadata i32* %oi, metadata !1156, metadata !DIExpression()), !dbg !1209
+	[Taulog] Visiting Other Instruction :   store i32 -1, i32* %oi, align 4, !dbg !1046, !tbaa !1033
+	[Taulog] Visiting Call Instruction :   %call2 = call i32 @getopt_long(i32 %argc, i8** %argv, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.15, i64 0, i64 0), %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i32* %oi) #24, !dbg !1047
+Merged overdefined into   %call2 = call i32 @getopt_long(i32 %argc, i8** %argv, i8* getelementptr inbounds ([19 x i8], [19 x i8]* @.str.15, i64 0, i64 0), %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i32* %oi) #24, !dbg !1047 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i32 %call2, metadata !1158, metadata !DIExpression()), !dbg !1211
+	[Taulog] Visiting Other Instruction :   %cmp = icmp eq i32 %call2, -1, !dbg !1049
+markOverdefined:   %cmp = icmp eq i32 %call2, -1, !dbg !1049
+	[Taulog] Visiting Other Instruction :   br i1 %cmp, label %if.then, label %if.end, !dbg !1051
+Marking Block Executable: if.then
+Marking Block Executable: if.end
+
+Popped off BBWL: 
+if.end:                                           ; preds = %while.body
+  switch i32 %call2, label %sw.default [
+    i32 97, label %sw.bb
+    i32 66, label %sw.bb3
+    i32 105, label %sw.bb8
+    i32 104, label %sw.bb13
+    i32 72, label %sw.bb14
+    i32 107, label %sw.bb15
+    i32 108, label %sw.bb16
+    i32 109, label %sw.bb17
+    i32 84, label %sw.bb18
+    i32 80, label %sw.bb23
+    i32 129, label %sw.bb28
+    i32 128, label %sw.bb29
+    i32 70, label %sw.bb30
+    i32 116, label %sw.bb30
+    i32 118, label %sw.epilog
+    i32 120, label %sw.bb31
+    i32 131, label %sw.bb32
+    i32 130, label %sw.bb48
+    i32 -130, label %sw.bb49
+    i32 -131, label %sw.bb50
+  ], !dbg !1053
+
+	[Taulog] Visiting Other Instruction :   switch i32 %call2, label %sw.default [
+    i32 97, label %sw.bb
+    i32 66, label %sw.bb3
+    i32 105, label %sw.bb8
+    i32 104, label %sw.bb13
+    i32 72, label %sw.bb14
+    i32 107, label %sw.bb15
+    i32 108, label %sw.bb16
+    i32 109, label %sw.bb17
+    i32 84, label %sw.bb18
+    i32 80, label %sw.bb23
+    i32 129, label %sw.bb28
+    i32 128, label %sw.bb29
+    i32 70, label %sw.bb30
+    i32 116, label %sw.bb30
+    i32 118, label %sw.epilog
+    i32 120, label %sw.bb31
+    i32 131, label %sw.bb32
+    i32 130, label %sw.bb48
+    i32 -130, label %sw.bb49
+    i32 -131, label %sw.bb50
+  ], !dbg !1053
 Marking Block Executable: sw.default
 Marking Block Executable: sw.bb
-Marking Block Executable: sw.bb1
-Marking Block Executable: sw.bb4
-
-Popped off BBWL: 
-sw.bb4:                                           ; preds = %entry
-  %mul5 = mul nsw i32 2, 1
-  %add6 = add nsw i32 %mul5, 1
-  %add7 = add nsw i32 %add6, 2
-  br label %sw.epilog
-
-	[Taulog] Visiting Other Instruction :   %mul5 = mul nsw i32 2, 1
-	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
-		Unknown LHS
-Merged constantrange<2, 3> into   %mul5 = mul nsw i32 2, 1 : constantrange<2, 3>
-	[Taulog] Visiting Other Instruction :   %add6 = add nsw i32 %mul5, 1
-	[Taulog] mul5 : constantrange<2, 3>, 1 : constantrange<1, 2>
-		Unknown LHS
-Merged constantrange<3, 4> into   %add6 = add nsw i32 %mul5, 1 : constantrange<3, 4>
-	[Taulog] Visiting Other Instruction :   %add7 = add nsw i32 %add6, 2
-	[Taulog] add6 : constantrange<3, 4>, 2 : constantrange<2, 3>
-		Unknown LHS
-Merged constantrange<5, 6> into   %add7 = add nsw i32 %add6, 2 : constantrange<5, 6>
-	[Taulog] Visiting Other Instruction :   br label %sw.epilog
-Marking Block Executable: sw.epilog
-
-Popped off BBWL: 
-sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
-  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
-  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
-  %mul8 = mul nsw i32 2, %tau8
-  %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %tau8
-  %cmp = icmp sle i32 %add9, %add10
-  br i1 %cmp, label %if.end, label %if.else
-
-	[Taulog] Visiting Other Instruction :   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-Marking Spec PHINode exec.
-		Unknown LHS
-		Unknown LHS
-Merged constantrange<5, 6> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange<5, 6>
-	[Taulog] Visiting Other Instruction :   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-Marking Spec PHINode exec.
-		Unknown LHS
-		Unknown LHS
-Merged constantrange<3, 4> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 4>
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6))
-		Tau State init : unknown
-		x0 (phi-state) x.0 : constantrange<3, 4>
-		Tau Operand (L) : add, unknown
-		Tau Operand (L) : add3, unknown
-		Unknown LHS
-		Tau Operand (L) : add6, constantrange<3, 4>
-		ValueLattice (TauState) tau8 : unknown
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10))
-		Tau State init : unknown
-		x0 (phi-state) n.0 : constantrange<5, 6>
-		Tau Operand (L) : sub, unknown
-		Unknown LHS
-		Tau Operand (L) : add7, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau9 : unknown
-	[Taulog] Visiting Other Instruction :   %mul8 = mul nsw i32 2, %tau8
-	[Taulog] 2 : constantrange<2, 3>, tau8 : unknown
-	[Taulog] Visiting Other Instruction :   %add9 = add nsw i32 %mul8, 10
-	[Taulog] mul8 : unknown, 10 : constantrange<10, 11>
-	[Taulog] Visiting Other Instruction :   %add10 = add nsw i32 9, %tau8
-	[Taulog] 9 : constantrange<9, 10>, tau8 : unknown
-	[Taulog] Visiting Other Instruction :   %cmp = icmp sle i32 %add9, %add10
-	[Taulog] Visiting Other Instruction :   br i1 %cmp, label %if.end, label %if.else
-
-Popped off BBWL: 
-sw.bb1:                                           ; preds = %entry
-  %mul2 = mul nsw i32 2, 1
-  %add3 = add nsw i32 %mul2, 5
-  %sub = sub nsw i32 %add3, 2
-  br label %sw.epilog
-
-	[Taulog] Visiting Other Instruction :   %mul2 = mul nsw i32 2, 1
-	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
-		Unknown LHS
-Merged constantrange<2, 3> into   %mul2 = mul nsw i32 2, 1 : constantrange<2, 3>
-	[Taulog] Visiting Other Instruction :   %add3 = add nsw i32 %mul2, 5
-	[Taulog] mul2 : constantrange<2, 3>, 5 : constantrange<5, 6>
-		Unknown LHS
-Merged constantrange<7, 8> into   %add3 = add nsw i32 %mul2, 5 : constantrange<7, 8>
-	[Taulog] Visiting Other Instruction :   %sub = sub nsw i32 %add3, 2
-	[Taulog] add3 : constantrange<7, 8>, 2 : constantrange<2, 3>
-		Unknown LHS
-Merged constantrange<5, 6> into   %sub = sub nsw i32 %add3, 2 : constantrange<5, 6>
-	[Taulog] Visiting Other Instruction :   br label %sw.epilog
-Marking Edge Executable: sw.bb1 -> sw.epilog
-Marking Spec PHINode exec.
-Marking Spec PHINode exec.
-Merged constantrange<3, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<3, 8>
-		Tau State init : unknown
-		x0 (phi-state) x.0 : constantrange<3, 8>
-		Tau Operand (L) : add, unknown
-		Unknown LHS
-		Tau Operand (L) : add3, constantrange<7, 8>
-		Tau Operand (L) : add6, constantrange<3, 4>
-		ValueLattice (TauState) tau8 : unknown
-		Tau State init : unknown
-		x0 (phi-state) n.0 : constantrange<5, 6>
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : add7, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau9 : unknown
-
-Popped off BBWL: 
-sw.bb:                                            ; preds = %entry
-  %mul = mul nsw i32 2, 1
-  %add = add nsw i32 %mul, 5
-  br label %sw.epilog
-
-	[Taulog] Visiting Other Instruction :   %mul = mul nsw i32 2, 1
-	[Taulog] 2 : constantrange<2, 3>, 1 : constantrange<1, 2>
-		Unknown LHS
-Merged constantrange<2, 3> into   %mul = mul nsw i32 2, 1 : constantrange<2, 3>
-	[Taulog] Visiting Other Instruction :   %add = add nsw i32 %mul, 5
-	[Taulog] mul : constantrange<2, 3>, 5 : constantrange<5, 6>
-		Unknown LHS
-Merged constantrange<7, 8> into   %add = add nsw i32 %mul, 5 : constantrange<7, 8>
-	[Taulog] Visiting Other Instruction :   br label %sw.epilog
-Marking Edge Executable: sw.bb -> sw.epilog
-Marking Spec PHINode exec.
-Merged constantrange<5, 11> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange<5, 11>
-Marking Spec PHINode exec.
-		Tau State init : unknown
-		x0 (phi-state) x.0 : constantrange<3, 8>
-		Tau Operand (L) : add, constantrange<7, 8>
-		Tau Operand (L) : add3, constantrange<7, 8>
-		Tau Operand (L) : add6, constantrange<3, 4>
-		ValueLattice (TauState) tau8 : unknown
-		Tau State init : unknown
-		x0 (phi-state) n.0 : constantrange<5, 11>
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : add7, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau9 : unknown
-
-Popped off BBWL: 
-sw.default:                                       ; preds = %entry
-  br label %sw.epilog
-
-	[Taulog] Visiting Other Instruction :   br label %sw.epilog
-Marking Edge Executable: sw.default -> sw.epilog
-Marking Spec PHINode exec.
-Merged constantrange incl. undef <5, 11> into   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ] : constantrange incl. undef <5, 11>
-Marking Spec PHINode exec.
-Merged constantrange<2, 8> into   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ] : constantrange<2, 8>
-		Tau State init : unknown
-		x0 (phi-state) x.0 : constantrange<2, 8>
-		Tau Operand (L) : add, constantrange<7, 8>
-		Tau Operand (L) : add3, constantrange<7, 8>
-		Tau Operand (L) : add6, constantrange<3, 4>
-		ValueLattice (TauState) tau8 : unknown
-		Tau State init : unknown
-		x0 (phi-state) n.0 : constantrange incl. undef <5, 11>
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : add7, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau9 : unknown
-
-Popped off OI-WL:   %i = load i32, i32* %m, align 4
-
-Popped off OI-WL:   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
-
-Popped off OI-WL:   %m = alloca i32, align 4
-
-Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-Merged overdefined into   %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6) : overdefined
-
-Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-Merged overdefined into   %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10) : overdefined
-
-Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-
-Popped off I-WL:   %add = add nsw i32 %mul, 5
-Marking Spec PHINode exec.
-
-Popped off I-WL:   %mul = mul nsw i32 2, 1
-	[Taulog] mul : constantrange<2, 3>, 5 : constantrange<5, 6>
-
-Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-
-Popped off I-WL:   %sub = sub nsw i32 %add3, 2
-Marking Spec PHINode exec.
-
-Popped off I-WL:   %add3 = add nsw i32 %mul2, 5
-Marking Spec PHINode exec.
-	[Taulog] add3 : constantrange<7, 8>, 2 : constantrange<2, 3>
-
-Popped off I-WL:   %mul2 = mul nsw i32 2, 1
-	[Taulog] mul2 : constantrange<2, 3>, 5 : constantrange<5, 6>
-
-Popped off I-WL:   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-
-Popped off I-WL:   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
-
-Popped off I-WL:   %add7 = add nsw i32 %add6, 2
-Marking Spec PHINode exec.
-
-Popped off I-WL:   %add6 = add nsw i32 %mul5, 1
-Marking Spec PHINode exec.
-	[Taulog] add6 : constantrange<3, 4>, 2 : constantrange<2, 3>
-
-Popped off I-WL:   %mul5 = mul nsw i32 2, 1
-	[Taulog] mul5 : constantrange<2, 3>, 1 : constantrange<1, 2>
-
-Popped off OI-WL:   %tau9 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 %sub, i32 %add7, i32 10)
-
-Popped off OI-WL:   %tau8 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 %add, i32 %add3, i32 %add6)
-	[Taulog] 2 : constantrange<2, 3>, tau8 : overdefined
-Merged overdefined into   %mul8 = mul nsw i32 2, %tau8 : overdefined
-	[Taulog] 9 : constantrange<9, 10>, tau8 : overdefined
-Merged overdefined into   %add10 = add nsw i32 9, %tau8 : overdefined
-
-Popped off OI-WL:   %add10 = add nsw i32 9, %tau8
-
-Popped off OI-WL:   %mul8 = mul nsw i32 2, %tau8
-	[Taulog] mul8 : overdefined, 10 : constantrange<10, 11>
-Merged overdefined into   %add9 = add nsw i32 %mul8, 10 : overdefined
-
-Popped off OI-WL:   %add9 = add nsw i32 %mul8, 10
-markOverdefined:   %cmp = icmp sle i32 %add9, %add10
-
-Popped off OI-WL:   %cmp = icmp sle i32 %add9, %add10
-Marking Block Executable: if.end
-Marking Block Executable: if.else
-
-Popped off BBWL: 
-if.else:                                          ; preds = %sw.epilog
-  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6)
-  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7)
-  %mul11 = mul nsw i32 3, %tau
-  %add12 = add nsw i32 %tau10, %mul11
-  switch i32 %add12, label %if.end [
-    i32 200, label %sw.bb14
-    i32 300, label %sw.bb15
-  ]
-
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add3, i32 %add6))
-		Tau State init : unknown
-		x0 (phi-state) tau8 : overdefined
-		Tau Operand (L) : add3, constantrange<7, 8>
-		Tau Operand (L) : add6, constantrange<3, 4>
-		ValueLattice (TauState) tau : unknown
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 %add7))
-		Tau State init : unknown
-		x0 (phi-state) tau9 : overdefined
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : add7, constantrange<5, 6>
-		ValueLattice (TauState) tau10 : speculative constantrange<5, 6>
-	[Taulog] Visiting Other Instruction :   %mul11 = mul nsw i32 3, %tau
-	[Taulog] 3 : constantrange<3, 4>, tau : unknown
-	[Taulog] Visiting Other Instruction :   %add12 = add nsw i32 %tau10, %mul11
-	[Taulog] tau10 : constantrange<5, 6>, mul11 : unknown
-	[Taulog] Visiting Other Instruction :   switch i32 %add12, label %if.end [
-    i32 200, label %sw.bb14
-    i32 300, label %sw.bb15
-  ]
-
-Popped off BBWL: 
-if.end:                                           ; preds = %if.else, %sw.epilog
-  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3)
-  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10)
-  %add17 = add nsw i32 %tau12, %tau11
-  store i32 %add17, i32* %m, align 4
-  br label %end
-
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 %add, i32 %add3))
-		Tau State init : unknown
-		x0 (phi-state) tau8 : overdefined
-		Tau Operand (L) : add, constantrange<7, 8>
-		Tau Operand (L) : add3, constantrange<7, 8>
-		ValueLattice (TauState) tau11 : speculative constantrange<7, 8>
-	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 %sub, i32 10))
-		Tau State init : unknown
-		x0 (phi-state) tau9 : overdefined
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau12 : unknown
-	[Taulog] Visiting Other Instruction :   %add17 = add nsw i32 %tau12, %tau11
-	[Taulog] tau12 : unknown, tau11 : constantrange<7, 8>
-	[Taulog] Visiting Other Instruction :   store i32 %add17, i32* %m, align 4
-	[Taulog] Visiting Other Instruction :   br label %end
-Marking Block Executable: end
-
-Popped off BBWL: 
-end:                                              ; preds = %if.end, %sw.bb14
-  ret i32 0
-
-	[Taulog] Visiting Other Instruction :   ret i32 0
-RESOLVING UNDEFs
-markOverdefined:   %mul11 = mul nsw i32 3, %tau
-markOverdefined:   %add12 = add nsw i32 %tau10, %mul11
-markOverdefined:   %add17 = add nsw i32 %tau12, %tau11
-
-Popped off OI-WL:   %add17 = add nsw i32 %tau12, %tau11
-
-Popped off OI-WL:   %add12 = add nsw i32 %tau10, %mul11
-Marking Edge Executable: if.else -> if.end
-		Tau State init : unknown
-		x0 (phi-state) tau8 : overdefined
-		Tau Operand (L) : add, constantrange<7, 8>
-		Tau Operand (L) : add3, constantrange<7, 8>
-		ValueLattice (TauState) tau11 : speculative constantrange<7, 8>
-		Tau State init : unknown
-		x0 (phi-state) tau9 : overdefined
-		Tau Operand (L) : sub, constantrange<5, 6>
-		Tau Operand (L) : 10, constantrange<10, 11>
-		ValueLattice (TauState) tau12 : unknown
+Marking Block Executable: sw.bb3
+Marking Block Executable: sw.bb8
+Marking Block Executable: sw.bb13
 Marking Block Executable: sw.bb14
 Marking Block Executable: sw.bb15
-
-Popped off OI-WL:   %mul11 = mul nsw i32 3, %tau
-	[Taulog] tau10 : constantrange<5, 6>, mul11 : overdefined
+Marking Block Executable: sw.bb16
+Marking Block Executable: sw.bb17
+Marking Block Executable: sw.bb18
+Marking Block Executable: sw.bb23
+Marking Block Executable: sw.bb28
+Marking Block Executable: sw.bb29
+Marking Block Executable: sw.bb30
+Marking Block Executable: sw.epilog
+Marking Block Executable: sw.bb31
+Marking Block Executable: sw.bb32
+Marking Block Executable: sw.bb48
+Marking Block Executable: sw.bb49
+Marking Block Executable: sw.bb50
 
 Popped off BBWL: 
-sw.bb15:                                          ; preds = %if.else
-  call void @exit(i32 0) #7
-  unreachable
+sw.bb50:                                          ; preds = %if.end
+  %i15 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !dbg !1151, !tbaa !1019
+  %i16 = load i8*, i8** @Version, align 8, !dbg !1151, !tbaa !1019
+  call void (%struct._IO_FILE*, i8*, i8*, i8*, ...) @version_etc(%struct._IO_FILE* %i15, i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.12, i64 0, i64 0), i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.20, i64 0, i64 0), i8* %i16, i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.21, i64 0, i64 0), i8* getelementptr inbounds ([16 x i8], [16 x i8]* @.str.22, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.23, i64 0, i64 0), i8* null), !dbg !1151
+  call void @exit(i32 0) #26, !dbg !1151
+  unreachable, !dbg !1151
 
-	[Taulog] Visiting Call Instruction :   call void @exit(i32 0) #7
-	[Taulog] Visiting Other Instruction :   unreachable
+	[Taulog] Visiting Other Instruction :   %i15 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !dbg !1151, !tbaa !1019
+Merged overdefined into   %i15 = load %struct._IO_FILE*, %struct._IO_FILE** @stdout, align 8, !dbg !1151, !tbaa !1019 : overdefined
+	[Taulog] Visiting Other Instruction :   %i16 = load i8*, i8** @Version, align 8, !dbg !1151, !tbaa !1019
+Merged overdefined into   %i16 = load i8*, i8** @Version, align 8, !dbg !1151, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   call void (%struct._IO_FILE*, i8*, i8*, i8*, ...) @version_etc(%struct._IO_FILE* %i15, i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.12, i64 0, i64 0), i8* getelementptr inbounds ([14 x i8], [14 x i8]* @.str.20, i64 0, i64 0), i8* %i16, i8* getelementptr inbounds ([18 x i8], [18 x i8]* @.str.21, i64 0, i64 0), i8* getelementptr inbounds ([16 x i8], [16 x i8]* @.str.22, i64 0, i64 0), i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.23, i64 0, i64 0), i8* null), !dbg !1151
+	[Taulog] Visiting Call Instruction :   call void @exit(i32 0) #26, !dbg !1151
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1151
 
 Popped off BBWL: 
-sw.bb14:                                          ; preds = %if.else
-  br label %end
+sw.bb49:                                          ; preds = %if.end
+  call void @usage(i32 0) #25, !dbg !1150
+  unreachable, !dbg !1150
 
-	[Taulog] Visiting Other Instruction :   br label %end
-Marking Edge Executable: sw.bb14 -> end
-RESOLVING UNDEFs
-  Constant: i32 2 =   %mul5 = mul nsw i32 2, 1
-  Constant: i32 3 =   %add6 = add nsw i32 2, 1
-  Constant: i32 5 =   %add7 = add nsw i32 3, 2
-  Constant: i32 2 =   %mul2 = mul nsw i32 2, 1
-  Constant: i32 7 =   %add3 = add nsw i32 2, 5
-  Constant: i32 5 =   %sub = sub nsw i32 7, 2
-  Constant: i32 2 =   %mul = mul nsw i32 2, 1
-  Constant: i32 7 =   %add = add nsw i32 2, 5
-  Constant: i32 undef =   %tau = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 3)
-  Speculative Constant: i32 5 =   %tau10 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 5)
-  Speculative Constant: i32 7 =   %tau11 = call i32 (...) @llvm.tau.i32(i32 %tau8, i32 7, i32 7)
-  Constant: i32 undef =   %tau12 = call i32 (...) @llvm.tau.i32(i32 %tau9, i32 5, i32 10)
-===-------------------------------------------------------------------------===
-                      ... Pass execution timing report ...
-===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0146 seconds (0.0157 wall clock)
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 0) #25, !dbg !1150
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1150
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0107 ( 97.1%)   0.0035 ( 96.4%)   0.0141 ( 97.0%)   0.0152 ( 97.1%)  SCCPTauPass
-   0.0001 (  1.0%)   0.0000 (  1.3%)   0.0002 (  1.1%)   0.0002 (  1.0%)  PrintModulePass
-   0.0001 (  0.8%)   0.0000 (  1.1%)   0.0001 (  0.9%)   0.0001 (  0.9%)  VerifierPass
-   0.0001 (  0.8%)   0.0000 (  1.0%)   0.0001 (  0.9%)   0.0001 (  0.8%)  VerifierAnalysis
-   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)   0.0000 (  0.1%)  PreservedCFGCheckerAnalysis
-   0.0000 (  0.0%)   0.0000 (  0.1%)   0.0000 (  0.0%)   0.0000 (  0.1%)  DominatorTreeAnalysis
-   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)   0.0000 (  0.0%)  TargetLibraryAnalysis
-   0.0110 (100.0%)   0.0036 (100.0%)   0.0146 (100.0%)   0.0157 (100.0%)  Total
+Popped off BBWL: 
+sw.bb48:                                          ; preds = %if.end
+  store i8 1, i8* @print_grand_total, align 1, !dbg !1148, !tbaa !1029
+  br label %sw.epilog, !dbg !1149
 
-===-------------------------------------------------------------------------===
-                                LLVM IR Parsing
-===-------------------------------------------------------------------------===
-  Total Execution Time: 0.0004 seconds (0.0004 wall clock)
+	[Taulog] Visiting Other Instruction :   store i8 1, i8* @print_grand_total, align 1, !dbg !1148, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1149
+Marking Edge Executable: sw.bb48 -> sw.epilog
+Marking Spec PHINode exec.
 
-   ---User Time---   --System Time--   --User+System--   ---Wall Time---  --- Name ---
-   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Parse IR
-   0.0003 (100.0%)   0.0001 (100.0%)   0.0004 (100.0%)   0.0004 (100.0%)  Total
+Popped off BBWL: 
+sw.bb32:                                          ; preds = %if.end
+  %i10 = load i32, i32* @header_mode, align 4, !dbg !1118, !tbaa !1033
+  %cmp33 = icmp eq i32 %i10, 1, !dbg !1120
+  br i1 %cmp33, label %if.then35, label %if.end36, !dbg !1121
 
+	[Taulog] Visiting Other Instruction :   %i10 = load i32, i32* @header_mode, align 4, !dbg !1118, !tbaa !1033
+Merged overdefined into   %i10 = load i32, i32* @header_mode, align 4, !dbg !1118, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp33 = icmp eq i32 %i10, 1, !dbg !1120
+markOverdefined:   %cmp33 = icmp eq i32 %i10, 1, !dbg !1120
+	[Taulog] Visiting Other Instruction :   br i1 %cmp33, label %if.then35, label %if.end36, !dbg !1121
+Marking Block Executable: if.then35
+Marking Block Executable: if.end36
+
+Popped off BBWL: 
+if.end36:                                         ; preds = %sw.bb32
+  %tobool = trunc i8 %tau88 to i1, !dbg !1125
+  br i1 %tobool, label %land.lhs.true, label %if.end41, !dbg !1127
+
+	[Taulog] Visiting Other Instruction :   %tobool = trunc i8 %tau88 to i1, !dbg !1125
+	[Taulog] Visiting Other Instruction :   br i1 %tobool, label %land.lhs.true, label %if.end41, !dbg !1127
+
+Popped off BBWL: 
+if.then35:                                        ; preds = %sw.bb32
+  call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1122
+  call void @usage(i32 1) #25, !dbg !1124
+  unreachable, !dbg !1124
+
+	[Taulog] Visiting Call Instruction :   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1122
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 1) #25, !dbg !1124
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1124
+
+Popped off BBWL: 
+sw.bb31:                                          ; preds = %if.end
+  %i9 = load i8*, i8** @optarg, align 8, !dbg !1115, !tbaa !1019
+  call void @add_excluded_fs_type(i8* %i9), !dbg !1116
+  br label %sw.epilog, !dbg !1117
+
+	[Taulog] Visiting Other Instruction :   %i9 = load i8*, i8** @optarg, align 8, !dbg !1115, !tbaa !1019
+Merged overdefined into   %i9 = load i8*, i8** @optarg, align 8, !dbg !1115, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @add_excluded_fs_type(i8* %i9), !dbg !1116
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1117
+Marking Edge Executable: sw.bb31 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.epilog:                                        ; preds = %sw.bb48, %if.end47, %sw.bb31, %sw.bb30, %sw.bb29, %sw.bb28, %if.end27, %if.end22, %sw.bb17, %sw.bb16, %sw.bb15, %sw.bb14, %sw.bb13, %if.end12, %if.end7, %sw.bb, %if.end
+  %posix_format.1 = phi i8 [ %tau88, %sw.bb48 ], [ %tau88, %if.end47 ], [ %tau88, %sw.bb31 ], [ %tau88, %if.end ], [ %tau88, %sw.bb30 ], [ %tau88, %sw.bb29 ], [ %tau88, %sw.bb28 ], [ 1, %if.end27 ], [ %tau88, %if.end22 ], [ %tau88, %sw.bb17 ], [ %tau88, %sw.bb16 ], [ %tau88, %sw.bb15 ], [ %tau88, %sw.bb14 ], [ %tau88, %sw.bb13 ], [ %tau88, %if.end12 ], [ %tau88, %if.end7 ], [ %tau88, %sw.bb ], !dbg !1017
+  call void @llvm.dbg.value(metadata i8 %posix_format.1, metadata !987, metadata !DIExpression()), !dbg !1017
+  br label %cleanup, !dbg !1153
+
+	[Taulog] Visiting Other Instruction :   %posix_format.1 = phi i8 [ %tau88, %sw.bb48 ], [ %tau88, %if.end47 ], [ %tau88, %sw.bb31 ], [ %tau88, %if.end ], [ %tau88, %sw.bb30 ], [ %tau88, %sw.bb29 ], [ %tau88, %sw.bb28 ], [ 1, %if.end27 ], [ %tau88, %if.end22 ], [ %tau88, %sw.bb17 ], [ %tau88, %sw.bb16 ], [ %tau88, %sw.bb15 ], [ %tau88, %sw.bb14 ], [ %tau88, %sw.bb13 ], [ %tau88, %if.end12 ], [ %tau88, %if.end7 ], [ %tau88, %sw.bb ], !dbg !1017
+Marking Spec PHINode exec.
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 %posix_format.1, metadata !1154, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   br label %cleanup, !dbg !1153
+Marking Block Executable: cleanup
+
+Popped off BBWL: 
+cleanup:                                          ; preds = %sw.epilog, %if.then
+  %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ]
+  %posix_format.2 = phi i8 [ %tau88, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1044
+  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.2, i8 %tau88)
+  %tau89 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0, i32 3)
+  call void @llvm.dbg.value(metadata i8 %tau, metadata !987, metadata !DIExpression()), !dbg !1017
+  %i17 = bitcast i32* %oi to i8*, !dbg !1153
+  call void @llvm.lifetime.end.p0i8(i64 4, i8* %i17) #24, !dbg !1153
+  switch i32 %tau89, label %unreachable [
+    i32 0, label %cleanup.cont
+    i32 3, label %while.end
+  ]
+
+	[Taulog] Visiting Other Instruction :   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ]
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<0, 1> into   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ] : constantrange<0, 1>
+	[Taulog] Visiting Other Instruction :   %posix_format.2 = phi i8 [ %tau88, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1044
+Marking Spec PHINode exec.
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau = call i8 (...) @llvm.tau.i8(i8 %posix_format.2, i8 %tau88))
+		Tau State init : unknown
+		x0 (phi-state) posix_format.2 : unknown
+		Tau Operand (L) : tau88, unknown
+		ValueLattice (TauState) tau : unknown
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau89 = call i32 (...) @llvm.tau.i32(i32 %cleanup.dest.slot.0, i32 3))
+		Tau State init : unknown
+		x0 (phi-state) cleanup.dest.slot.0 : constantrange<0, 1>
+		Tau Operand (L) : 3, constantrange<3, 4>
+		ValueLattice (TauState) tau89 : speculative constantrange<3, 4>
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 %tau, metadata !1154, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   %i17 = bitcast i32* %oi to i8*, !dbg !1153
+markOverdefined:   %i17 = bitcast i32* %oi to i8*, !dbg !1153
+	[Taulog] Visiting Call Instruction :   call void @llvm.lifetime.end.p0i8(i64 4, i8* %i17) #24, !dbg !1153
+	[Taulog] Visiting Other Instruction :   switch i32 %tau89, label %unreachable [
+    i32 0, label %cleanup.cont
+    i32 3, label %while.end
+  ]
+Marking Block Executable: while.end
+
+Popped off BBWL: 
+while.end:                                        ; preds = %cleanup
+  %i18 = load i32, i32* @human_output_opts, align 4, !dbg !1156, !tbaa !1033
+  %cmp52 = icmp eq i32 %i18, -1, !dbg !1158
+  br i1 %cmp52, label %if.then54, label %if.end63, !dbg !1159
+
+	[Taulog] Visiting Other Instruction :   %i18 = load i32, i32* @human_output_opts, align 4, !dbg !1156, !tbaa !1033
+Merged overdefined into   %i18 = load i32, i32* @human_output_opts, align 4, !dbg !1156, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp52 = icmp eq i32 %i18, -1, !dbg !1158
+markOverdefined:   %cmp52 = icmp eq i32 %i18, -1, !dbg !1158
+	[Taulog] Visiting Other Instruction :   br i1 %cmp52, label %if.then54, label %if.end63, !dbg !1159
+Marking Block Executable: if.then54
+Marking Block Executable: if.end63
+
+Popped off BBWL: 
+if.end63:                                         ; preds = %if.end62, %while.end
+  %i20 = load i32, i32* @header_mode, align 4, !dbg !1173, !tbaa !1033
+  %cmp64 = icmp eq i32 %i20, 1, !dbg !1175
+  br i1 %cmp64, label %if.then68, label %lor.lhs.false, !dbg !1176
+
+	[Taulog] Visiting Other Instruction :   %i20 = load i32, i32* @header_mode, align 4, !dbg !1173, !tbaa !1033
+Merged overdefined into   %i20 = load i32, i32* @header_mode, align 4, !dbg !1173, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp64 = icmp eq i32 %i20, 1, !dbg !1175
+markOverdefined:   %cmp64 = icmp eq i32 %i20, 1, !dbg !1175
+	[Taulog] Visiting Other Instruction :   br i1 %cmp64, label %if.then68, label %lor.lhs.false, !dbg !1176
+Marking Block Executable: if.then68
+Marking Block Executable: lor.lhs.false
+
+Popped off BBWL: 
+lor.lhs.false:                                    ; preds = %if.end63
+  %i21 = load i32, i32* @header_mode, align 4, !dbg !1177, !tbaa !1033
+  %cmp66 = icmp eq i32 %i21, 4, !dbg !1178
+  br i1 %cmp66, label %if.then68, label %if.else69, !dbg !1179
+
+	[Taulog] Visiting Other Instruction :   %i21 = load i32, i32* @header_mode, align 4, !dbg !1177, !tbaa !1033
+Merged overdefined into   %i21 = load i32, i32* @header_mode, align 4, !dbg !1177, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp66 = icmp eq i32 %i21, 4, !dbg !1178
+markOverdefined:   %cmp66 = icmp eq i32 %i21, 4, !dbg !1178
+	[Taulog] Visiting Other Instruction :   br i1 %cmp66, label %if.then68, label %if.else69, !dbg !1179
+Marking Edge Executable: lor.lhs.false -> if.then68
+Marking Block Executable: if.else69
+
+Popped off BBWL: 
+if.else69:                                        ; preds = %lor.lhs.false
+  %i22 = load i32, i32* @human_output_opts, align 4, !dbg !1180, !tbaa !1033
+  %and = and i32 %i22, 16, !dbg !1182
+  %tobool70 = icmp ne i32 %and, 0, !dbg !1182
+  br i1 %tobool70, label %if.then71, label %if.else72, !dbg !1183
+
+	[Taulog] Visiting Other Instruction :   %i22 = load i32, i32* @human_output_opts, align 4, !dbg !1180, !tbaa !1033
+Merged overdefined into   %i22 = load i32, i32* @human_output_opts, align 4, !dbg !1180, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %and = and i32 %i22, 16, !dbg !1182
+	[Taulog] i22 : overdefined, 16 : constantrange<16, 17>
+		Unknown LHS
+Merged constantrange<0, 17> into   %and = and i32 %i22, 16, !dbg !1182 : constantrange<0, 17>
+	[Taulog] Visiting Other Instruction :   %tobool70 = icmp ne i32 %and, 0, !dbg !1182
+markOverdefined:   %tobool70 = icmp ne i32 %and, 0, !dbg !1182
+	[Taulog] Visiting Other Instruction :   br i1 %tobool70, label %if.then71, label %if.else72, !dbg !1183
+Marking Block Executable: if.then71
+Marking Block Executable: if.else72
+
+Popped off BBWL: 
+if.else72:                                        ; preds = %if.else69
+  %tobool73 = trunc i8 %tau to i1, !dbg !1186
+  br i1 %tobool73, label %if.then74, label %if.end75, !dbg !1188
+
+	[Taulog] Visiting Other Instruction :   %tobool73 = trunc i8 %tau to i1, !dbg !1186
+	[Taulog] Visiting Other Instruction :   br i1 %tobool73, label %if.then74, label %if.end75, !dbg !1188
+
+Popped off BBWL: 
+if.then71:                                        ; preds = %if.else69
+  store i32 2, i32* @header_mode, align 4, !dbg !1184, !tbaa !1033
+  br label %if.end76, !dbg !1185
+
+	[Taulog] Visiting Other Instruction :   store i32 2, i32* @header_mode, align 4, !dbg !1184, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   br label %if.end76, !dbg !1185
+Marking Block Executable: if.end76
+
+Popped off BBWL: 
+if.end76:                                         ; preds = %if.end75, %if.then71
+  br label %if.end77
+
+	[Taulog] Visiting Other Instruction :   br label %if.end77
+Marking Block Executable: if.end77
+
+Popped off BBWL: 
+if.end77:                                         ; preds = %if.end76, %if.then68
+  call void @llvm.dbg.value(metadata i8 0, metadata !995, metadata !DIExpression()), !dbg !1191
+  %i23 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1192, !tbaa !1019
+  call void @llvm.dbg.value(metadata %struct.fs_type_list* %i23, metadata !997, metadata !DIExpression()), !dbg !1191
+  br label %for.cond, !dbg !1193
+
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 0, metadata !1162, metadata !DIExpression()), !dbg !1353
+	[Taulog] Visiting Other Instruction :   %i23 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1192, !tbaa !1019
+Merged overdefined into   %i23 = load %struct.fs_type_list*, %struct.fs_type_list** @fs_select_list, align 8, !dbg !1192, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata %struct.fs_type_list* %i23, metadata !1164, metadata !DIExpression()), !dbg !1353
+	[Taulog] Visiting Other Instruction :   br label %for.cond, !dbg !1193
+Marking Block Executable: for.cond
+
+Popped off BBWL: 
+for.cond:                                         ; preds = %for.inc90, %if.end77
+  %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1191
+  %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1194
+  %tau90 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0, %struct.fs_type_list* %i23)
+  %tau91 = call i8 (...) @llvm.tau.i8(i8 %match.0, i8 0)
+  call void @llvm.dbg.value(metadata %struct.fs_type_list* %tau90, metadata !997, metadata !DIExpression()), !dbg !1191
+  call void @llvm.dbg.value(metadata i8 %tau91, metadata !995, metadata !DIExpression()), !dbg !1191
+  %tobool78 = icmp ne %struct.fs_type_list* %tau90, null, !dbg !1195
+  br i1 %tobool78, label %for.body, label %for.end92, !dbg !1195
+
+	[Taulog] Visiting Other Instruction :   %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1191
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<0, 1> into   %match.0 = phi i8 [ 0, %if.end77 ], [ %match.1, %for.inc90 ], !dbg !1191 : constantrange<0, 1>
+	[Taulog] Visiting Other Instruction :   %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1194
+Marking Spec PHINode exec.
+Merged overdefined into   %fs_incl.0 = phi %struct.fs_type_list* [ %i23, %if.end77 ], [ %i29, %for.inc90 ], !dbg !1194 : overdefined
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau90 = call %struct.fs_type_list* (...) @llvm.tau.p0s_struct.fs_type_lists(%struct.fs_type_list* %fs_incl.0, %struct.fs_type_list* %i23))
+		Tau State init : unknown
+		x0 (phi-state) fs_incl.0 : overdefined
+		Tau Operand (L) : i23, overdefined
+		ValueLattice (TauState) tau90 : unknown
+	[Taulog] Visiting LLVM Instrinsic : llvm.tau (  %tau91 = call i8 (...) @llvm.tau.i8(i8 %match.0, i8 0))
+		Tau State init : unknown
+		x0 (phi-state) match.0 : constantrange<0, 1>
+		Tau Operand (L) : 0, constantrange<0, 1>
+		ValueLattice (TauState) tau91 : unknown
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata %struct.fs_type_list* %tau90, metadata !1164, metadata !DIExpression()), !dbg !1353
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 %tau91, metadata !1162, metadata !DIExpression()), !dbg !1353
+	[Taulog] Visiting Other Instruction :   %tobool78 = icmp ne %struct.fs_type_list* %tau90, null, !dbg !1195
+	[Taulog] Visiting Other Instruction :   br i1 %tobool78, label %for.body, label %for.end92, !dbg !1195
+
+Popped off BBWL: 
+if.then68:                                        ; preds = %lor.lhs.false, %if.end63
+  br label %if.end77, !dbg !1179
+
+	[Taulog] Visiting Other Instruction :   br label %if.end77, !dbg !1179
+Marking Edge Executable: if.then68 -> if.end77
+
+Popped off BBWL: 
+if.then54:                                        ; preds = %while.end
+  %tobool55 = trunc i8 %tau to i1, !dbg !1160
+  br i1 %tobool55, label %if.then56, label %if.else, !dbg !1163
+
+	[Taulog] Visiting Other Instruction :   %tobool55 = trunc i8 %tau to i1, !dbg !1160
+	[Taulog] Visiting Other Instruction :   br i1 %tobool55, label %if.then56, label %if.else, !dbg !1163
+
+Popped off BBWL: 
+sw.bb30:                                          ; preds = %if.end, %if.end
+  %i8 = load i8*, i8** @optarg, align 8, !dbg !1112, !tbaa !1019
+  call void @add_fs_type(i8* %i8), !dbg !1113
+  br label %sw.epilog, !dbg !1114
+
+	[Taulog] Visiting Other Instruction :   %i8 = load i8*, i8** @optarg, align 8, !dbg !1112, !tbaa !1019
+Merged overdefined into   %i8 = load i8*, i8** @optarg, align 8, !dbg !1112, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @add_fs_type(i8* %i8), !dbg !1113
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1114
+Marking Edge Executable: sw.bb30 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb29:                                          ; preds = %if.end
+  store i8 0, i8* @require_sync, align 1, !dbg !1110, !tbaa !1029
+  br label %sw.epilog, !dbg !1111
+
+	[Taulog] Visiting Other Instruction :   store i8 0, i8* @require_sync, align 1, !dbg !1110, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1111
+Marking Edge Executable: sw.bb29 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb28:                                          ; preds = %if.end
+  store i8 1, i8* @require_sync, align 1, !dbg !1108, !tbaa !1029
+  br label %sw.epilog, !dbg !1109
+
+	[Taulog] Visiting Other Instruction :   store i8 1, i8* @require_sync, align 1, !dbg !1108, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1109
+Marking Edge Executable: sw.bb28 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb23:                                          ; preds = %if.end
+  %i7 = load i32, i32* @header_mode, align 4, !dbg !1100, !tbaa !1033
+  %cmp24 = icmp eq i32 %i7, 4, !dbg !1102
+  br i1 %cmp24, label %if.then26, label %if.end27, !dbg !1103
+
+	[Taulog] Visiting Other Instruction :   %i7 = load i32, i32* @header_mode, align 4, !dbg !1100, !tbaa !1033
+Merged overdefined into   %i7 = load i32, i32* @header_mode, align 4, !dbg !1100, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp24 = icmp eq i32 %i7, 4, !dbg !1102
+markOverdefined:   %cmp24 = icmp eq i32 %i7, 4, !dbg !1102
+	[Taulog] Visiting Other Instruction :   br i1 %cmp24, label %if.then26, label %if.end27, !dbg !1103
+Marking Block Executable: if.then26
+Marking Block Executable: if.end27
+
+Popped off BBWL: 
+if.end27:                                         ; preds = %sw.bb23
+  call void @llvm.dbg.value(metadata i8 1, metadata !987, metadata !DIExpression()), !dbg !1017
+  br label %sw.epilog, !dbg !1107
+
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i8 1, metadata !1154, metadata !DIExpression()), !dbg !1184
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1107
+Marking Edge Executable: if.end27 -> sw.epilog
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<1, 2> into   %posix_format.1 = phi i8 [ %tau88, %sw.bb48 ], [ %tau88, %if.end47 ], [ %tau88, %sw.bb31 ], [ %tau88, %if.end ], [ %tau88, %sw.bb30 ], [ %tau88, %sw.bb29 ], [ %tau88, %sw.bb28 ], [ 1, %if.end27 ], [ %tau88, %if.end22 ], [ %tau88, %sw.bb17 ], [ %tau88, %sw.bb16 ], [ %tau88, %sw.bb15 ], [ %tau88, %sw.bb14 ], [ %tau88, %sw.bb13 ], [ %tau88, %if.end12 ], [ %tau88, %if.end7 ], [ %tau88, %sw.bb ], !dbg !1017 : constantrange<1, 2>
+
+Popped off BBWL: 
+if.then26:                                        ; preds = %sw.bb23
+  call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.19, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1104
+  call void @usage(i32 1) #25, !dbg !1106
+  unreachable, !dbg !1106
+
+	[Taulog] Visiting Call Instruction :   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.19, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1104
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 1) #25, !dbg !1106
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1106
+
+Popped off BBWL: 
+sw.bb18:                                          ; preds = %if.end
+  %i6 = load i32, i32* @header_mode, align 4, !dbg !1091, !tbaa !1033
+  %cmp19 = icmp eq i32 %i6, 4, !dbg !1093
+  br i1 %cmp19, label %if.then21, label %if.end22, !dbg !1094
+
+	[Taulog] Visiting Other Instruction :   %i6 = load i32, i32* @header_mode, align 4, !dbg !1091, !tbaa !1033
+Merged overdefined into   %i6 = load i32, i32* @header_mode, align 4, !dbg !1091, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp19 = icmp eq i32 %i6, 4, !dbg !1093
+markOverdefined:   %cmp19 = icmp eq i32 %i6, 4, !dbg !1093
+	[Taulog] Visiting Other Instruction :   br i1 %cmp19, label %if.then21, label %if.end22, !dbg !1094
+Marking Block Executable: if.then21
+Marking Block Executable: if.end22
+
+Popped off BBWL: 
+if.end22:                                         ; preds = %sw.bb18
+  store i8 1, i8* @print_type, align 1, !dbg !1098, !tbaa !1029
+  br label %sw.epilog, !dbg !1099
+
+	[Taulog] Visiting Other Instruction :   store i8 1, i8* @print_type, align 1, !dbg !1098, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1099
+Marking Edge Executable: if.end22 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+if.then21:                                        ; preds = %sw.bb18
+  call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.18, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1095
+  call void @usage(i32 1) #25, !dbg !1097
+  unreachable, !dbg !1097
+
+	[Taulog] Visiting Call Instruction :   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.18, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1095
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 1) #25, !dbg !1097
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1097
+
+Popped off BBWL: 
+sw.bb17:                                          ; preds = %if.end
+  store i32 0, i32* @human_output_opts, align 4, !dbg !1088, !tbaa !1033
+  store i64 1048576, i64* @output_block_size, align 8, !dbg !1089, !tbaa !1078
+  br label %sw.epilog, !dbg !1090
+
+	[Taulog] Visiting Other Instruction :   store i32 0, i32* @human_output_opts, align 4, !dbg !1088, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i64 1048576, i64* @output_block_size, align 8, !dbg !1089, !tbaa !1078
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1090
+Marking Edge Executable: sw.bb17 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb16:                                          ; preds = %if.end
+  store i8 1, i8* @show_local_fs, align 1, !dbg !1086, !tbaa !1029
+  br label %sw.epilog, !dbg !1087
+
+	[Taulog] Visiting Other Instruction :   store i8 1, i8* @show_local_fs, align 1, !dbg !1086, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1087
+Marking Edge Executable: sw.bb16 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb15:                                          ; preds = %if.end
+  store i32 0, i32* @human_output_opts, align 4, !dbg !1083, !tbaa !1033
+  store i64 1024, i64* @output_block_size, align 8, !dbg !1084, !tbaa !1078
+  br label %sw.epilog, !dbg !1085
+
+	[Taulog] Visiting Other Instruction :   store i32 0, i32* @human_output_opts, align 4, !dbg !1083, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i64 1024, i64* @output_block_size, align 8, !dbg !1084, !tbaa !1078
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1085
+Marking Edge Executable: sw.bb15 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb14:                                          ; preds = %if.end
+  store i32 144, i32* @human_output_opts, align 4, !dbg !1080, !tbaa !1033
+  store i64 1, i64* @output_block_size, align 8, !dbg !1081, !tbaa !1078
+  br label %sw.epilog, !dbg !1082
+
+	[Taulog] Visiting Other Instruction :   store i32 144, i32* @human_output_opts, align 4, !dbg !1080, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i64 1, i64* @output_block_size, align 8, !dbg !1081, !tbaa !1078
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1082
+Marking Edge Executable: sw.bb14 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb13:                                          ; preds = %if.end
+  store i32 176, i32* @human_output_opts, align 4, !dbg !1076, !tbaa !1033
+  store i64 1, i64* @output_block_size, align 8, !dbg !1077, !tbaa !1078
+  br label %sw.epilog, !dbg !1079
+
+	[Taulog] Visiting Other Instruction :   store i32 176, i32* @human_output_opts, align 4, !dbg !1076, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   store i64 1, i64* @output_block_size, align 8, !dbg !1077, !tbaa !1078
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1079
+Marking Edge Executable: sw.bb13 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.bb8:                                           ; preds = %if.end
+  %i5 = load i32, i32* @header_mode, align 4, !dbg !1067, !tbaa !1033
+  %cmp9 = icmp eq i32 %i5, 4, !dbg !1069
+  br i1 %cmp9, label %if.then11, label %if.end12, !dbg !1070
+
+	[Taulog] Visiting Other Instruction :   %i5 = load i32, i32* @header_mode, align 4, !dbg !1067, !tbaa !1033
+Merged overdefined into   %i5 = load i32, i32* @header_mode, align 4, !dbg !1067, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %cmp9 = icmp eq i32 %i5, 4, !dbg !1069
+markOverdefined:   %cmp9 = icmp eq i32 %i5, 4, !dbg !1069
+	[Taulog] Visiting Other Instruction :   br i1 %cmp9, label %if.then11, label %if.end12, !dbg !1070
+Marking Block Executable: if.then11
+Marking Block Executable: if.end12
+
+Popped off BBWL: 
+if.end12:                                         ; preds = %sw.bb8
+  store i32 1, i32* @header_mode, align 4, !dbg !1074, !tbaa !1033
+  br label %sw.epilog, !dbg !1075
+
+	[Taulog] Visiting Other Instruction :   store i32 1, i32* @header_mode, align 4, !dbg !1074, !tbaa !1033
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1075
+Marking Edge Executable: if.end12 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+if.then11:                                        ; preds = %sw.bb8
+  call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1071
+  call void @usage(i32 1) #25, !dbg !1073
+  unreachable, !dbg !1073
+
+	[Taulog] Visiting Call Instruction :   call void (i32, i32, i8*, ...) @error(i32 0, i32 0, i8* getelementptr inbounds ([41 x i8], [41 x i8]* @.str.14, i64 0, i64 0), i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.16, i64 0, i64 0), i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.17, i64 0, i64 0)), !dbg !1071
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 1) #25, !dbg !1073
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1073
+
+Popped off BBWL: 
+sw.bb3:                                           ; preds = %if.end
+  %i2 = load i8*, i8** @optarg, align 8, !dbg !1056, !tbaa !1019
+  %call4 = call i32 @human_options(i8* %i2, i32* @human_output_opts, i64* @output_block_size), !dbg !1057
+  call void @llvm.dbg.value(metadata i32 %call4, metadata !992, metadata !DIExpression()), !dbg !1058
+  %cmp5 = icmp ne i32 %call4, 0, !dbg !1059
+  br i1 %cmp5, label %if.then6, label %if.end7, !dbg !1061
+
+	[Taulog] Visiting Other Instruction :   %i2 = load i8*, i8** @optarg, align 8, !dbg !1056, !tbaa !1019
+Merged overdefined into   %i2 = load i8*, i8** @optarg, align 8, !dbg !1056, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   %call4 = call i32 @human_options(i8* %i2, i32* @human_output_opts, i64* @output_block_size), !dbg !1057
+Merged overdefined into   %call4 = call i32 @human_options(i8* %i2, i32* @human_output_opts, i64* @output_block_size), !dbg !1057 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @llvm.dbg.value(metadata i32 %call4, metadata !1159, metadata !DIExpression()), !dbg !1221
+	[Taulog] Visiting Other Instruction :   %cmp5 = icmp ne i32 %call4, 0, !dbg !1059
+markOverdefined:   %cmp5 = icmp ne i32 %call4, 0, !dbg !1059
+	[Taulog] Visiting Other Instruction :   br i1 %cmp5, label %if.then6, label %if.end7, !dbg !1061
+Marking Block Executable: if.then6
+Marking Block Executable: if.end7
+
+Popped off BBWL: 
+if.end7:                                          ; preds = %sw.bb3
+  br label %sw.epilog, !dbg !1066
+
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1066
+Marking Edge Executable: if.end7 -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+if.then6:                                         ; preds = %sw.bb3
+  %i3 = load i32, i32* %oi, align 4, !dbg !1062, !tbaa !1033
+  %conv = trunc i32 %call2 to i8, !dbg !1063
+  %i4 = load i8*, i8** @optarg, align 8, !dbg !1064, !tbaa !1019
+  call void @xstrtol_fatal(i32 %call4, i32 %i3, i8 signext %conv, %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i8* %i4) #25, !dbg !1065
+  unreachable, !dbg !1065
+
+	[Taulog] Visiting Other Instruction :   %i3 = load i32, i32* %oi, align 4, !dbg !1062, !tbaa !1033
+Merged overdefined into   %i3 = load i32, i32* %oi, align 4, !dbg !1062, !tbaa !1033 : overdefined
+	[Taulog] Visiting Other Instruction :   %conv = trunc i32 %call2 to i8, !dbg !1063
+Merged overdefined into   %conv = trunc i32 %call2 to i8, !dbg !1063 : overdefined
+	[Taulog] Visiting Other Instruction :   %i4 = load i8*, i8** @optarg, align 8, !dbg !1064, !tbaa !1019
+Merged overdefined into   %i4 = load i8*, i8** @optarg, align 8, !dbg !1064, !tbaa !1019 : overdefined
+	[Taulog] Visiting Call Instruction :   call void @xstrtol_fatal(i32 %call4, i32 %i3, i8 signext %conv, %struct.option* getelementptr inbounds ([17 x %struct.option], [17 x %struct.option]* @long_options, i64 0, i64 0), i8* %i4) #25, !dbg !1065
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1065
+
+Popped off BBWL: 
+sw.bb:                                            ; preds = %if.end
+  store i8 1, i8* @show_all_fs, align 1, !dbg !1054, !tbaa !1029
+  br label %sw.epilog, !dbg !1055
+
+	[Taulog] Visiting Other Instruction :   store i8 1, i8* @show_all_fs, align 1, !dbg !1054, !tbaa !1029
+	[Taulog] Visiting Other Instruction :   br label %sw.epilog, !dbg !1055
+Marking Edge Executable: sw.bb -> sw.epilog
+Marking Spec PHINode exec.
+
+Popped off BBWL: 
+sw.default:                                       ; preds = %if.end
+  call void @usage(i32 1) #25, !dbg !1152
+  unreachable, !dbg !1152
+
+	[Taulog] Visiting Call Instruction :   call void @usage(i32 1) #25, !dbg !1152
+	[Taulog] Visiting Other Instruction :   unreachable, !dbg !1152
+
+Popped off BBWL: 
+if.then:                                          ; preds = %while.body
+  br label %cleanup, !dbg !1052
+
+	[Taulog] Visiting Other Instruction :   br label %cleanup, !dbg !1052
+Marking Edge Executable: if.then -> cleanup
+Marking Spec PHINode exec.
+Merged constantrange<0, 4> into   %cleanup.dest.slot.0 = phi i32 [ 3, %if.then ], [ 0, %sw.epilog ] : constantrange<0, 4>
+Marking Spec PHINode exec.
+		Unknown LHS
+		Unknown LHS
+Merged constantrange<1, 2> into   %posix_format.2 = phi i8 [ %tau88, %if.then ], [ %posix_format.1, %sw.epilog ], !dbg !1044 : constantrange<1, 2>
+		Tau State init : unknown
+		x0 (phi-state) posix_format.2 : constantrange<1, 2>
+		Tau Operand (L) : tau88, unknown
+opt: include/../include/SpecValueLattice.h:296: const llvm::ConstantRange &llvm::SpecValueLatticeElement::getConstantRange(bool) const: Assertion `isConstantRange(UndefAllowed) && "Cannot get the constant-range of a non-constant-range!"' failed.
+PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /home/clustfuzz/llvm-project/build/bin/opt -load build/SCCPSolverTau.cpp.so -load build/HPSSA_new.cpp.so -load-pass-plugin=build/HPSSA_new.cpp.so -load-pass-plugin=build/SCCPTau.cpp.so -passes=tausccp -time-passes -debug-only=tausccp IR/LL/test_mem2reg.ll -S -o IR/LL/test_spec_sccp.ll -f
+ #0 0x000055bb1cd973a4 PrintStackTraceSignalHandler(void*) Signals.cpp:0:0
+ #1 0x000055bb1cd94ace SignalHandler(int) Signals.cpp:0:0
+ #2 0x00007f6cbb5d43c0 __restore_rt (/lib/x86_64-linux-gnu/libpthread.so.0+0x143c0)
+ #3 0x00007f6cbb07103b raise /build/glibc-sMfBJT/glibc-2.31/signal/../sysdeps/unix/sysv/linux/raise.c:51:1
+ #4 0x00007f6cbb050859 abort /build/glibc-sMfBJT/glibc-2.31/stdlib/abort.c:81:7
+ #5 0x00007f6cbb050729 get_sysdep_segment_value /build/glibc-sMfBJT/glibc-2.31/intl/loadmsgcat.c:509:8
+ #6 0x00007f6cbb050729 _nl_load_domain /build/glibc-sMfBJT/glibc-2.31/intl/loadmsgcat.c:970:34
+ #7 0x00007f6cbb062006 (/lib/x86_64-linux-gnu/libc.so.6+0x34006)
+ #8 0x00007f6cbafcf72c llvm::SpecValueLatticeElement::getConstantRange(bool) const (build/SCCPSolverTau.cpp.so+0x6772c)
+ #9 0x00007f6cbafd2675 llvm::SpecValueLatticeElement::mergeInSpec(llvm::SpecValueLatticeElement const&, llvm::SpecValueLatticeElement&) (build/SCCPSolverTau.cpp.so+0x6a675)
+#10 0x00007f6cbafc7632 llvm::SCCPTauInstVisitor::visitTauNode(llvm::Instruction&) (build/SCCPSolverTau.cpp.so+0x5f632)
+#11 0x00007f6cbafc7ce1 llvm::SCCPTauInstVisitor::markEdgeExecutable(llvm::BasicBlock*, llvm::BasicBlock*) (build/SCCPSolverTau.cpp.so+0x5fce1)
+#12 0x00007f6cbafc8e42 llvm::SCCPTauInstVisitor::visitTerminator(llvm::Instruction&) (build/SCCPSolverTau.cpp.so+0x60e42)
+#13 0x00007f6cbaff1d8d llvm::InstVisitor<llvm::SCCPTauInstVisitor, void>::visitBranchInst(llvm::BranchInst&) (build/SCCPSolverTau.cpp.so+0x89d8d)
+#14 0x00007f6cbaff115d llvm::InstVisitor<llvm::SCCPTauInstVisitor, void>::visitBr(llvm::BranchInst&) (build/SCCPSolverTau.cpp.so+0x8915d)
+#15 0x00007f6cbafd579e llvm::InstVisitor<llvm::SCCPTauInstVisitor, void>::visit(llvm::Instruction&) (build/SCCPSolverTau.cpp.so+0x6d79e)
+#16 0x00007f6cbafce25c llvm::SCCPTauInstVisitor::solve() (build/SCCPSolverTau.cpp.so+0x6625c)
+#17 0x00007f6cbafcee5d llvm::SCCPTauSolver::solve() (build/SCCPSolverTau.cpp.so+0x66e5d)
+#18 0x00007f6cbae88007 runSCCP(llvm::Function&, llvm::DataLayout const&, llvm::TargetLibraryInfo const*) SCCPTau.cpp:0:0
+#19 0x00007f6cbae87cf0 llvm::SCCPTauPass::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/SCCPTau.cpp.so+0x2ccf0)
+#20 0x00007f6cbae9a957 llvm::detail::PassModel<llvm::Function, llvm::SCCPTauPass, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (build/SCCPTau.cpp.so+0x3f957)
+#21 0x000055bb1c405506 llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) (/home/clustfuzz/llvm-project/build/bin/opt+0x2b8c506)
+#22 0x000055bb1a7533a6 llvm::detail::PassModel<llvm::Function, llvm::PassManager<llvm::Function, llvm::AnalysisManager<llvm::Function> >, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Function> >::run(llvm::Function&, llvm::AnalysisManager<llvm::Function>&) crtstuff.c:0:0
+#23 0x000055bb1c403f19 llvm::ModuleToFunctionPassAdaptor::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/clustfuzz/llvm-project/build/bin/opt+0x2b8af19)
+#24 0x000055bb1a361ea6 llvm::detail::PassModel<llvm::Module, llvm::ModuleToFunctionPassAdaptor, llvm::PreservedAnalyses, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) crtstuff.c:0:0
+#25 0x000055bb1c401a0f llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module> >::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) (/home/clustfuzz/llvm-project/build/bin/opt+0x2b88a0f)
+#26 0x000055bb1a36d695 llvm::runPassPipeline(llvm::StringRef, llvm::Module&, llvm::TargetMachine*, llvm::TargetLibraryInfoImpl*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::ToolOutputFile*, llvm::StringRef, llvm::ArrayRef<llvm::StringRef>, llvm::opt_tool::OutputKind, llvm::opt_tool::VerifierKind, bool, bool, bool, bool, bool) (/home/clustfuzz/llvm-project/build/bin/opt+0xaf4695)
+#27 0x000055bb1a2a0046 main (/home/clustfuzz/llvm-project/build/bin/opt+0xa27046)
+#28 0x00007f6cbb0520b3 __libc_start_main /build/glibc-sMfBJT/glibc-2.31/csu/../csu/libc-start.c:342:3
+#29 0x000055bb1a35fa6e _start (/home/clustfuzz/llvm-project/build/bin/opt+0xae6a6e)
+Aborted
