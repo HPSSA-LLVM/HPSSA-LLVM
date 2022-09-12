@@ -33,7 +33,7 @@ $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all
 ## For using HPSSA_new Pass
 
 ```
-$ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make -f Makefile_new
+$ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make -f Makefile
 ```
 
 ## Importing and using the pass.
