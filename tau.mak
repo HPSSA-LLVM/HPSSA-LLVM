@@ -1,7 +1,7 @@
-BUILD_PATH=${LLVM_BIN_PATH}
-LLVM_CONFIG=llvm-config
+BUILD_PATH=$(HOME)/llvm-project/build/bin
+LLVM_CONFIG=$(BUILD_PATH)/llvm-config
 CXX=$(BUILD_PATH)/clang++ -std=c++17 -I include -Xclang -disable-O0-optnone
-CXXFLAGS= `$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
+CXXFLAGS=`$(LLVM_CONFIG) --cppflags` -fPIC -fno-rtti
 LDFLAGS=`$(LLVM_CONFIG) --ldflags` -Wl,-znodelete
 
 ifdef SILENT

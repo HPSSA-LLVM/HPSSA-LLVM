@@ -1,0 +1,25 @@
+1c1
+< ; ModuleID = 'IR/BC/test.bc'
+---
+> ; ModuleID = 'IR/LL/test_mem2reg_sumit.ll'
+49d48
+<   %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
+86,88d84
+< ; if.then:                                          ; preds = %sw.epilog
+< ;   br label %if.end
+< 
+97,99d92
+< ; sw.default13:                                     ; preds = %if.else
+< ;   br label %sw.epilog16
+< 
+104d96
+<   call void @exit(i32 0) #6
+107,110c99
+< ; sw.epilog16:                                      ; preds = %sw.default13
+< ;   br label %if.end
+< 
+< if.end:                                           ; preds = %sw.epilog16, %if.then
+---
+> if.end:                                           ; preds = %if.else, %sw.epilog
+137d125
+< attributes #6 = { noreturn nounwind }

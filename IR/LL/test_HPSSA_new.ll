@@ -42,11 +42,10 @@ declare dso_local void @_ZNSt8ios_base4InitD1Ev(%"class.std::ios_base::Init"* no
 ; Function Attrs: nounwind
 declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3
 
-; Function Attrs: noinline norecurse uwtable mustprogress
+; Function Attrs: mustprogress noinline norecurse uwtable
 define dso_local i32 @main() #4 {
 entry:
   %m = alloca i32, align 4
-  %call = call nonnull align 8 dereferenceable(16) %"class.std::basic_istream"* @_ZNSirsERi(%"class.std::basic_istream"* nonnull align 8 dereferenceable(16) @_ZSt3cin, i32* nonnull align 4 dereferenceable(4) %m)
   %i = load i32, i32* %m, align 4
   switch i32 %i, label %sw.default [
     i32 2, label %sw.bb
@@ -77,17 +76,15 @@ sw.default:                                       ; preds = %entry
 sw.epilog:                                        ; preds = %sw.default, %sw.bb4, %sw.bb1, %sw.bb
   %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1 ], [ 10, %sw.bb ]
   %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [ %add, %sw.bb ]
-  %tau4 = call i32 (...) @llvm.tau.i32(i32 %x.0, i32 2)
-  %tau5 = call i32 (...) @llvm.tau.i32(i32 %n.0, i32 undef)
-  %mul8 = mul nsw i32 2, %tau4
+  %mul8 = mul nsw i32 2, %x.0
   %add9 = add nsw i32 %mul8, 10
-  %add10 = add nsw i32 9, %tau4
+  %add10 = add nsw i32 9, %x.0
   %cmp = icmp sle i32 %add9, %add10
   br i1 %cmp, label %if.end, label %if.else
 
 if.else:                                          ; preds = %sw.epilog
-  %mul11 = mul nsw i32 3, %tau4
-  %add12 = add nsw i32 %tau5, %mul11
+  %mul11 = mul nsw i32 3, %x.0
+  %add12 = add nsw i32 %n.0, %mul11
   switch i32 %add12, label %if.end [
     i32 200, label %sw.bb14
     i32 300, label %sw.bb15
@@ -97,11 +94,10 @@ sw.bb14:                                          ; preds = %if.else
   br label %end
 
 sw.bb15:                                          ; preds = %if.else
-  call void @exit(i32 0) #7
   unreachable
 
 if.end:                                           ; preds = %if.else, %sw.epilog
-  %add17 = add nsw i32 %tau5, %tau4
+  %add17 = add nsw i32 %n.0, %x.0
   store i32 %add17, i32* %m, align 4
   br label %end
 
@@ -121,17 +117,12 @@ entry:
   ret void
 }
 
-; Function Attrs: nofree nosync nounwind willreturn
-declare i32 @llvm.tau.i32(...) #6
-
 attributes #0 = { noinline uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #2 = { nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #3 = { nounwind }
-attributes #4 = { noinline norecurse uwtable mustprogress "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+attributes #4 = { mustprogress noinline norecurse uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #5 = { noreturn nounwind "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
-attributes #6 = { nofree nosync nounwind willreturn }
-attributes #7 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2}
 !llvm.ident = !{!3}
