@@ -14,23 +14,45 @@ Directory Structure:
 - [tests](./tests) : Files on which passes will be tested.
 - Other files are for standard use.
 
-## Installing & Running 
+## LLVM Install 
+
+This works with `clang-13` and below upto `clang-10`. 
 
 ```
-$ mkdir build
-$ cd build 
-$ cmake -G "Ninja" \
-  -DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;compiler-rt" \
-  -DLLVM_USE_LINKER=gold \
-  -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON \
-  -LLVM_CCACHE_BUILD=ON ../llvm
+clang version 13.0.1 (https://github.com/llvm/llvm-project 75e33f71c2dae584b13a7d1186ae0a038ba98838)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/bin
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/8
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/9
+Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Candidate multilib: x32;@mx32
+Selected multilib: .;@m64
+Found CUDA installation: /usr/local/cuda-11.8, version 11.2
 ```
 
 ```
+# Install ninja-build ninja and cmake first.
+$ cmake -G "Ninja" build \
+  -DLLVM_ENABLE_PROJECTS="llvm;compiler-rt;clang;clang-tools-extra" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_CCACHE_BUILD=OFF -DLLVM_BUILD_TESTS=ON \
+  -DLLVM_INSTALL_UTILS=ON \
+  -B build -S llvm
+
+
+$ cd build && ninja -j10 all
+$ sudo ninja -j6 install
+
 $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all
 ```
 
-## For using HPSSA_new Pass
+## For using HPSSA Pass
 
 ```
 $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make -f Makefile
@@ -38,7 +60,7 @@ $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make -f Makefile
 
 ## Importing and using the pass.
 
-Check `passUsage.cpp` file in [src](./src) folder. 
+Check `HPSSA.cpp` file in [src](./src) folder. 
 
 ```
 $ export LLVM_BIN_PATH=$HOME/llvm-project/build/bin && make all -f usage.mak
