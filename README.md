@@ -14,6 +14,11 @@ Directory Structure:
 - [tests](./tests) : Files on which passes will be tested.
 - Other files are for standard use.
 
+## LLVM CGO 
+
+- [LLVM CGO Video](https://www.youtube.com/watch?v=ECwP3HRP0Z4)
+- [https://llvm.org/devmtg/2022-04-03/slides/The.Hot.Path.SSA.Form.in.LLVM.pdf](https://llvm.org/devmtg/2022-04-03/slides/The.Hot.Path.SSA.Form.in.LLVM.pdf)
+
 ## LLVM Install 
 
 This works with `clang-13` and below upto `clang-10`. 
