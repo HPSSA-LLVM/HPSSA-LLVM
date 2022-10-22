@@ -40,6 +40,8 @@ Selected multilib: .;@m64
 Found CUDA installation: /usr/local/cuda-11.8, version 11.2
 ```
 
+- Modify/Add this code to `llvm-project`. [tau patch code snippets](./assets/patch)
+
 ```
 # Install ninja-build ninja and cmake first.
 $ cmake -G "Ninja" build \
