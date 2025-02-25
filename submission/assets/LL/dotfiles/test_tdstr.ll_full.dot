@@ -1,0 +1,36 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x60a3f190cff0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{entry:\l|  %m = alloca i32, align 4\l  %call = call nonnull align 8 dereferenceable(16) ptr @_ZNSirsERi(ptr nonnull\l... align 8 dereferenceable(16) @_ZSt3cin, ptr nonnull align 4 dereferenceable(4)\l... %m)\l  %i = load i32, ptr %m, align 4\l  switch i32 %i, label %sw.default [\l    i32 2, label %sw.bb\l    i32 4, label %sw.bb1\l    i32 6, label %sw.bb4\l  ]\l|{<s0>def|<s1>2|<s2>4|<s3>6}}"];
+	Node0x60a3f190cff0:s0 -> Node0x60a3f19704c0;
+	Node0x60a3f190cff0:s1 -> Node0x60a3f19705e0;
+	Node0x60a3f190cff0:s2 -> Node0x60a3f19706f0;
+	Node0x60a3f190cff0:s3 -> Node0x60a3f1970800;
+	Node0x60a3f19705e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb:\l|  %mul = mul nsw i32 2, 1\l  %add = add nsw i32 %mul, 5\l  br label %sw.epilog\l}"];
+	Node0x60a3f19705e0 -> Node0x60a3f1970660;
+	Node0x60a3f19706f0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb1:\l|  %mul2 = mul nsw i32 2, 1\l  %add3 = add nsw i32 %mul2, 5\l  %sub = sub nsw i32 %add3, 2\l  br label %sw.epilog\l}"];
+	Node0x60a3f19706f0 -> Node0x60a3f1970660;
+	Node0x60a3f1970800 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb4:\l|  %mul5 = mul nsw i32 2, 1\l  %add6 = add nsw i32 %mul5, 1\l  %add7 = add nsw i32 %add6, 2\l  br label %sw.epilog\l}"];
+	Node0x60a3f1970800 -> Node0x60a3f1970660;
+	Node0x60a3f19704c0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.default:\l|  br label %sw.epilog\l}"];
+	Node0x60a3f19704c0 -> Node0x60a3f1970660;
+	Node0x60a3f1970660 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{sw.epilog:\l|  %n.0 = phi i32 [ undef, %sw.default ], [ %add7, %sw.bb4 ], [ %sub, %sw.bb1\l... ], [ 10, %sw.bb ]\l  %x.0 = phi i32 [ 2, %sw.default ], [ %add6, %sw.bb4 ], [ %add3, %sw.bb1 ], [\l... %add, %sw.bb ]\l  %mul8 = mul nsw i32 2, %x.0\l  %add9 = add nsw i32 %mul8, 10\l  %add10 = add nsw i32 9, %x.0\l  %cmp = icmp sle i32 %add9, %add10\l  br i1 %cmp, label %if.then, label %if.else\l|{<s0>T|<s1>F}}"];
+	Node0x60a3f1970660:s0 -> Node0x60a3f1970880;
+	Node0x60a3f1970660:s1 -> Node0x60a3f1971800;
+	Node0x60a3f1970880 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#be242e70" fontname="Courier",label="{if.then:\l|  br label %if.end\l}"];
+	Node0x60a3f1970880 -> Node0x60a3f1970770;
+	Node0x60a3f1971800 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#be242e70" fontname="Courier",label="{if.else:\l|  %mul11 = mul nsw i32 3, %x.0\l  %add12 = add nsw i32 %n.0, %mul11\l  switch i32 %add12, label %sw.default13 [\l    i32 200, label %sw.bb14\l    i32 300, label %sw.bb15\l  ]\l|{<s0>def|<s1>200|<s2>300}}"];
+	Node0x60a3f1971800:s0 -> Node0x60a3f1971ba0;
+	Node0x60a3f1971800:s1 -> Node0x60a3f1971ff0;
+	Node0x60a3f1971800:s2 -> Node0x60a3f1972100;
+	Node0x60a3f1971ba0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.default13:\l|  br label %sw.epilog16\l}"];
+	Node0x60a3f1971ba0 -> Node0x60a3f1971f60;
+	Node0x60a3f1971ff0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb14:\l|  br label %end\l}"];
+	Node0x60a3f1971ff0 -> Node0x60a3f1972070;
+	Node0x60a3f1972100 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f1ccb870" fontname="Courier",label="{sw.bb15:\l|  call void @exit(i32 0) #7\l  unreachable\l}"];
+	Node0x60a3f1971f60 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.epilog16:\l|  br label %if.end\l}"];
+	Node0x60a3f1971f60 -> Node0x60a3f1970770;
+	Node0x60a3f1970770 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70" fontname="Courier",label="{if.end:\l|  %add17 = add nsw i32 %n.0, %x.0\l  store i32 %add17, ptr %m, align 4\l  br label %end\l}"];
+	Node0x60a3f1970770 -> Node0x60a3f1972070;
+	Node0x60a3f1972070 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{end:\l|  ret i32 0\l}"];
+}

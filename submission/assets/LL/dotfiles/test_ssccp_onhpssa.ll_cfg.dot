@@ -1,0 +1,36 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x60624f250100 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{entry|{<s0>def|<s1>2|<s2>4|<s3>6}}"];
+	Node0x60624f250100:s0 -> Node0x60624f2b35d0;
+	Node0x60624f250100:s1 -> Node0x60624f2b36f0;
+	Node0x60624f250100:s2 -> Node0x60624f2b3800;
+	Node0x60624f250100:s3 -> Node0x60624f2b3910;
+	Node0x60624f2b36f0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb}"];
+	Node0x60624f2b36f0 -> Node0x60624f2b3770;
+	Node0x60624f2b3800 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb1}"];
+	Node0x60624f2b3800 -> Node0x60624f2b3770;
+	Node0x60624f2b3910 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb4}"];
+	Node0x60624f2b3910 -> Node0x60624f2b3770;
+	Node0x60624f2b35d0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.default}"];
+	Node0x60624f2b35d0 -> Node0x60624f2b3770;
+	Node0x60624f2b3770 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{sw.epilog|{<s0>T|<s1>F}}"];
+	Node0x60624f2b3770:s0 -> Node0x60624f2b3880;
+	Node0x60624f2b3770:s1 -> Node0x60624f2b4960;
+	Node0x60624f2b3880 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#be242e70" fontname="Courier",label="{if.then}"];
+	Node0x60624f2b3880 -> Node0x60624f2b4900;
+	Node0x60624f2b4960 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#be242e70" fontname="Courier",label="{if.else|{<s0>def|<s1>200|<s2>300}}"];
+	Node0x60624f2b4960:s0 -> Node0x60624f2b49e0;
+	Node0x60624f2b4960:s1 -> Node0x60624f2b50e0;
+	Node0x60624f2b4960:s2 -> Node0x60624f2b51f0;
+	Node0x60624f2b49e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.default13}"];
+	Node0x60624f2b49e0 -> Node0x60624f2b5050;
+	Node0x60624f2b50e0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.bb14}"];
+	Node0x60624f2b50e0 -> Node0x60624f2b5160;
+	Node0x60624f2b51f0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#f1ccb870" fontname="Courier",label="{sw.bb15}"];
+	Node0x60624f2b5050 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#c5333470" fontname="Courier",label="{sw.epilog16}"];
+	Node0x60624f2b5050 -> Node0x60624f2b4900;
+	Node0x60624f2b4900 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70" fontname="Courier",label="{if.end}"];
+	Node0x60624f2b4900 -> Node0x60624f2b5160;
+	Node0x60624f2b5160 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870" fontname="Courier",label="{end}"];
+}
